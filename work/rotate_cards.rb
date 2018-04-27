@@ -1,7 +1,6 @@
 require 'rmagick'
 require 'fileutils'
 
-
 directory = 'hero_cards'
 name = 'heros'
 

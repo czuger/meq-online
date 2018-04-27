@@ -1,0 +1,11 @@
+Ranged Strike	Ranged	1	1	1	Hill	Gain +2 attack if your opponent plays a Ranged card.	5
+Concentrate	Ranged	0	0	0	Woods	Next round, gain +2 attack and +2 defense.	3
+Hide	Ranged	0	2	1	Woods	Next round, gain +2 defense if you play a Ranged card.	3
+Retreat	Ranged	0	2	2	Mountain	If you do not take damage this round, you may end the battle, move to na adjacent location, and then continue your turn.	2
+Volley	Ranged	2	2	2	Hill	Next round, gain +2 attack if you play a Ranged card.	1
+Dodge	Ranged	0	4	3	Mountain	Next round, gain +2 defense.	1
+Parry	Melee	1	1	1	Desert	Gain +2 defense if your opponent plays a Melee card.	3
+Charge	Melee	2	0	1	Desert	Cancel your opponet's Ranged card.	2
+Anticipate	Melee	1	1	2	Swamp	Next round, your opponent must play his Combat card first, and must place it faceup.	2
+Rest	Melee	0	0	0	Desert	Draw up to 2 cards from the top of your rest pool or life pool.	2
+Attack of Opportunity	Melee	2	0	3	Swamp	Gain +5 attack if your opponent's printed defense is 0.	1

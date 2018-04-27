@@ -1,0 +1,10 @@
+Ranged Strike	Ranged	1	1	1	Hill	Gain +2 attack if your opponent plays a Ranged card.	3
+Evade	Ranged	0	2	1	Woods	Cancel your opponet's Melee card.	2
+Aimed Shot	Ranged	3	0	3	Woods	Gain +3 attack if your opponent's card matches the type he played last round.	2
+Fall Back	Ranged	1	1	1	Hill	Next round, if your opponent plays a Melee card, it is canceled.	3
+Parry	Melee	1	1	1	Desert	Gain +2 defense if your opponent plays a Melee card.	2
+Hack	Melee	1	0	0	Desert	Gain +1 attack if your opponent plays a Melee card.	2
+Trample	Melee	2	0	1	Desert	Your opponent must discard 1 random card from his hand.	3
+Eviscerate	Melee	2	0	2	Desert	If you deal at least 1 damage this round, deal 2 additional damage.	2
+Smash	Melee	2	1	2	Mountain	Reduce your opponent's printed defense to 0.	3
+Reckless	Melee	5	0	3	Swamp	If you are dealt at least 1 damage this round, take 2 additional damage.	3

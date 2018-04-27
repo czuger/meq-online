@@ -1,0 +1,10 @@
+Evade	Ranged	0	2	1	Desert	Cancel your opponet's Melee card.	2
+Strategize	Ranged	1	2	2	Swamp	Your opponent mus tell you how many Ranged and Melee cards are in his hand.	2
+Dodge	Ranged	0	4	3	Desert	Next round, gain +2 defense.	1
+Block	Melee	0	4	2	Woods	This card cannot be canceled, and its defense cannot be reduced below 2.	3
+Parry	Melee	1	1	1	Hill	Gain +2 defense if your opponent plays a Melee card.	2
+Sweep	Melee	3	0	1	Mountain	This card cannot be canceled.	5
+Rush	Melee	1	1	1	Mountain	Next round, if your opponent plays a Ranged card, it is canceled.	3
+Overpower	Melee	2	2	2	Hill	Next round, gain +2 attack if you play a Melee card.	4
+Crush	Melee	3	3	4	Swamp	Gain +3 attack if your opponent plays a Melee card.	1
+Reckless	Melee	5	0	3	Swamp	If you are dealt at least 1 damage this round, take 2 additional damage.	2

@@ -1,0 +1,16 @@
+Endure	Ranged	3	0	2	Hill	If you opponent is defeated this round, shuffle your rest pool and combat stack into you life pool.	1
+Crossbow Shot	Ranged	4	0	2	Hill	The card cannot be canceled.	1
+Heightened Senses	Ranged	2	2	2	Swamp	You opponent must declare Ranged or Melee. Next round, if you opponent's card dos not match this type, it is canceled.	1
+Flaming Arrow	Ranged	3	0	3	Swamp	Next round, reduce you opponent's printed defense to 0.	1
+Concussive Shot	Ranged	2	1	3	Swamp	Next round, if your opponent plays a card with printed defense of 2 or more, his card is canceled	1
+Outmaneuver	Ranged	3	3	4	Swamp	Choose a card type. Next round, if your opponent does not play that type, his card is canceled.	1
+Retaliate	Melee	0	0	0	Desert	Deak your opponent 1 damage for each damage you are dealt this round.	1
+Focused Assault	Melee	0	0	1	Desert	Gain +1 attack and +1 defense for each other Melee card in your combat stack.	1
+Wear Down	Melee	0	2	1	Desert	Your opponent must discard a random card from his hand. He is dealt damage equal to the card's attack.	1
+Shield Smash	Melee	0	3	1	Hill	Next round, if your opponent plays a card costing 2 or more strength, his card is canceled.	1
+Execute	Melee	1	0	2	Hill	If your opponent's printed defense is 0, he is defeated.	1
+Reversal	Melee	0	0	2	Desert	If your opponent plays a Melee card, gain attack equal to his card's attack and then cancel his card.	1
+Crushing Blow	Melee	2	0	2	Mountain	If your opponent's printed defense is 1 or lower, gain +2 attack and cancel his card.	1
+Hamstring	Melee	2	2	3	Mountain	If you deal at least 1 damage, place the top card of your opponent's deck on the bottom of his combat stack.	1
+Overhead Swing	Melee	2	1	3	Mountain	Your opponent must descard 2 random cards from his hand.	1
+Brutal Finisher	Melee	3	1	4	Mountain	Gain +1 for each other card in your combat stack.	1

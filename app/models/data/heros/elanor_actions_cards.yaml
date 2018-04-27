@@ -1,0 +1,78 @@
+---
+0:
+  :name: :ranged_strike
+  :type: :ranged
+  :attack: '1'
+  :defense: '1'
+  :strength_cost: '1'
+  :movement_type: :hill
+1:
+  :name: :concentrate
+  :type: :ranged
+  :attack: '0'
+  :defense: '0'
+  :strength_cost: '0'
+  :movement_type: :woods
+2:
+  :name: :hide
+  :type: :ranged
+  :attack: '0'
+  :defense: '2'
+  :strength_cost: '1'
+  :movement_type: :woods
+3:
+  :name: :retreat
+  :type: :ranged
+  :attack: '0'
+  :defense: '2'
+  :strength_cost: '2'
+  :movement_type: :mountain
+4:
+  :name: :volley
+  :type: :ranged
+  :attack: '2'
+  :defense: '2'
+  :strength_cost: '2'
+  :movement_type: :hill
+5:
+  :name: :dodge
+  :type: :ranged
+  :attack: '0'
+  :defense: '4'
+  :strength_cost: '3'
+  :movement_type: :mountain
+6:
+  :name: :parry
+  :type: :melee
+  :attack: '1'
+  :defense: '1'
+  :strength_cost: '1'
+  :movement_type: :desert
+7:
+  :name: :charge
+  :type: :melee
+  :attack: '2'
+  :defense: '0'
+  :strength_cost: '1'
+  :movement_type: :desert
+8:
+  :name: :anticipate
+  :type: :melee
+  :attack: '1'
+  :defense: '1'
+  :strength_cost: '2'
+  :movement_type: :swamp
+9:
+  :name: :rest
+  :type: :melee
+  :attack: '0'
+  :defense: '0'
+  :strength_cost: '0'
+  :movement_type: :desert
+10:
+  :name: :attack_of_opportunity
+  :type: :melee
+  :attack: '2'
+  :defense: '0'
+  :strength_cost: '3'
+  :movement_type: :swamp

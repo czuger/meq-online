@@ -1,0 +1,9 @@
+Quick Shot	Ranged	1	0	0	Woods	This card cannot be canceled.	2
+Overdraw	Ranged	2	0	1	Woods	Gain +2 attack if your opponent plays a Ranged card.	6
+Precision	Ranged	2	1	2	Swamp	Reduce your opponet's printed defense to 0.	4
+Aimed Shot	Ranged	3	0	3	Mountain	Gain +3 attack if your opponet's card matches the type he played last round.	4
+Fall Back	Ranged	1	1	1	Desert	Next round, if your opponent plays a Melee card, it is canceled.	2
+Volley	Ranged	2	2	2	Desert	Next round, gain +2 attack if you play a Ranged card.	2
+Parry	Melee	1	1	1	Hill	Gain +2 defense if your opponent plays a Melee card.	2
+Anticipate	Melee	1	1	2	Hill	Next round, your opponent must play his Combat card first, and must place it faceup.	2
+Attack of Opportunity	Melee	2	0	3	Hill	Gain +5 attack if your opponent's printed defense is 0.	1
