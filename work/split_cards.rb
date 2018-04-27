@@ -3,9 +3,11 @@ require 'fileutils'
 card_width=410
 card_height=586
 
-name = 'thalin'
-FileUtils.mkpath(name)
-img = Magick::Image.read("#{name}.jpg")[0]
+name = 'formations'
+directory = 'hero_cards'
+
+FileUtils.mkpath("#{directory}/#{name}")
+img = Magick::Image.read("#{directory}/#{name}.jpg")[0]
 
 0.upto(2) do |line|
   0.upto(9) do |col|
@@ -13,7 +15,7 @@ img = Magick::Image.read("#{name}.jpg")[0]
     x = col*card_width
 
     crop = img.crop(x, y, card_width, card_height)
-    crop.write("#{name}/#{line}_#{col}.jpg")
+    crop.write("#{directory}/#{name}/#{line}_#{col}.jpg")
   end
 end
 
