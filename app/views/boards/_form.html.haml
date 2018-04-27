@@ -1,0 +1,13 @@
+= form_for @board do |f|
+  - if @board.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@board.errors.count, "error")} prohibited this board from being saved:"
+      %ul
+        - @board.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = f.label :heroes
+    = f.text_field :heroes
+  .actions
+    = f.submit 'Save'

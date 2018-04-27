@@ -1,0 +1,27 @@
+%h1 New board
+
+= form_for @board do |f|
+  - if @board.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@board.errors.count, "error")} prohibited this board from being saved:"
+      %ul
+        - @board.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = f.label :hero_1
+    = select_tag(:hero_1, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ) )
+
+  .field
+    = f.label :hero_2
+    = select_tag(:hero_2, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true )
+
+  .field
+    = f.label :hero_3
+    = select_tag(:hero_3, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true )
+
+  .actions
+    = f.submit 'Save'
+
+
+= link_to 'Back', boards_path

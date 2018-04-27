@@ -1,0 +1,33 @@
+%p#notice= notice
+
+%p
+  %b Name code:
+  = @hero.name_code
+%p
+  %b Fortitude:
+  = @hero.fortitude
+%p
+  %b Strength:
+  = @hero.strength
+%p
+  %b Agility:
+  = @hero.agility
+%p
+  %b Wisdom:
+  = @hero.wisdom
+%p
+  %b Location:
+  = @hero.location
+%p
+  %b Life pool:
+  = @hero.life_pool
+%p
+  %b Rest pool:
+  = @hero.rest_pool
+%p
+  %b Damage pool:
+  = @hero.damage_pool
+
+= link_to 'Edit', edit_hero_path(@hero)
+\|
+= link_to 'Back', heros_path
