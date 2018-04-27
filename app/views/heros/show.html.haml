@@ -23,7 +23,10 @@
   = @hero.life_pool.count
 %p
   %b Hand:
-  = @hero.hand
+
+%p
+  - @hero.hand.each do |h|
+    = image_tag "hero_cards/#{@hero.name_code}/#{@hero_cards[h][:name]}.jpg", class: :card
 
 
 = link_to 'Edit', edit_board_hero_path(@board, @hero)

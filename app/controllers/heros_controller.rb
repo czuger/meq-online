@@ -11,6 +11,7 @@ class HerosController < ApplicationController
   # GET /heros/1
   # GET /heros/1.json
   def show
+    @hero_cards = YAML.load_file("app/models/data/heroes/#{@hero.name_code}_actions_cards.yaml")
   end
 
   # GET /heros/new
