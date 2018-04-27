@@ -1,0 +1,42 @@
+---
+-
+  :name: Argalad
+  :name_code: :argalad
+  :fortitude: 5
+  :strength: 5
+  :agility: 3
+  :wisdom: 2
+  :start_location_code_name: :woodland_realm
+-
+  :name: Beravor
+  :name_code: :beravor
+  :fortitude: 6
+  :strength: 5
+  :agility: 2
+  :wisdom: 2
+  :start_location_code_name: :fornost
+-
+  :name: Eleanor
+  :name_code: :eleanor
+  :fortitude: 6
+  :strength: 5
+  :agility: 1
+  :wisdom: 3
+  :start_location_code_name: :minas_tirith
+-
+  :name: Eometh
+  :name_code: :eometh
+  :fortitude: 6
+  :strength: 6
+  :agility: 1
+  :wisdom: 2
+  :start_location_code_name: :edoras
+-
+  :name: Thàlin
+  :name_code: thalin
+  :fortitude: 5
+  :strength: 7
+  :agility: 2
+  :wisdom: 1
+  :start_location_code_name: :erebor
+

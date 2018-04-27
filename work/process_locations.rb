@@ -21,18 +21,16 @@ end
 File.open('meq-locref.txt','r') do |f|
 
   locations = {}
-  location_id = 0
 
   f.readlines.each do |line|
     match = line.match /([\w -]+) \((\w+)\)/
     name = match[1]
     type = match[2]
 
-    location = { name_code: symbolize( name ), name: name, region: regions[type], region_code: symbolize( regions[type] ),
+    location = { name: name, region: regions[type], region_code: symbolize( regions[type] ),
                  color: colors[type], color_code: symbolize( colors[type] ),
                  perilous: perilous_locations.include?( name ), heaven: heavens.include?( name ) }
-    locations[location_id] = location
-    location_id += 1
+    locations[symbolize(name)] = location
   end
 
   File.open('../app/models/data/locations/locations.yaml','w') do |of|
