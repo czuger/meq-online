@@ -1,0 +1,568 @@
+---
+0:
+  :name_code: :blue_mountains
+  :name: Blue Mountains
+  :region: Endwith
+  :region_code: :endwith
+  :color: Yellow
+  :color_code: :yellow
+  :perilous: false
+  :heaven: false
+1:
+  :name_code: :harlingdon
+  :name: Harlingdon
+  :region: Endwith
+  :region_code: :endwith
+  :color: Yellow
+  :color_code: :yellow
+  :perilous: false
+  :heaven: false
+2:
+  :name_code: :the_grey_havens
+  :name: The Grey Havens
+  :region: Endwith
+  :region_code: :endwith
+  :color: Yellow
+  :color_code: :yellow
+  :perilous: false
+  :heaven: false
+3:
+  :name_code: :tharbad
+  :name: Tharbad
+  :region: Endwith
+  :region_code: :endwith
+  :color: Yellow
+  :color_code: :yellow
+  :perilous: false
+  :heaven: false
+4:
+  :name_code: :the_northdowns
+  :name: The Northdowns
+  :region: Rhuadur
+  :region_code: :rhuadur
+  :color: Purple
+  :color_code: :purple
+  :perilous: false
+  :heaven: false
+5:
+  :name_code: :the_shire
+  :name: The Shire
+  :region: Eriador
+  :region_code: :eriador
+  :color: Orange
+  :color_code: :orange
+  :perilous: false
+  :heaven: false
+6:
+  :name_code: :the_ruins_of_angmar
+  :name: The Ruins of Angmar
+  :region: Rhuadur
+  :region_code: :rhuadur
+  :color: Purple
+  :color_code: :purple
+  :perilous: true
+  :heaven: false
+7:
+  :name_code: :the_trollshaws
+  :name: The Trollshaws
+  :region: Rhuadur
+  :region_code: :rhuadur
+  :color: Purple
+  :color_code: :purple
+  :perilous: false
+  :heaven: false
+8:
+  :name_code: :weathertop
+  :name: Weathertop
+  :region: Rhuadur
+  :region_code: :rhuadur
+  :color: Purple
+  :color_code: :purple
+  :perilous: false
+  :heaven: false
+9:
+  :name_code: :bree
+  :name: Bree
+  :region: Eriador
+  :region_code: :eriador
+  :color: Orange
+  :color_code: :orange
+  :perilous: false
+  :heaven: false
+10:
+  :name_code: :dunland
+  :name: Dunland
+  :region: Endwith
+  :region_code: :endwith
+  :color: Yellow
+  :color_code: :yellow
+  :perilous: false
+  :heaven: false
+11:
+  :name_code: :eregion
+  :name: Eregion
+  :region: Endwith
+  :region_code: :endwith
+  :color: Yellow
+  :color_code: :yellow
+  :perilous: false
+  :heaven: false
+12:
+  :name_code: :fornost
+  :name: Fornost
+  :region: Eriador
+  :region_code: :eriador
+  :color: Orange
+  :color_code: :orange
+  :perilous: false
+  :heaven: true
+13:
+  :name_code: :hills_of_evendim
+  :name: Hills of Evendim
+  :region: Eriador
+  :region_code: :eriador
+  :color: Orange
+  :color_code: :orange
+  :perilous: false
+  :heaven: false
+14:
+  :name_code: :old_forest
+  :name: Old Forest
+  :region: Eriador
+  :region_code: :eriador
+  :color: Orange
+  :color_code: :orange
+  :perilous: false
+  :heaven: false
+15:
+  :name_code: :anfalas
+  :name: Anfalas
+  :region: Gondor
+  :region_code: :gondor
+  :color: Light blue
+  :color_code: :light_blue
+  :perilous: false
+  :heaven: false
+16:
+  :name_code: :dunland
+  :name: Dunland
+  :region: Endwith
+  :region_code: :endwith
+  :color: Yellow
+  :color_code: :yellow
+  :perilous: false
+  :heaven: false
+17:
+  :name_code: :enedwaith_plains
+  :name: Enedwaith Plains
+  :region: Endwith
+  :region_code: :endwith
+  :color: Yellow
+  :color_code: :yellow
+  :perilous: false
+  :heaven: false
+18:
+  :name_code: :gap_of_rohan
+  :name: Gap of Rohan
+  :region: Rhoan
+  :region_code: :rhoan
+  :color: Dark blue
+  :color_code: :dark_blue
+  :perilous: false
+  :heaven: false
+19:
+  :name_code: :isengard
+  :name: Isengard
+  :region: Rhoan
+  :region_code: :rhoan
+  :color: Dark blue
+  :color_code: :dark_blue
+  :perilous: false
+  :heaven: false
+20:
+  :name_code: :mouth_of_the_greyflood
+  :name: Mouth of the Greyflood
+  :region: Endwith
+  :region_code: :endwith
+  :color: Yellow
+  :color_code: :yellow
+  :perilous: false
+  :heaven: false
+21:
+  :name_code: :erebor
+  :name: Erebor
+  :region: Grey mountains
+  :region_code: :grey_mountains
+  :color: White
+  :color_code: :white
+  :perilous: false
+  :heaven: true
+22:
+  :name_code: :ered_mithrin
+  :name: Ered Mithrin
+  :region: Grey mountains
+  :region_code: :grey_mountains
+  :color: White
+  :color_code: :white
+  :perilous: false
+  :heaven: false
+23:
+  :name_code: :ettenmoors
+  :name: Ettenmoors
+  :region: Rhuadur
+  :region_code: :rhuadur
+  :color: Purple
+  :color_code: :purple
+  :perilous: false
+  :heaven: false
+24:
+  :name_code: :dol_guldur
+  :name: Dol Guldur
+  :region: Brown lands
+  :region_code: :brown_lands
+  :color: Brown
+  :color_code: :brown
+  :perilous: true
+  :heaven: false
+25:
+  :name_code: :gladden_fields
+  :name: Gladden Fields
+  :region: Mirkwood
+  :region_code: :mirkwood
+  :color: Dark green
+  :color_code: :dark_green
+  :perilous: false
+  :heaven: false
+26:
+  :name_code: :lake_esgaroth
+  :name: Lake Esgaroth
+  :region: Misty mountains
+  :region_code: :misty_mountains
+  :color: Light green
+  :color_code: :light_green
+  :perilous: false
+  :heaven: false
+27:
+  :name_code: :moria
+  :name: Moria
+  :region: Endwith
+  :region_code: :endwith
+  :color: Yellow
+  :color_code: :yellow
+  :perilous: true
+  :heaven: false
+28:
+  :name_code: :mount_gundabad
+  :name: Mount Gundabad
+  :region: Grey mountains
+  :region_code: :grey_mountains
+  :color: White
+  :color_code: :white
+  :perilous: true
+  :heaven: false
+29:
+  :name_code: :rhosgobel
+  :name: Rhosgobel
+  :region: Mirkwood
+  :region_code: :mirkwood
+  :color: Dark green
+  :color_code: :dark_green
+  :perilous: false
+  :heaven: false
+30:
+  :name_code: :rivendell
+  :name: Rivendell
+  :region: Mirkwood
+  :region_code: :mirkwood
+  :color: Dark green
+  :color_code: :dark_green
+  :perilous: false
+  :heaven: true
+31:
+  :name_code: :south_eaves
+  :name: South Eaves
+  :region: Misty mountains
+  :region_code: :misty_mountains
+  :color: Light green
+  :color_code: :light_green
+  :perilous: false
+  :heaven: false
+32:
+  :name_code: :the_bight
+  :name: The Bight
+  :region: Misty mountains
+  :region_code: :misty_mountains
+  :color: Light green
+  :color_code: :light_green
+  :perilous: false
+  :heaven: false
+33:
+  :name_code: :the_forest_trail
+  :name: The Forest Trail
+  :region: Misty mountains
+  :region_code: :misty_mountains
+  :color: Light green
+  :color_code: :light_green
+  :perilous: false
+  :heaven: false
+34:
+  :name_code: :the_high_pass
+  :name: The High Pass
+  :region: Mirkwood
+  :region_code: :mirkwood
+  :color: Dark green
+  :color_code: :dark_green
+  :perilous: false
+  :heaven: false
+35:
+  :name_code: :the_northern_waste
+  :name: The Northern Waste
+  :region: Grey mountains
+  :region_code: :grey_mountains
+  :color: White
+  :color_code: :white
+  :perilous: false
+  :heaven: false
+36:
+  :name_code: :the_redhorn_gate
+  :name: The Redhorn Gate
+  :region: Mirkwood
+  :region_code: :mirkwood
+  :color: Dark green
+  :color_code: :dark_green
+  :perilous: false
+  :heaven: false
+37:
+  :name_code: :the_withered_heath
+  :name: The Withered Heath
+  :region: Grey mountains
+  :region_code: :grey_mountains
+  :color: White
+  :color_code: :white
+  :perilous: false
+  :heaven: false
+38:
+  :name_code: :woodland_realm
+  :name: Woodland Realm
+  :region: Misty mountains
+  :region_code: :misty_mountains
+  :color: Light green
+  :color_code: :light_green
+  :perilous: false
+  :heaven: true
+39:
+  :name_code: :the_iron_hills
+  :name: The Iron Hills
+  :region: Grey mountains
+  :region_code: :grey_mountains
+  :color: White
+  :color_code: :white
+  :perilous: false
+  :heaven: false
+40:
+  :name_code: :rhun
+  :name: Rhun
+  :region: Brown lands
+  :region_code: :brown_lands
+  :color: Brown
+  :color_code: :brown
+  :perilous: false
+  :heaven: false
+41:
+  :name_code: :barad_dur
+  :name: Barad-Dur
+  :region: Mordor
+  :region_code: :mordor
+  :color: Red
+  :color_code: :red
+  :perilous: true
+  :heaven: false
+42:
+  :name_code: :mount_doom
+  :name: Mount Doom
+  :region: Mordor
+  :region_code: :mordor
+  :color: Red
+  :color_code: :red
+  :perilous: false
+  :heaven: false
+43:
+  :name_code: :amon_hen
+  :name: Amon Hen
+  :region: Rhoan
+  :region_code: :rhoan
+  :color: Dark blue
+  :color_code: :dark_blue
+  :perilous: false
+  :heaven: false
+44:
+  :name_code: :belfalas
+  :name: Belfalas
+  :region: Gondor
+  :region_code: :gondor
+  :color: Light blue
+  :color_code: :light_blue
+  :perilous: false
+  :heaven: false
+45:
+  :name_code: :dagorlad
+  :name: Dagorlad
+  :region: Brown lands
+  :region_code: :brown_lands
+  :color: Brown
+  :color_code: :brown
+  :perilous: false
+  :heaven: false
+46:
+  :name_code: :dead_marshes
+  :name: Dead Marshes
+  :region: Brown lands
+  :region_code: :brown_lands
+  :color: Brown
+  :color_code: :brown
+  :perilous: false
+  :heaven: false
+47:
+  :name_code: :dunharrow
+  :name: Dunharrow
+  :region: Rhoan
+  :region_code: :rhoan
+  :color: Dark blue
+  :color_code: :dark_blue
+  :perilous: false
+  :heaven: false
+48:
+  :name_code: :edoras
+  :name: Edoras
+  :region: Rhoan
+  :region_code: :rhoan
+  :color: Dark blue
+  :color_code: :dark_blue
+  :perilous: false
+  :heaven: false
+49:
+  :name_code: :emyn_muil
+  :name: Emyn Muil
+  :region: Brown lands
+  :region_code: :brown_lands
+  :color: Brown
+  :color_code: :brown
+  :perilous: false
+  :heaven: false
+50:
+  :name_code: :fangorn
+  :name: Fangorn
+  :region: Mirkwood
+  :region_code: :mirkwood
+  :color: Dark green
+  :color_code: :dark_green
+  :perilous: false
+  :heaven: false
+51:
+  :name_code: :helms_deep
+  :name: Helms Deep
+  :region: Rhoan
+  :region_code: :rhoan
+  :color: Dark blue
+  :color_code: :dark_blue
+  :perilous: false
+  :heaven: false
+52:
+  :name_code: :lothlorien
+  :name: Lothlorien
+  :region: Mirkwood
+  :region_code: :mirkwood
+  :color: Dark green
+  :color_code: :dark_green
+  :perilous: false
+  :heaven: true
+53:
+  :name_code: :minas_morgul
+  :name: Minas Morgul
+  :region: Mordor
+  :region_code: :mordor
+  :color: Red
+  :color_code: :red
+  :perilous: false
+  :heaven: false
+54:
+  :name_code: :minas_tirith
+  :name: Minas Tirith
+  :region: Gondor
+  :region_code: :gondor
+  :color: Light blue
+  :color_code: :light_blue
+  :perilous: false
+  :heaven: true
+55:
+  :name_code: :mothond
+  :name: Mothond
+  :region: Gondor
+  :region_code: :gondor
+  :color: Light blue
+  :color_code: :light_blue
+  :perilous: false
+  :heaven: false
+56:
+  :name_code: :near_harad
+  :name: Near Harad
+  :region: Gondor
+  :region_code: :gondor
+  :color: Light blue
+  :color_code: :light_blue
+  :perilous: false
+  :heaven: false
+57:
+  :name_code: :osgiliath
+  :name: Osgiliath
+  :region: Gondor
+  :region_code: :gondor
+  :color: Light blue
+  :color_code: :light_blue
+  :perilous: false
+  :heaven: false
+58:
+  :name_code: :pelargir
+  :name: Pelargir
+  :region: Gondor
+  :region_code: :gondor
+  :color: Light blue
+  :color_code: :light_blue
+  :perilous: false
+  :heaven: false
+59:
+  :name_code: :plains_of_rohan
+  :name: Plains of Rohan
+  :region: Rhoan
+  :region_code: :rhoan
+  :color: Dark blue
+  :color_code: :dark_blue
+  :perilous: false
+  :heaven: false
+60:
+  :name_code: :plains_of_gorgoroth
+  :name: Plains of Gorgoroth
+  :region: Mordor
+  :region_code: :mordor
+  :color: Red
+  :color_code: :red
+  :perilous: false
+  :heaven: false
+61:
+  :name_code: :sea_of_udun
+  :name: Sea of Udun
+  :region: Mordor
+  :region_code: :mordor
+  :color: Red
+  :color_code: :red
+  :perilous: false
+  :heaven: false
+62:
+  :name_code: :the_nindale
+  :name: The Nindale
+  :region: Brown lands
+  :region_code: :brown_lands
+  :color: Brown
+  :color_code: :brown
+  :perilous: false
+  :heaven: false
