@@ -1,5 +1,5 @@
 class HerosController < ApplicationController
-  before_action :set_hero, only: [:show, :edit, :update, :destroy, :draw_cards]
+  before_action :set_hero, only: [:show, :edit, :update, :destroy, :draw_cards, :rest, :heal, :take_damages]
 
   # GET /heros
   # GET /heros.json
@@ -25,6 +25,32 @@ class HerosController < ApplicationController
 
   def draw_cards
     @hero.hand += @hero.life_pool.shift(@hero.fortitude)
+    @hero.save!
+    redirect_to [@board,@hero]
+  end
+
+  def rest
+    @hero.life_pool += @hero.rest_pool
+    @hero.rest_pool = []
+    @hero.life_pool.shuffle
+    @hero.save!
+    redirect_to [@board,@hero]
+  end
+
+  def heal
+    @hero.life_pool += @hero.damage_pool
+    @hero.damage_pool = []
+    @hero.life_pool.shuffle
+    @hero.save!
+    redirect_to [@board,@hero]
+  end
+
+  def take_damages
+    damage_amount = params[:damage_amount].to_i
+    damages_taken_from_life_pool = @hero.life_pool.shift(damage_amount)
+    @hero.damage_pool += damages_taken_from_life_pool
+    rest_damages = damage_amount - damages_taken_from_life_pool.count
+    @hero.damage_pool += @hero.hand.shift(rest_damages)
     @hero.save!
     redirect_to [@board,@hero]
   end

@@ -22,16 +22,30 @@
   %b Life:
   = @hero.life_pool.count
 %p
+  %b Rest:
+  = @hero.rest_pool.count
+%p
+  %b Damage:
+  = @hero.damage_pool.count
+
+%p
   %b Hand:
 
 %p
   - @hero.hand.each do |h|
     = image_tag "hero_cards/#{@hero.name_code}/#{@hero_cards[h][:name]}.jpg", class: :card
 
-
 = link_to 'Edit', edit_board_hero_path(@board, @hero)
 \|
 = link_to 'Back', board_heros_path(@board)
 \|
 = link_to 'Draw hand', board_hero_draw_cards_path(@board, @hero)
+\|
+= link_to 'Rest', board_hero_rest_path(@board, @hero)
+\|
+= link_to 'Heal', board_hero_heal_path(@board, @hero)
+\|
+= link_to 'Take damages', board_hero_take_damages_path(@board, @hero, damage_amount: 3 ), method: :patch
+
+
 
