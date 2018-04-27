@@ -19,15 +19,16 @@
   %b Location:
   = @hero.location
 %p
-  %b Life pool:
-  = @hero.life_pool
+  %b Life:
+  = @hero.life_pool.count
 %p
-  %b Rest pool:
-  = @hero.rest_pool
-%p
-  %b Damage pool:
-  = @hero.damage_pool
+  %b Hand:
+  = @hero.hand
 
-= link_to 'Edit', edit_hero_path(@hero)
+
+= link_to 'Edit', edit_board_hero_path(@board, @hero)
 \|
-= link_to 'Back', heros_path
+= link_to 'Back', board_heros_path(@board)
+\|
+= link_to 'Draw hand', board_hero_draw_cards_path(@board, @hero)
+

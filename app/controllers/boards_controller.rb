@@ -40,7 +40,7 @@ class BoardsController < ApplicationController
             @board.heroes.create!(
               name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
               wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: @starting_deck.shuffle,
-              rest_pool: [], damage_pool: []
+              rest_pool: [], damage_pool: [], hand: []
             )
           end
         end

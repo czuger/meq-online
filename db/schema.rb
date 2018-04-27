@@ -28,6 +28,7 @@ ActiveRecord::Schema.define(version: 2018_04_27_171600) do
     t.integer "agility"
     t.integer "wisdom"
     t.string "location"
+    t.string "hand"
     t.string "life_pool"
     t.string "rest_pool"
     t.string "damage_pool"

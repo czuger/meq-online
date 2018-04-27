@@ -1,10 +1,11 @@
 class HerosController < ApplicationController
-  before_action :set_hero, only: [:show, :edit, :update, :destroy]
+  before_action :set_hero, only: [:show, :edit, :update, :destroy, :draw_cards]
 
   # GET /heros
   # GET /heros.json
   def index
-    @heros = Hero.all
+    @board = Board.find(params[:board_id])
+    @heros = @board.heroes.all
   end
 
   # GET /heros/1
@@ -19,6 +20,12 @@ class HerosController < ApplicationController
 
   # GET /heros/1/edit
   def edit
+  end
+
+  def draw_cards
+    @hero.hand += @hero.life_pool.shift(@hero.fortitude)
+    @hero.save!
+    redirect_to [@board,@hero]
   end
 
   # POST /heros
@@ -64,7 +71,8 @@ class HerosController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_hero
-      @hero = Hero.find(params[:id])
+      @board = Board.find(params[:board_id])
+      @hero = @board.heroes.find(params[:id]||params[:hero_id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
