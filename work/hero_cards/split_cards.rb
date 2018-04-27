@@ -3,7 +3,7 @@ require 'fileutils'
 card_width=410
 card_height=586
 
-name = 'argalad'
+name = 'eometh'
 FileUtils.mkpath(name)
 img = Magick::Image.read("#{name}.jpg")[0]
 
