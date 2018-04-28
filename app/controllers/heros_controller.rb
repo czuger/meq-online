@@ -27,7 +27,8 @@ class HerosController < ApplicationController
   end
 
   def draw_cards
-    @hero.hand += @hero.life_pool.shift(@hero.fortitude)
+    nb_cards_to_draw = params[:nb_cards].to_i
+    @hero.hand += @hero.life_pool.shift(nb_cards_to_draw)
     @hero.save!
     redirect_to [@board,@hero]
   end
@@ -61,7 +62,10 @@ class HerosController < ApplicationController
   def move
     @hero.location = params['move_to']
     card = params['card_used'].to_i
-    @hero.hand.delete( card )
+
+    card_position = @hero.hand.index( card )
+    @hero.hand.delete_at( card_position )
+
     @hero.rest_pool << card
     @hero.save!
     redirect_to [@board,@hero]

@@ -69,6 +69,20 @@
   .row
     %b Hand:
 
+  .row
+    = form_tag board_hero_draw_cards_path(@board, @hero), class: 'form-inline' do
+      .form-group
+        .mx-2
+          = label_tag :nb_cards, 'Cards count'
+        .mx-2
+          = number_field_tag :nb_cards, @hero.fortitude, max: 20, class: 'form-control'
+        .mx-2
+          = button_tag 'Agility', role: :button, type: :button, class: 'btn btn-secondary', id: :set_agility
+        .mx-2
+          = button_tag 'Draw hand', role: :button, class: 'btn btn-secondary'
+    = hidden_field_tag :agility_value, @hero.agility
+
+
   - @hero.hand.in_groups_of(8).each do |group|
     .row
       - group.each do |element|

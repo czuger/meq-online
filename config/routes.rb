@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   resources :boards do
     resources :heros do
-      get :draw_cards
+      post :draw_cards
       get :rest
       get :heal
       patch :take_damages
