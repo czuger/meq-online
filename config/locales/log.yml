@@ -1,4 +1,4 @@
 en:
   logs:
     index:
-      move: "%{name} move from %{from} to %{to} using %{card}"
+      move: "%{name} move from %{from} to %{to} using"

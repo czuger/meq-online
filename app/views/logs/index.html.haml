@@ -3,9 +3,14 @@
 %table.table
   %thead
     %tr
-      %th Log
+      %th Action
+      %th Card used
 
   %tbody
     - @logs.each do |log|
-      %tr
-        %td= print_log(log)
+      - if log.action == 'move'
+        %tr
+          %td= print_log(log)
+          %td
+            = card_used(log)
+
