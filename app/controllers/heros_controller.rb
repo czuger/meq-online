@@ -1,5 +1,5 @@
 class HerosController < ApplicationController
-  before_action :set_hero, only: [:show, :edit, :update, :destroy, :draw_cards, :rest, :heal, :take_damages]
+  before_action :set_hero, only: [:show, :edit, :update, :destroy, :draw_cards, :rest, :heal, :take_damages, :move]
 
   # GET /heros
   # GET /heros.json
@@ -12,6 +12,9 @@ class HerosController < ApplicationController
   # GET /heros/1.json
   def show
     @hero_cards = YAML.load_file("app/models/data/heroes/#{@hero.name_code}_actions_cards.yaml")
+    @locations = YAML.load_file('app/models/data/locations/locations.yaml')
+    @locations.delete(@hero.location.to_sym)
+    @locations = @locations.map{ |k, v| [ v[:name], k ] }.sort
   end
 
   # GET /heros/new
@@ -55,8 +58,13 @@ class HerosController < ApplicationController
     redirect_to [@board,@hero]
   end
 
-  def move_edit
-
+  def move
+    @hero.location = params['move_to']
+    card = params['card_used'].to_i
+    @hero.hand.delete( card )
+    @hero.rest_pool << card
+    @hero.save!
+    redirect_to [@board,@hero]
   end
 
   # POST /heros

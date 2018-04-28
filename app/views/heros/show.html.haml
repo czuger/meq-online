@@ -8,7 +8,7 @@
         %span.badge.badge-light
           = @hero.name_code
 
-    .col-2
+    .col-4
       %button.btn.btn-secondary{ type: :button }
         Location
         %span.badge.badge-light
@@ -78,4 +78,11 @@
       - group.each do |element|
         .col
           - if element
-            = image_tag "hero_cards/#{@hero.name_code}/#{@hero_cards[element][:name]}.jpg", class: :card
+            = image_tag "hero_cards/#{@hero.name_code}/#{@hero_cards[element][:name]}.jpg", class: :card, card_id: element
+
+  = form_tag board_hero_move_path(@board, @hero), class: 'form-inline' do
+    = label_tag :move_to, 'Move to'
+    = select_tag(:move_to, options_for_select( @locations ), class: 'form-control' )
+    = button_tag 'Move', role: :button, class: 'btn btn-primary disabled', id: :move_hero
+    = hidden_field_tag :card_used, ''
+

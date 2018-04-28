@@ -10,6 +10,12 @@ card_selection = () ->
     else
       card.addClass('selected_card')
 
+    if $('.selected_card').length == 1
+      $('#move_hero').removeClass('disabled')
+      $('#card_used').val( $('.selected_card').first().attr( 'card_id' )  )
+    else
+      $('#move_hero').addClass('disabled')
+
 
 $(document).on('turbolinks:load'
   ->
