@@ -3,6 +3,11 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 .card{
-  width: 7%;
+  width: 100%;
   margin-left: 10px;
+  //float: left;
+}
+
+.row{
+  margin-bottom: 10px;
 }

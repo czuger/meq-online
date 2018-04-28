@@ -55,6 +55,10 @@ class HerosController < ApplicationController
     redirect_to [@board,@hero]
   end
 
+  def move_edit
+
+  end
+
   # POST /heros
   # POST /heros.json
   def create

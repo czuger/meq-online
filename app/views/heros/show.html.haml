@@ -1,51 +1,81 @@
 %p#notice= notice
 
-%p
-  %b Name code:
-  = @hero.name_code
-%p
-  %b Fortitude:
-  = @hero.fortitude
-%p
-  %b Strength:
-  = @hero.strength
-%p
-  %b Agility:
-  = @hero.agility
-%p
-  %b Wisdom:
-  = @hero.wisdom
-%p
-  %b Location:
-  = @hero.location
-%p
-  %b Life:
-  = @hero.life_pool.count
-%p
-  %b Rest:
-  = @hero.rest_pool.count
-%p
-  %b Damage:
-  = @hero.damage_pool.count
+.container
+  .row
+    .col-2
+      %button.btn.btn-secondary{ type: :button }
+        Name code
+        %span.badge.badge-light
+          = @hero.name_code
 
-%p
-  %b Hand:
+    .col-2
+      %button.btn.btn-secondary{ type: :button }
+        Location
+        %span.badge.badge-light
+          = @hero.location
 
-%p
-  - @hero.hand.each do |h|
-    = image_tag "hero_cards/#{@hero.name_code}/#{@hero_cards[h][:name]}.jpg", class: :card
+    .col-2
+      %button.btn.btn-secondary{ type: :button }
+        Life
+        %span.badge.badge-light
+          = @hero.life_pool.count
 
-= link_to 'Edit', edit_board_hero_path(@board, @hero)
-\|
-= link_to 'Back', board_heros_path(@board)
-\|
-= link_to 'Draw hand', board_hero_draw_cards_path(@board, @hero)
-\|
-= link_to 'Rest', board_hero_rest_path(@board, @hero)
-\|
-= link_to 'Heal', board_hero_heal_path(@board, @hero)
-\|
-= link_to 'Take damages', board_hero_take_damages_path(@board, @hero, damage_amount: 3 ), method: :patch
+    .col-2
+      %button.btn.btn-secondary{ type: :button }
+        Rest
+        %span.badge.badge-light
+          = @hero.rest_pool.count
+    .col-2
+      %button.btn.btn-secondary{ type: :button }
+        Damage
+        %span.badge.badge-light
+          = @hero.damage_pool.count
+
+  .row
+    .col-2
+      %button.btn.btn-secondary{ type: :button }
+        Fortitude
+        %span.badge.badge-light
+          = @hero.fortitude
+    .col-2
+      %button.btn.btn-secondary{ type: :button }
+        Strength
+        %span.badge.badge-light
+          = @hero.strength
+    .col-2
+      %button.btn.btn-secondary{ type: :button }
+        Agility
+        %span.badge.badge-light
+          = @hero.agility
+    .col-2
+      %button.btn.btn-secondary{ type: :button }
+        Wisdom
+        %span.badge.badge-light
+          = @hero.wisdom
+
+  .row
+    .col
+      = link_to 'Edit', edit_board_hero_path(@board, @hero), role: :button, class: 'btn btn-secondary'
+    .col
+      = link_to 'Back', board_heros_path(@board), role: :button, class: 'btn btn-secondary'
+    .col
+      = link_to 'Draw hand', board_hero_draw_cards_path(@board, @hero), role: :button, class: 'btn btn-secondary'
+    .col
+      = link_to 'Rest', board_hero_rest_path(@board, @hero), role: :button, class: 'btn btn-secondary'
+    .col
+      = link_to 'Heal', board_hero_heal_path(@board, @hero), role: :button, class: 'btn btn-secondary'
+    .col
+      = link_to 'Take damages', board_hero_take_damages_path(@board, @hero, damage_amount: 3 ), method: :patch, role: :button, class: 'btn btn-secondary'
+    .col
+    .col
 
 
+  .row
+    %b Hand:
 
+  - @hero.hand.in_groups_of(8).each do |group|
+    .row
+      - group.each do |element|
+        .col
+          - if element
+            = image_tag "hero_cards/#{@hero.name_code}/#{@hero_cards[element][:name]}.jpg", class: :card
