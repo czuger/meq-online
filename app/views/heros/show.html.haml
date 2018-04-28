@@ -55,10 +55,6 @@
 
   .row
     .col
-      = link_to 'Edit', edit_board_hero_path(@board, @hero), role: :button, class: 'btn btn-secondary'
-    .col
-      = link_to 'Back', board_heros_path(@board), role: :button, class: 'btn btn-secondary'
-    .col
       = link_to 'Draw hand', board_hero_draw_cards_path(@board, @hero), role: :button, class: 'btn btn-secondary'
     .col
       = link_to 'Rest', board_hero_rest_path(@board, @hero), role: :button, class: 'btn btn-secondary'
@@ -83,6 +79,6 @@
   = form_tag board_hero_move_path(@board, @hero), class: 'form-inline' do
     = label_tag :move_to, 'Move to'
     = select_tag(:move_to, options_for_select( @locations ), class: 'form-control' )
-    = button_tag 'Move', role: :button, class: 'btn btn-primary disabled', id: :move_hero
+    = button_tag 'Move', role: :button, class: 'btn btn-secondary disabled', id: :move_hero
     = hidden_field_tag :card_used, ''
 
