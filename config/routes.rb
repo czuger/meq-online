@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
 
   resources :boards do
+    resources :logs, only: [:index ]
     resources :heros do
       post :draw_cards
       get :rest

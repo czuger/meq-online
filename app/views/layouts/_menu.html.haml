@@ -1,6 +1,6 @@
 = link_to 'Boards', boards_path, role: :button, class: 'btn btn-primary'
 - if @board && @board.id
   = link_to 'Heroes', board_heros_path( @board ), role: :button, class: 'btn btn-primary'
-  -#= link_to 'Heroes', board_heros_path( @board ), role: :button, class: 'btn btn-secondary'
+  = link_to 'Log', board_logs_path( @board ), role: :button, class: 'btn btn-primary'
 
 %hr

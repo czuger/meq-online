@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Board:
+  = @log.board
+%p
+  %b Action:
+  = @log.action
+%p
+  %b Params:
+  = @log.params
+
+= link_to 'Edit', edit_log_path(@log)
+\|
+= link_to 'Back', logs_path

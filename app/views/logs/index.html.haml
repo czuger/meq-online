@@ -1,0 +1,11 @@
+%h1 Listing logs
+
+%table.table
+  %thead
+    %tr
+      %th Log
+
+  %tbody
+    - @logs.each do |log|
+      %tr
+        %td= print_log(log)

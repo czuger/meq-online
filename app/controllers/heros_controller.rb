@@ -60,6 +60,7 @@ class HerosController < ApplicationController
   end
 
   def move
+    hero_location = @hero.location
     @hero.location = params['move_to']
     card = params['card_used'].to_i
 
@@ -68,6 +69,13 @@ class HerosController < ApplicationController
 
     @hero.rest_pool << card
     @hero.save!
+
+    @board.logs.create!( action: :move, params: {
+        name: @hero.name_code.to_sym,
+        from: hero_location.to_sym,
+        to: @hero.location.to_sym,
+        card: card } )
+
     redirect_to [@board,@hero]
   end
 
