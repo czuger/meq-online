@@ -28,8 +28,12 @@ class HerosController < ApplicationController
 
   def draw_cards
     nb_cards_to_draw = params[:nb_cards].to_i
-    @hero.hand += @hero.life_pool.shift(nb_cards_to_draw)
+    cards = @hero.life_pool.shift(nb_cards_to_draw)
+    @hero.hand += cards
     @hero.save!
+
+    @hero.log_draw_cards!( @board, cards.count)
+
     redirect_to [@board,@hero]
   end
 
@@ -70,11 +74,7 @@ class HerosController < ApplicationController
     @hero.rest_pool << card
     @hero.save!
 
-    @board.logs.create!( action: :move, params: {
-        name: @hero.name_code.to_sym,
-        from: hero_location.to_sym,
-        to: @hero.location.to_sym,
-        card: card } )
+    @hero.log_movement!( @board, card )
 
     redirect_to [@board,@hero]
   end

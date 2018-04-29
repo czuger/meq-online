@@ -2,3 +2,4 @@ en:
   logs:
     index:
       move: "%{name} move from %{from} to %{to} using"
+      draw_cards: "%{name} draw %{cards_count} cards. Remains %{lp_cards} cards in life pool."
