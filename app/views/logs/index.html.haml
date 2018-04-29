@@ -8,9 +8,9 @@
 
   %tbody
     - @logs.each do |log|
-      - if log.action == 'move'
-        %tr
-          %td= print_log(log)
-          %td
+      %tr
+        %td= print_log(log)
+        %td
+          -if log.action == 'move'
             = card_used(log)
 

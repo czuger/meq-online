@@ -69,12 +69,16 @@ class HerosController < ApplicationController
     card = params['card_used'].to_i
 
     card_position = @hero.hand.index( card )
-    @hero.hand.delete_at( card_position )
+    if card_position
+      @hero.hand.delete_at( card_position )
 
-    @hero.rest_pool << card
-    @hero.save!
+      @hero.rest_pool << card
+      @hero.save!
 
-    @hero.log_movement!( @board, card )
+      @hero.log_movement!( @board, card )
+    else
+      raise "Can't find a card position. card = #{card.inspect}, hand = #{@hero.hand.inspect}"
+    end
 
     redirect_to [@board,@hero]
   end

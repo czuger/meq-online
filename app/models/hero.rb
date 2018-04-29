@@ -7,7 +7,7 @@ class Hero < ApplicationRecord
   def log_movement!( board, card )
     board.logs.create!( action: :move, params: {
         name: name_code.to_sym,
-        from: hero_location.to_sym,
+        from: location.to_sym,
         to: location.to_sym,
         card: card } )
   end
