@@ -6,13 +6,17 @@ class BoardsController < ApplicationController
   # GET /boards
   # GET /boards.json
   def index
-    @boards = @current_user.boards.includes( :heroes, :sauron, { heroes: :user }, { sauron: :user } )
+    if params[:all]
+      @boards = Board.all.includes( :heroes, :sauron, { heroes: :user }, { sauron: :user } )
+    else
+      @boards = @current_user.boards.includes( :heroes, :sauron, { heroes: :user }, { sauron: :user } )
+    end
+
   end
 
   # GET /boards/1
   # GET /boards/1.json
   def show
-
   end
 
   # GET /boards/new

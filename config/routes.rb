@@ -1,8 +1,11 @@
 Rails.application.routes.draw do
 
   resources :boards do
-    resource :saurons, only: [:show]
+
+    get :my_boards
+
     resources :logs, only: [:index ]
+
     resources :heros do
       post :draw_cards
       get :rest
