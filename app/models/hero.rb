@@ -1,4 +1,7 @@
 class Hero < ApplicationRecord
+
+  belongs_to :user
+
   serialize :life_pool
   serialize :rest_pool
   serialize :damage_pool

@@ -12,7 +12,7 @@
   %tbody
     - @boards.each do |board|
       %tr
-        %td= board.heroes
+        %td= players_list(board)
         %td= link_to 'Heroes', board_heros_path(board)
         %td= link_to 'Show', board
         %td= link_to 'Edit', edit_board_path(board)

@@ -6,7 +6,7 @@ class BoardsController < ApplicationController
   # GET /boards
   # GET /boards.json
   def index
-    @boards = Board.all
+    @boards = @current_user.boards.includes( :heroes, :sauron, { heroes: :user }, { sauron: :user } )
   end
 
   # GET /boards/1
@@ -47,12 +47,16 @@ class BoardsController < ApplicationController
                   wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: @starting_deck.shuffle,
                   rest_pool: [], damage_pool: [], hand: [], user_id: @current_user.id
               )
+              @current_user.boards << @board unless @current_user.boards.include?( @board )
             end
           end
 
-          @board.create_sauron!( plot_cards: [], shadow_cards: [], user_id: @current_user.id ) if params[:sauron]
+          if params[:sauron]
+            @board.create_sauron!( plot_cards: [], shadow_cards: [], user_id: @current_user.id )
+            @current_user.boards << @board unless @current_user.boards.include?( @board )
+          end
 
-          format.html { redirect_to @board, notice: 'Board was successfully created.' }
+          format.html { redirect_to boards_path, notice: 'Board was successfully created.' }
           format.json { render :show, status: :created, location: @board }
         else
           format.html { render :new }
