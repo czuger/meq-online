@@ -1,0 +1,2 @@
+module SauronsHelper
+end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_04_28_175826) do
+ActiveRecord::Schema.define(version: 2018_04_30_081420) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,7 +34,9 @@ ActiveRecord::Schema.define(version: 2018_04_28_175826) do
     t.string "damage_pool"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
     t.index ["board_id"], name: "index_heros_on_board_id"
+    t.index ["user_id"], name: "index_heros_on_user_id"
   end
 
   create_table "logs", force: :cascade do |t|
@@ -44,6 +46,17 @@ ActiveRecord::Schema.define(version: 2018_04_28_175826) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["board_id"], name: "index_logs_on_board_id"
+  end
+
+  create_table "saurons", force: :cascade do |t|
+    t.bigint "board_id", null: false
+    t.bigint "user_id", null: false
+    t.string "plot_cards", null: false
+    t.string "shadow_cards", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["board_id"], name: "index_saurons_on_board_id"
+    t.index ["user_id"], name: "index_saurons_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -57,5 +70,8 @@ ActiveRecord::Schema.define(version: 2018_04_28_175826) do
   end
 
   add_foreign_key "heros", "boards"
+  add_foreign_key "heros", "users"
   add_foreign_key "logs", "boards"
+  add_foreign_key "saurons", "boards"
+  add_foreign_key "saurons", "users"
 end

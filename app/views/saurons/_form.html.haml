@@ -1,0 +1,22 @@
+= form_for @sauron do |f|
+  - if @sauron.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@sauron.errors.count, "error")} prohibited this sauron from being saved:"
+      %ul
+        - @sauron.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = f.label :board
+    = f.text_field :board
+  .field
+    = f.label :user
+    = f.text_field :user
+  .field
+    = f.label :plot_cards
+    = f.text_field :plot_cards
+  .field
+    = f.label :shadow_cards
+    = f.text_field :shadow_cards
+  .actions
+    = f.submit 'Save'

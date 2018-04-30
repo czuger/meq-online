@@ -1,0 +1,18 @@
+%p#notice= notice
+
+%p
+  %b Board:
+  = @sauron.board
+%p
+  %b User:
+  = @sauron.user
+%p
+  %b Plot cards:
+  = @sauron.plot_cards
+%p
+  %b Shadow cards:
+  = @sauron.shadow_cards
+
+= link_to 'Edit', edit_sauron_path(@sauron)
+\|
+= link_to 'Back', saurons_path
