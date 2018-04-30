@@ -46,6 +46,16 @@ ActiveRecord::Schema.define(version: 2018_04_28_175826) do
     t.index ["board_id"], name: "index_logs_on_board_id"
   end
 
+  create_table "users", force: :cascade do |t|
+    t.string "provider", null: false
+    t.string "uid", null: false
+    t.string "name", null: false
+    t.string "email", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
+  end
+
   add_foreign_key "heros", "boards"
   add_foreign_key "logs", "boards"
 end

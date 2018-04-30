@@ -1,4 +1,6 @@
 class HerosController < ApplicationController
+
+  before_action :require_logged_in
   before_action :set_hero, only: [:show, :edit, :update, :destroy, :draw_cards, :rest, :heal, :take_damages, :move]
 
   # GET /heros

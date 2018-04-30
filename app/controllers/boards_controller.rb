@@ -1,4 +1,6 @@
 class BoardsController < ApplicationController
+
+  before_action :require_logged_in
   before_action :set_board, only: [:show, :edit, :update, :destroy]
 
   # GET /boards

@@ -1,4 +1,6 @@
 class LogsController < ApplicationController
+
+  before_action :require_logged_in
   before_action :set_log, only: [:show, :edit, :update, :destroy]
 
   # GET /logs
