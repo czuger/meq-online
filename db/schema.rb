@@ -34,7 +34,7 @@ ActiveRecord::Schema.define(version: 2018_04_30_081420) do
     t.string "damage_pool"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
     t.index ["board_id"], name: "index_heros_on_board_id"
     t.index ["user_id"], name: "index_heros_on_user_id"
   end
@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 2018_04_30_081420) do
     t.string "shadow_cards", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["board_id"], name: "index_saurons_on_board_id"
+    t.index ["board_id"], name: "index_saurons_on_board_id", unique: true
     t.index ["user_id"], name: "index_saurons_on_user_id"
   end
 

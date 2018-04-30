@@ -1,6 +1,6 @@
 %h1 New board
 
-= form_for @board do |f|
+= form_for @board, class: 'form-group' do |f|
   - if @board.errors.any?
     #error_explanation
       %h2= "#{pluralize(@board.errors.count, "error")} prohibited this board from being saved:"
@@ -8,20 +8,27 @@
         - @board.errors.full_messages.each do |message|
           %li= message
 
-  .field
-    = f.label :hero_1
-    = select_tag(:hero_1, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ) )
+  .row
+    .col-2
+      = f.label :sauron, 'You play sauron ?', class: 'col-form-label'
+    .col-4
+      = check_box_tag( :sauron, 'yes', true, 'data-toggle' => 'toggle' )
 
-  .field
-    = f.label :hero_2
-    = select_tag(:hero_2, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true )
+    .col-2
+      = f.label :hero_1, 'Hero you play', class: 'col-form-label'
+    .col-4
+      = select_tag(:hero_1, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true, class: 'form-control' )
 
-  .field
-    = f.label :hero_3
-    = select_tag(:hero_3, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true )
+  .row
+    .col-2
+      = f.label :hero_2, 'Hero you play', class: 'col-form-label'
+    .col-4
+      = select_tag(:hero_2, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true, class: 'form-control'  )
+
+    .col-2
+      = f.label :hero_3, 'Hero you play', class: 'col-form-label'
+    .col-4
+      = select_tag(:hero_3, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true, class: 'form-control'  )
 
   .actions
-    = f.submit 'Save'
-
-
-= link_to 'Back', boards_path
+    = f.submit 'Save', class: 'btn btn-primary'

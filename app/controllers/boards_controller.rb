@@ -32,28 +32,32 @@ class BoardsController < ApplicationController
     @board = Board.new
 
     respond_to do |format|
-      if @board.save
-        load_heroes
+      @board.transaction do
+        if @board.save
+          load_heroes
 
-        [:hero_1, :hero_2, :hero_3].each do |hero|
-          unless params[hero].empty?
-            hero_code = params[hero].to_sym
-            hero = @heroes[hero_code]
-            load_hero_starting_deck(hero_code)
-            @board.heroes.create!(
-              name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
-              wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: @starting_deck.shuffle,
-              rest_pool: [], damage_pool: [], hand: []
-            )
+          [:hero_1, :hero_2, :hero_3].each do |hero|
+            unless params[hero].empty?
+              hero_code = params[hero].to_sym
+              hero = @heroes[hero_code]
+              load_hero_starting_deck(hero_code)
+
+              @board.heroes.create!(
+                  name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
+                  wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: @starting_deck.shuffle,
+                  rest_pool: [], damage_pool: [], hand: [], user_id: @current_user.id
+              )
+            end
           end
+
+          @board.create_sauron!( plot_cards: [], shadow_cards: [], user_id: @current_user.id ) if params[:sauron]
+
+          format.html { redirect_to @board, notice: 'Board was successfully created.' }
+          format.json { render :show, status: :created, location: @board }
+        else
+          format.html { render :new }
+          format.json { render json: @board.errors, status: :unprocessable_entity }
         end
-
-
-        format.html { redirect_to @board, notice: 'Board was successfully created.' }
-        format.json { render :show, status: :created, location: @board }
-      else
-        format.html { render :new }
-        format.json { render json: @board.errors, status: :unprocessable_entity }
       end
     end
   end
