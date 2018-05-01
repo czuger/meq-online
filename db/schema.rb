@@ -18,8 +18,9 @@ ActiveRecord::Schema.define(version: 2018_05_01_083457) do
   create_table "boards", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "max_players", default: 4, null: false
-    t.integer "current_players_count", default: 0, null: false
+    t.integer "max_heroes_count", default: 3, null: false
+    t.integer "current_heroes_count", default: 0, null: false
+    t.boolean "sauron_created", default: false, null: false
   end
 
   create_table "boards_users", id: false, force: :cascade do |t|

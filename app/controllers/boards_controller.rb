@@ -101,6 +101,8 @@ class BoardsController < ApplicationController
 
     def load_heroes
       @heroes = YAML.load_file('app/models/data/heroes/heroes_list.yaml')
+      existing_heroes = @board.heroes.pluck(:name_code).map{ |h| h.to_sym }
+      @heroes.reject!{ |k, v| existing_heroes.include?( k ) }
     end
 
     def load_hero_starting_deck( hero_name_code )
@@ -113,19 +115,18 @@ class BoardsController < ApplicationController
       load_heroes
 
       @board.transaction do
-        [:hero_1, :hero_2, :hero_3].each do |hero|
-          unless params[hero].empty?
-            hero_code = params[hero].to_sym
-            hero = @heroes[hero_code]
-            load_hero_starting_deck(hero_code)
+        heroes_to_process = [:hero_1, :hero_2, :hero_3].map{ |h| params[h].to_sym }.reject{ |h| h.empty? }.uniq
+        heroes_to_process.each do |hero_code|
 
-            @board.heroes.create!(
-                name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
-                wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: @starting_deck.shuffle,
-                rest_pool: [], damage_pool: [], hand: [], user_id: @current_user.id
-            )
-            @current_user.boards << @board unless @current_user.boards.include?( @board )
-          end
+          hero = @heroes[hero_code]
+          load_hero_starting_deck(hero_code)
+
+          @board.heroes.create!(
+              name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
+              wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: @starting_deck.shuffle,
+              rest_pool: [], damage_pool: [], hand: [], user_id: @current_user.id
+          )
+          @current_user.boards << @board unless @current_user.boards.include?( @board )
         end
 
         if params[:sauron]
