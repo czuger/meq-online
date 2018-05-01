@@ -1,0 +1,31 @@
+- if @board.errors.any?
+  #error_explanation
+    %h2= "#{pluralize(@board.errors.count, "error")} prohibited this board from being saved:"
+    %ul
+      - @board.errors.full_messages.each do |message|
+        %li= message
+
+.row
+  .col-2
+    = label_tag :sauron, 'You play sauron ?', class: 'col-form-label'
+  .col-4
+    = check_box_tag( :sauron, 'yes', @sauron_state, 'data-toggle' => 'toggle', disabled: @sauron_disabled )
+
+  .col-2
+    = label_tag :hero_1, 'Hero you play', class: 'col-form-label'
+  .col-4
+    = select_tag(:hero_1, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true, class: 'form-control' )
+
+.row
+  .col-2
+    = label_tag :hero_2, 'Hero you play', class: 'col-form-label players_count_3'
+  .col-4
+    = select_tag(:hero_2, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true, class: 'form-control players_count_3' )
+
+  .col-2
+    = label_tag :hero_3, 'Hero you play', class: 'col-form-label players_count_4'
+  .col-4
+    = select_tag(:hero_3, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true, class: 'form-control players_count_4' )
+
+.actions
+  = submit_tag 'Save', class: 'btn btn-primary'
