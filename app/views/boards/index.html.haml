@@ -14,7 +14,7 @@
     - @boards.each do |board|
       %tr
         %td= players_list(board)
-        %td= link_to( 'Join', board_join_path(board) ) if board.current_players_count < board.max_players
+        %td= link_to( 'Join', board_join_path(board) ) if board.current_heroes_count < board.max_heroes_count || !board.sauron_created
         %td= link_to 'Heroes', board_heros_path(board)
         %td= link_to 'Show', board
         %td= link_to 'Edit', edit_board_path(board)

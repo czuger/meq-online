@@ -4,18 +4,18 @@
 
   .row
     .col-2
-      = label_tag :player_1, 'Players count', class: 'col-form-label'
+      = label_tag :player_1, 'Heroes count', class: 'col-form-label'
     .col-2
       .btn-group.btn-group-toggle{ 'data-toggle' => 'buttons' }
         %label.btn.btn-secondary
-          = radio_button_tag(:max_players, 2, false, class: 'select-players' )
-          2
+          = radio_button_tag(:max_heroes_count, 1, false, class: 'max_heroes_count' )
+          1
         %label.btn.btn-secondary
-          = radio_button_tag(:max_players, 3, false, class: 'select-players' )
-          3
+          = radio_button_tag(:max_heroes_count, 2, false, class: 'max_heroes_count' )
+          2
         %label.btn.btn-secondary.active
-          = radio_button_tag(:max_players, 4, true, class: 'select-players' )
-          4
+          = radio_button_tag(:max_heroes_count, 3, true, class: 'max_heroes_count' )
+          3
     -#
     -#
     -#.col-1

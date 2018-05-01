@@ -17,15 +17,17 @@
     = select_tag(:hero_1, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true, class: 'form-control' )
 
 .row
-  .col-2
-    = label_tag :hero_2, 'Hero you play', class: 'col-form-label players_count_3'
-  .col-4
-    = select_tag(:hero_2, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true, class: 'form-control players_count_3' )
+  - if @remaining_heroes >= 2
+    .col-2
+      = label_tag :hero_2, 'Hero you play', class: 'col-form-label heroes_count_2'
+    .col-4
+      = select_tag(:hero_2, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true, class: 'form-control players_count_3' )
 
-  .col-2
-    = label_tag :hero_3, 'Hero you play', class: 'col-form-label players_count_4'
-  .col-4
-    = select_tag(:hero_3, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true, class: 'form-control players_count_4' )
+  - if @remaining_heroes >= 3
+    .col-2
+      = label_tag :hero_3, 'Hero you play', class: 'col-form-label heroes_count_3'
+    .col-4
+      = select_tag(:hero_3, options_for_select( @heroes.map{ |k, v| [ v[:name], k ] } ), include_blank: true, class: 'form-control players_count_4' )
 
 .actions
   = submit_tag 'Save', class: 'btn btn-primary'

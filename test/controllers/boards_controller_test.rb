@@ -59,7 +59,7 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
 
   test 'should create board with fewer heros' do
     assert_difference('Board.count') do
-      post boards_url, params: { max_heroes_count: 2, hero_1: 'eometh', hero_2: '', hero_3: '' }
+      post boards_url, params: { max_heroes_count: 2, hero_1: 'eometh', hero_2: '' }
     end
 
     created_board_id = Board.pluck( :id ).max

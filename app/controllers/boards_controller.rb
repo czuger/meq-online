@@ -22,6 +22,7 @@ class BoardsController < ApplicationController
   # GET /boards/new
   def new
     @board = Board.new
+    @remaining_heroes = @board.max_heroes_count
     load_heroes
   end
 
@@ -30,6 +31,7 @@ class BoardsController < ApplicationController
   end
 
   def join_new
+    @remaining_heroes = [ @board.max_heroes_count - @board.current_heroes_count, @board.max_heroes_count ].min
     load_heroes
     @sauron_state = ( @board.sauron.user_id == @current_user.id )
     @sauron_disabled = @board.sauron
@@ -115,7 +117,7 @@ class BoardsController < ApplicationController
       load_heroes
 
       @board.transaction do
-        heroes_to_process = [:hero_1, :hero_2, :hero_3].map{ |h| params[h].to_sym }.reject{ |h| h.empty? }.uniq
+        heroes_to_process = [:hero_1, :hero_2, :hero_3].map{ |h| params[h]&.to_sym }.compact.reject{ |h| h.empty? }.uniq
         heroes_to_process.each do |hero_code|
 
           hero = @heroes[hero_code]

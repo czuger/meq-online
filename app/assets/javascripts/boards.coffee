@@ -11,18 +11,18 @@ sauron_checkbox = () ->
 
 
 match_players_count = () ->
-  $('.select-players').change () ->
+  $('.max_heroes_count').change () ->
     players_count = parseInt( $(this).val() )
 
-    if players_count < 4
-      $('.players_count_4').hide()
-    else
-      $('.players_count_4').show()
-
     if players_count < 3
-      $('.players_count_3').hide()
+      $('.heroes_count_3').hide()
     else
-      $('.players_count_3').show()
+      $('.heroes_count_3').show()
+
+    if players_count < 2
+      $('.heroes_count_2').hide()
+    else
+      $('.heroes_count_2').show()
 
 
 
