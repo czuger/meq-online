@@ -1,8 +1,8 @@
 FactoryBot.define do
   factory :sauron do
-    board nil
+    board { create :board }
     user nil
-    plot_cards "MyString"
-    shadow_cards "MyString"
+    plot_cards { [] }
+    shadow_cards { [] }
   end
 end
