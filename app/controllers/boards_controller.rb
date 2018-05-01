@@ -1,7 +1,7 @@
 class BoardsController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_board, only: [:show, :edit, :update, :destroy, :join_new]
+  before_action :set_board, only: [:show, :edit, :update, :destroy, :join_new, :join]
 
   # GET /boards
   # GET /boards.json
@@ -35,6 +35,12 @@ class BoardsController < ApplicationController
     @sauron_disabled = @board.sauron
   end
 
+  def join
+    add_players_to_board
+    redirect_to board_path
+  end
+
+
   # POST /boards
   # POST /boards.json
   def create
@@ -45,30 +51,7 @@ class BoardsController < ApplicationController
     respond_to do |format|
       @board.transaction do
         if @board.save
-          load_heroes
-
-          [:hero_1, :hero_2, :hero_3].each do |hero|
-            unless params[hero].empty?
-              hero_code = params[hero].to_sym
-              hero = @heroes[hero_code]
-              load_hero_starting_deck(hero_code)
-
-              @board.heroes.create!(
-                  name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
-                  wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: @starting_deck.shuffle,
-                  rest_pool: [], damage_pool: [], hand: [], user_id: @current_user.id
-              )
-              @current_user.boards << @board unless @current_user.boards.include?( @board )
-            end
-          end
-
-          if params[:sauron]
-            @board.create_sauron!( plot_cards: [], shadow_cards: [], user_id: @current_user.id )
-            @current_user.boards << @board unless @current_user.boards.include?( @board )
-          end
-
-          @board.current_players_count= @current_user.boards.count
-          @board.save!
+          add_players_to_board
 
           format.html { redirect_to boards_path, notice: 'Board was successfully created.' }
           format.json { render :show, status: :created, location: @board }
@@ -97,6 +80,7 @@ class BoardsController < ApplicationController
   # DELETE /boards/1
   # DELETE /boards/1.json
   def destroy
+    @board.users.clear
     @board.destroy
     respond_to do |format|
       format.html { redirect_to boards_url, notice: 'Board was successfully destroyed.' }
@@ -123,5 +107,34 @@ class BoardsController < ApplicationController
       fname = "app/models/data/heroes/#{hero_name_code}_starting_deck.yaml"
       puts "About to load #{fname}"
       @starting_deck = YAML.load_file(fname)
+    end
+
+    def add_players_to_board
+      load_heroes
+
+      @board.transaction do
+        [:hero_1, :hero_2, :hero_3].each do |hero|
+          unless params[hero].empty?
+            hero_code = params[hero].to_sym
+            hero = @heroes[hero_code]
+            load_hero_starting_deck(hero_code)
+
+            @board.heroes.create!(
+                name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
+                wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: @starting_deck.shuffle,
+                rest_pool: [], damage_pool: [], hand: [], user_id: @current_user.id
+            )
+            @current_user.boards << @board unless @current_user.boards.include?( @board )
+          end
+        end
+
+        if params[:sauron]
+          @board.create_sauron!( plot_cards: [], shadow_cards: [], user_id: @current_user.id )
+          @current_user.boards << @board unless @current_user.boards.include?( @board )
+        end
+
+        @board.current_players_count= @current_user.boards.count
+        @board.save!
+      end
     end
 end

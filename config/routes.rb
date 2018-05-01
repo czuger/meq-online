@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   resources :boards do
 
     get :join, action: :join_new
-    post :join, action: :join_create
+    post :join
 
     resources :logs, only: [:index ]
 

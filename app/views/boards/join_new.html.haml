@@ -1,4 +1,4 @@
 %h1 New board
 
-= form_for @board, class: 'form-group' do |f|
+= form_for board_join_path( @board ), class: 'form-group' do |f|
   = render partial: 'players_subscribe'
