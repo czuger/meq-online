@@ -21,8 +21,8 @@ class BoardsController < ApplicationController
 
   # GET /boards/new
   def new
-    load_heroes
     @board = Board.new
+    load_heroes
   end
 
   # GET /boards/1/edit
@@ -46,7 +46,7 @@ class BoardsController < ApplicationController
   def create
 
     @board = Board.new
-    @board.max_players= params[:max_players]
+    @board.max_heroes_count= params[:max_heroes_count]
 
     respond_to do |format|
       @board.transaction do
@@ -134,9 +134,8 @@ class BoardsController < ApplicationController
           @current_user.boards << @board unless @current_user.boards.include?( @board )
         end
 
-        sauron_count = @board.sauron ? 1 : 0
-        heroes_count = @board.heroes.count
-        @board.current_players_count= sauron_count + heroes_count
+        @board.current_heroes_count= @board.heroes.count
+        @board.sauron_created= @board.sauron ? true : false
         @board.save!
       end
     end
