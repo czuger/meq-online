@@ -2,7 +2,8 @@ Rails.application.routes.draw do
 
   resources :boards do
 
-    get :my_boards
+    get :join, action: :join_new
+    post :join, action: :join_create
 
     resources :logs, only: [:index ]
 
@@ -13,6 +14,7 @@ Rails.application.routes.draw do
       patch :take_damages
       post :move
     end
+
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 

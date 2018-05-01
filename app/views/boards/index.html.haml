@@ -8,11 +8,13 @@
       %th
       %th
       %th
+      %th
 
   %tbody
     - @boards.each do |board|
       %tr
         %td= players_list(board)
+        %td= link_to( 'Join', board_join_path(board) )
         %td= link_to 'Heroes', board_heros_path(board)
         %td= link_to 'Show', board
         %td= link_to 'Edit', edit_board_path(board)

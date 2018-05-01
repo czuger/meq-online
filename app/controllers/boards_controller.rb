@@ -1,7 +1,7 @@
 class BoardsController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_board, only: [:show, :edit, :update, :destroy]
+  before_action :set_board, only: [:show, :edit, :update, :destroy, :join_new]
 
   # GET /boards
   # GET /boards.json
@@ -29,11 +29,18 @@ class BoardsController < ApplicationController
   def edit
   end
 
+  def join_new
+    load_heroes
+    @sauron_state = ( @board.sauron.user_id == @current_user.id )
+    @sauron_disabled = @board.sauron
+  end
+
   # POST /boards
   # POST /boards.json
   def create
 
     @board = Board.new
+    @board.max_players= params[:max_players]
 
     respond_to do |format|
       @board.transaction do
@@ -59,6 +66,9 @@ class BoardsController < ApplicationController
             @board.create_sauron!( plot_cards: [], shadow_cards: [], user_id: @current_user.id )
             @current_user.boards << @board unless @current_user.boards.include?( @board )
           end
+
+          @board.current_players_count= @current_user.boards.count
+          @board.save!
 
           format.html { redirect_to boards_path, notice: 'Board was successfully created.' }
           format.json { render :show, status: :created, location: @board }
@@ -97,7 +107,7 @@ class BoardsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_board
-      @board = Board.find(params[:id])
+      @board = Board.find(params[:id]||params[:board_id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
