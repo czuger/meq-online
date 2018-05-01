@@ -37,7 +37,7 @@ class BoardsController < ApplicationController
 
   def join
     add_players_to_board
-    redirect_to board_path
+    redirect_to boards_path
   end
 
 
@@ -133,7 +133,9 @@ class BoardsController < ApplicationController
           @current_user.boards << @board unless @current_user.boards.include?( @board )
         end
 
-        @board.current_players_count= @current_user.boards.count
+        sauron_count = @board.sauron ? 1 : 0
+        heroes_count = @board.heroes.count
+        @board.current_players_count= sauron_count + heroes_count
         @board.save!
       end
     end
