@@ -16,15 +16,11 @@ class Board < ApplicationRecord
     end
 
     event :heroes_setup do
-      transitions :from => [ :created, :wait_for_players ], :to => :heroes_setup
+      transitions :from => [ :created, :waiting_for_players ], :to => :heroes_setup
     end
 
     event :sauron_setup do
       transitions :from => :heroes_setup, :to => :sauron_setup
-    end
-
-    event :sauron_first_turn do
-      transitions :from => :sauron_setup, :to => :sauron_first_turn
     end
 
     event :sauron_first_turn do
@@ -36,7 +32,7 @@ class Board < ApplicationRecord
     end
 
     event :sauron_turn do
-      transitions :from => :heroes_turn, :to => :sauron_turn
+      transitions :from => [ :heroes_turn ], :to => :sauron_turn
     end
 
   end

@@ -33,12 +33,13 @@ class BoardsController < ApplicationController
   def join_new
     @remaining_heroes = [ @board.max_heroes_count - @board.current_heroes_count, @board.max_heroes_count ].min
     load_heroes
-    @sauron_state = ( @board.sauron.user_id == @current_user.id )
+    @sauron_state = ( @current_user.id == @board.sauron&.user_id )
     @sauron_disabled = @board.sauron
   end
 
   def join
     add_players_to_board
+
     redirect_to boards_path
   end
 
@@ -138,6 +139,19 @@ class BoardsController < ApplicationController
 
         @board.current_heroes_count= @board.heroes.count
         @board.sauron_created= @board.sauron ? true : false
+
+        if @board.current_heroes_count < @board.max_heroes_count || !@board.sauron_created
+          @board.wait_for_players! unless @board.waiting_for_players?
+        else
+          unless @board.sauron_turn?
+            @board.heroes_setup!
+            @board.sauron_setup!
+            @board.sauron_first_turn!
+            @board.heroes_turn!
+            @board.sauron_turn!
+          end
+        end
+
         @board.save!
       end
     end
