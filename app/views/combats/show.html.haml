@@ -1,0 +1,21 @@
+%p#notice= notice
+
+%p
+  %b Board:
+  = @combat.board
+%p
+  %b Hero:
+  = @combat.hero
+%p
+  %b Temporary strength:
+  = @combat.temporary_strength
+%p
+  %b Hero cards played:
+  = @combat.hero_cards_played
+%p
+  %b Sauron cards played:
+  = @combat.sauron_cards_played
+
+= link_to 'Edit', edit_combat_path(@combat)
+\|
+= link_to 'Back', combats_path

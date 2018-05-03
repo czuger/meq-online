@@ -1,0 +1,29 @@
+%h1 Listing combats
+
+%table
+  %thead
+    %tr
+      %th Board
+      %th Hero
+      %th Temporary strength
+      %th Hero cards played
+      %th Sauron cards played
+      %th
+      %th
+      %th
+
+  %tbody
+    - @combats.each do |combat|
+      %tr
+        %td= combat.board
+        %td= combat.hero
+        %td= combat.temporary_strength
+        %td= combat.hero_cards_played
+        %td= combat.sauron_cards_played
+        %td= link_to 'Show', combat
+        %td= link_to 'Edit', edit_combat_path(combat)
+        %td= link_to 'Destroy', combat, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Combat', new_combat_path

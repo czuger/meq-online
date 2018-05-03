@@ -1,0 +1,25 @@
+= form_for @combat do |f|
+  - if @combat.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@combat.errors.count, "error")} prohibited this combat from being saved:"
+      %ul
+        - @combat.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = f.label :board
+    = f.text_field :board
+  .field
+    = f.label :hero
+    = f.text_field :hero
+  .field
+    = f.label :temporary_strength
+    = f.number_field :temporary_strength
+  .field
+    = f.label :hero_cards_played
+    = f.text_field :hero_cards_played
+  .field
+    = f.label :sauron_cards_played
+    = f.text_field :sauron_cards_played
+  .actions
+    = f.submit 'Save'
