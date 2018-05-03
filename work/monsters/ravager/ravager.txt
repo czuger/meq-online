@@ -1,0 +1,11 @@
+Concetrate	Ranged	0	0	0	Next round, gain +2 attack and +2 defense.	3
+Poison Arrow	Ranged	2	0	2	If you deal at least 1 damage this round, deal 2 additional damage.	2
+Aimed Shot	Ranged	3	0	3	Gain +3 attack if your opponent's card matches the type he played last round.	2
+Strategize	Ranged	1	2	2	Your opponent mus tell you how many Ranged and Melee cards are in his hand.	1
+Fall Back	Ranged	1	1	1	Next round, if your opponent plays a Melee card, it is canceled.	2
+Parry	Melee	1	1	1	Gain +2 defense if your opponent plays a Melee card.	2
+Hack	Melee	1	0	0	Gain +1 attack if your opponent plays a Melee card.	3
+Charge	Melee	2	0	1	Cancel your opponet's Ranged card.	3
+Eviscerate	Melee	2	0	2	If you deal at least 1 damage this round, deal 2 additional damage.	3
+Anticipate	Melee	1	1	2	Next round, your opponent must play his Combat card first, and must place it faceup.	2
+Attack of Opportunity	Melee	2	0	3	Gain +5 attack if your opponent's printed defense is 0.	2

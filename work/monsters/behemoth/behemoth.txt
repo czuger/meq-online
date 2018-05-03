@@ -1,0 +1,11 @@
+Precision	Ranged	2	1	2	Reduce your opponet's printed defense to 0.	2
+Aimed Shot	Ranged	3	0	3	Gain +3 attack if your opponet's card matches the type he played last round.	2
+Earthquake	Ranged	4	0	4	Cancel your opponent's card.	1
+Block	Melee	0	4	2	This card cannot be canceled, and its defense cannot be reduced below 2.	3
+Smash	Melee	2	1	2	Reduce your opponent's printed defense to 0.	4
+Sweep	Melee	3	0	1	This card cannot be canceled.	2
+Rush	Melee	1	1	1	Next round, if your opponent plays a Ranged card, it is canceled.	2
+Overpower	Melee	2	2	2	Next round, gain +2 attack if you play a Melee card.	3
+Crush	Melee	3	3	4	Gain +3 attack if your opponent plays a Melee card.	2
+Reckless	Melee	5	0	3	If you are dealt at least 1 damage this round, take 2 additional damage.	3
+Enraged	Melee	4	0	4	You cannot be dealt more than 1 damage this round.	1

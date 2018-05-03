@@ -1,0 +1,14 @@
+Crebain	7	3	2	Zealot
+Agent	5	3	3	Zealot
+Snaga	6	3	2	Zealot
+Orc	5	4	2	Zealot
+Barrow Wight	5	4	2	Ravager
+Southron	6	3	2	Ravager
+Dunlending	5	5	2	Ravager
+Uruk-Hai	6	6	2	Ravager
+Warg Rider	6	4	1	Ravager
+Giant Spider	7	5	1	Behemoth
+Huorn	6	7	1	Behemoth
+Cave Troll	8	8	0	Behemoth
+Oliphaunt	7	10	1	Behemoth
+Balrog	9	12	0	Behemoth

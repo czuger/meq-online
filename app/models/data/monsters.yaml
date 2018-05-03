@@ -1,0 +1,369 @@
+---
+:monsters:
+  :crebain:
+    :name: Crebain
+    :fortitude: 7
+    :strength: 3
+    :wisdom: 2
+    :attack_deck: :zealot
+  :agent:
+    :name: Agent
+    :fortitude: 5
+    :strength: 3
+    :wisdom: 3
+    :attack_deck: :zealot
+  :snaga:
+    :name: Snaga
+    :fortitude: 6
+    :strength: 3
+    :wisdom: 2
+    :attack_deck: :zealot
+  :orc:
+    :name: Orc
+    :fortitude: 5
+    :strength: 4
+    :wisdom: 2
+    :attack_deck: :zealot
+  :barrow_wight:
+    :name: Barrow Wight
+    :fortitude: 5
+    :strength: 4
+    :wisdom: 2
+    :attack_deck: :ravager
+  :southron:
+    :name: Southron
+    :fortitude: 6
+    :strength: 3
+    :wisdom: 2
+    :attack_deck: :ravager
+  :dunlending:
+    :name: Dunlending
+    :fortitude: 5
+    :strength: 5
+    :wisdom: 2
+    :attack_deck: :ravager
+  :uruk_hai:
+    :name: Uruk-Hai
+    :fortitude: 6
+    :strength: 6
+    :wisdom: 2
+    :attack_deck: :ravager
+  :warg_rider:
+    :name: Warg Rider
+    :fortitude: 6
+    :strength: 4
+    :wisdom: 1
+    :attack_deck: :ravager
+  :giant_spider:
+    :name: Giant Spider
+    :fortitude: 7
+    :strength: 5
+    :wisdom: 1
+    :attack_deck: :behemoth
+  :huorn:
+    :name: Huorn
+    :fortitude: 6
+    :strength: 7
+    :wisdom: 1
+    :attack_deck: :behemoth
+  :cave_troll:
+    :name: Cave Troll
+    :fortitude: 8
+    :strength: 8
+    :wisdom: 0
+    :attack_deck: :behemoth
+  :oliphaunt:
+    :name: Oliphaunt
+    :fortitude: 7
+    :strength: 10
+    :wisdom: 1
+    :attack_deck: :behemoth
+  :balrog:
+    :name: Balrog
+    :fortitude: 9
+    :strength: 12
+    :wisdom: 0
+    :attack_deck: :behemoth
+:cards:
+  :behemoth:
+    :deck:
+    - :precision
+    - :precision
+    - :aimed_shot
+    - :aimed_shot
+    - :earthquake
+    - :block
+    - :block
+    - :block
+    - :smash
+    - :smash
+    - :smash
+    - :smash
+    - :sweep
+    - :sweep
+    - :rush
+    - :rush
+    - :overpower
+    - :overpower
+    - :overpower
+    - :crush
+    - :crush
+    - :reckless
+    - :reckless
+    - :reckless
+    - :enraged
+    :type:
+      :precision:
+        :name: Precision
+        :type: Ranged
+        :attack: 2
+        :defense: 1
+        :strength_cost: 2
+      :aimed_shot:
+        :name: Aimed Shot
+        :type: Ranged
+        :attack: 3
+        :defense: 0
+        :strength_cost: 3
+      :earthquake:
+        :name: Earthquake
+        :type: Ranged
+        :attack: 4
+        :defense: 0
+        :strength_cost: 4
+      :block:
+        :name: Block
+        :type: Melee
+        :attack: 0
+        :defense: 4
+        :strength_cost: 2
+      :smash:
+        :name: Smash
+        :type: Melee
+        :attack: 2
+        :defense: 1
+        :strength_cost: 2
+      :sweep:
+        :name: Sweep
+        :type: Melee
+        :attack: 3
+        :defense: 0
+        :strength_cost: 1
+      :rush:
+        :name: Rush
+        :type: Melee
+        :attack: 1
+        :defense: 1
+        :strength_cost: 1
+      :overpower:
+        :name: Overpower
+        :type: Melee
+        :attack: 2
+        :defense: 2
+        :strength_cost: 2
+      :crush:
+        :name: Crush
+        :type: Melee
+        :attack: 3
+        :defense: 3
+        :strength_cost: 4
+      :reckless:
+        :name: Reckless
+        :type: Melee
+        :attack: 5
+        :defense: 0
+        :strength_cost: 3
+      :enraged:
+        :name: Enraged
+        :type: Melee
+        :attack: 4
+        :defense: 0
+        :strength_cost: 4
+  :ravager:
+    :deck:
+    - :concetrate
+    - :concetrate
+    - :concetrate
+    - :poison_arrow
+    - :poison_arrow
+    - :aimed_shot
+    - :aimed_shot
+    - :strategize
+    - :fall_back
+    - :fall_back
+    - :parry
+    - :parry
+    - :hack
+    - :hack
+    - :hack
+    - :charge
+    - :charge
+    - :charge
+    - :eviscerate
+    - :eviscerate
+    - :eviscerate
+    - :anticipate
+    - :anticipate
+    - :attack_of_opportunity
+    - :attack_of_opportunity
+    :type:
+      :concetrate:
+        :name: Concetrate
+        :type: Ranged
+        :attack: 0
+        :defense: 0
+        :strength_cost: 0
+      :poison_arrow:
+        :name: Poison Arrow
+        :type: Ranged
+        :attack: 2
+        :defense: 0
+        :strength_cost: 2
+      :aimed_shot:
+        :name: Aimed Shot
+        :type: Ranged
+        :attack: 3
+        :defense: 0
+        :strength_cost: 3
+      :strategize:
+        :name: Strategize
+        :type: Ranged
+        :attack: 1
+        :defense: 2
+        :strength_cost: 2
+      :fall_back:
+        :name: Fall Back
+        :type: Ranged
+        :attack: 1
+        :defense: 1
+        :strength_cost: 1
+      :parry:
+        :name: Parry
+        :type: Melee
+        :attack: 1
+        :defense: 1
+        :strength_cost: 1
+      :hack:
+        :name: Hack
+        :type: Melee
+        :attack: 1
+        :defense: 0
+        :strength_cost: 0
+      :charge:
+        :name: Charge
+        :type: Melee
+        :attack: 2
+        :defense: 0
+        :strength_cost: 1
+      :eviscerate:
+        :name: Eviscerate
+        :type: Melee
+        :attack: 2
+        :defense: 0
+        :strength_cost: 2
+      :anticipate:
+        :name: Anticipate
+        :type: Melee
+        :attack: 1
+        :defense: 1
+        :strength_cost: 2
+      :attack_of_opportunity:
+        :name: Attack of Opportunity
+        :type: Melee
+        :attack: 2
+        :defense: 0
+        :strength_cost: 3
+  :zealot:
+    :deck:
+    - :quick_shot
+    - :quick_shot
+    - :quick_shot
+    - :ranged_strike
+    - :ranged_strike
+    - :ranged_strike
+    - :ranged_strike
+    - :strategize
+    - :aimed_shot
+    - :fall_back
+    - :fall_back
+    - :fall_back
+    - :poison_arrow
+    - :poison_arrow
+    - :poison_arrow
+    - :parry
+    - :parry
+    - :hack
+    - :hack
+    - :hack
+    - :charge
+    - :charge
+    - :smash
+    - :smash
+    - :reckless
+    :type:
+      :quick_shot:
+        :name: Quick Shot
+        :type: Ranged
+        :attack: 1
+        :defense: 0
+        :strength_cost: 0
+      :ranged_strike:
+        :name: Ranged Strike
+        :type: Ranged
+        :attack: 1
+        :defense: 1
+        :strength_cost: 1
+      :strategize:
+        :name: Strategize
+        :type: Ranged
+        :attack: 1
+        :defense: 2
+        :strength_cost: 2
+      :aimed_shot:
+        :name: Aimed Shot
+        :type: Ranged
+        :attack: 3
+        :defense: 0
+        :strength_cost: 3
+      :fall_back:
+        :name: Fall Back
+        :type: Ranged
+        :attack: 1
+        :defense: 1
+        :strength_cost: 1
+      :poison_arrow:
+        :name: Poison Arrow
+        :type: Ranged
+        :attack: 2
+        :defense: 0
+        :strength_cost: 2
+      :parry:
+        :name: Parry
+        :type: Melee
+        :attack: 1
+        :defense: 1
+        :strength_cost: 1
+      :hack:
+        :name: Hack
+        :type: Melee
+        :attack: 1
+        :defense: 0
+        :strength_cost: 0
+      :charge:
+        :name: Charge
+        :type: Melee
+        :attack: 2
+        :defense: 0
+        :strength_cost: 1
+      :smash:
+        :name: Smash
+        :type: Melee
+        :attack: 2
+        :defense: 1
+        :strength_cost: 2
+      :reckless:
+        :name: Reckless
+        :type: Melee
+        :attack: 5
+        :defense: 0
+        :strength_cost: 3
