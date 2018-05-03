@@ -9,8 +9,6 @@
       %th
       %th
       %th
-      %th
-      %th
 
 
   %tbody
@@ -22,9 +20,3 @@
         %td= link_to 'Sauron', board_sauron_path(board) if board.sauron&.user_id == current_user.id
         %td= link_to 'Heroes', board_heros_path(board) if board.heroes.map{ |h| h.user_id }.include?( current_user.id )
         %td= link_to 'Show', board
-        %td= link_to 'Edit', edit_board_path(board)
-        %td= link_to 'Destroy', board, method: :delete, data: { confirm: 'Are you sure?' }
-
-%br
-
-= link_to 'New Board', new_board_path

@@ -1,4 +1,5 @@
 class SauronsController < ApplicationController
+  before_action :require_logged_in
   before_action :set_sauron, only: [:show, :edit, :update, :destroy]
 
   # GET /saurons

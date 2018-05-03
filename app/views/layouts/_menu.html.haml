@@ -1,9 +1,20 @@
 = link_to 'All boards', boards_path( all: true ), role: :button, class: 'btn btn-primary'
 = link_to 'My boards', boards_path, role: :button, class: 'btn btn-primary'
+
+- if @show_new_board
+  = link_to 'New Board', new_board_path, role: :button, class: 'btn btn-primary'
+
 - if @board && @board.id
   = link_to 'Heroes', board_heros_path( @board ), role: :button, class: 'btn btn-primary'
   = link_to 'Log', board_logs_path( @board ), role: :button, class: 'btn btn-primary'
+
 - if @current_user
-  = 'You play : ' + @current_user.name
+
+  %button.btn.btn-primary{ type: :button }
+    You play
+    %span.badge.badge-light
+      = @current_user.name
+
+  = link_to 'Sign out', sessions_path, method: :delete, role: :button, class: 'btn btn-warning'
 
 %hr

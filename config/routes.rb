@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
 
-  resources :boards do
+  resources :boards, only:[ :index, :show, :new, :create ] do
 
     get :join, action: :join_new
     post :join
