@@ -7,7 +7,7 @@ class HerosController < ApplicationController
   # GET /heros.json
   def index
     @board = Board.find(params[:board_id])
-    @heros = @board.heroes.all
+    @heros = @board.heroes.map{ |h| h if h.user_id == current_user.id }
   end
 
   # GET /heros/1

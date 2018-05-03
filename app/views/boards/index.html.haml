@@ -10,6 +10,8 @@
       %th
       %th
       %th
+      %th
+
 
   %tbody
     - @boards.each do |board|
@@ -17,7 +19,8 @@
         %td= players_list(board)
         %th= board.aasm_state
         %td= link_to( 'Join', board_join_path(board) ) if board.current_heroes_count < board.max_heroes_count || !board.sauron_created
-        %td= link_to 'Heroes', board_heros_path(board)
+        %td= link_to 'Sauron', board_sauron_path(board) if board.sauron&.user_id == current_user.id
+        %td= link_to 'Heroes', board_heros_path(board) if board.heroes.map{ |h| h.user_id }.include?( current_user.id )
         %td= link_to 'Show', board
         %td= link_to 'Edit', edit_board_path(board)
         %td= link_to 'Destroy', board, method: :delete, data: { confirm: 'Are you sure?' }

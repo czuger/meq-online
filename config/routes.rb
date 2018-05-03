@@ -6,6 +6,7 @@ Rails.application.routes.draw do
     post :join
 
     resources :logs, only: [:index ]
+    resource :sauron, only: [:show ]
 
     resources :heros do
       post :draw_cards

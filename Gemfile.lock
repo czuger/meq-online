@@ -59,6 +59,9 @@ GEM
       popper_js (>= 1.12.9, < 2)
       sass (>= 3.5.2)
     builder (3.2.3)
+    bullet (5.7.5)
+      activesupport (>= 3.0.0)
+      uniform_notifier (~> 1.11.0)
     byebug (10.0.2)
     capybara (3.0.2)
       addressable
@@ -237,6 +240,7 @@ GEM
       thread_safe (~> 0.1)
     uglifier (4.1.10)
       execjs (>= 0.3.0, < 3)
+    uniform_notifier (1.11.0)
     web-console (3.6.1)
       actionview (>= 5.0)
       activemodel (>= 5.0)
@@ -255,6 +259,7 @@ DEPENDENCIES
   aasm
   bootsnap (>= 1.1.0)
   bootstrap (~> 4.1.0)
+  bullet
   byebug
   capybara (>= 2.15, < 4.0)
   chromedriver-helper
