@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_01_174958) do
+ActiveRecord::Schema.define(version: 2018_05_03_160410) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,18 @@ ActiveRecord::Schema.define(version: 2018_05_01_174958) do
     t.bigint "user_id", null: false
     t.bigint "board_id", null: false
     t.index ["user_id", "board_id"], name: "index_boards_users_on_user_id_and_board_id", unique: true
+  end
+
+  create_table "combats", force: :cascade do |t|
+    t.bigint "board_id"
+    t.bigint "hero_id"
+    t.integer "temporary_strength", null: false
+    t.string "hero_cards_played", null: false
+    t.string "sauron_cards_played", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["board_id"], name: "index_combats_on_board_id"
+    t.index ["hero_id"], name: "index_combats_on_hero_id"
   end
 
   create_table "heros", force: :cascade do |t|
@@ -79,6 +91,8 @@ ActiveRecord::Schema.define(version: 2018_05_01_174958) do
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
 
+  add_foreign_key "combats", "boards"
+  add_foreign_key "combats", "heros"
   add_foreign_key "heros", "boards"
   add_foreign_key "heros", "users"
   add_foreign_key "logs", "boards"
