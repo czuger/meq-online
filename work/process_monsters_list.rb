@@ -14,9 +14,9 @@ cards = {}
       name_code = symbolize( name )
       card_quantity = card_quantity.to_i
 
-      cards[deck] ||= { deck: [], type:{} }
-      cards[deck][:type][name_code] = {
-          name: name, type: type, attack: attack.to_i, defense: defense.to_i, strength_cost: strength_cost.to_i }
+      cards[deck] ||= { deck: [], data:{} }
+      cards[deck][:data][name_code] = {
+          name: name, type: symbolize( type ), attack: attack.to_i, defense: defense.to_i, strength_cost: strength_cost.to_i }
       cards[deck][:deck] += Array.new( card_quantity, name_code )
     end
   end
