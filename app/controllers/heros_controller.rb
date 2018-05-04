@@ -20,9 +20,9 @@ class HerosController < ApplicationController
   end
 
   # GET /heros/new
-  def new
-    @hero = Hero.new
-  end
+  # def new
+  #   @hero = Hero.new
+  # end
 
   # GET /heros/1/edit
   # def edit
@@ -87,19 +87,19 @@ class HerosController < ApplicationController
 
   # POST /heros
   # POST /heros.json
-  def create
-    @hero = Hero.new(hero_params)
-
-    respond_to do |format|
-      if @hero.save
-        format.html { redirect_to @hero, notice: 'Hero was successfully created.' }
-        format.json { render :show, status: :created, location: @hero }
-      else
-        format.html { render :new }
-        format.json { render json: @hero.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+  # def create
+  #   @hero = Hero.new(hero_params)
+  #
+  #   respond_to do |format|
+  #     if @hero.save
+  #       format.html { redirect_to @hero, notice: 'Hero was successfully created.' }
+  #       format.json { render :show, status: :created, location: @hero }
+  #     else
+  #       format.html { render :new }
+  #       format.json { render json: @hero.errors, status: :unprocessable_entity }
+  #     end
+  #   end
+  # end
 
   # # PATCH/PUT /heros/1
   # # PATCH/PUT /heros/1.json

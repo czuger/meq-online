@@ -19,6 +19,41 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "should get join_new" do
+    get board_join_url( @board )
+    assert_response :success
+  end
+
+  test "should post join_new" do
+    post board_join_url( @board )
+    assert_redirected_to boards_url
+  end
+
+  test "should POST draw_cards" do
+    post board_hero_draw_cards_url( @board, @hero )
+    assert_redirected_to board_hero_url(@board, @hero)
+  end
+
+  test "should get heal" do
+    get board_hero_heal_url( @board, @hero )
+    assert_redirected_to board_hero_url(@board, @hero)
+  end
+
+  test "should get rest" do
+    get board_hero_rest_url( @board, @hero )
+    assert_redirected_to board_hero_url(@board, @hero)
+  end
+
+  test "should patch take_damages" do
+    patch board_hero_take_damages_url( @board, @hero, damage_amount: 3 )
+    assert_redirected_to board_hero_url(@board, @hero)
+  end
+
+  test "should POST move" do
+    post board_hero_move_url( @board, @hero, params: { move_to: :the_grey_havens, card_used: 1 } )
+    assert_redirected_to board_hero_url(@board, @hero)
+  end
+
   # test "should get new" do
   #   get new_board_hero_url
   #   assert_response :success

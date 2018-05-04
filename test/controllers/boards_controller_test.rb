@@ -19,7 +19,7 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index" do
-    get boards_url
+    get boards_url( all: true )
     assert_response :success
   end
 
