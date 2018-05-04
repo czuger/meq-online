@@ -1,0 +1,563 @@
+---
+:argalad:
+  :name: Argalad
+  :fortitude: 5
+  :strength: 5
+  :agility: 3
+  :wisdom: 2
+  :start_location_code_name: :woodland_realm
+  :starting_deck:
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 1
+  - 2
+  - 2
+  - 2
+  - 2
+  - 3
+  - 3
+  - 3
+  - 3
+  - 4
+  - 4
+  - 5
+  - 5
+  - 6
+  - 6
+  - 7
+  - 7
+  - 8
+  :cards:
+    0:
+      :name: :Quick Shot
+      :type: :ranged
+      :attack: 1
+      :defense: 0
+      :strength_cost: 0
+      :movement_type: :woods
+      :pic_path: argalad/quick_shot.jpg
+    1:
+      :name: :Overdraw
+      :type: :ranged
+      :attack: 2
+      :defense: 0
+      :strength_cost: 1
+      :movement_type: :woods
+      :pic_path: argalad/overdraw.jpg
+    2:
+      :name: :Precision
+      :type: :ranged
+      :attack: 2
+      :defense: 1
+      :strength_cost: 2
+      :movement_type: :swamp
+      :pic_path: argalad/precision.jpg
+    3:
+      :name: :Aimed Shot
+      :type: :ranged
+      :attack: 3
+      :defense: 0
+      :strength_cost: 3
+      :movement_type: :mountain
+      :pic_path: argalad/aimed_shot.jpg
+    4:
+      :name: :Fall Back
+      :type: :ranged
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :movement_type: :desert
+      :pic_path: argalad/fall_back.jpg
+    5:
+      :name: :Volley
+      :type: :ranged
+      :attack: 2
+      :defense: 2
+      :strength_cost: 2
+      :movement_type: :desert
+      :pic_path: argalad/volley.jpg
+    6:
+      :name: :Parry
+      :type: :melee
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :movement_type: :hill
+      :pic_path: argalad/parry.jpg
+    7:
+      :name: :Anticipate
+      :type: :melee
+      :attack: 1
+      :defense: 1
+      :strength_cost: 2
+      :movement_type: :hill
+      :pic_path: argalad/anticipate.jpg
+    8:
+      :name: :Attack of Opportunity
+      :type: :melee
+      :attack: 2
+      :defense: 0
+      :strength_cost: 3
+      :movement_type: :hill
+      :pic_path: argalad/attack_of_opportunity.jpg
+:beravor:
+  :name: Beravor
+  :fortitude: 6
+  :strength: 5
+  :agility: 2
+  :wisdom: 2
+  :start_location_code_name: :fornost
+  :starting_deck:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 2
+  - 2
+  - 3
+  - 3
+  - 3
+  - 4
+  - 4
+  - 5
+  - 5
+  - 6
+  - 6
+  - 6
+  - 7
+  - 7
+  - 7
+  - 8
+  - 8
+  :cards:
+    0:
+      :name: :Ranged Strike
+      :type: :ranged
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :movement_type: :hill
+      :pic_path: beravor/ranged_strike.jpg
+    1:
+      :name: :Evade
+      :type: :ranged
+      :attack: 0
+      :defense: 2
+      :strength_cost: 1
+      :movement_type: :desert
+      :pic_path: beravor/evade.jpg
+    2:
+      :name: :Strategize
+      :type: :ranged
+      :attack: 1
+      :defense: 2
+      :strength_cost: 2
+      :movement_type: :desert
+      :pic_path: beravor/strategize.jpg
+    3:
+      :name: :Sneak Attack
+      :type: :ranged
+      :attack: 0
+      :defense: 2
+      :strength_cost: 2
+      :movement_type: :swamp
+      :pic_path: beravor/sneak_attack.jpg
+    4:
+      :name: :Aimed Shot
+      :type: :ranged
+      :attack: 3
+      :defense: 0
+      :strength_cost: 3
+      :movement_type: :swamp
+      :pic_path: beravor/aimed_shot.jpg
+    5:
+      :name: :Parry
+      :type: :melee
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :movement_type: :woods
+      :pic_path: beravor/parry.jpg
+    6:
+      :name: :Charge
+      :type: :melee
+      :attack: 2
+      :defense: 0
+      :strength_cost: 1
+      :movement_type: :woods
+      :pic_path: beravor/charge.jpg
+    7:
+      :name: :Anticipate
+      :type: :melee
+      :attack: 1
+      :defense: 1
+      :strength_cost: 2
+      :movement_type: :mountain
+      :pic_path: beravor/anticipate.jpg
+    8:
+      :name: :Deadly Finesse
+      :type: :melee
+      :attack: 4
+      :defense: 0
+      :strength_cost: 3
+      :movement_type: :mountain
+      :pic_path: beravor/deadly_finesse.jpg
+:eleanor:
+  :name: Eleanor
+  :fortitude: 6
+  :strength: 5
+  :agility: 1
+  :wisdom: 3
+  :start_location_code_name: :minas_tirith
+  :starting_deck:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 2
+  - 2
+  - 2
+  - 3
+  - 3
+  - 4
+  - 5
+  - 6
+  - 6
+  - 6
+  - 7
+  - 7
+  - 8
+  - 8
+  - 9
+  - 9
+  - 10
+  :cards:
+    0:
+      :name: :Ranged Strike
+      :type: :ranged
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :movement_type: :hill
+      :pic_path: eleanor/ranged_strike.jpg
+    1:
+      :name: :Concentrate
+      :type: :ranged
+      :attack: 0
+      :defense: 0
+      :strength_cost: 0
+      :movement_type: :woods
+      :pic_path: eleanor/concentrate.jpg
+    2:
+      :name: :Hide
+      :type: :ranged
+      :attack: 0
+      :defense: 2
+      :strength_cost: 1
+      :movement_type: :woods
+      :pic_path: eleanor/hide.jpg
+    3:
+      :name: :Retreat
+      :type: :ranged
+      :attack: 0
+      :defense: 2
+      :strength_cost: 2
+      :movement_type: :mountain
+      :pic_path: eleanor/retreat.jpg
+    4:
+      :name: :Volley
+      :type: :ranged
+      :attack: 2
+      :defense: 2
+      :strength_cost: 2
+      :movement_type: :hill
+      :pic_path: eleanor/volley.jpg
+    5:
+      :name: :Dodge
+      :type: :ranged
+      :attack: 0
+      :defense: 4
+      :strength_cost: 3
+      :movement_type: :mountain
+      :pic_path: eleanor/dodge.jpg
+    6:
+      :name: :Parry
+      :type: :melee
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :movement_type: :desert
+      :pic_path: eleanor/parry.jpg
+    7:
+      :name: :Charge
+      :type: :melee
+      :attack: 2
+      :defense: 0
+      :strength_cost: 1
+      :movement_type: :desert
+      :pic_path: eleanor/charge.jpg
+    8:
+      :name: :Anticipate
+      :type: :melee
+      :attack: 1
+      :defense: 1
+      :strength_cost: 2
+      :movement_type: :swamp
+      :pic_path: eleanor/anticipate.jpg
+    9:
+      :name: :Rest
+      :type: :melee
+      :attack: 0
+      :defense: 0
+      :strength_cost: 0
+      :movement_type: :desert
+      :pic_path: eleanor/rest.jpg
+    10:
+      :name: :Attack of Opportunity
+      :type: :melee
+      :attack: 2
+      :defense: 0
+      :strength_cost: 3
+      :movement_type: :swamp
+      :pic_path: eleanor/attack_of_opportunity.jpg
+:eometh:
+  :name: Eometh
+  :fortitude: 6
+  :strength: 6
+  :agility: 1
+  :wisdom: 2
+  :start_location_code_name: :edoras
+  :starting_deck:
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 2
+  - 2
+  - 3
+  - 3
+  - 3
+  - 4
+  - 4
+  - 5
+  - 5
+  - 6
+  - 6
+  - 6
+  - 7
+  - 7
+  - 8
+  - 8
+  - 8
+  - 9
+  - 9
+  - 9
+  :cards:
+    0:
+      :name: :Ranged Strike
+      :type: :ranged
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :movement_type: :hill
+      :pic_path: eometh/ranged_strike.jpg
+    1:
+      :name: :Evade
+      :type: :ranged
+      :attack: 0
+      :defense: 2
+      :strength_cost: 1
+      :movement_type: :woods
+      :pic_path: eometh/evade.jpg
+    2:
+      :name: :Aimed Shot
+      :type: :ranged
+      :attack: 3
+      :defense: 0
+      :strength_cost: 3
+      :movement_type: :woods
+      :pic_path: eometh/aimed_shot.jpg
+    3:
+      :name: :Fall Back
+      :type: :ranged
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :movement_type: :hill
+      :pic_path: eometh/fall_back.jpg
+    4:
+      :name: :Parry
+      :type: :melee
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :movement_type: :desert
+      :pic_path: eometh/parry.jpg
+    5:
+      :name: :Hack
+      :type: :melee
+      :attack: 1
+      :defense: 0
+      :strength_cost: 0
+      :movement_type: :desert
+      :pic_path: eometh/hack.jpg
+    6:
+      :name: :Trample
+      :type: :melee
+      :attack: 2
+      :defense: 0
+      :strength_cost: 1
+      :movement_type: :desert
+      :pic_path: eometh/trample.jpg
+    7:
+      :name: :Eviscerate
+      :type: :melee
+      :attack: 2
+      :defense: 0
+      :strength_cost: 2
+      :movement_type: :desert
+      :pic_path: eometh/eviscerate.jpg
+    8:
+      :name: :Smash
+      :type: :melee
+      :attack: 2
+      :defense: 1
+      :strength_cost: 2
+      :movement_type: :mountain
+      :pic_path: eometh/smash.jpg
+    9:
+      :name: :Reckless
+      :type: :melee
+      :attack: 5
+      :defense: 0
+      :strength_cost: 3
+      :movement_type: :swamp
+      :pic_path: eometh/reckless.jpg
+:thalin:
+  :name: Thàlin
+  :fortitude: 5
+  :strength: 7
+  :agility: 2
+  :wisdom: 1
+  :start_location_code_name: :erebor
+  :starting_deck:
+  - 0
+  - 0
+  - 1
+  - 1
+  - 2
+  - 3
+  - 3
+  - 3
+  - 4
+  - 4
+  - 5
+  - 5
+  - 5
+  - 5
+  - 5
+  - 6
+  - 6
+  - 6
+  - 7
+  - 7
+  - 7
+  - 7
+  - 8
+  - 9
+  - 9
+  :cards:
+    0:
+      :name: :Evade
+      :type: :ranged
+      :attack: 0
+      :defense: 2
+      :strength_cost: 1
+      :movement_type: :desert
+      :pic_path: thalin/evade.jpg
+    1:
+      :name: :Strategize
+      :type: :ranged
+      :attack: 1
+      :defense: 2
+      :strength_cost: 2
+      :movement_type: :swamp
+      :pic_path: thalin/strategize.jpg
+    2:
+      :name: :Dodge
+      :type: :ranged
+      :attack: 0
+      :defense: 4
+      :strength_cost: 3
+      :movement_type: :desert
+      :pic_path: thalin/dodge.jpg
+    3:
+      :name: :Block
+      :type: :melee
+      :attack: 0
+      :defense: 4
+      :strength_cost: 2
+      :movement_type: :woods
+      :pic_path: thalin/block.jpg
+    4:
+      :name: :Parry
+      :type: :melee
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :movement_type: :hill
+      :pic_path: thalin/parry.jpg
+    5:
+      :name: :Sweep
+      :type: :melee
+      :attack: 3
+      :defense: 0
+      :strength_cost: 1
+      :movement_type: :mountain
+      :pic_path: thalin/sweep.jpg
+    6:
+      :name: :Rush
+      :type: :melee
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :movement_type: :mountain
+      :pic_path: thalin/rush.jpg
+    7:
+      :name: :Overpower
+      :type: :melee
+      :attack: 2
+      :defense: 2
+      :strength_cost: 2
+      :movement_type: :hill
+      :pic_path: thalin/overpower.jpg
+    8:
+      :name: :Crush
+      :type: :melee
+      :attack: 3
+      :defense: 3
+      :strength_cost: 4
+      :movement_type: :swamp
+      :pic_path: thalin/crush.jpg
+    9:
+      :name: :Reckless
+      :type: :melee
+      :attack: 5
+      :defense: 0
+      :strength_cost: 3
+      :movement_type: :swamp
+      :pic_path: thalin/reckless.jpg

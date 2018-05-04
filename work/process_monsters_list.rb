@@ -38,11 +38,6 @@ File.open('monsters/monsters/monsters.txt','r') do |f|
     attack_deck = symbolize( attack_deck.chomp )
 
     monster = { name: name, fortitude: fortitude.to_i, strength: strength.to_i, wisdom: wisdom.to_i, attack_deck: attack_deck }
-    # cards_deck = []
-    #
-    # cards_deck += Array.new( card_quantity, card_id )
-    # card_id += 1
-
     monsters[:monsters][name_code] = monster
 
   end

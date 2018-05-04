@@ -4,16 +4,18 @@ require 'pp'
 class MonstersTest < ActiveSupport::TestCase
 
   def setup
-    @monsters = GameData::Monsters.new
-    @monster = @monsters.get( :crebain )
+    @heroes = GameData::Heroes.new
+    @hero = @heroes.get( :argalad )
   end
 
   test 'should get monster' do
-    assert @monsters.get( :crebain )
+    assert @heroes.get( :argalad )
   end
 
   test 'should read fortitude' do
-    assert @monster.fortitude
+    assert @hero.fortitude
+
+    pp @hero
   end
 
 end
