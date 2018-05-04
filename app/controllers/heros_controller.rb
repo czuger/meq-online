@@ -13,10 +13,11 @@ class HerosController < ApplicationController
   # GET /heros/1
   # GET /heros/1.json
   def show
-    @hero_cards = YAML.load_file("#{Rails.root}/app/models/data/heroes/#{@hero.name_code}_actions_cards.yaml")
-    @locations = YAML.load_file('app/models/data/locations/locations.yaml')
-    @locations.delete(@hero.location.to_sym)
-    @locations = @locations.map{ |k, v| [ v[:name], k ] }.sort
+    @heroes = GameData::Heroes.new
+    @heroes_hero = @heroes.get( @hero.name_code )
+
+    @locations = GameData::Locations.new
+    @locations.delete!(@hero.location)
   end
 
   # GET /heros/new

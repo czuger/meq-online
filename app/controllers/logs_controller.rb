@@ -7,13 +7,8 @@ class LogsController < ApplicationController
   # GET /logs.json
   def index
 
-    @heroes = YAML.load_file('app/models/data/heroes/heroes_list.yaml')
-    @heroes_cards = {}
-    @heroes.keys.each do |key|
-      @heroes_cards[key] = YAML.load_file("app/models/data/heroes/#{key}_actions_cards.yaml")
-    end
-
-    @locations = YAML.load_file('app/models/data/locations/locations.yaml')
+    @heroes = GameData::Heroes.new
+    @locations = GameData::Locations.new
 
     @board = Board.find(params[:board_id])
     @logs = @board.logs.all.order( 'id DESC' )

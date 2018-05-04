@@ -34,7 +34,7 @@ module LogsHelper
 
   def hero_name( data )
     name_code = data[:name]
-    @heroes[name_code][:name]
+    @heroes.get( name_code ).name
   end
 
 end

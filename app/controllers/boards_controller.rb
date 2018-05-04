@@ -105,15 +105,9 @@ class BoardsController < ApplicationController
     end
 
     def load_heroes
-      @heroes = YAML.load_file('app/models/data/heroes/heroes_list.yaml')
+      @heroes = GameData::Heroes.new
       existing_heroes = @board.heroes.pluck(:name_code).map{ |h| h.to_sym }
-      @heroes.reject!{ |k, v| existing_heroes.include?( k ) }
-    end
-
-    def load_hero_starting_deck( hero_name_code )
-      fname = "app/models/data/heroes/#{hero_name_code}_starting_deck.yaml"
-      puts "About to load #{fname}"
-      @starting_deck = YAML.load_file(fname)
+      @heroes.delete_heroes!( existing_heroes )
     end
 
     def add_players_to_board
@@ -123,12 +117,11 @@ class BoardsController < ApplicationController
         heroes_to_process = [:hero_1, :hero_2, :hero_3].map{ |h| params[h]&.to_sym }.compact.reject{ |h| h.empty? }.uniq
         heroes_to_process.each do |hero_code|
 
-          hero = @heroes[hero_code]
-          load_hero_starting_deck(hero_code)
+          hero = @heroes.get( hero_code )
 
           @board.heroes.create!(
               name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
-              wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: @starting_deck.shuffle,
+              wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: hero.starting_deck.shuffle,
               rest_pool: [], damage_pool: [], hand: [], user_id: @current_user.id
           )
           @current_user.boards << @board unless @current_user.boards.include?( @board )

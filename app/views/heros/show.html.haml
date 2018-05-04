@@ -85,14 +85,14 @@
 
   - @hero.hand.in_groups_of(8).each do |group|
     .row
-      - group.each do |element|
+      - group.each do |card_number|
         .col
-          - if element
-            = image_tag "hero_cards/#{@hero.name_code}/#{@hero_cards[element][:name]}.jpg", class: :card, card_id: element
+          - if card_number
+            = image_tag "hero_cards/#{@heroes_hero.cards[card_number].pic_path}", class: :card, card_id: card_number
 
   = form_tag board_hero_move_path(@board, @hero), class: 'form-inline' do
     = label_tag :move_to, 'Move to'
-    = select_tag(:move_to, options_for_select( @locations ), class: 'form-control' )
+    = select_tag(:move_to,options_for_select( @locations.select_tag_data ), class: 'form-control' )
     = button_tag 'Move', role: :button, class: 'btn btn-secondary disabled', id: :move_hero
     = hidden_field_tag :card_used, ''
 

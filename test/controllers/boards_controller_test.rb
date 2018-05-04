@@ -18,12 +18,12 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     OmniAuth.config.test_mode = false
   end
 
-  test "should get index" do
+  test 'should get index' do
     get boards_url( all: true )
     assert_response :success
   end
 
-  test "should get new" do
+  test 'should get new' do
     get new_board_url
     assert_response :success
   end
@@ -71,22 +71,22 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to boards_url
   end
 
-  # test "should show board" do
+  # test 'should show board' do
   #   get board_url(@board)
   #   assert_response :success
   # end
 
-  # test "should get edit" do
+  # test 'should get edit' do
   #   get edit_board_url(@board)
   #   assert_response :success
   # end
 
-  # test "should update board" do
+  # test 'should update board' do
   #   patch board_url(@board), params: { board: { heroes: @board.heroes } }
   #   assert_redirected_to board_url(@board)
   # end
 
-  # test "should destroy board" do
+  # test 'should destroy board' do
   #   assert_difference('Board.count', -1) do
   #     delete board_url(@board)
   #   end

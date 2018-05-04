@@ -1,21 +1,21 @@
 require 'test_helper'
 require 'pp'
 
-class MonstersTest < ActiveSupport::TestCase
+class HeroesTest < ActiveSupport::TestCase
 
   def setup
     @heroes = GameData::Heroes.new
     @hero = @heroes.get( :argalad )
   end
 
-  test 'should get monster' do
+  test 'should get hero' do
     assert @heroes.get( :argalad )
   end
 
-  test 'should read fortitude' do
+  test 'should read hero fortitude' do
     assert @hero.fortitude
 
-    pp @hero
+    # pp @hero
   end
 
 end
