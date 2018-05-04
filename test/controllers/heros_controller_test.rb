@@ -14,52 +14,52 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
   end
 
-  test "should get index" do
+  test 'should get index' do
     get board_heros_url( @board )
     assert_response :success
   end
 
-  test "should get join_new" do
+  test 'should get join_new' do
     get board_join_url( @board )
     assert_response :success
   end
 
-  test "should post join_new" do
+  test 'should post join_new' do
     post board_join_url( @board )
     assert_redirected_to boards_url
   end
 
-  test "should POST draw_cards" do
+  test 'should POST draw_cards' do
     post board_hero_draw_cards_url( @board, @hero )
     assert_redirected_to board_hero_url(@board, @hero)
   end
 
-  test "should get heal" do
+  test 'should get heal' do
     get board_hero_heal_url( @board, @hero )
     assert_redirected_to board_hero_url(@board, @hero)
   end
 
-  test "should get rest" do
+  test 'should get rest' do
     get board_hero_rest_url( @board, @hero )
     assert_redirected_to board_hero_url(@board, @hero)
   end
 
-  test "should patch take_damages" do
+  test 'should patch take_damages' do
     patch board_hero_take_damages_url( @board, @hero, damage_amount: 3 )
     assert_redirected_to board_hero_url(@board, @hero)
   end
 
-  test "should POST move" do
+  test 'should POST move' do
     post board_hero_move_url( @board, @hero, params: { move_to: :the_grey_havens, card_used: 1 } )
     assert_redirected_to board_hero_url(@board, @hero)
   end
 
-  # test "should get new" do
+  # test 'should get new' do
   #   get new_board_hero_url
   #   assert_response :success
   # end
 
-  # test "should create hero" do
+  # test 'should create hero' do
   #   assert_difference('Hero.count') do
   #     post board_heros_url( @board ), params: { hero: { agility: @hero.agility, damage_pool: @hero.damage_pool, fortitude: @hero.fortitude, life_pool: @hero.life_pool, location: @hero.location, name_code: @hero.name_code, rest_pool: @hero.rest_pool, strength: @hero.strength, wisdom: @hero.wisdom } }
   #   end
@@ -67,22 +67,22 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   #   assert_redirected_to hero_url(Hero.last)
   # end
 
-  test "should show hero" do
+  test 'should show hero' do
     get board_hero_url( @board, @hero )
     assert_response :success
   end
 
-  # test "should get edit" do
+  # test 'should get edit' do
   #   get edit_hero_url(@hero)
   #   assert_response :success
   # end
   #
-  # test "should update hero" do
+  # test 'should update hero' do
   #   patch hero_url(@hero), params: { hero: { agility: @hero.agility, damage_pool: @hero.damage_pool, fortitude: @hero.fortitude, life_pool: @hero.life_pool, location: @hero.location, name_code: @hero.name_code, rest_pool: @hero.rest_pool, strength: @hero.strength, wisdom: @hero.wisdom } }
   #   assert_redirected_to hero_url(@hero)
   # end
   #
-  # test "should destroy hero" do
+  # test 'should destroy hero' do
   #   assert_difference('Hero.count', -1) do
   #     delete hero_url(@hero)
   #   end
