@@ -6,7 +6,7 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
 
     @user = create( :user )
     @board = create( :board )
-    @hero = create( :hero, user: @user )
+    @hero = create( :hero, user: @user, board: @board )
     @combat = create( :combat, board: @board, hero: @hero )
 
     $google_auth_hash[:uid] = @user.uid

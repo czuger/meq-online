@@ -7,13 +7,12 @@ class HerosController < ApplicationController
   # GET /heros.json
   def index
     @board = Board.find(params[:board_id])
-    @heros = @board.heroes.map{ |h| h if h.user_id == current_user.id }
+    @heros = @board.heroes.select{ |h| h.user_id == current_user.id }
   end
 
   # GET /heros/1
   # GET /heros/1.json
   def show
-    p Rails.root
     @hero_cards = YAML.load_file("#{Rails.root}/app/models/data/heroes/#{@hero.name_code}_actions_cards.yaml")
     @locations = YAML.load_file('app/models/data/locations/locations.yaml')
     @locations.delete(@hero.location.to_sym)

@@ -86,12 +86,12 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
   #   assert_redirected_to board_url(@board)
   # end
 
-  test "should destroy board" do
-    assert_difference('Board.count', -1) do
-      delete board_url(@board)
-    end
-
-    assert_redirected_to boards_url
-  end
+  # test "should destroy board" do
+  #   assert_difference('Board.count', -1) do
+  #     delete board_url(@board)
+  #   end
+  #
+  #   assert_redirected_to boards_url
+  # end
 end
 
