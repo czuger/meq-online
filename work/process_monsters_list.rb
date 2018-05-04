@@ -15,10 +15,14 @@ cards = {}
       name_code = card_id
       card_quantity = card_quantity.to_i
 
+      pic_path = "#{deck}/#{symbolize( name )}.jpg"
+      tmp_pp = 'monsters/' + pic_path
+      raise "#{tmp_pp} does not exist" unless File.exist?( tmp_pp )
+
       cards[deck] ||= { deck: [], data:{} }
       cards[deck][:data][name_code] = {
         name: name, type: symbolize( type ), attack: attack.to_i, defense: defense.to_i, strength_cost: strength_cost.to_i,
-        pic_path: "#{deck}/#{symbolize( name )}.jpg" }
+        pic_path: pic_path }
       cards[deck][:deck] += Array.new( card_quantity, name_code )
       card_id += 1
     end

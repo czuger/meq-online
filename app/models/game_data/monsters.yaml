@@ -219,12 +219,12 @@
     - 10
     :data:
       0:
-        :name: Concetrate
+        :name: Concentrate
         :type: :ranged
         :attack: 0
         :defense: 0
         :strength_cost: 0
-        :pic_path: ravager/concetrate.jpg
+        :pic_path: ravager/concentrate.jpg
       1:
         :name: Poison Arrow
         :type: :ranged
