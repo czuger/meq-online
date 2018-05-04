@@ -23,9 +23,5 @@
         %td= hero.wisdom
         %td= hero.location
         %td= link_to 'Show', [@board,hero]
-        %td= link_to 'Edit', edit_board_hero_path(@board,hero)
-        %td= link_to 'Destroy', [@board,hero], method: :delete, data: { confirm: 'Are you sure?' }
 
 %br
-
-= link_to 'New Hero', new_board_hero_path

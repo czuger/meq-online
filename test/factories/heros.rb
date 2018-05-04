@@ -1,13 +1,14 @@
 FactoryBot.define do
   factory :hero do
-    name_code "MyString"
+    name_code 'argalad'
     fortitude 1
     strength 1
     agility 1
     wisdom 1
-    location "MyString"
-    life_pool "MyString"
-    rest_pool "MyString"
-    damage_pool "MyString"
+    location 'harlingdon'
+    hand { [ 1 ] }
+    life_pool { [] }
+    rest_pool { [] }
+    damage_pool { [] }
   end
 end

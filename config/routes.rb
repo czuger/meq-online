@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     resources :logs, only: [:index ]
     resource :sauron, only: [:show ]
 
-    resources :heros do
+    resources :heros, only: [ :index, :show ] do
       post :draw_cards
       get :rest
       get :heal

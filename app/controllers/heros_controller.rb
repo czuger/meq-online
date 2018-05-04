@@ -13,7 +13,8 @@ class HerosController < ApplicationController
   # GET /heros/1
   # GET /heros/1.json
   def show
-    @hero_cards = YAML.load_file("app/models/data/heroes/#{@hero.name_code}_actions_cards.yaml")
+    p Rails.root
+    @hero_cards = YAML.load_file("#{Rails.root}/app/models/data/heroes/#{@hero.name_code}_actions_cards.yaml")
     @locations = YAML.load_file('app/models/data/locations/locations.yaml')
     @locations.delete(@hero.location.to_sym)
     @locations = @locations.map{ |k, v| [ v[:name], k ] }.sort
@@ -25,8 +26,8 @@ class HerosController < ApplicationController
   end
 
   # GET /heros/1/edit
-  def edit
-  end
+  # def edit
+  # end
 
   def draw_cards
     nb_cards_to_draw = params[:nb_cards].to_i
@@ -101,29 +102,29 @@ class HerosController < ApplicationController
     end
   end
 
-  # PATCH/PUT /heros/1
-  # PATCH/PUT /heros/1.json
-  def update
-    respond_to do |format|
-      if @hero.update(hero_params)
-        format.html { redirect_to @hero, notice: 'Hero was successfully updated.' }
-        format.json { render :show, status: :ok, location: @hero }
-      else
-        format.html { render :edit }
-        format.json { render json: @hero.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /heros/1
-  # DELETE /heros/1.json
-  def destroy
-    @hero.destroy
-    respond_to do |format|
-      format.html { redirect_to heros_url, notice: 'Hero was successfully destroyed.' }
-      format.json { head :no_content }
-    end
-  end
+  # # PATCH/PUT /heros/1
+  # # PATCH/PUT /heros/1.json
+  # def update
+  #   respond_to do |format|
+  #     if @hero.update(hero_params)
+  #       format.html { redirect_to @hero, notice: 'Hero was successfully updated.' }
+  #       format.json { render :show, status: :ok, location: @hero }
+  #     else
+  #       format.html { render :edit }
+  #       format.json { render json: @hero.errors, status: :unprocessable_entity }
+  #     end
+  #   end
+  # end
+  #
+  # # DELETE /heros/1
+  # # DELETE /heros/1.json
+  # def destroy
+  #   @hero.destroy
+  #   respond_to do |format|
+  #     format.html { redirect_to heros_url, notice: 'Hero was successfully destroyed.' }
+  #     format.json { head :no_content }
+  #   end
+  # end
 
   private
     # Use callbacks to share common setup or constraints between actions.

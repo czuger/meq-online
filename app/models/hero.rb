@@ -1,6 +1,7 @@
 class Hero < ApplicationRecord
 
   belongs_to :user
+  belongs_to :board
 
   serialize :life_pool
   serialize :rest_pool

@@ -2,7 +2,17 @@ require 'test_helper'
 
 class CombatsControllerTest < ActionDispatch::IntegrationTest
   setup do
-    @combat = combats(:one)
+    OmniAuth.config.test_mode = true
+
+    @user = create( :user )
+    @board = create( :board )
+    @hero = create( :hero, user: @user )
+    @combat = create( :combat, board: @board, hero: @hero )
+
+    $google_auth_hash[:uid] = @user.uid
+    OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
+    get '/auth/google_oauth2'
+    follow_redirect!
   end
 
   test "should get index" do
