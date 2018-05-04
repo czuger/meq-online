@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
 
-  resources :combats
   resources :boards, only:[ :index, :show, :new, :create ] do
+
+    resource :combats, only: [ :new ]
 
     get :join, action: :join_new
     post :join

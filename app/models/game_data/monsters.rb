@@ -2,7 +2,7 @@ require 'yaml'
 require 'ostruct'
 
 module GameData
-  class Monsters
+  class Monsters < Base
 
     def initialize
       @data = YAML.load_file("#{Rails.root}/app/models/game_data/monsters.yaml")
@@ -20,6 +20,10 @@ module GameData
       m.cards = cards_details
 
       m
+    end
+
+    def select_tag_data
+      @data[:monsters].map{ |k, v| [ v[:name], k ] }.sort
     end
 
   end

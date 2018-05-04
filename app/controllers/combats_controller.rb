@@ -13,8 +13,23 @@ class CombatsController < ApplicationController
   end
 
   # GET /combats/new
+
+  # Only one combat per board
+  # Combat step :
+  # - creation
+  # - setup : hero player choose if he use fortitude and draw cards
+  # - Play card step
+  #   - each player choose a card
+  # - Card result
+  #   - each player mark the result (take damages, discard card, show next card to opponent)
+  # - Next turn
+
   def new
-    @combat = Combat.new
+    @board = Board.find( params[:board_id] )
+    @combat = Combat.new( board: @board )
+    @heroes = GameData::Heroes.new
+    @heroes.select_heroes_from_board!( @board )
+    @monsters = GameData::Monsters.new
   end
 
   # GET /combats/1/edit

@@ -1,5 +1,4 @@
 %h1 New combat
 
-= render 'form'
-
-= link_to 'Back', combats_path
+= select_tag(:hero, options_for_select( @heroes.select_tag_data ), class: 'form-control' )
+= select_tag(:monster, options_for_select( @monsters.select_tag_data ), class: 'form-control' )

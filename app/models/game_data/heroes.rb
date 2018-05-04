@@ -2,7 +2,7 @@ require 'yaml'
 require 'ostruct'
 
 module GameData
-  class Heroes
+  class Heroes < Base
 
     def initialize
       @data = YAML.load_file("#{Rails.root}/app/models/game_data/heroes.yaml")
@@ -18,8 +18,9 @@ module GameData
       @data.reject!{ |k, _| heroes_codes_names_list.include?( k ) }
     end
 
-    def select_tag_data
-      @data.map{ |k, v| [ v[:name], k ] }
+    def select_heroes_from_board!( board )
+      heroes_codes_names_list = board.heroes.map{ |h| h.name_code.to_sym }
+      @data.select!{ |k, _| heroes_codes_names_list.include?( k ) }
     end
 
   end

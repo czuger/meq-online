@@ -2,7 +2,7 @@ require 'yaml'
 require 'ostruct'
 
 module GameData
-  class Locations
+  class Locations < Base
 
     def initialize
       @data = YAML.load_file("#{Rails.root}/app/models/game_data/locations.yaml")
@@ -14,10 +14,6 @@ module GameData
 
     def delete!( location_name )
       @data.delete( location_name.to_sym )
-    end
-
-    def select_tag_data
-      @data.map{ |k, v| [ v[:name], k ] }
     end
 
   end

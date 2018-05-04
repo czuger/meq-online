@@ -2,7 +2,7 @@ require 'yaml'
 require 'ostruct'
 
 module GameData
-  class Skills
+  class Skills < Base
 
     def initialize
       @data = YAML.load_file("#{Rails.root}/app/models/game_data/skills.yaml")
