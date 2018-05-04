@@ -1,0 +1,129 @@
+---
+0:
+  :name: :Endure
+  :type: :ranged
+  :attack: 3
+  :defense: 0
+  :strength_cost: 2
+  :movement_type: :hill
+  :pic_path: skills/endure.jpg
+1:
+  :name: :Crossbow Shot
+  :type: :ranged
+  :attack: 4
+  :defense: 0
+  :strength_cost: 2
+  :movement_type: :hill
+  :pic_path: skills/crossbow_shot.jpg
+2:
+  :name: :Heightened Senses
+  :type: :ranged
+  :attack: 2
+  :defense: 2
+  :strength_cost: 2
+  :movement_type: :swamp
+  :pic_path: skills/heightened_senses.jpg
+3:
+  :name: :Flaming Arrow
+  :type: :ranged
+  :attack: 3
+  :defense: 0
+  :strength_cost: 3
+  :movement_type: :swamp
+  :pic_path: skills/flaming_arrow.jpg
+4:
+  :name: :Concussive Shot
+  :type: :ranged
+  :attack: 2
+  :defense: 1
+  :strength_cost: 3
+  :movement_type: :swamp
+  :pic_path: skills/concussive_shot.jpg
+5:
+  :name: :Outmaneuver
+  :type: :ranged
+  :attack: 3
+  :defense: 3
+  :strength_cost: 4
+  :movement_type: :swamp
+  :pic_path: skills/outmaneuver.jpg
+6:
+  :name: :Retaliate
+  :type: :melee
+  :attack: 0
+  :defense: 0
+  :strength_cost: 0
+  :movement_type: :desert
+  :pic_path: skills/retaliate.jpg
+7:
+  :name: :Focused Assault
+  :type: :melee
+  :attack: 0
+  :defense: 0
+  :strength_cost: 1
+  :movement_type: :desert
+  :pic_path: skills/focused_assault.jpg
+8:
+  :name: :Wear Down
+  :type: :melee
+  :attack: 0
+  :defense: 2
+  :strength_cost: 1
+  :movement_type: :desert
+  :pic_path: skills/wear_down.jpg
+9:
+  :name: :Shield Smash
+  :type: :melee
+  :attack: 0
+  :defense: 3
+  :strength_cost: 1
+  :movement_type: :hill
+  :pic_path: skills/shield_smash.jpg
+10:
+  :name: :Execute
+  :type: :melee
+  :attack: 1
+  :defense: 0
+  :strength_cost: 2
+  :movement_type: :hill
+  :pic_path: skills/execute.jpg
+11:
+  :name: :Reversal
+  :type: :melee
+  :attack: 0
+  :defense: 0
+  :strength_cost: 2
+  :movement_type: :desert
+  :pic_path: skills/reversal.jpg
+12:
+  :name: :Crushing Blow
+  :type: :melee
+  :attack: 2
+  :defense: 0
+  :strength_cost: 2
+  :movement_type: :mountain
+  :pic_path: skills/crushing_blow.jpg
+13:
+  :name: :Hamstring
+  :type: :melee
+  :attack: 2
+  :defense: 2
+  :strength_cost: 3
+  :movement_type: :mountain
+  :pic_path: skills/hamstring.jpg
+14:
+  :name: :Overhead Swing
+  :type: :melee
+  :attack: 2
+  :defense: 1
+  :strength_cost: 3
+  :movement_type: :mountain
+  :pic_path: skills/overhead_swing.jpg
+15:
+  :name: :Brutal Finisher
+  :type: :melee
+  :attack: 3
+  :defense: 1
+  :strength_cost: 4
+  :movement_type: :mountain
+  :pic_path: skills/brutal_finisher.jpg

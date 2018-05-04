@@ -14,6 +14,8 @@ class MonstersTest < ActiveSupport::TestCase
 
   test 'should read fortitude' do
     assert @monster.fortitude
+
+    pp @monster
   end
 
 end
