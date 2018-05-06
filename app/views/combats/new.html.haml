@@ -1,4 +1,24 @@
-%h1 New combat
+%h1 Start combat
 
-= select_tag(:hero, options_for_select( @heroes.select_tag_data ), class: 'form-control' )
-= select_tag(:monster, options_for_select( @monsters.select_tag_data ), class: 'form-control' )
+= form_tag board_combats_path(@board) do
+
+  - if @combat.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@combat.errors.count, "error")} prohibited this combat from being saved:"
+      %ul
+        - @combat.errors.full_messages.each do |message|
+          %li= message
+
+  .row.form-group
+    = label_tag :hero_id, 'Fighting hero', class: 'col-2 col-form-label'
+    .col-10
+      = select_tag(:hero_id, options_for_select( @heroes_select_array ), class: 'form-control' )
+
+  .row.form-group
+    = label_tag :monster, 'Fighting monster', class: 'col-2 col-form-label'
+    .col-10
+      = select_tag(:monster, options_for_select( @monsters.select_tag_data ), class: 'form-control' )
+
+  .row
+    .col
+      = button_tag 'Start', role: :button, class: 'btn btn-secondary'

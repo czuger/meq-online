@@ -25,11 +25,8 @@ class CombatsController < ApplicationController
   # - Next turn
 
   def new
-    @board = Board.find( params[:board_id] )
+    set_new_data
     @combat = Combat.new( board: @board )
-    @heroes = GameData::Heroes.new
-    @heroes.select_heroes_from_board!( @board )
-    @monsters = GameData::Monsters.new
   end
 
   # GET /combats/1/edit
@@ -39,15 +36,20 @@ class CombatsController < ApplicationController
   # POST /combats
   # POST /combats.json
   def create
-    @combat = Combat.new(combat_params)
+
+    @hero = Hero.find( params[:hero_id] )
+
+    cp = { board_id: params[:board_id], hero_id: params[:hero_id], sauron_cards_played:[], hero_cards_played:[],
+      monster: params[:monster], temporary_strength: @hero.strength }
+
+    @combat = Combat.new(cp)
 
     respond_to do |format|
       if @combat.save
         format.html { redirect_to @combat, notice: 'Combat was successfully created.' }
-        format.json { render :show, status: :created, location: @combat }
       else
+        set_new_data
         format.html { render :new }
-        format.json { render json: @combat.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -84,6 +86,14 @@ class CombatsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def combat_params
-      params.require(:combat).permit(:board_id, :hero_id, :temporary_strength, :hero_cards_played, :sauron_cards_played)
+      params.permit(:board_id, :hero_id )
+    end
+
+    def set_new_data
+      @board = Board.find( params[:board_id] )
+      @heroes = GameData::Heroes.new
+      @monsters = GameData::Monsters.new
+
+      @heroes_select_array = @board.heroes.map{ |h| [ @heroes.get( h.name_code ).name, h.id ] }
     end
 end
