@@ -16,7 +16,7 @@ module GameData
       cards_details = cards[:data].transform_values{ |v| OpenStruct.new( v ) }
 
       m = OpenStruct.new( monster )
-      m.starting_deck = starting_deck
+      m.starting_deck = starting_deck.shuffle
       m.cards = cards_details
 
       m

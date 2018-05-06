@@ -6,6 +6,7 @@ class Combat < ApplicationRecord
 
   serialize :hero_cards_played
   serialize :sauron_cards_played
+  serialize :sauron_hand
 
   aasm do
     state :hero_choices, :initial => true

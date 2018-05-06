@@ -38,9 +38,14 @@ class CombatsController < ApplicationController
   # POST /combats.json
   def create
     @hero = Hero.find( params[:hero_id] )
+    monster_code = params[:monster].to_sym
+    monsters = GameData::Monsters.new
+    monster = monsters.get(monster_code)
+
+    sauron_hand = monster.starting_deck.shift( monster.fortitude )
 
     cp = { board_id: params[:board_id], hero_id: params[:hero_id], sauron_cards_played:[], hero_cards_played:[],
-      monster: params[:monster], temporary_strength: @hero.strength }
+      monster: monster_code, temporary_strength: @hero.strength, sauron_hand: sauron_hand }
 
     @combat = Combat.new(cp)
 
