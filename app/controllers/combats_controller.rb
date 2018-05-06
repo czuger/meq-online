@@ -1,6 +1,6 @@
 class CombatsController < ApplicationController
-  before_action :set_combat, only: [:show, :edit, :update, :destroy]
-  before_action :set_hero, only: [:hero_setup_new, :hero_setup_draw_cards, :hero_setup_increase_strength]
+  before_action :set_combat, only: [:show, :update, :destroy]
+  before_action :set_hero, only: [:edit, :hero_setup_new, :hero_setup_draw_cards, :hero_setup_increase_strength]
 
   # GET /combats
   # GET /combats.json
@@ -32,6 +32,11 @@ class CombatsController < ApplicationController
 
   # GET /combats/1/edit
   def edit
+    @sauron = @board.sauron
+    if @sauron.user_id == current_user.id
+      @monsters = GameData::Monsters.new
+      @monster = @monsters.get(@combat.monster.to_sym)
+    end
   end
 
   # POST /combats

@@ -1,0 +1,21 @@
+%p#notice= notice
+
+.container
+  = render partial: 'heros/hero_info'
+
+  .row
+    %b Hand:
+
+  .form-group
+    = render partial: 'heros/cards_hand'
+
+  = form_for @combat do
+    .form-group
+      .row
+        .col-3
+          .col-form-label
+            = 'Nb cards to draw'
+        .col-2
+          = number_field_tag :nb_cards_to_draw, @hero.agility, max: 20, class: 'form-control'
+        .col-2
+          = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block'
