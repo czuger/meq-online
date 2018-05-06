@@ -94,7 +94,7 @@ class CombatsController < ApplicationController
   def destroy
     @combat.destroy
     respond_to do |format|
-      format.html { redirect_to combats_url, notice: 'Combat was successfully destroyed.' }
+      format.html { redirect_to boards_path, notice: 'Combat was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
