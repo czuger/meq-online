@@ -1,26 +1,29 @@
 %p#notice= notice
 
 .container
-  -#= render partial: 'heros/hero_info'
+  .row
+    .col-2
+    .col-2
+      = image_tag "monsters/monsters/#{@combat.monster}.jpg"
+
+
 
   .row
     %b Hand:
 
   .form-group
-    - @combat.sauron_hand.in_groups_of(8).each do |group|
+    - @combat.sauron_hand.sort.in_groups_of(8).each do |group|
       .row
         - group.each do |card_number|
           .col
             - if card_number
               = image_tag "monsters/#{@monster.cards[card_number].pic_path}", class: :card, card_id: card_number
 
-  -#= form_for @combat do
-  -#  .form-group
-  -#    .row
-  -#      .col-3
-  -#        .col-form-label
-  -#          = 'Nb cards to draw'
-  -#      .col-2
-  -#        = number_field_tag :nb_cards_to_draw, @hero.agility, max: 20, class: 'form-control'
-  -#      .col-2
-  -#        = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block'
+  = form_tag play_card_sauron_board_combats_path( @board ) do
+    .form-group
+      .row
+        .col-4
+          = hidden_field_tag :selected_card, nil
+          = hidden_field_tag :player, :sauron
+        .col-2
+          = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block disabled', id: :play_card

@@ -1,6 +1,6 @@
 class CombatsController < ApplicationController
   before_action :set_combat, only: [:show, :update, :destroy]
-  before_action :set_hero, only: [:edit, :hero_setup_new, :hero_setup_draw_cards, :hero_setup_increase_strength]
+  before_action :set_hero, only: [:play_card, :hero_setup_new, :hero_setup_draw_cards, :hero_setup_increase_strength]
 
   # GET /combats
   # GET /combats.json
@@ -32,11 +32,20 @@ class CombatsController < ApplicationController
 
   # GET /combats/1/edit
   def edit
+  end
+
+  def play_card
     @sauron = @board.sauron
     if @sauron.user_id == current_user.id
       @monsters = GameData::Monsters.new
       @monster = @monsters.get(@combat.monster.to_sym)
     end
+  end
+
+  def play_card_sauron
+  end
+
+  def play_card_hero
   end
 
   # POST /combats
@@ -74,7 +83,7 @@ class CombatsController < ApplicationController
 
   def hero_setup_draw_cards
     @hero.draw_cards( @board, params[:nb_cards_to_draw].to_i, true )
-    redirect_to edit_board_combats_path( @board )
+    redirect_to play_card_board_combats_path( @board )
   end
 
   def hero_setup_increase_strength
@@ -82,7 +91,7 @@ class CombatsController < ApplicationController
       @combat.update( temporary_strength: params[:increase_strength] )
       @combat.log_increase_strength!( @board, @combat, @hero )
     end
-    redirect_to edit_board_combats_path( @board )
+    redirect_to play_card_board_combats_path( @board )
   end
 
   # PATCH/PUT /combats/1

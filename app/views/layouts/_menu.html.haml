@@ -8,10 +8,10 @@
   = link_to 'Heroes', board_heros_path( @board ), role: :button, class: 'btn btn-primary'
 
   - if @board.combat
-    = link_to 'Close combat', board_combats_path( @board ), method: :delete, role: :button, class: 'btn btn-primary'
+    = link_to 'Play combat', play_card_board_combats_path( @board ), role: :button, class: 'btn btn-primary'
+    = link_to 'Finish combat', board_combats_path( @board ), method: :delete, role: :button, class: 'btn btn-primary'
   - else
     = link_to 'New combat', new_board_combats_path( @board ), role: :button, class: 'btn btn-primary'
-
 
   = link_to 'Log', board_logs_path( @board ), role: :button, class: 'btn btn-primary'
 
