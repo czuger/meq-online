@@ -10,6 +10,10 @@ class ApplicationController < ActionController::Base
     @current_user ||= ( User.find(session[:user_id]) if session[:user_id] )
   end
 
+  def current_user?( hero_or_sauron )
+    current_user.id == hero_or_sauron.user_id
+  end
+
   helper_method :current_user
 
 end

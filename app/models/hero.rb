@@ -24,5 +24,4 @@ class Hero < ApplicationRecord
         cards_drawn: cards_drawn, lp_cards: life_pool.count } )
   end
 
-
 end

@@ -1,8 +1,6 @@
 class Combat < ApplicationRecord
   include AASM
 
-  aasm do
-  end
   belongs_to :board
   belongs_to :hero
 

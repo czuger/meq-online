@@ -2,7 +2,11 @@ Rails.application.routes.draw do
 
   resources :boards, only:[ :index, :show, :new, :create ] do
 
-    resource :combats, only: [ :new, :create ]
+    resource :combats, only: [ :new, :create, :update ] do
+      get :hero_setup_new
+      post :hero_setup_draw_cards
+      post :hero_setup_increase_strength
+    end
 
     get :join, action: :join_new
     post :join

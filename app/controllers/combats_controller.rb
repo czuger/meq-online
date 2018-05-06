@@ -46,12 +46,23 @@ class CombatsController < ApplicationController
 
     respond_to do |format|
       if @combat.save
-        format.html { redirect_to @combat, notice: 'Combat was successfully created.' }
+        if current_user?( @hero )
+          format.html { redirect_to hero_setup_new_board_combats_path( params[:board_id] ), notice: 'Combat was successfully created.' }
+        else
+          format.html { redirect_to board_sauron_path( params[:board_id] ), notice: 'Combat was successfully created.' }
+        end
       else
         set_new_data
         format.html { render :new }
       end
     end
+  end
+
+  def hero_setup_new
+    @board = Board.find(params[:board_id])
+    @hero = @board.combat.hero
+    @heroes = GameData::Heroes.new
+    @heroes_hero = @heroes.get(@hero.name_code)
   end
 
   # PATCH/PUT /combats/1
