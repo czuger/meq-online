@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   resources :boards, only:[ :index, :show, :new, :create ] do
 
-    resource :combats, only: [ :new, :create, :update ] do
+    resource :combats, only: [ :new, :create, :edit, :update ] do
       get :hero_setup_new
       post :hero_setup_draw_cards
       post :hero_setup_increase_strength

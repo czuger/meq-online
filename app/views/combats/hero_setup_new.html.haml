@@ -12,19 +12,21 @@
   = form_tag hero_setup_draw_cards_board_combats_path(@board) do
     .form-group
       .row
-        .col-4
-          = 'Nb cards to draw'
+        .col-3
+          .col-form-label
+            = 'Nb cards to draw'
         .col-2
-          = number_field_tag :draw_cards, @hero.agility, max: 20, class: 'form-control'
+          = number_field_tag :nb_cards_to_draw, @hero.agility, max: 20, class: 'form-control'
         .col-2
-          = button_tag 'Draw cards', role: :button, class: 'btn btn-secondary'
+          = button_tag 'Draw cards', role: :button, class: 'btn btn-secondary btn-block'
 
   = form_tag hero_setup_increase_strength_board_combats_path(@board) do
     .form-group
       .row
-        .col-4
-          = 'Increase your strength by'
+        .col-3
+          .col-form-label
+            = 'Raise your strength to'
         .col-2
-          = number_field_tag :increase_strength, @hero.agility, max: 20, class: 'form-control'
+          = number_field_tag :increase_strength, @combat.temporary_strength+@hero.agility, max: 20, class: 'form-control'
         .col-2
-          = button_tag 'Increase strength', role: :button, class: 'btn btn-secondary'
+          = button_tag 'Increase strength', role: :button, class: 'btn btn-secondary btn-block'

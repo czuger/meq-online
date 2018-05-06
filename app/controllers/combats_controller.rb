@@ -1,5 +1,6 @@
 class CombatsController < ApplicationController
   before_action :set_combat, only: [:show, :edit, :update, :destroy]
+  before_action :set_hero, only: [:hero_setup_new, :hero_setup_draw_cards, :hero_setup_increase_strength]
 
   # GET /combats
   # GET /combats.json
@@ -36,7 +37,6 @@ class CombatsController < ApplicationController
   # POST /combats
   # POST /combats.json
   def create
-
     @hero = Hero.find( params[:hero_id] )
 
     cp = { board_id: params[:board_id], hero_id: params[:hero_id], sauron_cards_played:[], hero_cards_played:[],
@@ -59,10 +59,20 @@ class CombatsController < ApplicationController
   end
 
   def hero_setup_new
-    @board = Board.find(params[:board_id])
-    @hero = @board.combat.hero
-    @heroes = GameData::Heroes.new
-    @heroes_hero = @heroes.get(@hero.name_code)
+    set_heroes
+  end
+
+  def hero_setup_draw_cards
+    @hero.draw_cards( @board, params[:nb_cards_to_draw].to_i, true )
+    redirect_to edit_board_combats_path( @board )
+  end
+
+  def hero_setup_increase_strength
+    @combat.transaction do
+      @combat.update( temporary_strength: params[:increase_strength] )
+      @combat.log_increase_strength!( @board, @combat, @hero )
+    end
+    redirect_to edit_board_combats_path( @board )
   end
 
   # PATCH/PUT /combats/1
@@ -92,7 +102,19 @@ class CombatsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_combat
-      @combat = Combat.find(params[:id])
+      @board ||= Board.find(params[:board_id])
+      @combat ||= @board.combat
+    end
+
+    def set_hero
+      @board = Board.find(params[:board_id])
+      @combat ||= @board.combat
+      @hero ||= @combat.hero
+    end
+
+    def set_heroes
+      @heroes = GameData::Heroes.new
+      @heroes_hero = @heroes.get(@hero.name_code)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

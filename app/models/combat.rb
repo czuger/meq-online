@@ -16,4 +16,10 @@ class Combat < ApplicationRecord
     end
   end
 
+  def log_increase_strength!( board, combat, hero )
+    board.logs.create!( action: 'combat.inc_strength', params: {
+        name: hero.name_code.to_sym,
+        str: hero.strength, nstr: combat.temporary_strength } )
+  end
+
 end
