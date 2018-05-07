@@ -13,18 +13,21 @@ class CombatsController < ApplicationController
   # GET /combats/1
   # GET /combats/1.json
   def show
-    @fighter_select_data = []
+    current_user
+    if @combat&.hero_choices?
+    else
+      @fighter_select_data = []
 
-    if @combat&.sauron_user_id == current_user.id
-      set_monsters
-      @fighter_select_data << [ @monster.name, @combat.monster ]
+      if @combat&.sauron_user_id == current_user.id
+        set_monsters
+        @fighter_select_data << [ @monster.name, @combat.monster ]
+      end
+
+      if @combat&.hero_user_id == current_user.id
+        set_heroes
+        @fighter_select_data << [ @heroes_hero.name, @hero.name_code ]
+      end
     end
-
-    if @combat&.hero_user_id == current_user.id
-      set_heroes
-      @fighter_select_data << [ @heroes_hero.name, @hero.name_code ]
-    end
-
   end
 
   # GET /combats/new
@@ -98,7 +101,10 @@ class CombatsController < ApplicationController
   end
 
   def hero_setup_draw_cards
-    @hero.draw_cards( @board, params[:nb_cards_to_draw].to_i, true )
+    @combat.transaction do
+      @hero.draw_cards( @board, params[:nb_cards_to_draw].to_i, true )
+      @combat.start!
+    end
     redirect_to play_card_board_combats_path( @board )
   end
 
@@ -106,6 +112,7 @@ class CombatsController < ApplicationController
     @combat.transaction do
       @combat.update( temporary_strength: params[:increase_strength] )
       @combat.log_increase_strength!( @board, @combat, @hero )
+      @combat.start!
     end
     redirect_to play_card_board_combats_path( @board )
   end

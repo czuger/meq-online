@@ -1,13 +1,21 @@
 %p#notice= notice
 
 - if @combat
-
-  = form_tag play_card_board_combats_path( @board ) do
+  -if @combat.hero_choices?
     .form-group
-      = select_tag( :selected_fighter, options_for_select( @fighter_select_data ), class: 'form-control' )
+      .row
+        .col-2
+          .col-form-label
+            Hero must use agility.
+        .col-2
+          = link_to( 'Use agility', hero_setup_new_board_combats_path( @board ), role: :button, class: 'btn btn-primary' ) if @combat.hero_user_id == current_user.id
+  - else
+    = form_tag play_card_board_combats_path( @board ) do
+      .form-group
+        = select_tag( :selected_fighter, options_for_select( @fighter_select_data ), class: 'form-control' )
 
-    .form-group
-      = button_tag 'Play card', role: :button, class: 'btn btn-primary'
+      .form-group
+        = button_tag 'Play card', role: :button, class: 'btn btn-primary'
 
   = link_to 'Finish combat', board_combats_path( @board ), method: :delete, role: :button, class: 'btn btn-primary'
 -else
