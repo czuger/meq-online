@@ -28,6 +28,14 @@ class CombatsController < ApplicationController
         @fighter_select_data << [ @heroes_hero.name, @hero.name_code ]
       end
     end
+
+    @should_show_cards = @combat.sauron_card_to_play && @combat.hero_card_to_play
+
+    if @should_show_cards
+      set_heroes
+      set_monsters
+    end
+
   end
 
   # GET /combats/new
