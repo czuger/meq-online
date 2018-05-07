@@ -7,3 +7,5 @@ en:
       combat:
         inc_strength: "Before the combat, %{name} use his agility to raise his strength from %{str} to %{nstr}."
         draw_cards: "Before the combat, %{name} draw %{cards_drawn} cards. Remains %{lp_cards} cards in life pool."
+
+        play_card: "%{name} play"

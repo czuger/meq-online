@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_06_181848) do
+ActiveRecord::Schema.define(version: 2018_05_07_070858) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,8 @@ ActiveRecord::Schema.define(version: 2018_05_06_181848) do
     t.string "aasm_state"
     t.string "monster", null: false
     t.string "sauron_hand", null: false
+    t.integer "sauron_card_to_play"
+    t.integer "hero_card_to_play"
     t.index ["board_id"], name: "index_combats_on_board_id", unique: true
     t.index ["hero_id"], name: "index_combats_on_hero_id", unique: true
   end
@@ -70,6 +72,7 @@ ActiveRecord::Schema.define(version: 2018_05_06_181848) do
     t.string "params", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "card_pic_path"
     t.index ["board_id"], name: "index_logs_on_board_id"
   end
 

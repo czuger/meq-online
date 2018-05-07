@@ -11,6 +11,4 @@
       %tr
         %td= print_log(log)
         %td
-          -if log.action == 'move'
-            = card_used(log)
-
+          = image_tag( log.card_pic_path, class: 'log-card' ) if log.card_pic_path

@@ -33,6 +33,7 @@ module LogsHelper
   end
 
   def hero_name( data )
+    return 'Sauron' if data[:name] == 'sauron'
     name_code = data[:name]
     @heroes.get( name_code ).name
   end

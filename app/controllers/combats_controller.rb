@@ -1,6 +1,6 @@
 class CombatsController < ApplicationController
   before_action :set_combat, only: [:show, :update, :destroy]
-  before_action :set_hero, only: [:play_card, :hero_setup_new, :hero_setup_draw_cards, :hero_setup_increase_strength]
+  before_action :set_hero, only: [:play_card_sauron, :play_card, :hero_setup_new, :hero_setup_draw_cards, :hero_setup_increase_strength]
 
   # GET /combats
   # GET /combats.json
@@ -43,6 +43,8 @@ class CombatsController < ApplicationController
   end
 
   def play_card_sauron
+    set_monsters
+    @combat.play_card(@board, true, @monster, params[:selected_card] )
   end
 
   def play_card_hero
@@ -134,6 +136,11 @@ class CombatsController < ApplicationController
     def set_heroes
       @heroes = GameData::Heroes.new
       @heroes_hero = @heroes.get(@hero.name_code)
+    end
+
+    def set_monsters
+      @monsters = GameData::Monsters.new
+      @monster = @monsters.get(@combat.monster.to_sym)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

@@ -9,6 +9,7 @@ module GameData
     end
 
     def get( name_code )
+      raise "#{name_code} not found in #{@data.keys}" unless @data.keys.include?(name_code.to_sym)
       hero = OpenStruct.new( @data[name_code.to_sym] )
       hero.cards.transform_values!{ |v| OpenStruct.new( v ) }
       hero

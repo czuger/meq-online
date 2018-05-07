@@ -12,7 +12,7 @@
     %b Hand:
 
   .form-group
-    - @combat.sauron_hand.sort.in_groups_of(8).each do |group|
+    - @combat.sauron_hand.sort.in_groups_of(6).each do |group|
       .row
         - group.each do |card_number|
           .col
@@ -24,6 +24,5 @@
       .row
         .col-4
           = hidden_field_tag :selected_card, nil
-          = hidden_field_tag :player, :sauron
         .col-2
           = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block disabled', id: :play_card
