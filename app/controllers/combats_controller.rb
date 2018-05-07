@@ -17,12 +17,12 @@ class CombatsController < ApplicationController
 
     if @combat&.sauron_user_id == current_user.id
       set_monsters
-      @fighter_select_data << [ @monster.name, @monster.name_code ]
+      @fighter_select_data << [ @monster.name, @combat.monster ]
     end
 
     if @combat&.hero_user_id == current_user.id
       set_heroes
-      @fighter_select_data << [ @heroes_hero.name, @heroes_hero.name_code ]
+      @fighter_select_data << [ @heroes_hero.name, @hero.name_code ]
     end
 
   end
@@ -49,8 +49,7 @@ class CombatsController < ApplicationController
   end
 
   def play_card
-    @sauron = @board.sauron
-    if @sauron.user_id == current_user.id
+    if params[:selected_fighter] == @combat.monster
       set_monsters
     else
       set_heroes
@@ -86,11 +85,7 @@ class CombatsController < ApplicationController
 
     respond_to do |format|
       if @combat.save
-        if current_user?( hero )
-          format.html { redirect_to hero_setup_new_board_combats_path( params[:board_id] ), notice: 'Combat was successfully created.' }
-        else
-          format.html { redirect_to board_sauron_path( params[:board_id] ), notice: 'Combat was successfully created.' }
-        end
+        format.html { redirect_to board_combats_path( params[:board_id] ), notice: 'Combat was successfully created.' }
       else
         set_new_data
         format.html { render :new }
