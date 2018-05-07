@@ -7,9 +7,8 @@ Rails.application.routes.draw do
       post :hero_setup_draw_cards
       post :hero_setup_increase_strength
       
+      get :play_card_screen
       post :play_card
-      post :play_card_sauron
-      post :play_card_hero
     end
 
     get :join, action: :join_new

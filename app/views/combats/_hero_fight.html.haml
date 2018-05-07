@@ -9,10 +9,11 @@
   .form-group
     = render partial: 'heros/cards_hand'
 
-  = form_tag play_card_hero_board_combats_path( @board ) do
+  = form_tag play_card_board_combats_path( @board ) do
     .form-group
       .row
         .col-5
           = hidden_field_tag :selected_card, nil
+          = hidden_field_tag :player, :hero
         .col-2
           = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block disabled', id: :play_card

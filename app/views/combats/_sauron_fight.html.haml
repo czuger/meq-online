@@ -17,10 +17,11 @@
             - if card_number
               = image_tag "monsters/#{@monster.cards[card_number].pic_path}", class: :card, card_id: card_number
 
-  = form_tag play_card_sauron_board_combats_path( @board ) do
+  = form_tag play_card_board_combats_path( @board ) do
     .form-group
       .row
         .col-4
           = hidden_field_tag :selected_card, nil
+          = hidden_field_tag :player, :sauron
         .col-2
           = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block disabled', id: :play_card

@@ -1,8 +1,8 @@
 class CombatsController < ApplicationController
 
   before_action :set_board, only: [:create]
-  before_action :set_combat, only: [:show, :update, :destroy]
-  before_action :set_hero, only: [:play_card_sauron, :play_card, :hero_setup_new, :hero_setup_draw_cards, :hero_setup_increase_strength]
+  before_action :set_combat, only: [:show, :update, :destroy, :play_card, :play_card_screen]
+  before_action :set_hero, only: [:hero_setup_new, :hero_setup_draw_cards, :hero_setup_increase_strength]
 
   # GET /combats
   # GET /combats.json
@@ -51,7 +51,7 @@ class CombatsController < ApplicationController
   def edit
   end
 
-  def play_card
+  def play_card_screen
     if params[:selected_fighter] == @combat.monster
       set_monsters
     else
@@ -59,14 +59,16 @@ class CombatsController < ApplicationController
     end
   end
 
-  def play_card_sauron
-    set_monsters
-    @combat.play_card(@board, true, @monster, params[:selected_card] )
-  end
-
-  def play_card_hero
-    set_heroes
-    @combat.play_card(@board, false, @heroes_hero, params[:selected_card] )
+  def play_card
+    @player = params[:player]
+    if @player == 'sauron'
+      set_monsters
+      @combat.play_card(@board, true, @monster, params[:selected_card] )
+    else
+      set_heroes
+      @combat.play_card(@board, false, @heroes_hero, params[:selected_card] )
+    end
+    redirect_to board_combats_path
   end
 
   # POST /combats
@@ -105,7 +107,7 @@ class CombatsController < ApplicationController
       @hero.draw_cards( @board, params[:nb_cards_to_draw].to_i, true )
       @combat.start!
     end
-    redirect_to play_card_board_combats_path( @board )
+    redirect_to board_combats_path( @board )
   end
 
   def hero_setup_increase_strength
@@ -114,7 +116,7 @@ class CombatsController < ApplicationController
       @combat.log_increase_strength!( @board, @combat, @hero )
       @combat.start!
     end
-    redirect_to play_card_board_combats_path( @board )
+    redirect_to board_combats_path( @board )
   end
 
   # PATCH/PUT /combats/1
