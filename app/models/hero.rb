@@ -27,7 +27,7 @@ class Hero < ApplicationRecord
         card: card } )
   end
 
-  def log_draw_cards!( board, cards_drawn, before_combat )
+  def log_draw_cards!( board, cards_drawn, before_combat= nil )
     action = ''
     action << 'combat.' if before_combat
     action << 'draw_cards'

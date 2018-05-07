@@ -37,8 +37,9 @@ class CombatsController < ApplicationController
   def play_card
     @sauron = @board.sauron
     if @sauron.user_id == current_user.id
-      @monsters = GameData::Monsters.new
-      @monster = @monsters.get(@combat.monster.to_sym)
+      set_monsters
+    else
+      set_heroes
     end
   end
 
@@ -48,6 +49,8 @@ class CombatsController < ApplicationController
   end
 
   def play_card_hero
+    set_heroes
+    @combat.play_card(@board, false, @heroes_hero, params[:selected_card] )
   end
 
   # POST /combats
@@ -134,6 +137,7 @@ class CombatsController < ApplicationController
     end
 
     def set_heroes
+      set_hero
       @heroes = GameData::Heroes.new
       @heroes_hero = @heroes.get(@hero.name_code)
     end

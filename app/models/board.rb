@@ -5,7 +5,7 @@ class Board < ApplicationRecord
   has_one :sauron, dependent: :destroy
   has_many :logs, dependent: :destroy
 
-  has_one :combat
+  has_one :combat, dependent: :destroy
 
   has_and_belongs_to_many :users
 
