@@ -1,4 +1,6 @@
 class CombatsController < ApplicationController
+
+  before_action :set_board, only: [:create]
   before_action :set_combat, only: [:show, :update, :destroy]
   before_action :set_hero, only: [:play_card_sauron, :play_card, :hero_setup_new, :hero_setup_draw_cards, :hero_setup_increase_strength]
 
@@ -11,6 +13,18 @@ class CombatsController < ApplicationController
   # GET /combats/1
   # GET /combats/1.json
   def show
+    @fighter_select_data = []
+
+    if @combat&.sauron_user_id == current_user.id
+      set_monsters
+      @fighter_select_data << [ @monster.name, @monster.name_code ]
+    end
+
+    if @combat&.hero_user_id == current_user.id
+      set_heroes
+      @fighter_select_data << [ @heroes_hero.name, @heroes_hero.name_code ]
+    end
+
   end
 
   # GET /combats/new
@@ -56,21 +70,23 @@ class CombatsController < ApplicationController
   # POST /combats
   # POST /combats.json
   def create
-    @hero = Hero.find( params[:hero_id] )
+    hero = Hero.find( params[:hero_id] )
     monster_code = params[:monster].to_sym
     monsters = GameData::Monsters.new
     monster = monsters.get(monster_code)
 
+    sauron = @board.sauron
     sauron_hand = monster.starting_deck.shift( monster.fortitude )
 
     cp = { board_id: params[:board_id], hero_id: params[:hero_id], sauron_cards_played:[], hero_cards_played:[],
-      monster: monster_code, temporary_strength: @hero.strength, sauron_hand: sauron_hand }
+      monster: monster_code, temporary_strength: hero.strength, sauron_hand: sauron_hand,
+      sauron_user_id: sauron.user_id, hero_user_id: hero.user_id }
 
     @combat = Combat.new(cp)
 
     respond_to do |format|
       if @combat.save
-        if current_user?( @hero )
+        if current_user?( hero )
           format.html { redirect_to hero_setup_new_board_combats_path( params[:board_id] ), notice: 'Combat was successfully created.' }
         else
           format.html { redirect_to board_sauron_path( params[:board_id] ), notice: 'Combat was successfully created.' }
@@ -125,14 +141,18 @@ class CombatsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_combat
+
+    def set_board
       @board ||= Board.find(params[:board_id])
+    end
+
+    def set_combat
+      set_board
       @combat ||= @board.combat
     end
 
     def set_hero
-      @board = Board.find(params[:board_id])
-      @combat ||= @board.combat
+      set_combat
       @hero ||= @combat.hero
     end
 
@@ -143,6 +163,7 @@ class CombatsController < ApplicationController
     end
 
     def set_monsters
+      set_combat
       @monsters = GameData::Monsters.new
       @monster = @monsters.get(@combat.monster.to_sym)
     end

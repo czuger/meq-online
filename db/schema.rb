@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_07_070858) do
+ActiveRecord::Schema.define(version: 2018_05_07_120130) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,8 @@ ActiveRecord::Schema.define(version: 2018_05_07_070858) do
     t.string "sauron_hand", null: false
     t.integer "sauron_card_to_play"
     t.integer "hero_card_to_play"
+    t.bigint "sauron_user_id", null: false
+    t.bigint "hero_user_id", null: false
     t.index ["board_id"], name: "index_combats_on_board_id", unique: true
     t.index ["hero_id"], name: "index_combats_on_hero_id", unique: true
   end
@@ -99,6 +101,8 @@ ActiveRecord::Schema.define(version: 2018_05_07_070858) do
 
   add_foreign_key "combats", "boards"
   add_foreign_key "combats", "heros"
+  add_foreign_key "combats", "users", column: "hero_user_id"
+  add_foreign_key "combats", "users", column: "sauron_user_id"
   add_foreign_key "heros", "boards"
   add_foreign_key "heros", "users"
   add_foreign_key "logs", "boards"
