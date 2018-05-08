@@ -12,8 +12,21 @@ card_selection = () ->
 
     $('#play_card').removeClass('disabled')
 
+card_hoovering = () ->
+  $('.card').hover(
+    () ->
+      $(this).removeClass('card')
+      $(this).addClass('zoomed-card')
+    () ->
+      $(this).removeClass('zoomed-card')
+      $(this).addClass('card')
+  )
+
 $(document).on('turbolinks:load'
   ->
     if window.location.pathname.match( /boards\/\d+\/combats\/play_card/ )
       card_selection()
+
+#    if window.location.pathname.match( /boards\/\d+\/combats/ )
+#      card_hoovering()
 )

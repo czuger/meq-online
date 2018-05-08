@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_07_120130) do
+ActiveRecord::Schema.define(version: 2018_05_08_053918) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,8 @@ ActiveRecord::Schema.define(version: 2018_05_07_120130) do
     t.integer "hero_card_to_play"
     t.bigint "sauron_user_id", null: false
     t.bigint "hero_user_id", null: false
+    t.boolean "sauron_next_round_ready", default: false, null: false
+    t.boolean "hero_next_round_ready", default: false, null: false
     t.index ["board_id"], name: "index_combats_on_board_id", unique: true
     t.index ["hero_id"], name: "index_combats_on_hero_id", unique: true
   end

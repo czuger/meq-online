@@ -23,12 +23,21 @@
         .col-2
           = image_tag( 'monsters/' + @monster.cards[@combat.sauron_card_to_play].pic_path, class: :card )
 
-    = form_tag play_card_screen_board_combats_path( @board ), method: :get do
-      .form-group
-        = select_tag( :selected_fighter, options_for_select( @fighter_select_data ), class: 'form-control' )
+    .form-group
+      = form_tag play_card_screen_board_combats_path( @board ), method: :get do
+        .row
+          .col-10
+            = select_tag( :selected_fighter, options_for_select( @fighter_select_data ), class: 'form-control' )
+          .col-2
+            = button_tag 'Play card', role: :button, class: 'btn btn-primary'
 
-      .form-group
-        = button_tag 'Play card', role: :button, class: 'btn btn-primary'
+    .form-group
+      = form_tag play_card_screen_board_combats_path( @board ), method: :get do
+        .row
+          .col-10
+            = select_tag( :selected_fighter, options_for_select( @fighter_select_data ), class: 'form-control' )
+          .col-2
+            = button_tag 'Play card', role: :button, class: 'btn btn-primary'
 
   = link_to 'Finish combat', board_combats_path( @board ), method: :delete, role: :button, class: 'btn btn-primary'
 -else
