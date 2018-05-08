@@ -1,6 +1,6 @@
 en:
   logs:
-    index:
+    show:
       move: "%{name} move from %{from} to %{to} using"
       draw_cards: "%{name} draw %{cards_drawn} cards. Remains %{lp_cards} cards in life pool."
 

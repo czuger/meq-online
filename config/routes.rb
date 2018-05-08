@@ -22,7 +22,6 @@ Rails.application.routes.draw do
     get :join, action: :join_new
     post :join
 
-    # TODO : singular ressource, index -> show
     resource :logs, only: [:show ]
     resource :sauron, only: [:show ]
 
