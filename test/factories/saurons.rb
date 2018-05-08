@@ -1,7 +1,6 @@
 FactoryBot.define do
   factory :sauron do
-    board { create :board }
-    user nil
+    name 'Sauron'
     plot_cards { [] }
     shadow_cards { [] }
   end

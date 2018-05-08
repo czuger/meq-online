@@ -19,7 +19,8 @@ class InfluencesController < ApplicationController
 
       diff_hash = Hash[ tmp_hash.to_a.sort - @board.influence.to_a.sort ]
       diff_hash.each do |k, v|
-        @board.logs.create!( action: :place_influence, params:{ place: @locations.get(k).name, value: v } )
+        @board.logs.create!( action: :place_influence, params:{ place: @locations.get(k).name, value: v },
+                             user_id: current_user.id,  )
       end
 
       @board.influence.merge!( tmp_hash )

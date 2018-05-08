@@ -1,4 +1,4 @@
-class Hero < ApplicationRecord
+class Hero < Player
 
   belongs_to :user
   belongs_to :board
