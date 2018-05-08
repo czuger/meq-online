@@ -20,7 +20,7 @@ class LogsController < ApplicationController
     @locations = GameData::Locations.new
 
     @board = Board.find(params[:board_id])
-    @logs = @board.logs.all.order( 'id DESC' )
+    @logs = @board.logs.all.includes( :player, :user ).order( 'id DESC' )
   end
   #
   # # GET /logs/new

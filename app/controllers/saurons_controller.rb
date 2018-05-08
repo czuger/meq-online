@@ -11,6 +11,7 @@ class SauronsController < ApplicationController
   # GET /saurons/1
   # GET /saurons/1.json
   def show
+    @player = @sauron
   end
   #
   # # GET /saurons/new

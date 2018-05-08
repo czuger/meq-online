@@ -18,6 +18,8 @@ class HerosController < ApplicationController
 
     @locations = GameData::Locations.new
     @locations.delete!(@hero.location)
+
+    @player = @sauron
   end
 
   # GET /heros/new

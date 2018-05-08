@@ -6,6 +6,7 @@ class InfluencesController < ApplicationController
   def edit
     @locations= GameData::Locations.new.list_by_region
     @influence = @board.influence
+    @player_id = params[:player_id]
   end
 
   def update
@@ -20,7 +21,7 @@ class InfluencesController < ApplicationController
       diff_hash = Hash[ tmp_hash.to_a.sort - @board.influence.to_a.sort ]
       diff_hash.each do |k, v|
         @board.logs.create!( action: :place_influence, params:{ place: @locations.get(k).name, value: v },
-                             user_id: current_user.id,  )
+                             user_id: current_user.id, player_id: params[:player_id].to_i )
       end
 
       @board.influence.merge!( tmp_hash )
@@ -33,6 +34,7 @@ class InfluencesController < ApplicationController
   def show
     @locations= GameData::Locations.new.list_by_region
     @influence = @board.influence
+    @player_id = params[:player_id]
   end
 
   private
