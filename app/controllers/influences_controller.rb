@@ -14,8 +14,18 @@ class InfluencesController < ApplicationController
     tmp_hash = params[:locations].select{ |l, v| !v.empty? && @locations.exist?( l ) }.to_h
     tmp_hash.transform_values!{ |v| v.to_i }
     tmp_hash = tmp_hash.symbolize_keys
-    @board.influence.merge!( tmp_hash )
-    @board.save!
+
+    @board.transaction do
+
+      diff_hash = Hash[ tmp_hash.to_a.sort - @board.influence.to_a.sort ]
+      diff_hash.each do |k, v|
+        @board.logs.create!( action: :place_influence, params:{ place: @locations.get(k).name, value: v } )
+      end
+
+      @board.influence.merge!( tmp_hash )
+      @board.save!
+    end
+
     redirect_to board_influences_path(@board)
   end
 
