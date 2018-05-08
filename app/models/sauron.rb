@@ -1,4 +1,4 @@
-class Sauron < Player
+class Sauron < Actor
   belongs_to :board
   belongs_to :user
   serialize :plot_cards

@@ -1,4 +1,4 @@
-class Player < ApplicationRecord
+class Actor < ApplicationRecord
   belongs_to :board
   belongs_to :user
 end

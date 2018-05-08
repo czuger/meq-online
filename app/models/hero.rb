@@ -1,4 +1,4 @@
-class Hero < Player
+class Hero < Actor
 
   belongs_to :user
   belongs_to :board

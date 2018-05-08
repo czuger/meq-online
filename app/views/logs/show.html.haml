@@ -12,7 +12,7 @@
     - @logs.each do |log|
       %tr
         %td= log.user.name
-        %td= log.player.name
+        %td= log.actor.name
         %td= print_log(log)
         %td
           = image_tag( log.card_pic_path, class: 'log-card' ) if log.card_pic_path

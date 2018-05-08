@@ -10,10 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_08_122637) do
+ActiveRecord::Schema.define(version: 2018_05_08_124517) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "actors", force: :cascade do |t|
+    t.bigint "board_id", null: false
+    t.bigint "user_id", null: false
+    t.string "type", null: false
+    t.string "plot_cards"
+    t.string "shadow_cards"
+    t.string "name_code"
+    t.string "name"
+    t.string "location"
+    t.string "life_pool"
+    t.string "hand"
+    t.string "rest_pool"
+    t.string "damage_pool"
+    t.integer "fortitude"
+    t.integer "strength"
+    t.integer "agility"
+    t.integer "wisdom"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["board_id"], name: "index_actors_on_board_id"
+  end
 
   create_table "boards", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -39,30 +61,8 @@ ActiveRecord::Schema.define(version: 2018_05_08_122637) do
     t.datetime "updated_at", null: false
     t.string "card_pic_path"
     t.bigint "user_id", null: false
-    t.bigint "player_id", null: false
+    t.bigint "actor_id", null: false
     t.index ["board_id"], name: "index_logs_on_board_id"
-  end
-
-  create_table "players", force: :cascade do |t|
-    t.bigint "board_id", null: false
-    t.bigint "user_id", null: false
-    t.string "type", null: false
-    t.string "plot_cards"
-    t.string "shadow_cards"
-    t.string "name_code"
-    t.string "name"
-    t.string "location"
-    t.string "life_pool"
-    t.string "hand"
-    t.string "rest_pool"
-    t.string "damage_pool"
-    t.integer "fortitude"
-    t.integer "strength"
-    t.integer "agility"
-    t.integer "wisdom"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["board_id"], name: "index_players_on_board_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -75,9 +75,9 @@ ActiveRecord::Schema.define(version: 2018_05_08_122637) do
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
 
+  add_foreign_key "actors", "boards"
+  add_foreign_key "actors", "users"
+  add_foreign_key "logs", "actors"
   add_foreign_key "logs", "boards"
-  add_foreign_key "logs", "players"
   add_foreign_key "logs", "users"
-  add_foreign_key "players", "boards"
-  add_foreign_key "players", "users"
 end
