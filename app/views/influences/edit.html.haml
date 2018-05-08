@@ -1,0 +1,22 @@
+= form_tag board_influences_path(@board), method: :patch do
+  %table.table
+    %thead
+      %tr
+        %th
+          Region
+        %th
+          Zone
+        %th
+          Influence
+
+    %tbody
+      - @locations.each do |location|
+        %tr
+          %td
+            = location.region
+          %td
+            = location.name
+          %td
+            = number_field_tag "locations[#{location.name_code}]", @influence[location.name_code]
+
+  = button_tag 'Validate', role: :button, class: 'btn btn-primary'

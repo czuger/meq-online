@@ -25,6 +25,8 @@ Rails.application.routes.draw do
     resource :sauron, only: [:show ]
 
     resources :heros, only: [ :index ]
+
+    resource :influences, only: [ :show, :edit, :update ]
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 

@@ -50,7 +50,7 @@ class BoardsController < ApplicationController
   # POST /boards.json
   def create
 
-    @board = Board.new
+    @board = Board.new( influence: {} )
     @board.max_heroes_count= params[:max_heroes_count]
 
     respond_to do |format|

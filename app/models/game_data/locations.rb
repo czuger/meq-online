@@ -9,11 +9,20 @@ module GameData
     end
 
     def get( name_code )
-      OpenStruct.new( @data[name_code] )
+      OpenStruct.new( @data[name_code.to_sym] )
+    end
+
+    def exist?( name_code )
+      p name_code
+      @data.has_key?( name_code.to_sym )
     end
 
     def delete!( location_name )
       @data.delete( location_name.to_sym )
+    end
+
+    def list_by_region
+      @data.map{ |k, v| OpenStruct.new( name_code: k, name: v[:name], region: v[:region] ) }.sort_by { |e| [e.region, e.name ] }
     end
 
   end

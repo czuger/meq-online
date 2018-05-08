@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_08_091017) do
+ActiveRecord::Schema.define(version: 2018_05_08_091536) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2018_05_08_091017) do
     t.integer "current_heroes_count", default: 0, null: false
     t.boolean "sauron_created", default: false, null: false
     t.string "aasm_state"
+    t.string "influence", null: false
   end
 
   create_table "boards_users", id: false, force: :cascade do |t|

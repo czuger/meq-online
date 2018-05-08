@@ -9,6 +9,8 @@ class Board < ApplicationRecord
 
   has_and_belongs_to_many :users
 
+  serialize :influence
+
   aasm do
     state :created, :initial => true
     state :waiting_for_players, :heroes_setup, :sauron_setup, :heroes_turn, :sauron_first_turn, :sauron_turn

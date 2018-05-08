@@ -1,0 +1,22 @@
+= link_to 'Edit', edit_board_influences_path(@board), role: :button, class: 'btn btn-secondary'
+
+%table.table
+  %thead
+    %tr
+      %th
+        Region
+      %th
+        Zone
+      %th
+        Influence
+
+  %tbody
+    - @locations.each do |location|
+      - if @influence[location.name_code]
+        %tr
+          %td
+            = location.region
+          %td
+            = location.name
+          %td
+            = @influence[location.name_code]
