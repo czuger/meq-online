@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_08_121326) do
+ActiveRecord::Schema.define(version: 2018_05_08_122637) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,47 +29,6 @@ ActiveRecord::Schema.define(version: 2018_05_08_121326) do
     t.bigint "user_id", null: false
     t.bigint "board_id", null: false
     t.index ["user_id", "board_id"], name: "index_boards_users_on_user_id_and_board_id", unique: true
-  end
-
-  create_table "combats", force: :cascade do |t|
-    t.bigint "board_id"
-    t.bigint "hero_id"
-    t.integer "temporary_strength", null: false
-    t.string "hero_cards_played", null: false
-    t.string "sauron_cards_played", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "aasm_state"
-    t.string "monster", null: false
-    t.string "sauron_hand", null: false
-    t.integer "sauron_card_to_play"
-    t.integer "hero_card_to_play"
-    t.bigint "sauron_user_id", null: false
-    t.bigint "hero_user_id", null: false
-    t.boolean "sauron_next_round_ready", default: false, null: false
-    t.boolean "hero_next_round_ready", default: false, null: false
-    t.index ["board_id"], name: "index_combats_on_board_id", unique: true
-    t.index ["hero_id"], name: "index_combats_on_hero_id", unique: true
-  end
-
-  create_table "heros", force: :cascade do |t|
-    t.bigint "board_id", null: false
-    t.string "name_code"
-    t.integer "fortitude"
-    t.integer "strength"
-    t.integer "agility"
-    t.integer "wisdom"
-    t.string "location"
-    t.string "hand"
-    t.string "life_pool"
-    t.string "rest_pool"
-    t.string "damage_pool"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.string "name", null: false
-    t.index ["board_id"], name: "index_heros_on_board_id"
-    t.index ["user_id"], name: "index_heros_on_user_id"
   end
 
   create_table "logs", force: :cascade do |t|
@@ -106,17 +65,6 @@ ActiveRecord::Schema.define(version: 2018_05_08_121326) do
     t.index ["board_id"], name: "index_players_on_board_id"
   end
 
-  create_table "saurons", force: :cascade do |t|
-    t.bigint "board_id", null: false
-    t.bigint "user_id", null: false
-    t.string "plot_cards", null: false
-    t.string "shadow_cards", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["board_id"], name: "index_saurons_on_board_id", unique: true
-    t.index ["user_id"], name: "index_saurons_on_user_id"
-  end
-
   create_table "users", force: :cascade do |t|
     t.string "provider", null: false
     t.string "uid", null: false
@@ -127,17 +75,9 @@ ActiveRecord::Schema.define(version: 2018_05_08_121326) do
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
 
-  add_foreign_key "combats", "boards"
-  add_foreign_key "combats", "heros"
-  add_foreign_key "combats", "users", column: "hero_user_id"
-  add_foreign_key "combats", "users", column: "sauron_user_id"
-  add_foreign_key "heros", "boards"
-  add_foreign_key "heros", "users"
   add_foreign_key "logs", "boards"
   add_foreign_key "logs", "players"
   add_foreign_key "logs", "users"
   add_foreign_key "players", "boards"
   add_foreign_key "players", "users"
-  add_foreign_key "saurons", "boards"
-  add_foreign_key "saurons", "users"
 end

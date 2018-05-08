@@ -6,6 +6,7 @@ namespace :board do
     Board.all.each do |board|
       board.users.clear
       board.combat&.destroy
+      board.heroes.delete_all
       board.destroy
     end
 
