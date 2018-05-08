@@ -122,7 +122,7 @@ class BoardsController < ApplicationController
           @board.heroes.create!(
               name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
               wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: hero.starting_deck.shuffle,
-              rest_pool: [], damage_pool: [], hand: [], user_id: @current_user.id
+              rest_pool: [], damage_pool: [], hand: [], user_id: @current_user.id, name: hero.name
           )
           @current_user.boards << @board unless @current_user.boards.include?( @board )
         end

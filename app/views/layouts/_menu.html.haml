@@ -9,10 +9,21 @@
   -#= link_to 'Combat', board_combats_path( @board ), role: :button, class: 'btn btn-primary'
   = link_to 'Log', board_logs_path( @board ), role: :button, class: 'btn btn-primary'
 
-- if @current_user
-
+- if @sauron
   %button.btn.btn-primary{ type: :button }
     You play
+    %span.badge.badge-light
+      Sauron
+
+- if @hero
+  %button.btn.btn-primary{ type: :button }
+    You play
+    %span.badge.badge-light
+      = @hero.name
+
+- if @current_user
+  %button.btn.btn-primary{ type: :button }
+    You are connected as
     %span.badge.badge-light
       = @current_user.name
 
