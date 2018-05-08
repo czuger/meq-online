@@ -23,7 +23,7 @@ Rails.application.routes.draw do
     post :join
 
     # TODO : singular ressource, index -> show
-    resources :logs, only: [:index ]
+    resource :logs, only: [:show ]
     resource :sauron, only: [:show ]
 
     # TODO : extract outside boards, but index

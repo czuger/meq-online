@@ -1,23 +1,27 @@
 class LogsController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_log, only: [:show, :edit, :update, :destroy]
+  # before_action :set_log, only: [:show, :edit, :update, :destroy]
 
   # GET /logs
   # GET /logs.json
-  def index
+  # def index
+  #   @heroes = GameData::Heroes.new
+  #   @locations = GameData::Locations.new
+  #
+  #   @board = Board.find(params[:board_id])
+  #   @logs = @board.logs.all.order( 'id DESC' )
+  # end
 
+  # GET /logs/1
+  # GET /logs/1.json
+  def show
     @heroes = GameData::Heroes.new
     @locations = GameData::Locations.new
 
     @board = Board.find(params[:board_id])
     @logs = @board.logs.all.order( 'id DESC' )
   end
-
-  # # GET /logs/1
-  # # GET /logs/1.json
-  # def show
-  # end
   #
   # # GET /logs/new
   # def new

@@ -1,15 +1,14 @@
-%p#notice= notice
+%h1 Listing logs
 
-%p
-  %b Board:
-  = @log.board
-%p
-  %b Action:
-  = @log.action
-%p
-  %b Params:
-  = @log.params
+%table.table
+  %thead
+    %tr
+      %th Action
+      %th Card used
 
-= link_to 'Edit', edit_log_path(@log)
-\|
-= link_to 'Back', logs_path
+  %tbody
+    - @logs.each do |log|
+      %tr
+        %td= print_log(log)
+        %td
+          = image_tag( log.card_pic_path, class: 'log-card' ) if log.card_pic_path

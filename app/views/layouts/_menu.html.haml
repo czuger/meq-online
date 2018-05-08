@@ -6,7 +6,7 @@
 
 - if @board && @board.id
   -#= link_to 'Heroes', board_heros_path( @board ), role: :button, class: 'btn btn-primary'
-  = link_to 'Combat', board_combats_path( @board ), role: :button, class: 'btn btn-primary'
+  -#= link_to 'Combat', board_combats_path( @board ), role: :button, class: 'btn btn-primary'
   = link_to 'Log', board_logs_path( @board ), role: :button, class: 'btn btn-primary'
 
 - if @current_user
