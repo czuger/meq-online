@@ -6,7 +6,6 @@ class InfluencesController < ApplicationController
   def edit
     @locations= GameData::Locations.new.list_by_region
     @influence = @board.influence
-    @player_id = params[:player_id]
   end
 
   def update
@@ -21,26 +20,26 @@ class InfluencesController < ApplicationController
       diff_hash = Hash[ tmp_hash.to_a.sort - @board.influence.to_a.sort ]
       diff_hash.each do |k, v|
         @board.logs.create!( action: :place_influence, params:{ place: @locations.get(k).name, value: v },
-                             user_id: current_user.id, player_id: params[:player_id].to_i )
+                             user_id: current_user.id, actor_id: @actor_id)
       end
 
       @board.influence.merge!( tmp_hash )
       @board.save!
     end
 
-    redirect_to board_influences_path(@board)
+    redirect_to board_actor_influences_path(@board,@actor_id)
   end
 
   def show
     @locations= GameData::Locations.new.list_by_region
     @influence = @board.influence
-    @player_id = params[:player_id]
   end
 
   private
 
   def set_board
     @board = Board.find(params[:board_id])
+    @actor_id = params[:actor_id].to_i
     raise "Board #{@board.inspect} can't be modified by #{current_user.id}" unless @board.users.pluck(:id).include?( current_user.id )
   end
 
