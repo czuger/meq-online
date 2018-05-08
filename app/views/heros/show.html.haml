@@ -55,13 +55,13 @@
 
   .row
     .col
-      = link_to 'Draw hand', board_hero_draw_cards_path(@board, @hero), role: :button, class: 'btn btn-secondary'
+      = link_to 'Draw hand', hero_draw_cards_path(@hero), role: :button, class: 'btn btn-secondary'
     .col
-      = link_to 'Rest', board_hero_rest_path(@board, @hero), role: :button, class: 'btn btn-secondary'
+      = link_to 'Rest', hero_rest_path(@hero), role: :button, class: 'btn btn-secondary'
     .col
-      = link_to 'Heal', board_hero_heal_path(@board, @hero), role: :button, class: 'btn btn-secondary'
+      = link_to 'Heal', hero_heal_path(@hero), role: :button, class: 'btn btn-secondary'
     .col
-      = link_to 'Take damages', board_hero_take_damages_path(@board, @hero, damage_amount: 3 ), method: :patch, role: :button, class: 'btn btn-secondary'
+      = link_to 'Take damages', hero_take_damages_path(@hero, damage_amount: 3 ), method: :patch, role: :button, class: 'btn btn-secondary'
     .col
     .col
 
@@ -70,7 +70,7 @@
     %b Hand:
 
   .row
-    = form_tag board_hero_draw_cards_path(@board, @hero), class: 'form-inline' do
+    = form_tag hero_draw_cards_path(@hero), class: 'form-inline' do
       .form-group
         .mx-2
           = label_tag :nb_cards, 'Cards count'
@@ -90,7 +90,7 @@
           - if card_number
             = image_tag "hero_cards/#{@heroes_hero.cards[card_number].pic_path}", class: :card, card_id: card_number
 
-  = form_tag board_hero_move_path(@board, @hero), class: 'form-inline' do
+  = form_tag hero_move_path(@hero), class: 'form-inline' do
     = label_tag :move_to, 'Move to'
     = select_tag(:move_to,options_for_select( @locations.select_tag_data ), class: 'form-control' )
     = button_tag 'Move', role: :button, class: 'btn btn-secondary disabled', id: :move_hero

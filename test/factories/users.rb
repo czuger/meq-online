@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :user do
-    provider 'developer'
-    uid 123456789
+    provider 'google_oauth2'
+    uid 1
     name 'foo'
     email 'bar'
   end

@@ -37,7 +37,7 @@ class HerosController < ApplicationController
 
     @hero.log_draw_cards!( @board, cards.count)
 
-    redirect_to [@board,@hero]
+    redirect_to @hero
   end
 
   def rest
@@ -45,7 +45,7 @@ class HerosController < ApplicationController
     @hero.rest_pool = []
     @hero.life_pool.shuffle
     @hero.save!
-    redirect_to [@board,@hero]
+    redirect_to @hero
   end
 
   def heal
@@ -53,7 +53,7 @@ class HerosController < ApplicationController
     @hero.damage_pool = []
     @hero.life_pool.shuffle
     @hero.save!
-    redirect_to [@board,@hero]
+    redirect_to @hero
   end
 
   def take_damages
@@ -63,7 +63,7 @@ class HerosController < ApplicationController
     rest_damages = damage_amount - damages_taken_from_life_pool.count
     @hero.damage_pool += @hero.hand.shift(rest_damages)
     @hero.save!
-    redirect_to [@board,@hero]
+    redirect_to @hero
   end
 
   def move
@@ -83,7 +83,7 @@ class HerosController < ApplicationController
       raise "Can't find a card position. card = #{card.inspect}, hand = #{@hero.hand.inspect}"
     end
 
-    redirect_to [@board,@hero]
+    redirect_to @hero
   end
 
   # POST /heros
@@ -129,8 +129,9 @@ class HerosController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_hero
-      @board = Board.find(params[:board_id])
-      @hero = @board.heroes.find(params[:id]||params[:hero_id])
+      @hero = Hero.find(params[:id]||params[:hero_id])
+      raise "Hero #{@hero.inspect} is not owned by #{current_user.inspect}" unless @hero.user_id == current_user.id
+      @board = @hero.board
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

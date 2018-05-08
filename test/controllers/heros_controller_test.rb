@@ -9,9 +9,11 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     @hero = create( :hero, user: @user, board: @board )
 
     $google_auth_hash[:uid] = @user.uid
-    OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
+    OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new $google_auth_hash
     get '/auth/google_oauth2'
     follow_redirect!
+
+    # pp User.all
   end
 
   test 'should get index' do
@@ -30,32 +32,32 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should POST draw_cards' do
-    post board_hero_draw_cards_url( @board, @hero )
-    assert_redirected_to board_hero_url(@board, @hero)
+    post hero_draw_cards_url( @hero )
+    assert_redirected_to hero_url(@hero)
   end
 
   test 'should get heal' do
-    get board_hero_heal_url( @board, @hero )
-    assert_redirected_to board_hero_url(@board, @hero)
+    get hero_heal_url( @hero )
+    assert_redirected_to hero_url(@hero)
   end
 
   test 'should get rest' do
-    get board_hero_rest_url( @board, @hero )
-    assert_redirected_to board_hero_url(@board, @hero)
+    get hero_rest_url( @hero )
+    assert_redirected_to hero_url(@hero)
   end
 
   test 'should patch take_damages' do
-    patch board_hero_take_damages_url( @board, @hero, damage_amount: 3 )
-    assert_redirected_to board_hero_url(@board, @hero)
+    patch hero_take_damages_url( @hero, damage_amount: 3 )
+    assert_redirected_to hero_url(@hero)
   end
 
   test 'should POST move' do
-    post board_hero_move_url( @board, @hero, params: { move_to: :the_grey_havens, card_used: 1 } )
-    assert_redirected_to board_hero_url(@board, @hero)
+    post hero_move_url( @hero, params: { move_to: :the_grey_havens, card_used: 1 } )
+    assert_redirected_to hero_url(@hero)
   end
 
   # test 'should get new' do
-  #   get new_board_hero_url
+  #   get new_hero_url
   #   assert_response :success
   # end
 
@@ -68,7 +70,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   # end
 
   test 'should show hero' do
-    get board_hero_url( @board, @hero )
+    get hero_url( @hero )
     assert_response :success
   end
 

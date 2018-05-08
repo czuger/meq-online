@@ -23,6 +23,6 @@ $google_auth_hash =
         },
         credentials: {
             token: 123456,
-            expires_at: 123456789
+            expires_at: 'expire_time'
         }
     }

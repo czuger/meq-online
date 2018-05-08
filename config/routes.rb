@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     post :play_card
   end
 
-  resources :heros, only: [ :index, :show ] do
+  resources :heros, only: [ :show ] do
     post :draw_cards
     get :rest
     get :heal
@@ -18,22 +18,13 @@ Rails.application.routes.draw do
   end
 
   resources :boards, only:[ :index, :show, :new, :create ] do
-
     get :join, action: :join_new
     post :join
 
     resource :logs, only: [:show ]
     resource :sauron, only: [:show ]
 
-    # TODO : extract outside boards, but index
-    resources :heros, only: [ :index, :show ] do
-      post :draw_cards
-      get :rest
-      get :heal
-      patch :take_damages
-      post :move
-    end
-
+    resources :heros, only: [ :index ]
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
