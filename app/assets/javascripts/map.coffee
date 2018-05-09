@@ -3,14 +3,25 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 zoom_map = () ->
-  x = event.pageX - 150
-  y = event.pageY - 150
+
+  offset = $('#map').offset()
+#  console.log(offset)
+
+  page_x = event.pageX
+  page_y = event.pageY
 
   x_decal = 4890.0 / 1900.0
   y_decal = 3362.0 / 1306.0
 
-  $('#zoom-area').css({left: x, top: y});
-  $('#zoom-area').css('background-position', (-x * x_decal) + "px " + (-y * y_decal) + "px");
+  true_x = page_x-offset.left-(150.0/x_decal)
+  true_y = page_y-offset.top-(150.0/y_decal)
+
+  page_x-=150
+  page_y-=150
+
+
+  $('#zoom-area').css({left: page_x, top: page_y});
+  $('#zoom-area').css('background-position', ((-true_x) * x_decal) + "px " + ((-true_y) * y_decal) + "px");
 
 set_zoom_map = () ->
   $('#map').mousemove(zoom_map)
