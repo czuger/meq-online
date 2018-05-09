@@ -41,4 +41,9 @@ class Board < ApplicationRecord
 
   end
 
+  def log!( user, actor, action, params= {} )
+    actor = actor.is_a?( Integer ) ? actor : actor.id
+    logs.create!( board: self, actor_id: actor, user: user, action: action, params: params )
+  end
+
 end

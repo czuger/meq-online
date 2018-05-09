@@ -1,0 +1,18 @@
+%h1 Select plot card
+
+.container
+  %p#notice= notice
+
+  %p
+    Select plot card
+
+  .row
+    - @cards.each do |plot_card_number|
+      .col-3
+        = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card selectable-card', card_id: plot_card_number
+
+  .form-group
+    = form_tag board_draw_plot_cards_path(@board), method: :patch, class: 'form-inline' do
+      = hidden_field_tag :selected_card, nil
+      = hidden_field_tag :pool_cards, @cards
+      = button_tag 'Keep', role: :button, class: 'btn btn-secondary disabled', id: :validate

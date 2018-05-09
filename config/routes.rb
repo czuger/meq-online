@@ -24,10 +24,11 @@ Rails.application.routes.draw do
     get :map
 
     resource :logs, only: [:show ]
-    resource :sauron, only: [:show] do
-      post :draw_plot_card
-    end
+    resource :sauron, only: [:show]
 
+    resource :draw_plot_cards, only:[:edit,:update] do
+      # post :draw_cards
+    end
 
     resources :heros, only: [ :index ]
 

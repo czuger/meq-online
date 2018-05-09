@@ -9,7 +9,7 @@
         = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card'
 
   .row
-    = form_tag draw_plot_card_board_sauron_path(@board), class: 'form-inline' do
+    = form_tag edit_board_draw_plot_cards_path(@board), method: :get, class: 'form-inline' do
       .form-group
         .mx-2
           = label_tag :nb_cards, 'Draw plot cards'

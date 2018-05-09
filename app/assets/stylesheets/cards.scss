@@ -1,0 +1,19 @@
+
+.small-card{
+  width: 100%;
+  margin-left: 10px;
+  //float: left;
+}
+
+.big-card{
+  width: 100%;
+}
+
+.selected-card{
+  border: 3px solid black;
+  border-radius: 18px;
+}
+
+.zoomed-card{
+  width: 300%;
+}

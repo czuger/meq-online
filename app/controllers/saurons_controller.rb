@@ -1,73 +1,10 @@
 class SauronsController < ApplicationController
   before_action :require_logged_in
-  before_action :set_sauron, only: [:show, :draw_plot_card]
+  before_action :set_sauron, only: [:show]
 
-  # # GET /saurons
-  # # GET /saurons.json
-  # def index
-  #   @saurons = Sauron.all
-  # end
-  #
-  # GET /saurons/1
-  # GET /saurons/1.json
   def show
     @player = @sauron
   end
-
-  def draw_plot_card
-    nb_cards = params[:nb_cards].to_i
-    cards = @board.plot_deck.shift(nb_cards)
-
-  end
-  #
-  # # GET /saurons/new
-  # def new
-  #   @sauron = Sauron.new
-  # end
-  #
-  # # GET /saurons/1/edit
-  # def edit
-  # end
-  #
-  # # POST /saurons
-  # # POST /saurons.json
-  # def create
-  #   @sauron = Sauron.new(sauron_params)
-  #
-  #   respond_to do |format|
-  #     if @sauron.save
-  #       format.html { redirect_to @sauron, notice: 'Sauron was successfully created.' }
-  #       format.json { render :show, status: :created, location: @sauron }
-  #     else
-  #       format.html { render :new }
-  #       format.json { render json: @sauron.errors, status: :unprocessable_entity }
-  #     end
-  #   end
-  # end
-  #
-  # # PATCH/PUT /saurons/1
-  # # PATCH/PUT /saurons/1.json
-  # def update
-  #   respond_to do |format|
-  #     if @sauron.update(sauron_params)
-  #       format.html { redirect_to @sauron, notice: 'Sauron was successfully updated.' }
-  #       format.json { render :show, status: :ok, location: @sauron }
-  #     else
-  #       format.html { render :edit }
-  #       format.json { render json: @sauron.errors, status: :unprocessable_entity }
-  #     end
-  #   end
-  # end
-  #
-  # # DELETE /saurons/1
-  # # DELETE /saurons/1.json
-  # def destroy
-  #   @sauron.destroy
-  #   respond_to do |format|
-  #     format.html { redirect_to saurons_url, notice: 'Sauron was successfully destroyed.' }
-  #     format.json { head :no_content }
-  #   end
-  # end
 
   private
     # Use callbacks to share common setup or constraints between actions.
