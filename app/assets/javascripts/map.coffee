@@ -6,8 +6,11 @@ zoom_map = () ->
   x = event.pageX - 150
   y = event.pageY - 150
 
+  x_decal = 4890.0 / 1900.0
+  y_decal = 3362.0 / 1306.0
+
   $('#zoom-area').css({left: x, top: y});
-  $('#zoom-area').css('background-position', (-x * 3) + "px " + (-y * 2.6) + "px");
+  $('#zoom-area').css('background-position', (-x * x_decal) + "px " + (-y * y_decal) + "px");
 
 set_zoom_map = () ->
   $('#map').mousemove(zoom_map)
