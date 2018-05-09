@@ -4,7 +4,7 @@
 
 # See : http://www.bootstraptoggle.com/
 sauron_checkbox = () ->
-  $('#sauron').bootstrapToggle({
+  $('#map').bootstrapToggle({
     on: 'Yes',
     off: 'No'
   })
@@ -23,6 +23,7 @@ match_players_count = () ->
       $('.heroes_count_2').hide()
     else
       $('.heroes_count_2').show()
+
 
 
 
