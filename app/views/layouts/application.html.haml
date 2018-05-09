@@ -11,8 +11,5 @@
 
     .container
       = render partial: 'layouts/menu'
-      - unless controller.controller_name == "boards" && controller.action_name == "map"
-        = yield
 
-    - if controller.controller_name == "boards" && controller.action_name == "map"
-      = yield
+    = yield

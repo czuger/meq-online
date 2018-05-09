@@ -1,10 +1,23 @@
-%p#notice= notice
+.container
+  %p#notice= notice
 
-.row
-  - @sauron.plot_cards.each do |plot_card_number|
-    .col-3
-      = image_tag "sauron/plots/#{plot_card_number}.png"
+.container-fluid
 
-%p
-  %b Shadow cards:
-  = @sauron.shadow_cards
+  .row
+    - @sauron.plot_cards.each do |plot_card_number|
+      .col-2
+        = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card'
+
+  .row
+    = form_tag draw_plot_card_board_sauron_path(@board), class: 'form-inline' do
+      .form-group
+        .mx-2
+          = label_tag :nb_cards, 'Draw plot cards'
+        .mx-2
+          = number_field_tag :nb_cards, 2, max: 10, class: 'form-control'
+        .mx-2
+          = button_tag 'Draw cards', role: :button, class: 'btn btn-secondary'
+
+  %p
+    %b Shadow cards:
+    = @sauron.shadow_cards

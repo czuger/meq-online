@@ -24,13 +24,17 @@ Rails.application.routes.draw do
     get :map
 
     resource :logs, only: [:show ]
-    resource :sauron, only: [:show ]
+    resource :sauron, only: [:show] do
+      post :draw_plot_card
+    end
+
 
     resources :heros, only: [ :index ]
 
     resources :actor, only: [] do
       resource :influences, only: [ :show, :edit, :update ]
       resource :shadow_pools, only: [ :edit, :update ]
+
     end
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

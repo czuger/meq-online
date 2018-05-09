@@ -1,6 +1,6 @@
 class SauronsController < ApplicationController
   before_action :require_logged_in
-  before_action :set_sauron, only: [:show, :edit, :update, :destroy]
+  before_action :set_sauron, only: [:show, :draw_plot_card]
 
   # # GET /saurons
   # # GET /saurons.json
@@ -12,6 +12,12 @@ class SauronsController < ApplicationController
   # GET /saurons/1.json
   def show
     @player = @sauron
+  end
+
+  def draw_plot_card
+    nb_cards = params[:nb_cards].to_i
+    cards = @board.plot_deck.shift(nb_cards)
+
   end
   #
   # # GET /saurons/new

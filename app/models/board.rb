@@ -9,6 +9,7 @@ class Board < ApplicationRecord
   has_and_belongs_to_many :users
 
   serialize :influence
+  serialize :plot_deck
 
   aasm do
     state :created, :initial => true

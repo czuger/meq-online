@@ -51,6 +51,7 @@ class BoardsController < ApplicationController
   def create
 
     @board = Board.new( influence: {} )
+    @board.plot_deck = (3..17).to_a.shuffle
     @board.max_heroes_count= params[:max_heroes_count]
 
     respond_to do |format|
@@ -113,9 +114,11 @@ class BoardsController < ApplicationController
       @heroes.delete_heroes!( existing_heroes )
     end
 
+
     def add_players_to_board
       load_heroes
 
+      # Adding heroes
       @board.transaction do
         heroes_to_process = [:hero_1, :hero_2, :hero_3].map{ |h| params[h]&.to_sym }.compact.reject{ |h| h.empty? }.uniq
         heroes_to_process.each do |hero_code|
@@ -127,14 +130,19 @@ class BoardsController < ApplicationController
               wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: hero.starting_deck.shuffle,
               rest_pool: [], damage_pool: [], hand: [], user_id: @current_user.id, name: hero.name
           )
+          # Just tell that the user is connected to this board
           @current_user.boards << @board unless @current_user.boards.include?( @board )
         end
 
+        # Adding Sauron
         if params[:sauron]
           @board.create_sauron!( plot_cards: [ Hazard.d3-1 ], shadow_cards: [], user_id: @current_user.id )
+
+          # Just tell that the user is connected to this board
           @current_user.boards << @board unless @current_user.boards.include?( @board )
         end
 
+        # Misc
         @board.current_heroes_count= @board.heroes.count
         @board.sauron_created= @board.sauron ? true : false
 

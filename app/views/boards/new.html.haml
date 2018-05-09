@@ -1,40 +1,42 @@
-%h1 New board
+.container
 
-= form_for @board, class: 'form-group' do |f|
+  %h1 New board
 
-  .row
-    .col-2
-      = label_tag :player_1, 'Heroes count', class: 'col-form-label'
-    .col-2
-      .btn-group.btn-group-toggle{ 'data-toggle' => 'buttons' }
-        %label.btn.btn-secondary
-          = radio_button_tag(:max_heroes_count, 1, false, class: 'max_heroes_count' )
-          1
-        %label.btn.btn-secondary
-          = radio_button_tag(:max_heroes_count, 2, false, class: 'max_heroes_count' )
-          2
-        %label.btn.btn-secondary.active
-          = radio_button_tag(:max_heroes_count, 3, true, class: 'max_heroes_count' )
-          3
-    -#
-    -#
-    -#.col-1
-    -#  = radio_button_tag(:players_count, 3, class: 'form-control btn btn-primary select-players')
-    -#.col-1
-    -#  = radio_button_tag(:players_count, 4, class: 'form-control btn btn-primary select-players')
+  = form_for @board, class: 'form-group' do |f|
 
-  %hr
+    .row
+      .col-2
+        = label_tag :player_1, 'Heroes count', class: 'col-form-label'
+      .col-2
+        .btn-group.btn-group-toggle{ 'data-toggle' => 'buttons' }
+          %label.btn.btn-secondary
+            = radio_button_tag(:max_heroes_count, 1, false, class: 'max_heroes_count' )
+            1
+          %label.btn.btn-secondary
+            = radio_button_tag(:max_heroes_count, 2, false, class: 'max_heroes_count' )
+            2
+          %label.btn.btn-secondary.active
+            = radio_button_tag(:max_heroes_count, 3, true, class: 'max_heroes_count' )
+            3
+      -#
+      -#
+      -#.col-1
+      -#  = radio_button_tag(:players_count, 3, class: 'form-control btn btn-primary select-players')
+      -#.col-1
+      -#  = radio_button_tag(:players_count, 4, class: 'form-control btn btn-primary select-players')
 
-  = render partial: 'players_subscribe'
+    %hr
 
--#  <div class="btn-group btn-group-toggle" data-toggle="buttons">
--#  <label class="btn btn-secondary active">
--#    <input type="radio" name="options" id="option1" autocomplete="off" checked> Active
--#  </label>
--#  <label class="btn btn-secondary">
--#    <input type="radio" name="options" id="option2" autocomplete="off"> Radio
--#  </label>
--#  <label class="btn btn-secondary">
--#    <input type="radio" name="options" id="option3" autocomplete="off"> Radio
--#  </label>
--#</div>
+    = render partial: 'players_subscribe'
+
+  -#  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+  -#  <label class="btn btn-secondary active">
+  -#    <input type="radio" name="options" id="option1" autocomplete="off" checked> Active
+  -#  </label>
+  -#  <label class="btn btn-secondary">
+  -#    <input type="radio" name="options" id="option2" autocomplete="off"> Radio
+  -#  </label>
+  -#  <label class="btn btn-secondary">
+  -#    <input type="radio" name="options" id="option3" autocomplete="off"> Radio
+  -#  </label>
+  -#</div>

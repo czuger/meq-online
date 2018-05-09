@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_08_172056) do
+ActiveRecord::Schema.define(version: 2018_05_09_144610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 2018_05_08_172056) do
     t.string "aasm_state"
     t.string "influence", null: false
     t.string "shadow_pool", default: "0", null: false
+    t.string "plot_deck", null: false
   end
 
   create_table "boards_users", id: false, force: :cascade do |t|
