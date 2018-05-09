@@ -1,8 +1,10 @@
 %p#notice= notice
 
-%p
-  %b Plot cards:
-  = @sauron.plot_cards
+.row
+  - @sauron.plot_cards.each do |plot_card_number|
+    .col-3
+      = image_tag "sauron/plots/#{plot_card_number}.png"
+
 %p
   %b Shadow cards:
   = @sauron.shadow_cards

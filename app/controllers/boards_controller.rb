@@ -128,7 +128,7 @@ class BoardsController < ApplicationController
         end
 
         if params[:sauron]
-          @board.create_sauron!( plot_cards: [], shadow_cards: [], user_id: @current_user.id )
+          @board.create_sauron!( plot_cards: [ Hazard.d3-1 ], shadow_cards: [], user_id: @current_user.id )
           @current_user.boards << @board unless @current_user.boards.include?( @board )
         end
 

@@ -6,7 +6,7 @@ card_height=584
 
 card_x_decal = 2
 
-out_directory = 'sauron/plots/adv'
+out_directory = 'sauron/plots/'
 file = 'sauron/adv_plot_cards.jpg'
 
 def round(source_image, radius =35)
@@ -30,7 +30,7 @@ def round(source_image, radius =35)
 end
 
 img = Magick::Image.read(file)[0]
-card_id = 0
+card_id = 3
 
 0.upto(2) do |line|
   0.upto(9) do |col|
