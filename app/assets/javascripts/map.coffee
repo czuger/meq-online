@@ -5,7 +5,6 @@
 zoom_map = () ->
 
   offset = $('#map').offset()
-#  console.log(offset)
 
   page_x = event.pageX
   page_y = event.pageY
@@ -16,9 +15,13 @@ zoom_map = () ->
   true_x = page_x-offset.left-(150.0/x_decal)
   true_y = page_y-offset.top-(150.0/y_decal)
 
+  if true_y <= 0
+    $('#zoom-area').hide()
+  else
+    $('#zoom-area').show()
+
   page_x-=150
   page_y-=150
-
 
   $('#zoom-area').css({left: page_x, top: page_y});
   $('#zoom-area').css('background-position', ((-true_x) * x_decal) + "px " + ((-true_y) * y_decal) + "px");
