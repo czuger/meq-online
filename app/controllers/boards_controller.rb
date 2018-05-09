@@ -68,6 +68,9 @@ class BoardsController < ApplicationController
     end
   end
 
+  def map
+  end
+
   # PATCH/PUT /boards/1
   # PATCH/PUT /boards/1.json
   # def update

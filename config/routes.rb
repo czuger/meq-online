@@ -21,6 +21,8 @@ Rails.application.routes.draw do
     get :join, action: :join_new
     post :join
 
+    get :map
+
     resource :logs, only: [:show ]
     resource :sauron, only: [:show ]
 

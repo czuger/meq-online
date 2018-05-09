@@ -8,6 +8,11 @@
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   %body
+
     .container
       = render partial: 'layouts/menu'
+      - unless controller.controller_name == "boards" && controller.action_name == "map"
+        = yield
+
+    - if controller.controller_name == "boards" && controller.action_name == "map"
       = yield
