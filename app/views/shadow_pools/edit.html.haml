@@ -1,13 +1,14 @@
-%p#notice= notice
+.container
+  %p#notice= notice
 
-%h1 Edit shadow pool
+  %h1 Edit shadow pool
 
-.row
-  = form_tag board_actor_shadow_pools_path(@board,@actor_id), method: :patch, class: 'form-inline' do
-    .form-group
-      .mx-2
-        = label_tag :new_shadow_pool, 'New shadow pool'
-      .mx-2
-        = number_field_tag :new_shadow_pool, @board.shadow_pool, max: 20, class: 'form-control'
-      .mx-2
-        = button_tag 'Change', role: :button, class: 'btn btn-secondary'
+  .row
+    = form_tag board_actor_shadow_pools_path(@board,@actor_id), method: :patch, class: 'form-inline' do
+      .form-group
+        .mx-2
+          = label_tag :new_shadow_pool, 'New shadow pool'
+        .mx-2
+          = number_field_tag :new_shadow_pool, @board.shadow_pool, max: 20, class: 'form-control'
+        .mx-2
+          = button_tag 'Change', role: :button, class: 'btn btn-secondary'

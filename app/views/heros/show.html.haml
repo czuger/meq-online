@@ -1,98 +1,52 @@
-%p#notice= notice
-
 .container
-  .row
-    .col-2
-      %button.btn.btn-secondary{ type: :button }
-        Name code
-        %span.badge.badge-light
-          = @hero.name_code
 
-    .col-4
-      %button.btn.btn-secondary{ type: :button }
-        Location
-        %span.badge.badge-light
-          = @hero.location
+  %p#notice= notice
 
-    .col-2
-      %button.btn.btn-secondary{ type: :button }
-        Life
-        %span.badge.badge-light
-          = @hero.life_pool.count
+  = render partial: 'hero_info'
 
-    .col-2
-      %button.btn.btn-secondary{ type: :button }
-        Rest
-        %span.badge.badge-light
-          = @hero.rest_pool.count
-    .col-2
-      %button.btn.btn-secondary{ type: :button }
-        Damage
-        %span.badge.badge-light
-          = @hero.damage_pool.count
-
-  .row
-    .col-2
-      %button.btn.btn-secondary{ type: :button }
-        Fortitude
-        %span.badge.badge-light
-          = @hero.fortitude
-    .col-2
-      %button.btn.btn-secondary{ type: :button }
-        Strength
-        %span.badge.badge-light
-          = @hero.strength
-    .col-2
-      %button.btn.btn-secondary{ type: :button }
-        Agility
-        %span.badge.badge-light
-          = @hero.agility
-    .col-2
-      %button.btn.btn-secondary{ type: :button }
-        Wisdom
-        %span.badge.badge-light
-          = @hero.wisdom
-
-  .row
-    .col
-      = link_to 'Draw hand', hero_draw_cards_path(@hero), role: :button, class: 'btn btn-secondary'
-    .col
-      = link_to 'Rest', hero_rest_path(@hero), role: :button, class: 'btn btn-secondary'
-    .col
-      = link_to 'Heal', hero_heal_path(@hero), role: :button, class: 'btn btn-secondary'
-    .col
-      = link_to 'Take damages', hero_take_damages_path(@hero, damage_amount: 3 ), method: :patch, role: :button, class: 'btn btn-secondary'
-    .col
-    .col
+  .form-group
+    .row
+      .col
+        = link_to 'Draw hand', hero_draw_cards_path(@hero), role: :button, class: 'btn btn-secondary btn-block'
+      .col
+        = link_to 'Rest', hero_rest_path(@hero), role: :button, class: 'btn btn-secondary btn-block'
+      .col
+        = link_to 'Heal', hero_heal_path(@hero), role: :button, class: 'btn btn-secondary btn-block'
+      .col
+        = link_to 'Take damages', hero_take_damages_path(@hero, damage_amount: 3 ), method: :patch, role: :button, class: 'btn btn-secondary btn-block'
+      .col
+      .col
 
 
-  .row
+  .form-group
     %b Hand:
 
-  .row
+    - @hero.hand.in_groups_of(8).each do |group|
+      .card-row
+        - group.each do |card_number|
+          - if card_number
+            = image_tag "hero_cards/#{@heroes_hero.cards[card_number].pic_path}", class: 'small-card', card_id: card_number
+
+  .form-group
     = form_tag hero_draw_cards_path(@hero), class: 'form-inline' do
-      .form-group
-        .mx-2
-          = label_tag :nb_cards, 'Cards count'
-        .mx-2
-          = number_field_tag :nb_cards, @hero.fortitude, max: 20, class: 'form-control'
-        .mx-2
-          = button_tag 'Agility', role: :button, type: :button, class: 'btn btn-secondary', id: :set_agility
-        .mx-2
-          = button_tag 'Draw hand', role: :button, class: 'btn btn-secondary'
+      .mx-2
+        = label_tag :nb_cards, 'Cards count'
+      .mx-2
+        = number_field_tag :nb_cards, @hero.fortitude, max: 20, class: 'form-control'
+      .mx-2
+        = button_tag 'Agility', role: :button, type: :button, class: 'btn btn-secondary', id: :set_agility
+      .mx-2
+        = button_tag 'Draw hand', role: :button, class: 'btn btn-secondary'
     = hidden_field_tag :agility_value, @hero.agility
 
 
-  - @hero.hand.in_groups_of(8).each do |group|
-    .row
-      - group.each do |card_number|
-        .col
-          - if card_number
-            = image_tag "hero_cards/#{@heroes_hero.cards[card_number].pic_path}", class: :card, card_id: card_number
 
-  = form_tag hero_move_path(@hero), class: 'form-inline' do
-    = label_tag :move_to, 'Move to'
-    = select_tag(:move_to,options_for_select( @locations.select_tag_data ), class: 'form-control' )
-    = button_tag 'Move', role: :button, class: 'btn btn-secondary disabled', id: :move_hero
-    = hidden_field_tag :card_used, ''
-
+  .form-group
+    = form_tag hero_move_path(@hero), class: 'form-inline' do
+      .mx-2
+        = label_tag :move_to, 'Move to'
+      .mx-2
+        = select_tag(:move_to,options_for_select( @locations.select_tag_data ), class: 'form-control' )
+      .mx-2
+        = button_tag 'Move', role: :button, class: 'btn btn-secondary disabled', id: :move_hero
+      = hidden_field_tag :card_used, ''
