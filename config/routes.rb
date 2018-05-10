@@ -17,6 +17,10 @@ Rails.application.routes.draw do
     post :move
   end
 
+  resources :saurons, only: [:show] do
+    post :shadow_cards
+  end
+
   resources :boards, only:[ :index, :show, :new, :create ] do
     get :join, action: :join_new
     post :join
@@ -24,7 +28,6 @@ Rails.application.routes.draw do
     get :map
 
     resource :logs, only: [:show ]
-    resource :sauron, only: [:show]
 
     resource :draw_plot_cards, only:[:edit,:update] do
       # post :draw_cards

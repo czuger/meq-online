@@ -10,6 +10,9 @@ en:
       draw_plot_cards:
         one: "Sauron draw 1 plot card."
         other: "Sauron draw %{count} plot cards."
+      draw_shadow_cards:
+        one: "Sauron draw 1 shadow card."
+        other: "Sauron draw %{count} shadow cards."
       keep_plot_card:
         one: "Sauron keep 1 plot card."
         other: "Sauron keep %{count} plot cards."

@@ -16,7 +16,7 @@
   = link_to 'Log', board_logs_path( @board ), role: :button, class: 'btn btn-primary'
 
 - if @sauron
-  = link_to 'Sauron', board_sauron_path( @board ), role: :button, class: 'btn btn-primary'
+  = link_to 'Sauron', @sauron, role: :button, class: 'btn btn-primary'
   %button.btn.btn-primary{ type: :button }
     You play
     %span.badge.badge-light
