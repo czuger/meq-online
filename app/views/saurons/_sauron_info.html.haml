@@ -1,0 +1,31 @@
+
+.form-group
+  .row
+
+    .col-2
+      %button.btn.btn-secondary.btn-block{ type: :button }
+        Plot deck size
+        %span.badge.badge-light
+          = @board.plot_deck.count
+
+    .col-3
+      %button.btn.btn-secondary.btn-block{ type: :button }
+        Plot discard size
+        %span.badge.badge-light
+          TBD
+
+    .col-3
+      %button.btn.btn-secondary.btn-block{ type: :button }
+        Drawn plot cards
+        %span.badge.badge-light
+          = @sauron.drawn_plot_cards.size
+
+.form-group
+  .row
+    .col-2
+      %button.btn.btn-secondary.btn-block{ type: :button }
+        Shadow pool
+        %span.badge.badge-light
+          = @board.shadow_pool
+
+

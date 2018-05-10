@@ -1,11 +1,13 @@
 .container
   %p#notice= notice
 
+  = render partial: 'sauron_info'
+
   .form-group
     = form_tag edit_board_draw_plot_cards_path(@board), method: :get do
       .row
         = label_tag :nb_cards, 'Plot cards', class: 'col-2 col-form-label'
-        .col-2
+        .col-1
           = number_field_tag :nb_cards, @nb_cards, max: 10, class: 'form-control', disabled: !@nb_cards
         .col-2
           = button_tag 'Draw cards', role: :button, class: 'btn btn-secondary btn-block'
@@ -17,7 +19,7 @@
     = form_tag edit_board_draw_plot_cards_path(@board), method: :get do
       .row
         = label_tag :nb_cards, 'Shadow cards', class: 'col-2 col-form-label'
-        .col-2
+        .col-1
           = number_field_tag :nb_cards, @nb_cards, max: 10, class: 'form-control', disabled: !@nb_cards
         .col-2
           = button_tag 'Draw cards', role: :button, class: 'btn btn-secondary btn-block'

@@ -17,7 +17,7 @@ class ShadowPoolsController < ApplicationController
         @board.update!(shadow_pool: new_value )
     end
 
-    redirect_to edit_board_actor_shadow_pools_path(@board,@actor_id)
+    redirect_to board_sauron_path(@board)
   end
 
   private
