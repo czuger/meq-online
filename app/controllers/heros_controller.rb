@@ -24,7 +24,7 @@ class HerosController < ApplicationController
 
     @actor.log_draw_cards!( @board, cards.count)
 
-    redirect_to @hero
+    redirect_to @actor
   end
 
   def rest
@@ -32,7 +32,7 @@ class HerosController < ApplicationController
     @actor.rest_pool = []
     @actor.life_pool.shuffle
     @actor.save!
-    redirect_to @hero
+    redirect_to @actor
   end
 
   def heal
@@ -40,7 +40,7 @@ class HerosController < ApplicationController
     @actor.damage_pool = []
     @actor.life_pool.shuffle
     @actor.save!
-    redirect_to @hero
+    redirect_to @actor
   end
 
   def take_damages
@@ -50,7 +50,7 @@ class HerosController < ApplicationController
     rest_damages = damage_amount - damages_taken_from_life_pool.count
     @actor.damage_pool += @actor.hand.shift(rest_damages)
     @actor.save!
-    redirect_to @hero
+    redirect_to @actor
   end
 
   def move
@@ -70,7 +70,7 @@ class HerosController < ApplicationController
       raise "Can't find a card position. card = #{card.inspect}, hand = #{@actor.hand.inspect}"
     end
 
-    redirect_to @hero
+    redirect_to @actor
   end
 
 end
