@@ -49,7 +49,7 @@ class DrawPlotCardsController < ApplicationController
       end
     end
 
-    redirect_to board_sauron_path(@board)
+    redirect_to @sauron
   end
 
   private

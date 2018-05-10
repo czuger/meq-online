@@ -17,7 +17,7 @@ Rails.application.routes.draw do
     post :move
   end
 
-  resources :saurons, only: [:show] do
+  resources :sauron, only: [:show] do
     post :shadow_cards
   end
 

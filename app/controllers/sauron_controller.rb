@@ -1,4 +1,4 @@
-class SauronsController < ApplicationController
+class SauronController < ApplicationController
   before_action :require_logged_in
   before_action :set_sauron, only: [:show,:shadow_cards]
 
