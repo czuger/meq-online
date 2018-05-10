@@ -4,7 +4,7 @@
   = render partial: 'sauron_info'
 
   .form-group
-    = form_tag edit_draw_plot_card_path(@sauron), method: :get do
+    = form_tag edit_draw_plot_card_path(@actor), method: :get do
       .row
         = label_tag :nb_cards, 'Plot cards', class: 'col-2 col-form-label'
         .col-1
@@ -16,7 +16,7 @@
 
 
   .form-group
-    = form_tag sauron_shadow_cards_path(@sauron) do
+    = form_tag sauron_shadow_cards_path(@actor) do
       .row
         = label_tag :nb_shadow_cards, 'Shadow cards', class: 'col-2 col-form-label'
         .col-1
@@ -29,9 +29,9 @@
 .container-fluid
 
   .card-row
-    - @sauron.plot_cards.each do |plot_card_number|
+    - @actor.plot_cards.each do |plot_card_number|
       = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card'
 
   .card-row
-    - @sauron.shadow_cards.each do |plot_card_number|
+    - @actor.shadow_cards.each do |plot_card_number|
       = image_tag "sauron/shadows/#{plot_card_number}.png", class: 'big-card'

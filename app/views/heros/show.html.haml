@@ -7,13 +7,13 @@
   .form-group
     .row
       .col
-        = link_to 'Draw hand', hero_draw_cards_path(@hero), role: :button, class: 'btn btn-secondary btn-block'
+        = link_to 'Draw hand', hero_draw_cards_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
       .col
-        = link_to 'Rest', hero_rest_path(@hero), role: :button, class: 'btn btn-secondary btn-block'
+        = link_to 'Rest', hero_rest_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
       .col
-        = link_to 'Heal', hero_heal_path(@hero), role: :button, class: 'btn btn-secondary btn-block'
+        = link_to 'Heal', hero_heal_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
       .col
-        = link_to 'Take damages', hero_take_damages_path(@hero, damage_amount: 3 ), method: :patch, role: :button, class: 'btn btn-secondary btn-block'
+        = link_to 'Take damages', hero_take_damages_path(@actor, damage_amount: 3 ), method: :patch, role: :button, class: 'btn btn-secondary btn-block'
       .col
       .col
 
@@ -21,28 +21,28 @@
   .form-group
     %b Hand:
 
-    - @hero.hand.in_groups_of(8).each do |group|
+    - @actor.hand.in_groups_of(8).each do |group|
       .card-row
         - group.each do |card_number|
           - if card_number
             = image_tag "hero_cards/#{@heroes_hero.cards[card_number].pic_path}", class: 'small-card', card_id: card_number
 
   .form-group
-    = form_tag hero_draw_cards_path(@hero), class: 'form-inline' do
+    = form_tag hero_draw_cards_path(@actor), class: 'form-inline' do
       .mx-2
         = label_tag :nb_cards, 'Cards count'
       .mx-2
-        = number_field_tag :nb_cards, @hero.fortitude, max: 20, class: 'form-control'
+        = number_field_tag :nb_cards, @actor.fortitude, max: 20, class: 'form-control'
       .mx-2
         = button_tag 'Agility', role: :button, type: :button, class: 'btn btn-secondary', id: :set_agility
       .mx-2
         = button_tag 'Draw hand', role: :button, class: 'btn btn-secondary'
-    = hidden_field_tag :agility_value, @hero.agility
+    = hidden_field_tag :agility_value, @actor.agility
 
 
 
   .form-group
-    = form_tag hero_move_path(@hero), class: 'form-inline' do
+    = form_tag hero_move_path(@actor), class: 'form-inline' do
       .mx-2
         = label_tag :move_to, 'Move to'
       .mx-2

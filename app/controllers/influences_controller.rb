@@ -1,7 +1,7 @@
 class InfluencesController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_actor, only: [:show, :edit, :update]
+  before_action :set_actor_ensure_board, only: [:show, :edit, :update]
 
   def edit
     @locations= GameData::Locations.new.list_by_region
@@ -33,14 +33,6 @@ class InfluencesController < ApplicationController
   def show
     @locations= GameData::Locations.new.list_by_region
     @influence = @board.influence
-  end
-
-  private
-
-  def set_actor
-    @actor = Actor.find(params[:id])
-    @board = @actor.board
-    ensure_board
   end
 
 end
