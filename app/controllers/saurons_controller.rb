@@ -11,7 +11,7 @@ class SauronsController < ApplicationController
     if params[:button]=='draw'
       nb_cards = params[:nb_shadow_cards].to_i
       cards = @board.shadow_deck.shift(nb_cards)
-      @sauron.drawn_plot_cards= cards
+      @sauron.shadow_cards+= cards
 
       @board.transaction do
         @sauron.save!
@@ -19,7 +19,7 @@ class SauronsController < ApplicationController
         @board.log!( current_user, @board.sauron, :draw_shadow_cards, { count: cards.count } )
       end
     end
-    redirect_to board_sauron_p@sauron
+    redirect_to @sauron
   end
 
   private
