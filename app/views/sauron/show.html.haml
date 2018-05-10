@@ -4,7 +4,7 @@
   = render partial: 'sauron_info'
 
   .form-group
-    = form_tag edit_board_draw_plot_cards_path(@board), method: :get do
+    = form_tag edit_draw_plot_card_path(@sauron), method: :get do
       .row
         = label_tag :nb_cards, 'Plot cards', class: 'col-2 col-form-label'
         .col-1

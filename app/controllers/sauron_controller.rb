@@ -23,6 +23,7 @@ class SauronController < ApplicationController
   end
 
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_sauron
       @sauron = Sauron.find(params[:sauron_id]||params[:id])

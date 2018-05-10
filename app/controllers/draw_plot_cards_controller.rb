@@ -56,9 +56,9 @@ class DrawPlotCardsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_sauron
-    @board = Board.find(params[:board_id])
-    @sauron = @board.sauron
+    @sauron = Sauron.find(params[:sauron_id]||params[:id])
     ensure_sauron
+    @board = @sauron.board
   end
 
 end

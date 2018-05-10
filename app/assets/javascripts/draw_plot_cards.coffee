@@ -32,6 +32,6 @@ card_selection = () ->
 
 $(document).on('turbolinks:load'
   ->
-    if window.location.pathname.match( /boards\/\d+\/draw_plot_cards\/edit/ )
+    if window.location.pathname.match( /draw_plot_cards\/\d+\/edit/ )
       card_selection()
 )
