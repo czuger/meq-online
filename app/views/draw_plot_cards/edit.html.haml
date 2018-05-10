@@ -6,14 +6,15 @@
   %p
     Select plot card
 
-  .row
-    - @cards.each do |plot_card_number|
-      .col-3
-        = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card selectable-card', card_id: plot_card_number
+  .form-group
+    .row
+      - @cards.each do |plot_card_number|
+        .col-3
+          = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card selectable-card', card_id: plot_card_number
 
   .form-group
     = form_tag board_draw_plot_cards_path(@board), method: :patch, class: 'form-inline' do
       = hidden_field_tag :selected_card, nil
       = button_tag 'Keep card(s)', role: :button, class: 'btn btn-secondary disabled', id: :validate, value: :keep
       .mx-2
-      = button_tag 'Put cards to the bottom of the deck', role: :button, class: 'btn btn-secondary', value: :put_back
+      = button_tag 'Put cards back to the bottom of the deck', role: :button, class: 'btn btn-secondary', value: :put_back

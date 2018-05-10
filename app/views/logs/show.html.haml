@@ -1,18 +1,20 @@
-%h1 Listing logs
+.container
 
-%table.table
-  %thead
-    %tr
-      %th User
-      %th Actor
-      %th Action
-      %th Card used
+  %h1 Listing logs
 
-  %tbody
-    - @logs.each do |log|
+  %table.table
+    %thead
       %tr
-        %td= log.user.name
-        %td= log.actor.name
-        %td= print_log(log)
-        %td
-          = image_tag( log.card_pic_path, class: 'log-card' ) if log.card_pic_path
+        %th User
+        %th Actor
+        %th Action
+        %th Card used
+
+    %tbody
+      - @logs.each do |log|
+        %tr
+          %td= log.user.name
+          %td= log.actor.name
+          %td= print_log(log)
+          %td
+            = image_tag( log.card_pic_path, class: 'log-card' ) if log.card_pic_path

@@ -35,15 +35,17 @@ class DrawPlotCardsController < ApplicationController
       @board.transaction do
         @board.save!
         @sauron.save!
-        @board.log!( current_user, @board.sauron, :keep_plot_card )
+        @board.log!( current_user, @board.sauron, :keep_plot_card, { count: selected_card.count } )
       end
     else
+      cards_count = @sauron.drawn_plot_cards.count
       @board.plot_deck += @sauron.drawn_plot_cards
       @sauron.drawn_plot_cards= []
 
       @board.transaction do
         @board.save!
         @sauron.save!
+        @board.log!( current_user, @board.sauron, :cards_bottom_plot_deck, { count: cards_count } )
       end
     end
 

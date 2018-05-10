@@ -1,23 +1,30 @@
-= form_tag board_actor_influences_path(@board, @actor_id), method: :patch do
-  = button_tag 'Validate', role: :button, class: 'btn btn-primary'
-  %table.table
-    %thead
-      %tr
-        %th
-          Region
-        %th
-          Zone
-        %th
-          Influence
+.container
 
-    %tbody
-      - @locations.each do |location|
+  .form-group
+    .row
+      .col
+        = text_field_tag :filter, '', class: 'form-control'
+
+  = form_tag board_actor_influences_path(@board, @actor_id), method: :patch do
+    = button_tag 'Validate', role: :button, class: 'btn btn-primary'
+    %table.table#influences_table
+      %thead
         %tr
-          %td
-            = location.region
-          %td
-            = location.name
-          %td
-            = number_field_tag "locations[#{location.name_code}]", @influence[location.name_code]
+          %th
+            Region
+          %th
+            Zone
+          %th
+            Influence
 
-  = button_tag 'Validate', role: :button, class: 'btn btn-primary'
+      %tbody
+        - @locations.each do |location|
+          %tr
+            %td
+              = location.region
+            %td
+              = location.name
+            %td
+              = number_field_tag "locations[#{location.name_code}]", @influence[location.name_code]
+
+    = button_tag 'Validate', role: :button, class: 'btn btn-primary'

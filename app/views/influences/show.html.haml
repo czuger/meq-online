@@ -1,22 +1,24 @@
-= link_to 'Edit', edit_board_actor_influences_path(@board, @actor_id), role: :button, class: 'btn btn-secondary'
+.container
 
-%table.table
-  %thead
-    %tr
-      %th
-        Region
-      %th
-        Zone
-      %th
-        Influence
+  = link_to 'Edit', edit_board_actor_influences_path(@board, @actor_id), role: :button, class: 'btn btn-secondary'
 
-  %tbody
-    - @locations.each do |location|
-      - if @influence[location.name_code]
-        %tr
-          %td
-            = location.region
-          %td
-            = location.name
-          %td
-            = @influence[location.name_code]
+  %table.table
+    %thead
+      %tr
+        %th
+          Region
+        %th
+          Zone
+        %th
+          Influence
+
+    %tbody
+      - @locations.each do |location|
+        - if @influence[location.name_code]
+          %tr
+            %td
+              = location.region
+            %td
+              = location.name
+            %td
+              = @influence[location.name_code]
