@@ -16,12 +16,14 @@
   = link_to 'Log', board_logs_path( @board ), role: :button, class: 'btn btn-primary'
 
 - if @sauron
+  = link_to 'Sauron', board_sauron_path( @board ), role: :button, class: 'btn btn-primary'
   %button.btn.btn-primary{ type: :button }
     You play
     %span.badge.badge-light
       Sauron
 
 - if @hero
+  = link_to @hero.name, hero(@hero), role: :button, class: 'btn btn-primary'
   %button.btn.btn-primary{ type: :button }
     You play
     %span.badge.badge-light
