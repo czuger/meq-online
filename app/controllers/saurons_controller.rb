@@ -4,6 +4,7 @@ class SauronsController < ApplicationController
 
   def show
     @player = @sauron
+    @nb_cards = @sauron.drawn_plot_cards && !@sauron.drawn_plot_cards.empty? ? nil : 2
   end
 
   private

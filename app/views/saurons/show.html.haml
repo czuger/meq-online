@@ -3,10 +3,9 @@
 
 .container-fluid
 
-  .row
+  .card-row
     - @sauron.plot_cards.each do |plot_card_number|
-      .col-2
-        = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card'
+      = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card'
 
   .row
     = form_tag edit_board_draw_plot_cards_path(@board), method: :get, class: 'form-inline' do
@@ -14,7 +13,7 @@
         .mx-2
           = label_tag :nb_cards, 'Draw plot cards'
         .mx-2
-          = number_field_tag :nb_cards, 2, max: 10, class: 'form-control'
+          = number_field_tag :nb_cards, @nb_cards, max: 10, class: 'form-control', disabled: !@nb_cards
         .mx-2
           = button_tag 'Draw cards', role: :button, class: 'btn btn-secondary'
 

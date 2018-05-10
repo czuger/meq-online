@@ -15,4 +15,5 @@
     = form_tag board_draw_plot_cards_path(@board), method: :patch, class: 'form-inline' do
       = hidden_field_tag :selected_card, nil
       = button_tag 'Keep card(s)', role: :button, class: 'btn btn-secondary disabled', id: :validate, value: :keep
-      = button_tag 'Put cards to the bottom of the deck', role: :button, class: 'btn btn-secondary disabled', id: :validate, value: :put_back
+      .mx-1
+      = button_tag 'Put cards to the bottom of the deck', role: :button, class: 'btn btn-secondary', value: :put_back
