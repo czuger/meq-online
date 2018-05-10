@@ -12,19 +12,19 @@ class ShadowPoolsController < ApplicationController
 
     @board.transaction do
         @board.logs.create!( action: :change_shadow_pool, params:{ old_value: old_value, new_value: new_value },
-                             user_id: current_user.id, actor_id: @actor_id)
+                             user_id: current_user.id, actor: @actor)
 
         @board.update!(shadow_pool: new_value )
     end
 
-    redirect_to board_sauron_path(@board)
+    redirect_to @actor
   end
 
   private
 
   def set_board
-    @board = Board.find(params[:board_id])
-    @actor_id = params[:actor_id].to_i
-    raise "Board #{@board.inspect} can't be modified by #{current_user.id}" unless @board.users.pluck(:id).include?(current_user.id)
+    @actor = Actor.find(params[:id])
+    @board = @actor.board
+    ensure_board
   end
 end

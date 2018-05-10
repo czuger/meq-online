@@ -21,9 +21,8 @@ Rails.application.routes.draw do
     post :shadow_cards
   end
 
-  resources :draw_plot_cards, only:[:edit,:update] do
-    # post :draw_cards
-  end
+  resources :draw_plot_cards, only:[:edit,:update]
+  resources :shadow_pools, only: [ :edit, :update ]
 
   resources :boards, only:[ :index, :show, :new, :create ] do
     get :join, action: :join_new
@@ -37,8 +36,6 @@ Rails.application.routes.draw do
 
     resources :actor, only: [] do
       resource :influences, only: [ :show, :edit, :update ]
-      resource :shadow_pools, only: [ :edit, :update ]
-
     end
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

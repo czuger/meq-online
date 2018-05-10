@@ -11,7 +11,7 @@
 
   - if @player
     = link_to 'Influence', board_actor_influences_path( @board, @player.id ), role: :button, class: 'btn btn-primary'
-    = link_to 'Shadow pool', edit_board_actor_shadow_pools_path( @board, @player.id ), role: :button, class: 'btn btn-primary'
+    = link_to 'Shadow pool', edit_shadow_pool_path(@player), role: :button, class: 'btn btn-primary'
 
   = link_to 'Log', board_logs_path( @board ), role: :button, class: 'btn btn-primary'
 
