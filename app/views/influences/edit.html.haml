@@ -5,7 +5,7 @@
       .col
         = text_field_tag :filter, '', class: 'form-control'
 
-  = form_tag board_actor_influences_path(@board, @actor_id), method: :patch do
+  = form_tag influence_path(@actor), method: :patch do
     = button_tag 'Validate', role: :button, class: 'btn btn-primary'
     %table.table#influences_table
       %thead

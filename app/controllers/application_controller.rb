@@ -17,6 +17,22 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   # Security methods
+  def set_actor_ensure_actor
+    @actor = Actor.find(params[:id])
+    @board = @actor.board
+    ensure_board
+  end
+
+  def set_actor_ensure_board
+    @actor = Actor.find(params[:id])
+    @board = @actor.board
+    ensure_board
+  end
+
+  def ensure_sauron
+    raise "Sauron #{@sauron.inspect} is not owned by #{current_user.inspect}" unless @sauron.user_id == current_user.id
+  end
+
   def ensure_sauron
     raise "Sauron #{@sauron.inspect} is not owned by #{current_user.inspect}" unless @sauron.user_id == current_user.id
   end

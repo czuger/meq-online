@@ -22,7 +22,10 @@ Rails.application.routes.draw do
   end
 
   resources :draw_plot_cards, only:[:edit,:update]
+
+  # Caution, in this case, the id is not a shadow_pool or influence, but an Actor.id
   resources :shadow_pools, only: [ :edit, :update ]
+  resources :influences, only: [ :show, :edit, :update ]
 
   resources :boards, only:[ :index, :show, :new, :create ] do
     get :join, action: :join_new
@@ -31,12 +34,7 @@ Rails.application.routes.draw do
     get :map
 
     resource :logs, only: [:show ]
-
     resources :heros, only: [ :index ]
-
-    resources :actor, only: [] do
-      resource :influences, only: [ :show, :edit, :update ]
-    end
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 

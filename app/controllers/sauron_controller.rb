@@ -3,7 +3,6 @@ class SauronController < ApplicationController
   before_action :set_sauron, only: [:show,:shadow_cards]
 
   def show
-    @player = @sauron
     @nb_cards = @sauron.drawn_plot_cards && !@sauron.drawn_plot_cards.empty? ? nil : 2
   end
 

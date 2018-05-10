@@ -12,6 +12,6 @@ filter= () ->
 
 $(document).on('turbolinks:load'
   ->
-    if window.location.pathname.match( /boards\/\d+\/actor\/\d+\/influences\/edit/ )
+    if window.location.pathname.match( /influences\/\d+\/edit/ )
       filter()
 )

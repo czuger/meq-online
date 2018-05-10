@@ -1,7 +1,7 @@
 class ShadowPoolsController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_board, only: [:edit, :update]
+  before_action :set_actor, only: [:edit, :update]
 
   def edit
   end
@@ -22,9 +22,10 @@ class ShadowPoolsController < ApplicationController
 
   private
 
-  def set_board
+  def set_actor
     @actor = Actor.find(params[:id])
     @board = @actor.board
     ensure_board
   end
+
 end

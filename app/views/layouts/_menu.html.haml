@@ -9,25 +9,25 @@
   -#= link_to 'Combat', board_combats_path( @board ), role: :button, class: 'btn btn-primary'
   = link_to 'Map', board_map_path(@board), role: :button, class: 'btn btn-primary'
 
-  - if @player
-    = link_to 'Influence', board_actor_influences_path( @board, @player.id ), role: :button, class: 'btn btn-primary'
-    = link_to 'Shadow pool', edit_shadow_pool_path(@player), role: :button, class: 'btn btn-primary'
+  - if @actor
+    = link_to 'Influence', influence_path(@actor), role: :button, class: 'btn btn-primary'
+    = link_to 'Shadow pool', edit_shadow_pool_path(@actor), role: :button, class: 'btn btn-primary'
 
   = link_to 'Log', board_logs_path( @board ), role: :button, class: 'btn btn-primary'
 
-- if @sauron
-  = link_to 'Sauron', @sauron, role: :button, class: 'btn btn-primary'
+- if @actor.is_a? Sauron
+  = link_to 'Sauron', @actor, role: :button, class: 'btn btn-primary'
   %button.btn.btn-primary{ type: :button }
     You play
     %span.badge.badge-light
       Sauron
 
-- if @hero
-  = link_to @hero.name, @hero, role: :button, class: 'btn btn-primary'
+- if @actor.is_a? Hero
+  = link_to @actor.name, @actor, role: :button, class: 'btn btn-primary'
   %button.btn.btn-primary{ type: :button }
     You play
     %span.badge.badge-light
-      = @hero.name
+      = @actor.name
 
 - if @current_user
   %button.btn.btn-primary{ type: :button }
