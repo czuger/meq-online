@@ -58,6 +58,7 @@ class DrawPlotCardsController < ApplicationController
   def set_sauron
     @board = Board.find(params[:board_id])
     @sauron = @board.sauron
+    ensure_sauron
   end
 
 end

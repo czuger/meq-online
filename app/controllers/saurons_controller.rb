@@ -12,10 +12,7 @@ class SauronsController < ApplicationController
     def set_sauron
       @board = Board.find(params[:board_id])
       @sauron = @board.sauron
+      ensure_sauron
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def sauron_params
-      params.require(:sauron).permit(:board_id, :user_id, :plot_cards, :shadow_cards)
-    end
 end
