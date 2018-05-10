@@ -7,6 +7,10 @@ class SauronsController < ApplicationController
     @nb_cards = @sauron.drawn_plot_cards && !@sauron.drawn_plot_cards.empty? ? nil : 2
   end
 
+  def draw_shadow_cards
+
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_sauron

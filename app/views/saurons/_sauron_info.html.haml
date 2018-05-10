@@ -2,7 +2,7 @@
 .form-group
   .row
 
-    .col-2
+    .col-3
       %button.btn.btn-secondary.btn-block{ type: :button }
         Plot deck size
         %span.badge.badge-light
@@ -12,7 +12,7 @@
       %button.btn.btn-secondary.btn-block{ type: :button }
         Plot discard size
         %span.badge.badge-light
-          TBD
+          = @board.plot_discard.count
 
     .col-3
       %button.btn.btn-secondary.btn-block{ type: :button }
@@ -22,7 +22,19 @@
 
 .form-group
   .row
-    .col-2
+    .col-3
+      %button.btn.btn-secondary.btn-block{ type: :button }
+        Shadow deck size
+        %span.badge.badge-light
+          = @board.shadow_deck.count
+
+    .col-3
+      %button.btn.btn-secondary.btn-block{ type: :button }
+        Shadow discard size
+        %span.badge.badge-light
+          = @board.shadow_discard.count
+
+    .col-3
       %button.btn.btn-secondary.btn-block{ type: :button }
         Shadow pool
         %span.badge.badge-light

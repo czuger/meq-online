@@ -6,6 +6,8 @@ class Sauron < Actor
   serialize :shadow_cards
   serialize :drawn_plot_cards
 
+  validates_presence_of :plot_cards
+
   def name
     'Sauron'
   end
