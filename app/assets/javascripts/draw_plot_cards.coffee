@@ -2,36 +2,34 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-selected_cards = []
-
 card_selection = () ->
-  $('.selectable-card').click () ->
+  $('.card').click () ->
     card = $(this)
-    if card.hasClass('selected-card')
-      card.removeClass('selected-card')
+    if card.hasClass('selected_card')
+      card.removeClass('selected_card')
     else
-      card.addClass('selected-card')
+      card.addClass('selected_card')
 
-    if $('.selected-card').length >= 1
-      $('#validate').removeClass('disabled')
-
-      selected_cards = _.map( $('.selected-card'), (c) -> $(c).attr( 'card_id' ) )
-      $('#selected_card').val( JSON.stringify( selected_cards ) )
+    if $('.selected_card').length == 1
+      $('#move_hero').removeClass('disabled')
+      $('#card_used').val( $('.selected_card').first().attr( 'card_id' )  )
     else
-      $('#validate').addClass('disabled')
+      $('#move_hero').addClass('disabled')
 
-#card_hoovering = () ->
-#  $('.card').hover(
-#    () ->
-#      $(this).removeClass('card')
-#      $(this).addClass('zoomed-card')
-#    () ->
-#      $(this).removeClass('zoomed-card')
-#      $(this).addClass('card')
-#  )
+set_draw_card_count_equal_agility = () ->
+  $('#set_agility').click () ->
+    agility_value = $('#agility_value').val()
+    $('#nb_cards').val( agility_value )
 
 $(document).on('turbolinks:load'
   ->
-    if window.location.pathname.match( /draw_plot_cards\/\d+\/edit/ )
-      card_selection()
+    if window.location.pathname.match( /plot_card_play\/\d+\/edit/ )
+      $('.draggable-card').draggable();
+      $('.plot-card-on-board').droppable drop: (event, ui) ->
+#        $(this).addClass('ui-state-highlight').find('p').html 'Dropped!'
+#        console.log('dropped', ui.draggable[0])
+        $(this).html("<img class='big-card' src=#{ui.draggable[0].src}/>")
+        ui.draggable[0].remove()
+        return
+#      card_selection()
 )

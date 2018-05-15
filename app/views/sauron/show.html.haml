@@ -4,6 +4,11 @@
   = render partial: 'sauron_info'
 
   .form-group
+    .row
+      .col-3
+        = link_to 'Play plot card', edit_plot_card_play_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
+
+  .form-group
     = form_tag edit_draw_plot_card_path(@actor), method: :get do
       .row
         = label_tag :nb_cards, 'Plot cards', class: 'col-2 col-form-label'
@@ -28,9 +33,7 @@
 
 .container-fluid
 
-  .card-row
-    - @actor.plot_cards.each do |plot_card_number|
-      = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card'
+  = render partial: 'plot_cards'
 
   .card-row
     - @actor.shadow_cards.each do |plot_card_number|

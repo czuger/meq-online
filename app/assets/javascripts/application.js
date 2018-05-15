@@ -12,6 +12,7 @@
 //
 //= require rails-ujs
 //= require jquery3
+//= require jquery-ui/widgets/droppable
 //= require popper
 //= require bootstrap
 //= require activestorage

@@ -1,0 +1,16 @@
+
+.container
+  %h2
+    %div
+      Plot cards on board
+
+    %div
+      #plot-card-1.plot-card-on-board
+      #plot-card-2.plot-card-on-board
+      #plot-card-3.plot-card-on-board
+
+#plot-cards-in-hand
+  .container-fluid
+    %h2
+      Cards in hand
+    = render partial: 'sauron/plot_cards'

@@ -1,0 +1,3 @@
+.card-row
+  - @actor.plot_cards.each do |plot_card_number|
+    = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card draggable-card'

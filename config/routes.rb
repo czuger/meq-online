@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'plot_card_play/edit'
+  get 'plot_card_play/update'
   resources :combats, only: [ :show, :new, :create, :destroy ] do
     get :hero_setup_new
     post :hero_setup_draw_cards
@@ -22,6 +24,7 @@ Rails.application.routes.draw do
   end
 
   resources :draw_plot_cards, only:[:edit,:update]
+  resources :plot_card_play, only: [:edit, :update]
 
   # Caution, in this case, the id is not a shadow_pool or influence, but an Actor.id
   resources :shadow_pools, only: [ :edit, :update ]
