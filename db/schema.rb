@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_10_111549) do
+ActiveRecord::Schema.define(version: 2018_05_16_102941) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 2018_05_10_111549) do
     t.string "shadow_deck", null: false
     t.string "plot_discard", null: false
     t.string "shadow_discard", null: false
+    t.string "current_plots", null: false
   end
 
   create_table "boards_users", id: false, force: :cascade do |t|

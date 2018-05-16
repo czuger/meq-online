@@ -2,6 +2,10 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+#plot-cards-on-board-area{
+  height: 330px;
+}
+
 .plot-card-on-board{
   width: 220px;
   height: 320px;
@@ -14,5 +18,11 @@
 #plot-cards-in-hand{
   clear: both;
 }
+
+#action-buttons{
+  margin-top: 10px;
+  clear: both;
+}
+
 
 

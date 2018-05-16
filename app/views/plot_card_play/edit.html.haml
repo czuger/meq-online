@@ -4,10 +4,17 @@
     %div
       Plot cards on board
 
-    %div
-      #plot-card-1.plot-card-on-board
-      #plot-card-2.plot-card-on-board
-      #plot-card-3.plot-card-on-board
+    #plot-cards-on-board-area
+      - @plot_cards.each do |slot_id, plot_card_number|
+        %div{ id: slot_id, class: 'plot-card-on-board' }
+          = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card', card_id: plot_card_number
+
+    #action-buttons
+      = form_tag plot_card_play_path(@actor), method: :patch do
+        = hidden_field_tag :selected_cards, {}
+        .row
+          .col-3
+            = button_tag 'Place card', role: :button, class: 'btn btn-secondary btn-block'
 
 #plot-cards-in-hand
   .container-fluid

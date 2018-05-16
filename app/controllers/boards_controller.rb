@@ -50,12 +50,14 @@ class BoardsController < ApplicationController
   # POST /boards.json
   def create
 
+    starting_plot= rand( 0..2 )
     plot_deck= (3..17).to_a.shuffle
     shadow_deck= (0..23).to_a.shuffle
     max_heroes_count= params[:max_heroes_count].to_i
 
     @board = Board.new( influence: {}, plot_deck: plot_deck, shadow_deck: shadow_deck,
-                        plot_discard: [], shadow_discard: [], max_heroes_count: max_heroes_count )
+                        plot_discard: [], shadow_discard: [], max_heroes_count: max_heroes_count,
+                        current_plots: { 'plot-card-1' => starting_plot } )
 
     respond_to do |format|
       @board.transaction do
@@ -139,7 +141,7 @@ class BoardsController < ApplicationController
 
         # Adding Sauron
         if params[:sauron]
-          @board.create_sauron!( plot_cards: [ Hazard.d3-1 ], shadow_cards: [], drawn_plot_cards: [], user_id: @current_user.id )
+          @board.create_sauron!( plot_cards: [], shadow_cards: [], drawn_plot_cards: [], user_id: @current_user.id )
 
           # Just tell that the user is connected to this board
           @current_user.boards << @board unless @current_user.boards.include?( @board )

@@ -10,6 +10,7 @@ class Board < ApplicationRecord
 
   serialize :influence
 
+  serialize :current_plots
   serialize :plot_deck
   serialize :plot_discard
   serialize :shadow_deck
