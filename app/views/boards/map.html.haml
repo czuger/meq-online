@@ -1,7 +1,7 @@
 #map
-  = image_tag 'map-med.jpg', id: :map
-
   - @positions.each do |p|
-    = image_tag 'influence.png', class: 'influence-pawn', style: "top:#{p.y}px; left:#{p.x}px;"
+    = image_tag 'influence.png', class: 'influence-pawn', style: "top:#{p.y+5}px; left:#{p.x-35}px;", location: p.name_code
+
+  = image_tag 'map-med.jpg', id: :map
 
 #zoom-area

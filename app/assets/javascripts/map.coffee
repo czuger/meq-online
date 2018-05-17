@@ -34,6 +34,6 @@ set_zoom_map = () ->
 # So it is a good idea to interact with it to be sure it is loaded
 $(document).on('turbolinks:load'
   ->
-    if window.location.pathname.match( /boards\/\d+\/map/ )
-      set_zoom_map()
+#    if window.location.pathname.match( /boards\/\d+\/map/ )
+#      set_zoom_map()
 )

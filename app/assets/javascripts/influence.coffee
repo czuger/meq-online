@@ -10,8 +10,15 @@ filter= () ->
       return
     return
 
+influence= () ->
+  $('.influence-pawn' ).click () ->
+    console.log( $(this).attr('location') )
+
 $(document).on('turbolinks:load'
   ->
     if window.location.pathname.match( /influences\/\d+\/edit/ )
       filter()
+
+    if window.location.pathname.match( /boards\/\d+\/map/ )
+      influence()
 )

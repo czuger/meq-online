@@ -9,7 +9,6 @@ sauron_checkbox = () ->
     off: 'No'
   })
 
-
 match_players_count = () ->
   $('.max_heroes_count').change () ->
     players_count = parseInt( $(this).val() )
