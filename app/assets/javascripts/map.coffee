@@ -2,12 +2,28 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
+alt_pressed = false
+page_x = null
+page_y = null
+
+keyboard_alt_probe= () ->
+  $(window).keydown ( e ) ->
+    alt_pressed= e.altKey
+    zoom_map()
+
+  $(window).keyup (e) ->
+    alt_pressed = e.altKey
+    $('#zoom-area').hide()
+
+
 zoom_map = () ->
 
-  offset = $('#map').offset()
+  page_x = event.pageX if event.pageX
+  page_y = event.pageY if event.pageY
 
-  page_x = event.pageX
-  page_y = event.pageY
+  return unless alt_pressed
+
+  offset = $('#map').offset()
 
   x_decal = 4890.0 / 1900.0
   y_decal = 3362.0 / 1306.0
@@ -27,6 +43,7 @@ zoom_map = () ->
   $('#zoom-area').css('background-position', ((-true_x) * x_decal) + "px " + ((-true_y) * y_decal) + "px");
 
 set_zoom_map = () ->
+  keyboard_alt_probe()
   $('#map').mousemove(zoom_map)
   $('#zoom-area').mousemove(zoom_map)
 
@@ -34,6 +51,6 @@ set_zoom_map = () ->
 # So it is a good idea to interact with it to be sure it is loaded
 $(document).on('turbolinks:load'
   ->
-#    if window.location.pathname.match( /boards\/\d+\/map/ )
-#      set_zoom_map()
+    if window.location.pathname.match( /boards\/\d+\/map/ )
+      set_zoom_map()
 )
