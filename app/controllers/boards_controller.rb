@@ -75,6 +75,7 @@ class BoardsController < ApplicationController
   end
 
   def map
+    @positions = GameData::Locations.new.position_list
   end
 
   # PATCH/PUT /boards/1

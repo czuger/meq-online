@@ -25,5 +25,9 @@ module GameData
       @data.map{ |k, v| OpenStruct.new( name_code: k, name: v[:name], region: v[:region] ) }.sort_by { |e| [e.region, e.name ] }
     end
 
+    def position_list
+      @data.map{ |k, v| OpenStruct.new( name_code: k, x: v[:pos_x], y: v[:pos_y] ) }
+    end
+
   end
 end
