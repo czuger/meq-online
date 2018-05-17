@@ -30,6 +30,10 @@ class InfluencesController < ApplicationController
     redirect_to influence_path(@actor)
   end
 
+  def update_by_click
+
+  end
+
   def show
     @locations= GameData::Locations.new.list_by_region
     @influence = @board.influence

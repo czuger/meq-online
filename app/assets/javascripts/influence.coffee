@@ -13,6 +13,8 @@ filter= () ->
 influence= () ->
   $('.influence-pawn-box' ).click () ->
     console.log( $(this).find('.influence-pawn' ).attr('location') )
+    val = parseInt( $(this).find('.influence-value' ).html() ) + 1
+    $(this).find('.influence-value' ).html( val )
 
 $(document).on('turbolinks:load'
   ->
