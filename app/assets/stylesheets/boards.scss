@@ -25,11 +25,24 @@
   z-index: 5;
 }
 
-.influence-pawn{
+.influence-pawn-box{
   position: absolute;
   z-index: 1;
+}
+
+.influence-pawn{
   width: 30px;
 }
+
+.influence-value{
+  color: white;
+  position: relative;
+  left: -24px;
+  top: 1px;
+  cursor: pointer;
+}
+
+
 
 //#overlay {
 //  border: 1px solid black;

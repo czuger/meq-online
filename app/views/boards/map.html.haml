@@ -4,7 +4,11 @@
     Press alt for zoom
   #map
     - @positions.each do |p|
-      = image_tag 'influence.png', class: 'influence-pawn', style: "top:#{p.y+5}px; left:#{p.x-35}px;", location: p.name_code
+
+      .influence-pawn-box{ style: "top:#{p.y+5}px; left:#{p.x-35}px;" }
+        = image_tag 'influence.png', class: 'influence-pawn', style: "top:#{p.y+5}px; left:#{p.x-35}px;", location: p.name_code
+        %spawn.influence-value
+          2
 
     = image_tag 'map-med.jpg', id: :map
 

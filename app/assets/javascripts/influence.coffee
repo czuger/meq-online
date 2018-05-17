@@ -11,8 +11,8 @@ filter= () ->
     return
 
 influence= () ->
-  $('.influence-pawn' ).click () ->
-    console.log( $(this).attr('location') )
+  $('.influence-pawn-box' ).click () ->
+    console.log( $(this).find('.influence-pawn' ).attr('location') )
 
 $(document).on('turbolinks:load'
   ->
