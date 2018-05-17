@@ -18,6 +18,17 @@ def symbolize( name )
   name.gsub( /[-_ ]/, '_' ).downcase.to_sym
 end
 
+x_decal = 4890.0 / 1900.0
+y_decal = 3362.0 / 1306.0
+
+positions = nil
+File.open('data/locations_positions.txt','r') do |f|
+  positions = Hash[ f.readlines.map{ |e| e.split(':') }.map{ |e| [e[0].to_sym, e[1].chomp.split(',') ] } ]
+end
+
+positions.transform_values!{ |v| { x: ( v[0].to_f / x_decal ).to_i, y: ( v[1].to_f / y_decal ).to_i } }
+pp positions
+
 File.open('data/meq-locref.txt','r') do |f|
 
   locations = {}
@@ -29,7 +40,9 @@ File.open('data/meq-locref.txt','r') do |f|
 
     location = { name: name, region: regions[type], region_code: symbolize( regions[type] ),
                  color: colors[type], color_code: symbolize( colors[type] ),
-                 perilous: perilous_locations.include?( name ), heaven: heavens.include?( name ) }
+                 perilous: perilous_locations.include?( name ), heaven: heavens.include?( name ),
+      pos_x: positions[symbolize(name)][:x], pos_y: positions[symbolize(name)][:y] }
+
     locations[symbolize(name)] = location
   end
 

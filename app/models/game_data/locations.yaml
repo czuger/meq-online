@@ -7,6 +7,8 @@
   :color_code: :orange
   :perilous: false
   :heaven: false
+  :pos_x: 358
+  :pos_y: 308
 :harlingdon:
   :name: Harlingdon
   :region: Eriador
@@ -15,6 +17,8 @@
   :color_code: :orange
   :perilous: false
   :heaven: false
+  :pos_x: 325
+  :pos_y: 462
 :the_grey_havens:
   :name: The Grey Havens
   :region: Eriador
@@ -23,6 +27,8 @@
   :color_code: :orange
   :perilous: false
   :heaven: false
+  :pos_x: 434
+  :pos_y: 414
 :tharbad:
   :name: Tharbad
   :region: Endwith
@@ -31,6 +37,8 @@
   :color_code: :yellow
   :perilous: false
   :heaven: false
+  :pos_x: 782
+  :pos_y: 592
 :the_northdowns:
   :name: The Northdowns
   :region: Rhuadur
@@ -39,6 +47,8 @@
   :color_code: :purple
   :perilous: false
   :heaven: false
+  :pos_x: 797
+  :pos_y: 208
 :the_shire:
   :name: The Shire
   :region: Eriador
@@ -47,6 +57,8 @@
   :color_code: :orange
   :perilous: false
   :heaven: false
+  :pos_x: 561
+  :pos_y: 400
 :the_ruins_of_angmar:
   :name: The Ruins of Angmar
   :region: Rhuadur
@@ -55,6 +67,8 @@
   :color_code: :purple
   :perilous: true
   :heaven: false
+  :pos_x: 902
+  :pos_y: 157
 :the_trollshaws:
   :name: The Trollshaws
   :region: Rhuadur
@@ -63,6 +77,8 @@
   :color_code: :purple
   :perilous: false
   :heaven: false
+  :pos_x: 914
+  :pos_y: 399
 :weathertop:
   :name: Weathertop
   :region: Rhuadur
@@ -71,6 +87,8 @@
   :color_code: :purple
   :perilous: false
   :heaven: false
+  :pos_x: 808
+  :pos_y: 396
 :bree:
   :name: Bree
   :region: Eriador
@@ -79,6 +97,8 @@
   :color_code: :orange
   :perilous: false
   :heaven: false
+  :pos_x: 726
+  :pos_y: 448
 :dunland:
   :name: Dunland
   :region: Endwith
@@ -87,6 +107,8 @@
   :color_code: :yellow
   :perilous: false
   :heaven: false
+  :pos_x: 859
+  :pos_y: 678
 :eregion:
   :name: Eregion
   :region: Endwith
@@ -95,6 +117,8 @@
   :color_code: :yellow
   :perilous: false
   :heaven: false
+  :pos_x: 913
+  :pos_y: 517
 :fornost:
   :name: Fornost
   :region: Eriador
@@ -103,6 +127,8 @@
   :color_code: :orange
   :perilous: false
   :heaven: true
+  :pos_x: 686
+  :pos_y: 300
 :hills_of_evendim:
   :name: Hills of Evendim
   :region: Eriador
@@ -111,6 +137,8 @@
   :color_code: :orange
   :perilous: false
   :heaven: false
+  :pos_x: 563
+  :pos_y: 289
 :old_forest:
   :name: Old Forest
   :region: Eriador
@@ -119,6 +147,8 @@
   :color_code: :orange
   :perilous: false
   :heaven: false
+  :pos_x: 657
+  :pos_y: 384
 :anfalas:
   :name: Anfalas
   :region: Gondor
@@ -127,6 +157,8 @@
   :color_code: :light_blue
   :perilous: false
   :heaven: false
+  :pos_x: 851
+  :pos_y: 1037
 :enedwaith_plains:
   :name: Enedwaith Plains
   :region: Endwith
@@ -135,6 +167,8 @@
   :color_code: :yellow
   :perilous: false
   :heaven: false
+  :pos_x: 765
+  :pos_y: 754
 :gap_of_rohan:
   :name: Gap of Rohan
   :region: Rhoan
@@ -143,6 +177,8 @@
   :color_code: :dark_blue
   :perilous: false
   :heaven: false
+  :pos_x: 898
+  :pos_y: 844
 :isengard:
   :name: Isengard
   :region: Rhoan
@@ -151,6 +187,8 @@
   :color_code: :dark_blue
   :perilous: false
   :heaven: false
+  :pos_x: 925
+  :pos_y: 754
 :mouth_of_the_greyflood:
   :name: Mouth of the Greyflood
   :region: Endwith
@@ -159,6 +197,8 @@
   :color_code: :yellow
   :perilous: false
   :heaven: false
+  :pos_x: 633
+  :pos_y: 755
 :erebor:
   :name: Erebor
   :region: Grey mountains
@@ -167,6 +207,8 @@
   :color_code: :white
   :perilous: false
   :heaven: true
+  :pos_x: 1347
+  :pos_y: 246
 :ered_mithrin:
   :name: Ered Mithrin
   :region: Grey mountains
@@ -175,6 +217,8 @@
   :color_code: :white
   :perilous: false
   :heaven: false
+  :pos_x: 1186
+  :pos_y: 199
 :ettenmoors:
   :name: Ettenmoors
   :region: Rhuadur
@@ -183,6 +227,8 @@
   :color_code: :purple
   :perilous: false
   :heaven: false
+  :pos_x: 991
+  :pos_y: 306
 :dol_guldur:
   :name: Dol Guldur
   :region: Brown lands
@@ -191,6 +237,8 @@
   :color_code: :brown
   :perilous: true
   :heaven: false
+  :pos_x: 1189
+  :pos_y: 608
 :gladden_fields:
   :name: Gladden Fields
   :region: Mirkwood
@@ -199,6 +247,8 @@
   :color_code: :dark_green
   :perilous: false
   :heaven: false
+  :pos_x: 1148
+  :pos_y: 498
 :lake_esgaroth:
   :name: Lake Esgaroth
   :region: Misty mountains
@@ -207,6 +257,8 @@
   :color_code: :light_green
   :perilous: false
   :heaven: false
+  :pos_x: 1358
+  :pos_y: 335
 :moria:
   :name: Moria
   :region: Endwith
@@ -215,6 +267,8 @@
   :color_code: :yellow
   :perilous: true
   :heaven: false
+  :pos_x: 979
+  :pos_y: 639
 :mount_gundabad:
   :name: Mount Gundabad
   :region: Grey mountains
@@ -223,6 +277,8 @@
   :color_code: :white
   :perilous: true
   :heaven: false
+  :pos_x: 1028
+  :pos_y: 205
 :rhosgobel:
   :name: Rhosgobel
   :region: Mirkwood
@@ -231,6 +287,8 @@
   :color_code: :dark_green
   :perilous: false
   :heaven: false
+  :pos_x: 1235
+  :pos_y: 518
 :rivendell:
   :name: Rivendell
   :region: Mirkwood
@@ -239,6 +297,8 @@
   :color_code: :dark_green
   :perilous: false
   :heaven: true
+  :pos_x: 1013
+  :pos_y: 403
 :south_eaves:
   :name: South Eaves
   :region: Misty mountains
@@ -247,6 +307,8 @@
   :color_code: :light_green
   :perilous: false
   :heaven: false
+  :pos_x: 1361
+  :pos_y: 626
 :the_bight:
   :name: The Bight
   :region: Misty mountains
@@ -255,6 +317,8 @@
   :color_code: :light_green
   :perilous: false
   :heaven: false
+  :pos_x: 1370
+  :pos_y: 527
 :the_forest_trail:
   :name: The Forest Trail
   :region: Misty mountains
@@ -263,6 +327,8 @@
   :color_code: :light_green
   :perilous: false
   :heaven: false
+  :pos_x: 1181
+  :pos_y: 327
 :the_high_pass:
   :name: The High Pass
   :region: Mirkwood
@@ -271,6 +337,8 @@
   :color_code: :dark_green
   :perilous: false
   :heaven: false
+  :pos_x: 1101
+  :pos_y: 367
 :the_northern_waste:
   :name: The Northern Waste
   :region: Grey mountains
@@ -279,6 +347,8 @@
   :color_code: :white
   :perilous: false
   :heaven: false
+  :pos_x: 1098
+  :pos_y: 126
 :the_redhorn_gate:
   :name: The Redhorn Gate
   :region: Mirkwood
@@ -287,6 +357,8 @@
   :color_code: :dark_green
   :perilous: false
   :heaven: false
+  :pos_x: 1013
+  :pos_y: 572
 :the_withered_heath:
   :name: The Withered Heath
   :region: Grey mountains
@@ -295,6 +367,8 @@
   :color_code: :white
   :perilous: false
   :heaven: false
+  :pos_x: 1292
+  :pos_y: 172
 :woodland_realm:
   :name: Woodland Realm
   :region: Misty mountains
@@ -303,6 +377,8 @@
   :color_code: :light_green
   :perilous: false
   :heaven: true
+  :pos_x: 1272
+  :pos_y: 295
 :the_iron_hills:
   :name: The Iron Hills
   :region: Grey mountains
@@ -311,6 +387,8 @@
   :color_code: :white
   :perilous: false
   :heaven: false
+  :pos_x: 1506
+  :pos_y: 259
 :rhun:
   :name: Rhun
   :region: Brown lands
@@ -319,6 +397,8 @@
   :color_code: :brown
   :perilous: false
   :heaven: false
+  :pos_x: 1504
+  :pos_y: 644
 :barad_dur:
   :name: Barad-Dur
   :region: Mordor
@@ -327,6 +407,8 @@
   :color_code: :red
   :perilous: true
   :heaven: false
+  :pos_x: 1563
+  :pos_y: 953
 :mount_doom:
   :name: Mount Doom
   :region: Mordor
@@ -335,6 +417,8 @@
   :color_code: :red
   :perilous: false
   :heaven: false
+  :pos_x: 1449
+  :pos_y: 964
 :amon_hen:
   :name: Amon Hen
   :region: Rhoan
@@ -343,6 +427,8 @@
   :color_code: :dark_blue
   :perilous: false
   :heaven: false
+  :pos_x: 1154
+  :pos_y: 717
 :belfalas:
   :name: Belfalas
   :region: Gondor
@@ -351,6 +437,8 @@
   :color_code: :light_blue
   :perilous: false
   :heaven: false
+  :pos_x: 1032
+  :pos_y: 1150
 :dagorlad:
   :name: Dagorlad
   :region: Brown lands
@@ -359,6 +447,8 @@
   :color_code: :brown
   :perilous: false
   :heaven: false
+  :pos_x: 1409
+  :pos_y: 797
 :dead_marshes:
   :name: Dead Marshes
   :region: Brown lands
@@ -367,6 +457,8 @@
   :color_code: :brown
   :perilous: false
   :heaven: false
+  :pos_x: 1296
+  :pos_y: 861
 :dunharrow:
   :name: Dunharrow
   :region: Rhoan
@@ -375,6 +467,8 @@
   :color_code: :dark_blue
   :perilous: false
   :heaven: false
+  :pos_x: 1176
+  :pos_y: 984
 :edoras:
   :name: Edoras
   :region: Rhoan
@@ -383,6 +477,8 @@
   :color_code: :dark_blue
   :perilous: false
   :heaven: false
+  :pos_x: 1042
+  :pos_y: 928
 :emyn_muil:
   :name: Emyn Muil
   :region: Brown lands
@@ -391,6 +487,8 @@
   :color_code: :brown
   :perilous: false
   :heaven: false
+  :pos_x: 1229
+  :pos_y: 797
 :fangorn:
   :name: Fangorn
   :region: Mirkwood
@@ -399,6 +497,8 @@
   :color_code: :dark_green
   :perilous: false
   :heaven: false
+  :pos_x: 1014
+  :pos_y: 769
 :helms_deep:
   :name: Helms Deep
   :region: Rhoan
@@ -407,6 +507,8 @@
   :color_code: :dark_blue
   :perilous: false
   :heaven: false
+  :pos_x: 983
+  :pos_y: 852
 :lothlorien:
   :name: Lothlorien
   :region: Mirkwood
@@ -415,6 +517,8 @@
   :color_code: :dark_green
   :perilous: false
   :heaven: true
+  :pos_x: 1062
+  :pos_y: 700
 :minas_morgul:
   :name: Minas Morgul
   :region: Mordor
@@ -423,6 +527,8 @@
   :color_code: :red
   :perilous: false
   :heaven: false
+  :pos_x: 1350
+  :pos_y: 974
 :minas_tirith:
   :name: Minas Tirith
   :region: Gondor
@@ -431,6 +537,8 @@
   :color_code: :light_blue
   :perilous: false
   :heaven: true
+  :pos_x: 1272
+  :pos_y: 978
 :mothond:
   :name: Mothond
   :region: Gondor
@@ -439,6 +547,8 @@
   :color_code: :light_blue
   :perilous: false
   :heaven: false
+  :pos_x: 984
+  :pos_y: 993
 :near_harad:
   :name: Near Harad
   :region: Gondor
@@ -447,6 +557,8 @@
   :color_code: :light_blue
   :perilous: false
   :heaven: false
+  :pos_x: 1300
+  :pos_y: 1230
 :osgiliath:
   :name: Osgiliath
   :region: Gondor
@@ -455,6 +567,8 @@
   :color_code: :light_blue
   :perilous: false
   :heaven: false
+  :pos_x: 1313
+  :pos_y: 1054
 :pelargir:
   :name: Pelargir
   :region: Gondor
@@ -463,6 +577,8 @@
   :color_code: :light_blue
   :perilous: false
   :heaven: false
+  :pos_x: 1241
+  :pos_y: 1126
 :plains_of_rohan:
   :name: Plains of Rohan
   :region: Rhoan
@@ -471,6 +587,8 @@
   :color_code: :dark_blue
   :perilous: false
   :heaven: false
+  :pos_x: 1113
+  :pos_y: 802
 :plains_of_gorgoroth:
   :name: Plains of Gorgoroth
   :region: Mordor
@@ -479,6 +597,8 @@
   :color_code: :red
   :perilous: false
   :heaven: false
+  :pos_x: 1400
+  :pos_y: 1032
 :sea_of_udun:
   :name: Sea of Udun
   :region: Mordor
@@ -487,6 +607,8 @@
   :color_code: :red
   :perilous: false
   :heaven: false
+  :pos_x: 1381
+  :pos_y: 888
 :the_nindale:
   :name: The Nindale
   :region: Brown lands
@@ -495,3 +617,5 @@
   :color_code: :brown
   :perilous: false
   :heaven: false
+  :pos_x: 1220
+  :pos_y: 903
