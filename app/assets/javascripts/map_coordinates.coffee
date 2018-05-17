@@ -22,4 +22,6 @@ $(document).on('turbolinks:load'
     if window.location.pathname == '/map_coordinates/edit'
       coordinates()
       alert( "Click in the center of #{$('#current_place_name').val()}")
+
+      window.scrollTo( parseInt( $('#scroll_x').val()-800 ), parseInt( $('#scroll_y').val()-400 ) );
 )

@@ -9,10 +9,10 @@
   :heaven: false
 :harlingdon:
   :name: Harlingdon
-  :region: Endwith
-  :region_code: :endwith
-  :color: Yellow
-  :color_code: :yellow
+  :region: Eriador
+  :region_code: :eriador
+  :color: Orange
+  :color_code: :orange
   :perilous: false
   :heaven: false
 :the_grey_havens:
