@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
 
+  get 'map_coordinates/edit'
+  get 'map_coordinates/update'
   get 'plot_card_play/edit'
   get 'plot_card_play/update'
+
   resources :combats, only: [ :show, :new, :create, :destroy ] do
     get :hero_setup_new
     post :hero_setup_draw_cards

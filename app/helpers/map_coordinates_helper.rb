@@ -1,0 +1,2 @@
+module MapCoordinatesHelper
+end

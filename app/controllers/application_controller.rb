@@ -3,8 +3,8 @@ class ApplicationController < ActionController::Base
   def require_logged_in
     redirect_to new_sessions_path unless current_user
   end
-
-  private
+  #
+  # private
 
   def current_user
     @current_user ||= ( User.find(session[:user_id]) if session[:user_id] )
@@ -22,7 +22,6 @@ class ApplicationController < ActionController::Base
   # For private actor part
   def set_actor_ensure_actor
     @actor = Actor.find(actor_from_params)
-    ensure_actor
     @board = @actor.board
     ensure_board
   end
@@ -43,7 +42,7 @@ class ApplicationController < ActionController::Base
   end
 
   def actor_from_params
-    params[:id] || params[:hero_id]
+    params[:id] || params[:hero_id] || params[:sauron_id]
   end
 
 end
