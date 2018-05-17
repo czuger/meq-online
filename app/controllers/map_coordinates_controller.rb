@@ -1,9 +1,19 @@
 class MapCoordinatesController < ApplicationController
 
   def edit
-    @locations = GameData::Locations.new.list_by_region
+    recorded_locations = nil
+    File.open( 'work/data/places.txt', 'r' ) do |file|
+      recorded_locations = file.readlines.map{ |l| l.split(':').first }
+    end
 
-    location = @locations.first
+    pp recorded_locations
+
+    @locations = GameData::Locations.new
+    recorded_locations.each do |loc|
+      @locations.delete!( loc )
+    end
+
+    location = @locations.list_by_region.first
 
     @current_place_name = location.name
     @current_place_code = location.name_code
