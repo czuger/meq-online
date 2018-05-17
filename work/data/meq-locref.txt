@@ -1,6 +1,6 @@
-Blue Mountains (Y)
+Blue Mountains (O)
 Harlingdon (Y)
-The Grey Havens (Y)
+The Grey Havens (O)
 Tharbad (Y)
 The Northdowns (P)
 The Shire (O)

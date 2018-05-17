@@ -10,8 +10,9 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require rails-ujs
 //= require jquery3
+// JQuery has to be set before rails-ujs otherwise we will have crfs token issues.
+//= require rails-ujs
 //= require jquery-ui/widgets/droppable
 //= require popper
 //= require bootstrap

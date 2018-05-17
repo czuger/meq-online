@@ -18,7 +18,7 @@ def symbolize( name )
   name.gsub( /[-_ ]/, '_' ).downcase.to_sym
 end
 
-File.open('meq-locref.txt','r') do |f|
+File.open('data/meq-locref.txt','r') do |f|
 
   locations = {}
 
@@ -33,7 +33,7 @@ File.open('meq-locref.txt','r') do |f|
     locations[symbolize(name)] = location
   end
 
-  File.open('../app/models/data/locations/locations.yaml','w') do |of|
+  File.open('../app/models/game_data/locations.yaml','w') do |of|
     of.puts locations.to_yaml
   end
 end
