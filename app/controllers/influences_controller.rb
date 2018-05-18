@@ -27,11 +27,7 @@ class InfluencesController < ApplicationController
       @board.save!
     end
 
-    redirect_to influence_path(@actor)
-  end
-
-  def update_by_click
-
+    redirect_to influence_path(@actor) if params[:redirect] != 'false'
   end
 
   def show

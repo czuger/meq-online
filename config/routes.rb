@@ -32,15 +32,15 @@ Rails.application.routes.draw do
 
   # Caution, in this case, the id is not a shadow_pool or influence, but an Actor.id
   resources :shadow_pools, only: [ :edit, :update ]
-  resources :influences, only: [ :show, :edit, :update ] do
-    post :update_by_click
-  end
+  resources :influences, only: [ :show, :edit, :update ]
+
+  resources :maps, only: [:edit]
 
   resources :boards, only:[ :index, :show, :new, :create ] do
     get :join, action: :join_new
     post :join
 
-    get :map
+    resource :maps, only: [:show]
 
     resource :logs, only: [:show ]
     resources :heros, only: [ :index ]

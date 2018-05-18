@@ -7,10 +7,11 @@
 - if @board && @board.id
   -#= link_to 'Heroes', board_heros_path( @board ), role: :button, class: 'btn btn-primary'
   -#= link_to 'Combat', board_combats_path( @board ), role: :button, class: 'btn btn-primary'
-  = link_to 'Map', board_map_path(@board), role: :button, class: 'btn btn-primary'
+  -# For futur specator use
+  -#= link_to 'Map', board_map_path(@board), role: :button, class: 'btn btn-primary'
 
   - if @actor
-    = link_to 'Influence', influence_path(@actor), role: :button, class: 'btn btn-primary'
+    = link_to 'Influence', edit_map_path(@actor), role: :button, class: 'btn btn-primary'
     = link_to 'Shadow pool', edit_shadow_pool_path(@actor), role: :button, class: 'btn btn-primary'
 
   = link_to 'Log', board_logs_path( @board ), role: :button, class: 'btn btn-primary'

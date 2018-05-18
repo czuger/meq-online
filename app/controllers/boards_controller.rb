@@ -2,6 +2,7 @@ class BoardsController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_board, only: [:show, :edit, :update, :destroy, :join_new, :join]
+  before_action :set_actor_ensure_actor, only: [:map]
 
   # GET /boards
   # GET /boards.json
@@ -72,10 +73,6 @@ class BoardsController < ApplicationController
         end
       end
     end
-  end
-
-  def map
-    @positions = GameData::Locations.new.position_list
   end
 
   # PATCH/PUT /boards/1
