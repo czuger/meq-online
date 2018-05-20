@@ -11,10 +11,11 @@
   .col-4
     = check_box_tag( :sauron, 'yes', @sauron_state, 'data-toggle' => 'toggle', disabled: @sauron_disabled, class: :toggle )
 
-  .col-2
-    = label_tag :hero_1, 'Hero you play', class: 'col-form-label'
-  .col-4
-    = select_tag(:hero_1, options_for_select( @heroes.select_tag_data ), include_blank: true, class: 'form-control' )
+  - if @remaining_heroes >= 1
+    .col-2
+      = label_tag :hero_1, 'Hero you play', class: 'col-form-label'
+    .col-4
+      = select_tag(:hero_1, options_for_select( @heroes.select_tag_data ), include_blank: true, class: 'form-control' )
 
 .row
   - if @remaining_heroes >= 2
