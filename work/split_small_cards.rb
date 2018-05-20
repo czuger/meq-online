@@ -3,8 +3,8 @@ require 'fileutils'
 card_width=410
 card_height=586
 
-directory = 'hero_cards'
-name = 'heros'
+input_path = 'hero_cards/quests/standard/'
+output_path = '../app/assets/images/hero_cards/quests/standard/'
 
 FileUtils.mkpath("#{directory}/#{name}")
 img = Magick::Image.read("#{directory}/#{name}.jpg")[0]
