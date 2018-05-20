@@ -21,11 +21,7 @@
   .form-group
     %b Hand:
 
-    - @actor.hand.in_groups_of(8).each do |group|
-      .card-row
-        - group.each do |card_number|
-          - if card_number
-            = image_tag "hero_cards/#{@heroes_hero.cards[card_number].pic_path}", class: 'small-card', card_id: card_number
+    = render partial: 'cards_hand'
 
   .form-group
     = form_tag hero_draw_cards_path(@actor), class: 'form-inline' do

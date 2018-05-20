@@ -3,4 +3,4 @@
     - group.each do |card_number|
       .col
         - if card_number
-          = image_tag "hero_cards/#{@heroes_hero.cards[card_number].pic_path}", class: :card, card_id: card_number
+          = image_tag "hero_cards/actions/#{@heroes_hero.cards[card_number].pic_path}", class: 'small-card', card_id: card_number
