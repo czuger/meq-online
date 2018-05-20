@@ -131,10 +131,13 @@ class BoardsController < ApplicationController
 
           hero = @heroes.get( hero_code )
 
+          life_pool = hero.starting_deck.shuffle
+          hand = life_pool.shift( hero[:fortitude] )
+
           @board.heroes.create!(
               name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
-              wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: hero.starting_deck.shuffle,
-              rest_pool: [], damage_pool: [], hand: [], user_id: @current_user.id, name: hero.name
+              wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: life_pool,
+              rest_pool: [], damage_pool: [], hand: hand, user_id: @current_user.id, name: hero.name
           )
           # Just tell that the user is connected to this board
           @current_user.boards << @board unless @current_user.boards.include?( @board )
