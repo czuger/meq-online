@@ -36,7 +36,7 @@ Rails.application.routes.draw do
 
   resources :maps, only: [:edit]
 
-  resources :boards, only:[ :index, :show, :new, :create ] do
+  resources :boards, only:[ :index, :new, :create ] do
     get :join, action: :join_new
     post :join
 

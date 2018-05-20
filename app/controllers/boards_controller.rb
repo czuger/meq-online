@@ -14,13 +14,13 @@ class BoardsController < ApplicationController
     end
 
     @show_new_board = true
+    @heroes = GameData::Heroes.new
 
   end
 
   # GET /boards/1
   # GET /boards/1.json
-  def show
-  end
+
 
   # GET /boards/new
   def new
@@ -52,13 +52,16 @@ class BoardsController < ApplicationController
   def create
 
     starting_plot_id= rand( 0..2 )
+    starting_plot = GameData::StartingPlots.new.get(starting_plot_id)
+
     plot_deck= (3..17).to_a.shuffle
     shadow_deck= (0..23).to_a.shuffle
     max_heroes_count= params[:max_heroes_count].to_i
 
-    @board = Board.new( influence: {}, plot_deck: plot_deck, shadow_deck: shadow_deck,
+    @board = Board.new( influence: starting_plot.influence.init, plot_deck: plot_deck, shadow_deck: shadow_deck,
                         plot_discard: [], shadow_discard: [], max_heroes_count: max_heroes_count,
-                        current_plots: { 'plot-card-1' => starting_plot_id } )
+                        current_plots: { 'plot-card-1' => starting_plot_id }, shadow_pool: starting_plot.influence.shadow_pool,
+                        )
 
     respond_to do |format|
       @board.transaction do
@@ -154,10 +157,6 @@ class BoardsController < ApplicationController
         else
           unless @board.sauron_turn?
             @board.heroes_setup!
-            @board.sauron_setup!
-            @board.sauron_first_turn!
-            @board.heroes_turn!
-            @board.sauron_turn!
           end
         end
 

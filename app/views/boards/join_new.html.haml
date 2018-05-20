@@ -1,4 +1,6 @@
-%h1 New board
+.container
 
-= form_for board_join_path( @board ), class: 'form-group' do |f|
-  = render partial: 'players_subscribe'
+  %h1 Join board
+
+  = form_for board_join_path( @board ), class: 'form-group' do |f|
+    = render partial: 'players_subscribe'
