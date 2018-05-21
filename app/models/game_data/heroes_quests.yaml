@@ -1,0 +1,34 @@
+---
+regular:
+  argalad:
+    starting_quests:
+      - 1
+      - 2
+    advanced_quests:
+      - 0
+  beravor:
+    starting_quests:
+      - 1
+      - 2
+    advanced_quests:
+      - 0
+  eleanor:
+    starting_quests:
+      - 1
+      - 2
+    advanced_quests:
+      - 0
+  eometh:
+    starting_quests:
+      - 1
+      - 2
+    advanced_quests:
+      - 0
+  thalin:
+    starting_quests:
+      - 1
+      - 2
+    advanced_quests:
+      - 0
+
+extension_1:
