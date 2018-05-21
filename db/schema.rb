@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_16_102941) do
+ActiveRecord::Schema.define(version: 2018_05_21_081607) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 2018_05_16_102941) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "drawn_plot_cards"
+    t.integer "current_quest"
     t.index ["board_id"], name: "index_actors_on_board_id"
   end
 

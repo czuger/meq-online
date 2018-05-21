@@ -78,31 +78,6 @@ class BoardsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /boards/1
-  # PATCH/PUT /boards/1.json
-  # def update
-  #   respond_to do |format|
-  #     if @board.update(board_params)
-  #       format.html { redirect_to @board, notice: 'Board was successfully updated.' }
-  #       format.json { render :show, status: :ok, location: @board }
-  #     else
-  #       format.html { render :edit }
-  #       format.json { render json: @board.errors, status: :unprocessable_entity }
-  #     end
-  #   end
-  # end
-
-  # # DELETE /boards/1
-  # # DELETE /boards/1.json
-  # def destroy
-  #   @board.users.clear
-  #   @board.destroy
-  #   respond_to do |format|
-  #     format.html { redirect_to boards_url, notice: 'Board was successfully destroyed.' }
-  #     format.json { head :no_content }
-  #   end
-  # end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_board
@@ -133,11 +108,13 @@ class BoardsController < ApplicationController
 
           life_pool = hero.starting_deck.shuffle
           hand = life_pool.shift( hero[:fortitude] )
+          starting_quest = GameData::HeroQuests.new( 'regular' ).get_starting_quest( hero_code )
 
           @board.heroes.create!(
               name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
               wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: life_pool,
-              rest_pool: [], damage_pool: [], hand: hand, user_id: @current_user.id, name: hero.name
+              rest_pool: [], damage_pool: [], hand: hand, user_id: @current_user.id, name: hero.name,
+              current_quest: starting_quest
           )
           # Just tell that the user is connected to this board
           @current_user.boards << @board unless @current_user.boards.include?( @board )
