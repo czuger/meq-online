@@ -35,7 +35,7 @@ Dir["#{input_path}/*.jpg"].each do |file|
   p file
 
   img = Magick::Image.read(file)[0]
-  hero_name = File.basename(file)
+  hero_name = File.basename(file, '.jpg')
   card_id = 0
 
   0.upto(2) do |line|

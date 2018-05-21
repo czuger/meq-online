@@ -46,3 +46,5 @@
       .mx-2
         = button_tag 'Move', role: :button, class: 'btn btn-secondary disabled', id: :move_hero
       = hidden_field_tag :card_used, ''
+
+  = image_tag "hero_cards/quests/standard/#{@actor.name_code}-#{@actor.current_quest}", class: 'big-card'
