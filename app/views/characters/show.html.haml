@@ -1,2 +1,25 @@
-%h1 Characters#show
-%p Find me in app/views/characters/show.html.haml
+.container
+
+  = link_to 'Edit', edit_influence_path(@actor), role: :button, class: 'btn btn-secondary'
+
+  %table.table
+    %thead
+      %tr
+        %th
+          Character
+        %th
+          Region
+        %th
+          Zone
+
+    %tbody
+      -
+      - @locations.each do |location|
+        - if @influence[location.name_code]
+          %tr
+            %td
+              = location.region
+            %td
+              = location.name
+            %td
+              = @influence[location.name_code]
