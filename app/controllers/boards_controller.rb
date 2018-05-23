@@ -61,7 +61,7 @@ class BoardsController < ApplicationController
     @board = Board.new( influence: starting_plot.influence.init, plot_deck: plot_deck, shadow_deck: shadow_deck,
                         plot_discard: [], shadow_discard: [], max_heroes_count: max_heroes_count,
                         current_plots: { 'plot-card-1' => starting_plot_id }, shadow_pool: starting_plot.influence.shadow_pool,
-                        characters: []
+                        characters: {}
                         )
 
     respond_to do |format|

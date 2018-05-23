@@ -2,10 +2,9 @@ class InfluencesController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_actor_ensure_board, only: [:show, :edit, :update]
+  before_action :set_influence, only: [:show, :edit]
 
   def edit
-    @locations= GameData::Locations.new.list_by_region
-    @influence = @board.influence
   end
 
   def update
@@ -31,6 +30,11 @@ class InfluencesController < ApplicationController
   end
 
   def show
+  end
+
+  private
+
+  def set_influence
     @locations= GameData::Locations.new.list_by_region
     @influence = @board.influence
   end
