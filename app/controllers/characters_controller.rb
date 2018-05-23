@@ -14,17 +14,18 @@ class CharactersController < ApplicationController
     @board.transaction do
 
       characters.each do |char, location|
-        next unless @locations.exist?(location)
         char = char.to_sym
 
         if location.empty?
           if @board.characters[char]
             @board.characters[char] = nil
-            @board.log!( current_user, @actor, 'character.remove', params:{ name: @characters.name( char ) } )
+            @board.log!( current_user, @actor, 'character.remove', name: @characters.name( char ) )
           end
         else
+          next unless @locations.exist?(location)
           @board.characters[char] = location.to_sym
-          @board.log!( current_user, @actor, 'character.place', params:{ name: @characters.name( char ), location: location } )
+          @board.log!( current_user, @actor, 'character.place', name: @characters.name( char ),
+                       location: @locations.get( location ).name )
         end
       end
 

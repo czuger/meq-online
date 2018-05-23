@@ -33,4 +33,4 @@ en:
 
       character:
         remove: "Removing %{name}"
-        placie: "Placing %{name} at %{location}"
+        place: "Placing %{name} at %{location}"
