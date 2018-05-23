@@ -13,7 +13,6 @@ module GameData
     end
 
     def exist?( name_code )
-      p name_code
       @data.has_key?( name_code.to_sym )
     end
 
@@ -27,6 +26,10 @@ module GameData
 
     def position_list
       @data.map{ |k, v| OpenStruct.new( name_code: k, x: v[:pos_x], y: v[:pos_y] ) }
+    end
+
+    def alpha_select_tag_data
+      @data.map{ |k, v| [ v[:name], k ] }.sort
     end
 
   end

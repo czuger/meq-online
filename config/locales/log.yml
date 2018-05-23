@@ -1,21 +1,26 @@
 en:
   logs:
     show:
+
       move: "%{name} move from %{from} to %{to} using"
       # TODO : pluralize this
       draw_cards: "%{name} draw %{cards_drawn} cards. Remains %{lp_cards} cards in life pool."
 
       place_influence: "Influence set to %{value} in %{place}."
       change_shadow_pool: "Shadow pool changed from %{old_value} to %{new_value}."
+
       draw_plot_cards:
         one: "Sauron draw 1 plot card."
         other: "Sauron draw %{count} plot cards."
+
       draw_shadow_cards:
         one: "Sauron draw 1 shadow card."
         other: "Sauron draw %{count} shadow cards."
+
       keep_plot_card:
         one: "Sauron keep 1 plot card."
         other: "Sauron keep %{count} plot cards."
+
       cards_bottom_plot_deck:
         one: "Sauron replace 1 card at the bottom of the plot deck."
         other: "Sauron replace %{count} card at the bottom of the plot deck."
@@ -25,3 +30,7 @@ en:
         draw_cards: "Before the combat, %{name} draw %{cards_drawn} cards. Remains %{lp_cards} cards in life pool."
 
         play_card: "%{name} play"
+
+      character:
+        remove: "Removing %{name}"
+        placie: "Placing %{name} at %{location}"

@@ -1,30 +1,12 @@
 .container
 
-  .form-group
-    .row
-      .col
-        = text_field_tag :filter, '', class: 'form-control'
+  = form_tag character_path(@actor), method: :patch do
 
-  = form_tag influence_path(@actor), method: :patch do
-    = button_tag 'Validate', role: :button, class: 'btn btn-primary'
-    %table.table#influences_table
-      %thead
-        %tr
-          %th
-            Region
-          %th
-            Zone
-          %th
-            Influence
+    - @characters.list.each do |char|
+      .row
+        .col-1.col-form-label
+          = label_tag character_code( char ), char.name
+        .col-3
+          = select_tag( character_code( char ), options_for_select( @locations.alpha_select_tag_data ), { include_blank: true, class: 'form-control' } )
 
-      %tbody
-        - @locations.each do |location|
-          %tr
-            %td
-              = location.region
-            %td
-              = location.name
-            %td
-              = number_field_tag "locations[#{location.name_code}]", @influence[location.name_code]
-
-    = button_tag 'Validate', role: :button, class: 'btn btn-primary'
+    = button_tag 'Validate', role: :button, class: 'btn btn-secondary'
