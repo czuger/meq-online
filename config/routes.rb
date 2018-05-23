@@ -35,6 +35,7 @@ Rails.application.routes.draw do
   resources :influences, only: [ :show, :edit, :update ]
 
   resources :maps, only: [:edit]
+  resources :characters, only: [:show,:edit,:update]
 
   resources :boards, only:[ :index, :new, :create ] do
     get :join, action: :join_new

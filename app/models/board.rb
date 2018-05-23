@@ -15,6 +15,7 @@ class Board < ApplicationRecord
   serialize :plot_discard
   serialize :shadow_deck
   serialize :shadow_discard
+  serialize :characters
 
   aasm do
     state :created, :initial => true
