@@ -7,6 +7,6 @@
         .col-1.col-form-label
           = label_tag character_code( char ), char.name
         .col-3
-          = select_tag( character_code( char ), options_for_select( @locations.alpha_select_tag_data ), { include_blank: true, class: 'form-control' } )
+          = select_tag( character_code( char ), local_options_for_select( char ), { include_blank: true, class: 'form-control' } )
 
     = button_tag 'Validate', role: :button, class: 'btn btn-secondary'
