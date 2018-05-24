@@ -6,6 +6,6 @@
       .col-2.col-form-label
         = @board.aasm_state.humanize
       .col-4
-        = select_tag :next_event, options_for_select( @board.aasm.events(:permitted => true).map{ |e| [e.name.to_s.humanize, e.name] }.sort.reverse ), class: 'form-control'
+        = select_tag :next_event, options_for_select( events_list ), class: 'form-control'
       .col-2
-        = button_tag 'Go', role: :button, class: 'btn btn-secondary'
+        = button_tag 'Go', disabled: events_list.empty?, role: :button, class: 'btn btn-secondary'
