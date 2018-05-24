@@ -1,5 +1,7 @@
 class Board < ApplicationRecord
+
   include AASM
+  include BoardAasm
 
   has_many :logs, dependent: :destroy
 
@@ -25,23 +27,43 @@ class Board < ApplicationRecord
       transitions :from => :created, :to => :waiting_for_players
     end
 
-    event :heroes_setup do
+    event :next_to_heroes_setup do
       transitions :from => [ :created, :waiting_for_players ], :to => :heroes_setup
     end
 
-    event :sauron_setup do
-      transitions :from => :heroes_setup, :to => :sauron_setup
+    event :back_to_heroes_setup do
+      transitions :from => [ :sauron_setup ], :to => :heroes_setup
     end
 
-    event :sauron_first_turn do
+    event :next_to_sauron_setup do
+      transitions :from => :heroes_setup, :to => :sauron_setup, :guard => :all_heroes_played?
+    end
+
+    event :back_to_sauron_setup do
+      transitions :from => [ :sauron_first_turn ], :to => :sauron_setup
+    end
+
+    event :next_to_sauron_first_turn do
       transitions :from => :sauron_setup, :to => :sauron_first_turn
     end
 
-    event :heroes_turn do
+    # event :back_to_sauron_first_turn do
+    #   transitions :from => [ :heroes_turn ], :to => :sauron_first_turn
+    # end
+
+    event :next_to_heroes_turn do
       transitions :from => [ :sauron_turn, :sauron_first_turn ], :to => :heroes_turn
     end
 
-    event :sauron_turn do
+    event :back_to_heroes_turn do
+      transitions :from => [ :sauron_turn ], :to => :heroes_turn
+    end
+
+    event :next_to_sauron_turn do
+      transitions :from => [ :heroes_turn ], :to => :sauron_turn
+    end
+
+    event :back_to_sauron_turn do
       transitions :from => [ :heroes_turn ], :to => :sauron_turn
     end
 

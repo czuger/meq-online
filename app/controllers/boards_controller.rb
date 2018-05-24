@@ -137,7 +137,7 @@ class BoardsController < ApplicationController
           @board.wait_for_players! unless @board.waiting_for_players?
         else
           unless @board.sauron_turn?
-            @board.heroes_setup!
+            @board.next_to_heroes_setup!
           end
         end
 

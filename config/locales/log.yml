@@ -34,3 +34,5 @@ en:
       character:
         remove: "Removing %{name}"
         place: "Placing %{name} at %{location}"
+
+      switch_state: "Changed state from %{old_state} to %{new_state}"

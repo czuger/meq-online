@@ -36,6 +36,7 @@ Rails.application.routes.draw do
 
   resources :maps, only: [:edit]
   resources :characters, only: [:edit,:update]
+  resources :board_steps, only: [:edit,:update]
 
   resources :boards, only:[ :index, :new, :create ] do
     get :join, action: :join_new
