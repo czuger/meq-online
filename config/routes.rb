@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     get :heal
     patch :take_damages
     post :move
+    patch :finish_turn
   end
 
   resources :sauron, only: [:show] do

@@ -15,8 +15,11 @@
       .col
         = link_to 'Take damages', hero_take_damages_path(@actor, damage_amount: 3 ), method: :patch, role: :button, class: 'btn btn-secondary btn-block'
       .col
+        - if @actor.turn_finished
+          = button_tag 'Turn finished', role: :button, class: 'btn btn-secondary disabled btn-block'
+        - else
+          = link_to 'Finish turn', hero_finish_turn_path(@actor), method: :patch, role: :button, class: 'btn btn-secondary btn-block'
       .col
-
 
   .form-group
     %b Hand:

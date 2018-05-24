@@ -1,7 +1,7 @@
 class HerosController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_actor_ensure_actor, only: [:show, :edit, :update, :destroy, :draw_cards, :rest, :heal, :take_damages, :move]
+  before_action :set_actor_ensure_actor, only: [:show, :edit, :update, :destroy, :draw_cards, :rest, :heal, :take_damages, :move, :finish_turn]
 
   def index
     @board = Board.find(params[:board_id])
@@ -50,6 +50,14 @@ class HerosController < ApplicationController
     rest_damages = damage_amount - damages_taken_from_life_pool.count
     @actor.damage_pool += @actor.hand.shift(rest_damages)
     @actor.save!
+    redirect_to @actor
+  end
+
+  def finish_turn
+    @actor.transaction do
+      @actor.update( turn_finished: true )
+      @board.log!( current_user, @actor, :finish_turn )
+    end
     redirect_to @actor
   end
 

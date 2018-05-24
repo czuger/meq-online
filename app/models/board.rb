@@ -36,7 +36,7 @@ class Board < ApplicationRecord
     end
 
     event :next_to_sauron_setup do
-      transitions :from => :heroes_setup, :to => :sauron_setup, :guard => :all_heroes_played?
+      transitions :from => :heroes_setup, :to => :sauron_setup, :guard => :all_heroes_played?, :after => Proc.new { clean_heroes_played_status! }
     end
 
     event :back_to_sauron_setup do
@@ -60,7 +60,7 @@ class Board < ApplicationRecord
     end
 
     event :next_to_sauron_turn do
-      transitions :from => [ :heroes_turn ], :to => :sauron_turn
+      transitions :from => [ :heroes_turn ], :to => :sauron_turn, :to => :heroes_turn, :guard => :all_heroes_played?, :after => Proc.new { clean_heroes_played_status! }
     end
 
     event :back_to_sauron_turn do
