@@ -13,7 +13,6 @@ class BoardsController < ApplicationController
       @boards = @current_user.boards.includes( :heroes, :sauron, { heroes: :user }, { sauron: :user } )
     end
 
-    @show_new_board = true
     @heroes = GameData::Heroes.new
 
   end

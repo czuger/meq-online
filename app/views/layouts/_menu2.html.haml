@@ -1,0 +1,61 @@
+.container
+  %nav.navbar.navbar-expand-lg.navbar-light.bg-light
+
+    #navbarSupportedContent.collapse.navbar-collapse
+
+      %ul.navbar-nav.mr-auto
+
+        %li.nav-item.dropdown
+          %a#navbarDropdownBoards.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+            Boards
+          .dropdown-menu{"aria-labelledby" => "navbarDropdownBoards"}
+            = link_to 'All boards', boards_path( all: true ), role: :button, class: 'dropdown-item'
+            = link_to 'My boards', boards_path, role: :button, class: 'dropdown-item'
+            = link_to 'New Board', new_board_path, role: :button, class: 'dropdown-item'
+
+        - if @board
+          - if @actor
+
+            %li.nav-item.dropdown
+              %a#navbarDropdownMisc.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+                Misc
+              .dropdown-menu{"aria-labelledby" => "navbarDropdownMisc"}
+                = link_to 'Map', edit_map_path(@actor), class: 'dropdown-item'
+                = link_to 'Influence', influence_path(@actor), class: 'dropdown-item'
+                = link_to 'Characters', edit_character_path(@actor), class: 'dropdown-item'
+                = link_to 'Shadow pool', edit_shadow_pool_path(@actor), class: 'dropdown-item'
+                = link_to 'Steps', edit_board_step_path(@actor), class: 'dropdown-item'
+
+            - if @actor.is_a? Sauron
+
+              %li.nav-item.dropdown
+                %a#navbarDropdownSauron.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => @actor, :role => "button"}
+                  Sauron
+                .dropdown-menu{"aria-labelledby" => "navbarDropdownSauron"}
+                  = link_to 'Draw plot cards', edit_plot_cards_draw_path(@actor), class: 'dropdown-item'
+                  = link_to 'Play plot cards', edit_plot_card_play_path(@actor), class: 'dropdown-item'
+
+          %li.nav-item
+            = link_to 'Log', board_logs_path( @board ), class: 'nav-link'
+
+        = link_to 'Sign out', sessions_path, method: :delete, class: 'nav-link'
+
+    - if @actor.is_a? Sauron
+      = link_to 'Sauron', @actor, role: :button, class: 'btn btn-primary'
+      %button.btn.btn-primary{ type: :button }
+        You play
+        %span.badge.badge-light
+          Sauron
+
+    - if @actor.is_a? Hero
+      = link_to @actor.name, @actor, role: :button, class: 'btn btn-primary'
+      %button.btn.btn-primary{ type: :button }
+        You play
+        %span.badge.badge-light
+          = @actor.name
+
+    - if @current_user
+      %button.btn.btn-primary{ type: :button }
+        You are connected as
+        %span.badge.badge-light
+          = @current_user.name
