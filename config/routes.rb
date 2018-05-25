@@ -3,9 +3,6 @@ Rails.application.routes.draw do
   get 'map_coordinates/edit'
   post 'map_coordinates/update'
 
-  get 'plot_card_play/edit'
-  get 'plot_card_play/update'
-
   resources :combats, only: [ :show, :new, :create, :destroy ] do
     get :hero_setup_new
     post :hero_setup_draw_cards
@@ -28,7 +25,7 @@ Rails.application.routes.draw do
     post :shadow_cards
   end
 
-  resources :draw_plot_cards, only:[:edit,:update]
+  resources :plot_cards_draw, only:[:edit, :update]
   resources :plot_card_play, only: [:edit, :update]
 
   # Caution, in this case, the id is not a shadow_pool or influence, but an Actor.id

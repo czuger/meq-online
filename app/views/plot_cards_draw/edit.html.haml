@@ -13,7 +13,7 @@
           = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card selectable-card', card_id: plot_card_number
 
   .form-group
-    = form_tag draw_plot_card_path(@actor), method: :patch, class: 'form-inline' do
+    = form_tag plot_cards_draw_path(@actor), method: :patch, class: 'form-inline' do
       = hidden_field_tag :selected_card, nil
       = button_tag 'Keep card(s)', role: :button, class: 'btn btn-secondary disabled', id: :validate, value: :keep
       .mx-2

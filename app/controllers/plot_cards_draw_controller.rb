@@ -1,4 +1,4 @@
-class DrawPlotCardsController < ApplicationController
+class PlotCardsDrawController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_actor_ensure_actor, only: [:edit, :update]
