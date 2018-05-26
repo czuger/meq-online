@@ -37,3 +37,16 @@ en:
 
       switch_state: "Changed state from %{old_state} to %{new_state}"
       finish_turn: "Set his turn finished"
+
+      shadow_cards:
+        draw:
+          one: "Sauron draw 1 shadow card."
+          other: "Sauron draw %{count} shadow cards."
+
+        keep:
+          one: "Sauron keep 1 shadow card."
+          other: "Sauron keep %{count} shadow cards."
+
+        discard:
+          one: "Sauron discard 1 shadow card."
+          other: "Sauron discard %{count} shadow cards."

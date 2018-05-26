@@ -122,7 +122,7 @@ class BoardsController < ApplicationController
 
         # Adding Sauron
         if params[:sauron]
-          @board.create_sauron!( plot_cards: [], shadow_cards: [], drawn_plot_cards: [], user_id: @current_user.id )
+          @board.create_sauron!( plot_cards: [], shadow_cards: [], drawn_plot_cards: [], drawn_shadow_cards: [], user_id: @current_user.id )
 
           # Just tell that the user is connected to this board
           @current_user.boards << @board unless @current_user.boards.include?( @board )

@@ -5,6 +5,7 @@ class Sauron < Actor
   serialize :plot_cards
   serialize :shadow_cards
   serialize :drawn_plot_cards
+  serialize :drawn_shadow_cards
 
   # validates_presence_of :plot_cards
 
@@ -13,3 +14,4 @@ class Sauron < Actor
   end
 
 end
+

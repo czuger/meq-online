@@ -28,6 +28,8 @@ Rails.application.routes.draw do
   resources :plot_cards_draw, only:[:edit, :update]
   resources :plot_card_play, only: [:edit, :update]
 
+  resources :shadow_cards_draw, only:[:edit, :update]
+
   # Caution, in this case, the id is not a shadow_pool or influence, but an Actor.id
   resources :shadow_pools, only: [ :edit, :update ]
   resources :influences, only: [ :show, :edit, :update ]

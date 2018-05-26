@@ -13,7 +13,7 @@
             = link_to 'My boards', boards_path, role: :button, class: 'dropdown-item'
             = link_to 'New Board', new_board_path, role: :button, class: 'dropdown-item'
 
-        - if @board
+        - if @board && @board.id
           - if @actor
 
             %li.nav-item.dropdown
@@ -35,6 +35,9 @@
                   = link_to 'Screen', sauron_path(@actor), class: 'dropdown-item'
                   = link_to 'Draw plot cards', edit_plot_cards_draw_path(@actor), class: 'dropdown-item'
                   = link_to 'Play plot cards', edit_plot_card_play_path(@actor), class: 'dropdown-item'
+                  = link_to 'Draw shadow cards', edit_shadow_cards_draw_path(@actor), class: 'dropdown-item'
+                  .dropdown-divider
+                  = link_to 'Get golum gards', '#', class: 'dropdown-item'
 
           %li.nav-item
             = link_to 'Log', board_logs_path( @board ), class: 'nav-link'
