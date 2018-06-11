@@ -1,12 +1,12 @@
 set_selected_cards = () ->
 
   if $('.selected-card').length >= 1
-    $('#validate').removeClass('disabled')
+    $('#validate').removeAttr('disabled')
 
     selected_cards = _.map( $('.selected-card'), (c) -> $(c).attr( 'card_id' ) )
     $('#selected_cards').val( JSON.stringify( selected_cards ) )
   else
-    $('#validate').addClass('disabled')
+    $('#validate').attr('disabled', 'disabled')
 
 # Caution : don't mix unique and multiple selection system
 # Result is put in a hidden field with id selected_cards
