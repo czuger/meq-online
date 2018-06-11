@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_11_200055) do
+ActiveRecord::Schema.define(version: 2018_06_11_211058) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -20,25 +20,25 @@ ActiveRecord::Schema.define(version: 2018_06_11_200055) do
     t.bigint "board_id", null: false
     t.bigint "user_id", null: false
     t.string "type", null: false
-    t.string "plot_cards"
-    t.string "shadow_cards"
     t.string "name_code"
     t.string "name"
     t.string "location"
-    t.string "life_pool"
-    t.string "hand"
-    t.string "rest_pool"
-    t.string "damage_pool"
-    t.integer "fortitude"
-    t.integer "strength"
-    t.integer "agility"
-    t.integer "wisdom"
+    t.integer "fortitude", limit: 2
+    t.integer "strength", limit: 2
+    t.integer "agility", limit: 2
+    t.integer "wisdom", limit: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "drawn_plot_cards"
     t.integer "current_quest"
     t.boolean "turn_finished", default: false, null: false
-    t.string "drawn_shadow_cards"
+    t.integer "plot_cards", array: true
+    t.integer "shadow_cards", array: true
+    t.integer "drawn_plot_cards", array: true
+    t.integer "drawn_shadow_cards", array: true
+    t.integer "life_pool", array: true
+    t.integer "rest_pool", array: true
+    t.integer "damage_pool", array: true
+    t.integer "hand", array: true
     t.index ["board_id"], name: "index_actors_on_board_id"
   end
 

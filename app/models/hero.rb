@@ -5,11 +5,6 @@ class Hero < Actor
 
   has_one :combat
 
-  serialize :life_pool
-  serialize :rest_pool
-  serialize :damage_pool
-  serialize :hand
-
   def draw_cards( board, nb_cards_to_draw, before_combat= false )
     transaction do
       cards = life_pool.shift(nb_cards_to_draw)

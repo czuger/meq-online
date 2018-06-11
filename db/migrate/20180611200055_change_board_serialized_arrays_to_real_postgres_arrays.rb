@@ -16,7 +16,7 @@ class ChangeBoardSerializedArraysToRealPostgresArrays < ActiveRecord::Migration[
     add_column :boards, :shadow_discard, :integer, array: true
 
     remove_column :boards, :shadow_pool, :string
-    add_column :boards, :shadow_pool, :integer, limit: 2, null: false
+    add_column :boards, :shadow_pool, :integer, limit: 1, null: false
 
     remove_column :boards, :influence, :string
     add_column :boards, :influence, :hstore, null: false
