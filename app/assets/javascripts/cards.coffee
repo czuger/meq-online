@@ -2,6 +2,7 @@ selected_cards = []
 
 card_selection = () ->
   $('.selectable-card').click () ->
+
     card = $(this)
     if card.hasClass('selected-card')
       card.removeClass('selected-card')
