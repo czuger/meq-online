@@ -12,13 +12,13 @@ class InfluencesController < ApplicationController
     @locations= GameData::Locations.new
     tmp_hash = params[:locations].select{ |l, v| !v.empty? && @locations.exist?( l ) }.to_h
     tmp_hash.transform_values!{ |v| v.to_i }
-    tmp_hash = tmp_hash.symbolize_keys
+    tmp_hash = tmp_hash
 
     @board.transaction do
 
       diff_hash = Hash[ tmp_hash.to_a.sort - @board.influence.to_a.sort ]
       diff_hash.each do |k, v|
-        @board.logs.create!( action: :place_influence, params:{ place: @locations.get(k).name, value: v },
+        @board.logs.create!( action: :place_influence, params: { place: @locations.get(k).name, value: v },
                              user_id: current_user.id, actor: @actor)
       end
 

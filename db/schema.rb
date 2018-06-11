@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_11_211058) do
+ActiveRecord::Schema.define(version: 2018_06_11_212644) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -68,12 +68,12 @@ ActiveRecord::Schema.define(version: 2018_06_11_211058) do
   create_table "logs", force: :cascade do |t|
     t.bigint "board_id", null: false
     t.string "action", null: false
-    t.string "params", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "card_pic_path"
     t.bigint "user_id", null: false
     t.bigint "actor_id", null: false
+    t.hstore "params", null: false
     t.index ["board_id"], name: "index_logs_on_board_id"
   end
 

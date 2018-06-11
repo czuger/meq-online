@@ -27,7 +27,7 @@ module LogsHelper
   end
 
   def default_log( log )
-    data = log.params
+    data = log.params.symbolize_keys
     # data[:name] = hero_name(data)
     t( '.' + log.action, data )
   end
