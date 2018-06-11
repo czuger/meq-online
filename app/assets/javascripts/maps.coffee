@@ -3,16 +3,19 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 alt_pressed = false
+shift_pressed = false
 page_x = null
 page_y = null
 
-keyboard_alt_probe = () ->
+keyboard_probe = () ->
   $(window).keydown (e) ->
     alt_pressed = e.altKey
+    shift_pressed = e.shiftKey
     zoom_map()
 
   $(window).keyup (e) ->
     alt_pressed = e.altKey
+    shift_pressed = e.shiftKey
     $('#zoom-area').hide()
 
 
@@ -42,7 +45,7 @@ zoom_map = () ->
   $('#zoom-area').css('background-position', ((-true_x) * x_decal) + "px " + ((-true_y) * y_decal) + "px");
 
 set_zoom_map = () ->
-  keyboard_alt_probe()
+  keyboard_probe()
   $('#map').mousemove(zoom_map)
   $('#zoom-area').mousemove(zoom_map)
 
@@ -57,7 +60,14 @@ filter= () ->
 influence= () ->
   $('.influence-pawn-box' ).click () ->
     location = $(this).find('.influence-pawn' ).attr('location')
-    val = parseInt( $(this).find('.influence-value' ).html() ) + 1
+
+    val = parseInt( $(this).find('.influence-value' ).html() )
+
+    if shift_pressed
+      val -= 1 if val > 0
+    else
+      val += 1
+
     $(this).find('.influence-value' ).html( val )
 
     actor_id = $('#actor_id').val()
