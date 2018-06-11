@@ -37,18 +37,18 @@ class PlotCardsDrawController < ApplicationController
   end
 
   def keep_plot_cards
-    selected_card = JSON.parse(params[:selected_card]).map{ |e| e.to_i }
+    selected_cards = JSON.parse(params[:selected_cards]).map{ |e| e.to_i }
 
-    raise "Selected cards should not be empty" if selected_card.empty?
-    raise "Selected cards should be included in pool cards" unless (selected_card - @actor.drawn_plot_cards).empty?
+    raise "Selected cards should not be empty" if selected_cards.empty?
+    raise "Selected cards should be included in pool cards" unless (selected_cards - @actor.drawn_plot_cards).empty?
 
-    @actor.drawn_plot_cards -= selected_card
-    @actor.plot_cards += selected_card
+    @actor.drawn_plot_cards -= selected_cards
+    @actor.plot_cards += selected_cards
 
     @board.transaction do
       @board.save!
       @actor.save!
-      @board.log!( current_user, @board.sauron, :keep_plot_card, { count: selected_card.count } )
+      @board.log!( current_user, @board.sauron, :keep_plot_card, { count: selected_cards.count } )
     end
   end
 

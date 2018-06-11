@@ -52,7 +52,7 @@ class ShadowCardsDrawController < ApplicationController
   def keep_shadow_cards
     selected_cards = JSON.parse(params[:selected_cards]).map{ |e| e.to_i }
 
-    raise "Selected cards should not be empty" if selected_card.empty?
+    raise "Selected cards should not be empty" if selected_cards.empty?
     raise "Selected cards should be included in pool cards" unless (selected_cards - @actor.drawn_shadow_cards).empty?
 
     @actor.drawn_shadow_cards -= selected_cards

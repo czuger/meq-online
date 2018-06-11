@@ -7,7 +7,7 @@
     .row
       - @cards.each do |plot_card_number|
         .col-3
-          = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card selectable-card', card_id: plot_card_number
+          = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card selectable-card-selection-multiple', card_id: plot_card_number
 
   = form_tag plot_cards_draw_path(@actor), method: :patch do
     .row
@@ -18,7 +18,7 @@
       .col-3
         = button_tag 'Draw cards(s)', role: :button, class: 'btn btn-secondary btn-block', id: :draw, value: :draw
       .col-2
-        = hidden_field_tag :selected_card, nil
-        = button_tag 'Keep card(s)', role: :button, class: 'btn btn-secondary btn-block', id: :keep, value: :keep
+        = hidden_field_tag :selected_cards, nil
+        = button_tag 'Keep card(s)', role: :button, class: 'btn btn-secondary btn-block', id: :validate, value: :keep, disabled: true
       .col-3
         = button_tag 'Back to deck bottom', role: :button, class: 'btn btn-secondary btn-block', value: :put_back
