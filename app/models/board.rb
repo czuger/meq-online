@@ -11,12 +11,7 @@ class Board < ApplicationRecord
   has_and_belongs_to_many :users
 
   serialize :influence
-
   serialize :current_plots
-  serialize :plot_deck
-  serialize :plot_discard
-  serialize :shadow_deck
-  serialize :shadow_discard
   serialize :characters
 
   aasm do

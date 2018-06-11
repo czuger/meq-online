@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_26_113334) do
+ActiveRecord::Schema.define(version: 2018_06_11_200055) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "hstore"
   enable_extension "plpgsql"
 
   create_table "actors", force: :cascade do |t|
@@ -49,13 +50,13 @@ ActiveRecord::Schema.define(version: 2018_05_26_113334) do
     t.boolean "sauron_created", default: false, null: false
     t.string "aasm_state"
     t.string "influence", null: false
-    t.string "shadow_pool", default: "0", null: false
-    t.string "plot_deck", null: false
-    t.string "shadow_deck", null: false
-    t.string "plot_discard", null: false
-    t.string "shadow_discard", null: false
     t.string "current_plots", null: false
     t.string "characters", null: false
+    t.integer "plot_deck", null: false, array: true
+    t.integer "shadow_deck", null: false, array: true
+    t.integer "plot_discard", null: false, array: true
+    t.integer "shadow_discard", array: true
+    t.integer "shadow_pool", limit: 2, null: false
   end
 
   create_table "boards_users", id: false, force: :cascade do |t|
