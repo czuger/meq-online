@@ -58,11 +58,10 @@ class BoardsController < ApplicationController
     max_heroes_count= params[:max_heroes_count].to_i
 
     @board = Board.new( influence: starting_plot.influence.init, plot_deck: plot_deck, shadow_deck: shadow_deck,
-                        plot_discard: [], max_heroes_count: max_heroes_count,
+                        plot_discard: [], shadow_discard: [], max_heroes_count: max_heroes_count,
                         current_plots: { 'plot-card-1' => starting_plot_id }, shadow_pool: starting_plot.influence.shadow_pool,
-                        characters: {}, shadow_discard: []
+                        characters: {}
                         )
-    pp @board
 
     respond_to do |format|
       @board.transaction do
