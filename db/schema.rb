@@ -49,14 +49,14 @@ ActiveRecord::Schema.define(version: 2018_06_11_200055) do
     t.integer "current_heroes_count", default: 0, null: false
     t.boolean "sauron_created", default: false, null: false
     t.string "aasm_state"
-    t.string "influence", null: false
-    t.string "current_plots", null: false
-    t.string "characters", null: false
     t.integer "plot_deck", null: false, array: true
     t.integer "shadow_deck", null: false, array: true
     t.integer "plot_discard", null: false, array: true
     t.integer "shadow_discard", array: true
     t.integer "shadow_pool", limit: 2, null: false
+    t.hstore "influence", null: false
+    t.hstore "current_plots", null: false
+    t.hstore "characters", null: false
   end
 
   create_table "boards_users", id: false, force: :cascade do |t|
