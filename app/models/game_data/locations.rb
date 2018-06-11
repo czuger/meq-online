@@ -9,15 +9,15 @@ module GameData
     end
 
     def get( name_code )
-      OpenStruct.new( @data[name_code.to_sym] )
+      OpenStruct.new( @data[name_code] )
     end
 
     def exist?( name_code )
-      @data.has_key?( name_code.to_sym )
+      @data.has_key?( name_code )
     end
 
     def delete!( location_name )
-      @data.delete( location_name.to_sym )
+      @data.delete( location_name )
     end
 
     def list_by_region

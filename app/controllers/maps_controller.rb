@@ -10,7 +10,7 @@ class MapsController < ApplicationController
 
   def edit
     @positions = GameData::Locations.new.position_list
-    @influence = @board.influence.symbolize_keys
+    @influence = @board.influence
   end
 
 end

@@ -1,5 +1,5 @@
 ---
-:blue_mountains:
+blue_mountains:
   :name: Blue Mountains
   :region: Eriador
   :region_code: :eriador
@@ -9,7 +9,7 @@
   :heaven: false
   :pos_x: 358
   :pos_y: 308
-:harlingdon:
+harlingdon:
   :name: Harlingdon
   :region: Eriador
   :region_code: :eriador
@@ -19,7 +19,7 @@
   :heaven: false
   :pos_x: 325
   :pos_y: 462
-:the_grey_havens:
+the_grey_havens:
   :name: The Grey Havens
   :region: Eriador
   :region_code: :eriador
@@ -29,7 +29,7 @@
   :heaven: false
   :pos_x: 434
   :pos_y: 414
-:tharbad:
+tharbad:
   :name: Tharbad
   :region: Endwith
   :region_code: :endwith
@@ -39,7 +39,7 @@
   :heaven: false
   :pos_x: 782
   :pos_y: 592
-:the_northdowns:
+the_northdowns:
   :name: The Northdowns
   :region: Rhuadur
   :region_code: :rhuadur
@@ -49,7 +49,7 @@
   :heaven: false
   :pos_x: 797
   :pos_y: 208
-:the_shire:
+the_shire:
   :name: The Shire
   :region: Eriador
   :region_code: :eriador
@@ -59,7 +59,7 @@
   :heaven: false
   :pos_x: 561
   :pos_y: 400
-:the_ruins_of_angmar:
+the_ruins_of_angmar:
   :name: The Ruins of Angmar
   :region: Rhuadur
   :region_code: :rhuadur
@@ -69,7 +69,7 @@
   :heaven: false
   :pos_x: 902
   :pos_y: 157
-:the_trollshaws:
+the_trollshaws:
   :name: The Trollshaws
   :region: Rhuadur
   :region_code: :rhuadur
@@ -79,7 +79,7 @@
   :heaven: false
   :pos_x: 914
   :pos_y: 399
-:weathertop:
+weathertop:
   :name: Weathertop
   :region: Rhuadur
   :region_code: :rhuadur
@@ -89,7 +89,7 @@
   :heaven: false
   :pos_x: 808
   :pos_y: 396
-:bree:
+bree:
   :name: Bree
   :region: Eriador
   :region_code: :eriador
@@ -99,7 +99,7 @@
   :heaven: false
   :pos_x: 726
   :pos_y: 448
-:dunland:
+dunland:
   :name: Dunland
   :region: Endwith
   :region_code: :endwith
@@ -109,7 +109,7 @@
   :heaven: false
   :pos_x: 859
   :pos_y: 678
-:eregion:
+eregion:
   :name: Eregion
   :region: Endwith
   :region_code: :endwith
@@ -119,7 +119,7 @@
   :heaven: false
   :pos_x: 913
   :pos_y: 517
-:fornost:
+fornost:
   :name: Fornost
   :region: Eriador
   :region_code: :eriador
@@ -129,7 +129,7 @@
   :heaven: true
   :pos_x: 686
   :pos_y: 300
-:hills_of_evendim:
+hills_of_evendim:
   :name: Hills of Evendim
   :region: Eriador
   :region_code: :eriador
@@ -139,7 +139,7 @@
   :heaven: false
   :pos_x: 563
   :pos_y: 289
-:old_forest:
+old_forest:
   :name: Old Forest
   :region: Eriador
   :region_code: :eriador
@@ -149,7 +149,7 @@
   :heaven: false
   :pos_x: 657
   :pos_y: 384
-:anfalas:
+anfalas:
   :name: Anfalas
   :region: Gondor
   :region_code: :gondor
@@ -159,7 +159,7 @@
   :heaven: false
   :pos_x: 851
   :pos_y: 1037
-:enedwaith_plains:
+enedwaith_plains:
   :name: Enedwaith Plains
   :region: Endwith
   :region_code: :endwith
@@ -169,7 +169,7 @@
   :heaven: false
   :pos_x: 765
   :pos_y: 754
-:gap_of_rohan:
+gap_of_rohan:
   :name: Gap of Rohan
   :region: Rhoan
   :region_code: :rhoan
@@ -179,7 +179,7 @@
   :heaven: false
   :pos_x: 898
   :pos_y: 844
-:isengard:
+isengard:
   :name: Isengard
   :region: Rhoan
   :region_code: :rhoan
@@ -189,7 +189,7 @@
   :heaven: false
   :pos_x: 925
   :pos_y: 754
-:mouth_of_the_greyflood:
+mouth_of_the_greyflood:
   :name: Mouth of the Greyflood
   :region: Endwith
   :region_code: :endwith
@@ -199,7 +199,7 @@
   :heaven: false
   :pos_x: 633
   :pos_y: 755
-:erebor:
+erebor:
   :name: Erebor
   :region: Grey mountains
   :region_code: :grey_mountains
@@ -209,7 +209,7 @@
   :heaven: true
   :pos_x: 1347
   :pos_y: 246
-:ered_mithrin:
+ered_mithrin:
   :name: Ered Mithrin
   :region: Grey mountains
   :region_code: :grey_mountains
@@ -219,7 +219,7 @@
   :heaven: false
   :pos_x: 1186
   :pos_y: 199
-:ettenmoors:
+ettenmoors:
   :name: Ettenmoors
   :region: Rhuadur
   :region_code: :rhuadur
@@ -229,7 +229,7 @@
   :heaven: false
   :pos_x: 991
   :pos_y: 306
-:dol_guldur:
+dol_guldur:
   :name: Dol Guldur
   :region: Brown lands
   :region_code: :brown_lands
@@ -239,7 +239,7 @@
   :heaven: false
   :pos_x: 1189
   :pos_y: 608
-:gladden_fields:
+gladden_fields:
   :name: Gladden Fields
   :region: Mirkwood
   :region_code: :mirkwood
@@ -249,7 +249,7 @@
   :heaven: false
   :pos_x: 1148
   :pos_y: 498
-:lake_esgaroth:
+lake_esgaroth:
   :name: Lake Esgaroth
   :region: Misty mountains
   :region_code: :misty_mountains
@@ -259,7 +259,7 @@
   :heaven: false
   :pos_x: 1358
   :pos_y: 335
-:moria:
+moria:
   :name: Moria
   :region: Endwith
   :region_code: :endwith
@@ -269,7 +269,7 @@
   :heaven: false
   :pos_x: 979
   :pos_y: 639
-:mount_gundabad:
+mount_gundabad:
   :name: Mount Gundabad
   :region: Grey mountains
   :region_code: :grey_mountains
@@ -279,7 +279,7 @@
   :heaven: false
   :pos_x: 1028
   :pos_y: 205
-:rhosgobel:
+rhosgobel:
   :name: Rhosgobel
   :region: Mirkwood
   :region_code: :mirkwood
@@ -289,7 +289,7 @@
   :heaven: false
   :pos_x: 1235
   :pos_y: 518
-:rivendell:
+rivendell:
   :name: Rivendell
   :region: Mirkwood
   :region_code: :mirkwood
@@ -299,7 +299,7 @@
   :heaven: true
   :pos_x: 1013
   :pos_y: 403
-:south_eaves:
+south_eaves:
   :name: South Eaves
   :region: Misty mountains
   :region_code: :misty_mountains
@@ -309,7 +309,7 @@
   :heaven: false
   :pos_x: 1361
   :pos_y: 626
-:the_bight:
+the_bight:
   :name: The Bight
   :region: Misty mountains
   :region_code: :misty_mountains
@@ -319,7 +319,7 @@
   :heaven: false
   :pos_x: 1370
   :pos_y: 527
-:the_forest_trail:
+the_forest_trail:
   :name: The Forest Trail
   :region: Misty mountains
   :region_code: :misty_mountains
@@ -329,7 +329,7 @@
   :heaven: false
   :pos_x: 1181
   :pos_y: 327
-:the_high_pass:
+the_high_pass:
   :name: The High Pass
   :region: Mirkwood
   :region_code: :mirkwood
@@ -339,7 +339,7 @@
   :heaven: false
   :pos_x: 1101
   :pos_y: 367
-:the_northern_waste:
+the_northern_waste:
   :name: The Northern Waste
   :region: Grey mountains
   :region_code: :grey_mountains
@@ -349,7 +349,7 @@
   :heaven: false
   :pos_x: 1098
   :pos_y: 126
-:the_redhorn_gate:
+the_redhorn_gate:
   :name: The Redhorn Gate
   :region: Mirkwood
   :region_code: :mirkwood
@@ -359,7 +359,7 @@
   :heaven: false
   :pos_x: 1013
   :pos_y: 572
-:the_withered_heath:
+the_withered_heath:
   :name: The Withered Heath
   :region: Grey mountains
   :region_code: :grey_mountains
@@ -369,7 +369,7 @@
   :heaven: false
   :pos_x: 1292
   :pos_y: 172
-:woodland_realm:
+woodland_realm:
   :name: Woodland Realm
   :region: Misty mountains
   :region_code: :misty_mountains
@@ -379,7 +379,7 @@
   :heaven: true
   :pos_x: 1272
   :pos_y: 295
-:the_iron_hills:
+the_iron_hills:
   :name: The Iron Hills
   :region: Grey mountains
   :region_code: :grey_mountains
@@ -389,7 +389,7 @@
   :heaven: false
   :pos_x: 1506
   :pos_y: 259
-:rhun:
+rhun:
   :name: Rhun
   :region: Brown lands
   :region_code: :brown_lands
@@ -399,7 +399,7 @@
   :heaven: false
   :pos_x: 1504
   :pos_y: 644
-:barad_dur:
+barad_dur:
   :name: Barad-Dur
   :region: Mordor
   :region_code: :mordor
@@ -409,7 +409,7 @@
   :heaven: false
   :pos_x: 1563
   :pos_y: 953
-:mount_doom:
+mount_doom:
   :name: Mount Doom
   :region: Mordor
   :region_code: :mordor
@@ -419,7 +419,7 @@
   :heaven: false
   :pos_x: 1449
   :pos_y: 964
-:amon_hen:
+amon_hen:
   :name: Amon Hen
   :region: Rhoan
   :region_code: :rhoan
@@ -429,7 +429,7 @@
   :heaven: false
   :pos_x: 1154
   :pos_y: 717
-:belfalas:
+belfalas:
   :name: Belfalas
   :region: Gondor
   :region_code: :gondor
@@ -439,7 +439,7 @@
   :heaven: false
   :pos_x: 1032
   :pos_y: 1150
-:dagorlad:
+dagorlad:
   :name: Dagorlad
   :region: Brown lands
   :region_code: :brown_lands
@@ -449,7 +449,7 @@
   :heaven: false
   :pos_x: 1409
   :pos_y: 797
-:dead_marshes:
+dead_marshes:
   :name: Dead Marshes
   :region: Brown lands
   :region_code: :brown_lands
@@ -459,7 +459,7 @@
   :heaven: false
   :pos_x: 1296
   :pos_y: 861
-:dunharrow:
+dunharrow:
   :name: Dunharrow
   :region: Rhoan
   :region_code: :rhoan
@@ -469,7 +469,7 @@
   :heaven: false
   :pos_x: 1176
   :pos_y: 984
-:edoras:
+edoras:
   :name: Edoras
   :region: Rhoan
   :region_code: :rhoan
@@ -479,7 +479,7 @@
   :heaven: false
   :pos_x: 1042
   :pos_y: 928
-:emyn_muil:
+emyn_muil:
   :name: Emyn Muil
   :region: Brown lands
   :region_code: :brown_lands
@@ -489,7 +489,7 @@
   :heaven: false
   :pos_x: 1229
   :pos_y: 797
-:fangorn:
+fangorn:
   :name: Fangorn
   :region: Mirkwood
   :region_code: :mirkwood
@@ -499,7 +499,7 @@
   :heaven: false
   :pos_x: 1014
   :pos_y: 769
-:helms_deep:
+helms_deep:
   :name: Helms Deep
   :region: Rhoan
   :region_code: :rhoan
@@ -509,7 +509,7 @@
   :heaven: false
   :pos_x: 983
   :pos_y: 852
-:lothlorien:
+lothlorien:
   :name: Lothlorien
   :region: Mirkwood
   :region_code: :mirkwood
@@ -519,7 +519,7 @@
   :heaven: true
   :pos_x: 1062
   :pos_y: 700
-:minas_morgul:
+minas_morgul:
   :name: Minas Morgul
   :region: Mordor
   :region_code: :mordor
@@ -529,7 +529,7 @@
   :heaven: false
   :pos_x: 1350
   :pos_y: 974
-:minas_tirith:
+minas_tirith:
   :name: Minas Tirith
   :region: Gondor
   :region_code: :gondor
@@ -539,7 +539,7 @@
   :heaven: true
   :pos_x: 1272
   :pos_y: 978
-:mothond:
+mothond:
   :name: Mothond
   :region: Gondor
   :region_code: :gondor
@@ -549,7 +549,7 @@
   :heaven: false
   :pos_x: 984
   :pos_y: 993
-:near_harad:
+near_harad:
   :name: Near Harad
   :region: Gondor
   :region_code: :gondor
@@ -559,7 +559,7 @@
   :heaven: false
   :pos_x: 1300
   :pos_y: 1230
-:osgiliath:
+osgiliath:
   :name: Osgiliath
   :region: Gondor
   :region_code: :gondor
@@ -569,7 +569,7 @@
   :heaven: false
   :pos_x: 1313
   :pos_y: 1054
-:pelargir:
+pelargir:
   :name: Pelargir
   :region: Gondor
   :region_code: :gondor
@@ -579,7 +579,7 @@
   :heaven: false
   :pos_x: 1241
   :pos_y: 1126
-:plains_of_rohan:
+plains_of_rohan:
   :name: Plains of Rohan
   :region: Rhoan
   :region_code: :rhoan
@@ -589,7 +589,7 @@
   :heaven: false
   :pos_x: 1113
   :pos_y: 802
-:plains_of_gorgoroth:
+plains_of_gorgoroth:
   :name: Plains of Gorgoroth
   :region: Mordor
   :region_code: :mordor
@@ -599,7 +599,7 @@
   :heaven: false
   :pos_x: 1400
   :pos_y: 1032
-:sea_of_udun:
+sea_of_udun:
   :name: Sea of Udun
   :region: Mordor
   :region_code: :mordor
@@ -609,7 +609,7 @@
   :heaven: false
   :pos_x: 1381
   :pos_y: 888
-:the_nindale:
+the_nindale:
   :name: The Nindale
   :region: Brown lands
   :region_code: :brown_lands
