@@ -8,7 +8,7 @@ module GameData
     end
 
     def name( char )
-      @data[char.to_sym][:name]
+      @data[char][:name]
     end
 
   end

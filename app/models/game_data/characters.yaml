@@ -1,25 +1,25 @@
 ---
-:thranduil:
+thranduil:
   :name: Thranduil
   :power: Remove 2 influence from Shadow Pool
-:theoden:
+theoden:
   :name: Théoden
   :power: Gain a "Horse" item
-:aragorn:
+aragorn:
   :name: Aragorn
   :power: Gain 1 agility
-:gandalf:
+gandalf:
   :name: Gandalf
   :power: Gain 1 wisdom
-:denethor:
+denethor:
   :name: Denethor
   :power: Pay 3 favor to advance story marker 1 space
-:dain:
+dain:
   :name: Dain II
   :power: Train twice
-:boromir:
+boromir:
   :name: Boromir
   :power: Gain 1 strength
-:saruman:
+saruman:
   :name: Saruman
   :power: Sauron discards 2 random Shadow cards

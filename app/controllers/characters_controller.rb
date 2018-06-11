@@ -14,7 +14,7 @@ class CharactersController < ApplicationController
     @board.transaction do
 
       characters.each do |char, location|
-        char = char.to_sym
+        char = char
 
         if location.empty?
           if @board.characters[char]
