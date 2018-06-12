@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_11_222158) do
+ActiveRecord::Schema.define(version: 2018_06_12_091853) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 2018_06_11_222158) do
     t.integer "story_marker_ring", limit: 2, default: 0, null: false
     t.integer "story_marker_conquest", limit: 2, default: 0, null: false
     t.integer "story_marker_corruption", limit: 2, default: 0, null: false
+    t.hstore "sauron_actions", default: {}, null: false
   end
 
   create_table "boards_users", id: false, force: :cascade do |t|

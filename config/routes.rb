@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   end
 
   resources :story_tracks, only: [:edit, :update]
+  resources :sauron_actions, only: [:edit, :update]
 
   resources :plot_cards_draw, only:[:edit, :update]
   resources :plot_card_play, only: [:edit, :update]
@@ -48,6 +49,7 @@ Rails.application.routes.draw do
 
     resource :logs, only: [:show ]
     resources :heros, only: [ :index ]
+
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 

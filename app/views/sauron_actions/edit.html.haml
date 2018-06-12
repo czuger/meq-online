@@ -1,0 +1,64 @@
+.container
+
+  = form_tag sauron_action_path(@actor), method: :patch do
+
+    .row
+      .col-3
+        Place 6 influence
+      .col-3
+        = check_box_tag :place_influence_1, :c, @board.sauron_actions['place_influence_1']
+
+    .row
+      .col-3
+        Place 5 influence
+      .col-3
+        = check_box_tag :place_influence_2, :c, @board.sauron_actions['place_influence_2']
+
+    .row
+      .col-3
+        Place 4 influence
+      .col-3
+        = check_box_tag :place_influence_3, :c, @board.sauron_actions['place_influence_3']
+
+    %hr
+
+    .row
+      .col-3
+        Draw 2 cards
+      .col-3
+        = check_box_tag :draw_cards_1, :c, @board.sauron_actions['draw_cards_1']
+
+    .row
+      .col-3
+        Draw 2 cards
+      .col-3
+        = check_box_tag :draw_cards_2, :c, @board.sauron_actions['draw_cards_2']
+
+    .row
+      .col-3
+        Draw 1 cards
+      .col-3
+        = check_box_tag :draw_cards_3, :c, @board.sauron_actions['draw_cards_3']
+
+    %hr
+
+    .row
+      .col-3
+        Command 3
+      .col-3
+        = check_box_tag :command_1, :c, @board.sauron_actions['command_1']
+
+    .row
+      .col-3
+        Command 2
+      .col-3
+        = check_box_tag :command_2, :c, @board.sauron_actions['command_2']
+
+    .row
+      .col-3
+        Command 1
+      .col-3
+        = check_box_tag :command_3, :c, @board.sauron_actions['command_3']
+
+
+    = button_tag 'Validate', role: :button, class: 'btn btn-secondary'
