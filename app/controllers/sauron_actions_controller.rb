@@ -41,6 +41,8 @@ class SauronActionsController < ApplicationController
 
     end
 
+    flash[:success] = 'Actions updated successfully.'
+
     redirect_to edit_sauron_action_path(@actor)
   end
 
