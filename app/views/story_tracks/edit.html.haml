@@ -31,24 +31,24 @@
       .col-3.col-form-label
         Story marker heroes
       .col-3
-        = number_field_tag :story_marker_heroes, @board.story_marker_heroes
+        = number_field_tag :story_marker_heroes, @board.story_marker_heroes, class: 'form-control'
 
     .row
       .col-3.col-form-label
         Story marker ring
       .col-3
-        = number_field_tag :story_marker_ring, @board.story_marker_ring
+        = number_field_tag :story_marker_ring, @board.story_marker_ring, class: 'form-control'
 
     .row
       .col-3.col-form-label
         Story marker conquest
       .col-3
-        = number_field_tag :story_marker_conquest, @board.story_marker_conquest
+        = number_field_tag :story_marker_conquest, @board.story_marker_conquest, class: 'form-control'
 
     .row
       .col-3.col-form-label
         Story marker corruption
       .col-3
-        = number_field_tag :story_marker_corruption, @board.story_marker_corruption
+        = number_field_tag :story_marker_corruption, @board.story_marker_corruption, class: 'form-control'
                                 
     = button_tag 'Validate', role: :button, class: 'btn btn-secondary'
