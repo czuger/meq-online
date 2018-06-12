@@ -1,5 +1,30 @@
 .container
 
+  .row.my-3
+    .col-3
+      %button.btn.btn-primary.btn-block{ type: :button }
+        Heroes to final
+        %span.badge.badge-light
+          = @heroes_to_final
+
+    .col-3
+      %button.btn.btn-primary.btn-block{ type: :button }
+        Sauron to final
+        %span.badge.badge-light
+          = @heroes_to_final
+
+    .col-3
+      %button.btn.btn-primary.btn-block{ type: :button }
+        Sauron to shadowfall
+        %span.badge.badge-light
+          = @heroes_to_final
+
+    .col-3
+      %button.btn.btn-primary.btn-block{ type: :button }
+        Dominance
+        %span.badge.badge-light
+          = @dominance.to_s.humanize
+
   = form_tag story_track_path(@actor), method: :patch do
     
     .row
