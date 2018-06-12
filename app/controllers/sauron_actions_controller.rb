@@ -9,7 +9,9 @@ class SauronActionsController < ApplicationController
   def update
     actions_hash = {}
 
-    log_add = log_remove = []
+    log_add = []
+    log_remove = []
+
     ActiveRecord::Base.transaction do
 
       %w( place_influence draw_cards command ).each do |action|

@@ -14,16 +14,12 @@ en:
         one: "Sauron draw 1 plot card."
         other: "Sauron draw %{count} plot cards."
 
-      draw_shadow_cards:
-        one: "Sauron draw 1 shadow card."
-        other: "Sauron draw %{count} shadow cards."
-
       keep_plot_card:
         one: "Sauron keep 1 plot card."
         other: "Sauron keep %{count} plot cards."
 
       cards_bottom_plot_deck:
-        one: "Sauron replace 1 card at the bottom of the plot deck."
+        one: "Sauron replace 1 plot card at the bottom of the plot deck."
         other: "Sauron replace %{count} card at the bottom of the plot deck."
 
       combat:
