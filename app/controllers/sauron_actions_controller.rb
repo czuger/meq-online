@@ -9,13 +9,24 @@ class SauronActionsController < ApplicationController
   def update
     actions_hash = {}
 
-    %w( place_influence draw_cards command ).each do |action|
-      1.upto(3).each do |index|
-        actions_hash[ "#{action}_#{index}" ] = params[ "#{action}_#{index}" ] if params[ "#{action}_#{index}" ]
-      end
-    end
+    ActiveRecord::Base.transaction do
 
-    @board.update!( sauron_actions: actions_hash )
+      %w( place_influence draw_cards command ).each do |action|
+        1.upto(3).each do |index|
+          action_code = "#{action}_#{index}"
+
+          if params[ action_code ]
+            actions_hash[ action_code ] = params[ action_code ]
+
+            @board.logs.create!( action: 'sauron_actions.' + action_code, params: {},
+                                 user_id: current_user.id, actor: @actor)
+          end
+        end
+      end
+
+      @board.update!( sauron_actions: actions_hash )
+
+    end
 
     redirect_to edit_sauron_action_path(@actor)
   end
