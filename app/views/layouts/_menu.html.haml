@@ -1,44 +1,66 @@
-= link_to 'All boards', boards_path( all: true ), role: :button, class: 'btn btn-primary'
-= link_to 'My boards', boards_path, role: :button, class: 'btn btn-primary'
+.container
+  %nav.navbar.navbar-expand-lg.navbar-light.bg-light
 
-- if @show_new_board
-  = link_to 'New Board', new_board_path, role: :button, class: 'btn btn-primary'
+    #navbarSupportedContent.collapse.navbar-collapse
 
-- if @board && @board.id
-  -#= link_to 'Heroes', board_heros_path( @board ), role: :button, class: 'btn btn-primary'
-  -#= link_to 'Combat', board_combats_path( @board ), role: :button, class: 'btn btn-primary'
-  -# For futur specator use
-  -#= link_to 'Map', board_map_path(@board), role: :button, class: 'btn btn-primary'
+      %ul.navbar-nav.mr-auto
 
-  - if @actor
-    = link_to 'Map', edit_map_path(@actor), role: :button, class: 'btn btn-primary'
-    = link_to 'Influence', influence_path(@actor), role: :button, class: 'btn btn-primary'
-    = link_to 'Characters', edit_character_path(@actor), role: :button, class: 'btn btn-primary'
-    = link_to 'Shadow pool', edit_shadow_pool_path(@actor), role: :button, class: 'btn btn-primary'
-    = link_to 'Steps', edit_board_step_path(@actor), role: :button, class: 'btn btn-primary'
+        %li.nav-item.dropdown
+          %a#navbarDropdownBoards.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+            Boards
+          .dropdown-menu{"aria-labelledby" => "navbarDropdownBoards"}
+            = link_to 'All boards', boards_path( all: true ), role: :button, class: 'dropdown-item'
+            = link_to 'My boards', boards_path, role: :button, class: 'dropdown-item'
+            = link_to 'New Board', new_board_path, role: :button, class: 'dropdown-item'
 
-  = link_to 'Log', board_logs_path( @board ), role: :button, class: 'btn btn-primary'
+        - if @board && @board.id
+          - if @actor
 
-- if @actor.is_a? Sauron
-  = link_to 'Sauron', @actor, role: :button, class: 'btn btn-primary'
-  %button.btn.btn-primary{ type: :button }
-    You play
-    %span.badge.badge-light
-      Sauron
+            %li.nav-item.dropdown
+              %a#navbarDropdownMisc.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+                Common
+              .dropdown-menu{"aria-labelledby" => "navbarDropdownMisc"}
+                = link_to 'Map', edit_map_path(@actor), class: 'dropdown-item'
+                = link_to 'Influence', influence_path(@actor), class: 'dropdown-item'
+                = link_to 'Characters', edit_character_path(@actor), class: 'dropdown-item'
+                = link_to 'Shadow pool', edit_shadow_pool_path(@actor), class: 'dropdown-item'
+                = link_to 'Steps', edit_board_step_path(@actor), class: 'dropdown-item'
+                = link_to 'Story markers', edit_story_track_path(@actor), class: 'dropdown-item'
 
-- if @actor.is_a? Hero
-  = link_to @actor.name, @actor, role: :button, class: 'btn btn-primary'
-  %button.btn.btn-primary{ type: :button }
-    You play
-    %span.badge.badge-light
-      = @actor.name
+            - if @actor.is_a? Sauron
 
-- if @current_user
-  %button.btn.btn-primary{ type: :button }
-    You are connected as
-    %span.badge.badge-light
-      = @current_user.name
+              %li.nav-item.dropdown
+                %a#navbarDropdownSauron.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => '#', :role => "button"}
+                  Sauron
+                .dropdown-menu{"aria-labelledby" => "navbarDropdownSauron"}
+                  = link_to 'Screen', sauron_path(@actor), class: 'dropdown-item'
+                  = link_to 'Draw plot cards', edit_plot_cards_draw_path(@actor), class: 'dropdown-item'
+                  = link_to 'Play plot cards', edit_plot_card_play_path(@actor), class: 'dropdown-item'
+                  = link_to 'Draw shadow cards', edit_shadow_cards_draw_path(@actor), class: 'dropdown-item'
+                  .dropdown-divider
+                  = link_to 'Get golum gards', '#', class: 'dropdown-item'
 
-  = link_to 'Sign out', sessions_path, method: :delete, role: :button, class: 'btn btn-warning'
+          %li.nav-item
+            = link_to 'Log', board_logs_path( @board ), class: 'nav-link'
 
-%hr
+        = link_to 'Sign out', sessions_path, method: :delete, class: 'nav-link'
+
+    - if @actor.is_a? Sauron
+      = link_to 'Sauron', @actor, role: :button, class: 'btn btn-primary'
+      %button.btn.btn-primary{ type: :button }
+        You play
+        %span.badge.badge-light
+          Sauron
+
+    - if @actor.is_a? Hero
+      = link_to @actor.name, @actor, role: :button, class: 'btn btn-primary'
+      %button.btn.btn-primary{ type: :button }
+        You play
+        %span.badge.badge-light
+          = @actor.name
+
+    - if @current_user
+      %button.btn.btn-primary{ type: :button }
+        You are connected as
+        %span.badge.badge-light
+          = @current_user.name

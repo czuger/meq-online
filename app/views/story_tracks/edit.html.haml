@@ -1,0 +1,29 @@
+.container
+
+  = form_tag story_track_path(@actor), method: :patch do
+    
+    .row
+      .col-3.col-form-label
+        Story marker heroes
+      .col-3
+        = number_field_tag :story_marker_heroes, @board.story_marker_heroes
+
+    .row
+      .col-3.col-form-label
+        Story marker ring
+      .col-3
+        = number_field_tag :story_marker_ring, @board.story_marker_ring
+
+    .row
+      .col-3.col-form-label
+        Story marker conquest
+      .col-3
+        = number_field_tag :story_marker_conquest, @board.story_marker_conquest
+
+    .row
+      .col-3.col-form-label
+        Story marker corruption
+      .col-3
+        = number_field_tag :story_marker_corruption, @board.story_marker_corruption
+                                
+    = button_tag 'Validate', role: :button, class: 'btn btn-secondary'

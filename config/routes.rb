@@ -25,6 +25,8 @@ Rails.application.routes.draw do
     post :shadow_cards
   end
 
+  resources :story_tracks, only: [:edit, :update]
+
   resources :plot_cards_draw, only:[:edit, :update]
   resources :plot_card_play, only: [:edit, :update]
 

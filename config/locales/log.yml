@@ -8,6 +8,7 @@ en:
 
       place_influence: "Influence set to %{value} in %{place}."
       change_shadow_pool: "Shadow pool changed from %{old_value} to %{new_value}."
+      update_story_marker: "Story marker %{story_marker} moved from position %{old_value} to %{new_value}."
 
       draw_plot_cards:
         one: "Sauron draw 1 plot card."
