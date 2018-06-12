@@ -9,6 +9,7 @@ class SauronActionsController < ApplicationController
   def update
     actions_hash = {}
 
+    log_add = log_remove = []
     ActiveRecord::Base.transaction do
 
       %w( place_influence draw_cards command ).each do |action|
@@ -16,12 +17,22 @@ class SauronActionsController < ApplicationController
           action_code = "#{action}_#{index}"
 
           if params[ action_code ]
-            actions_hash[ action_code ] = params[ action_code ]
 
-            @board.logs.create!( action: 'sauron_actions.' + action_code, params: {},
-                                 user_id: current_user.id, actor: @actor)
+            actions_hash[ action_code ] = params[ action_code ]
+            log_add << action_code unless @board.sauron_actions[action_code]
+
+          else
+            log_remove << action_code if @board.sauron_actions[action_code]
           end
         end
+      end
+
+      log_add.each do |action|
+        @board.logs.create!( action: 'sauron_actions.place.' + action, params: {}, user_id: current_user.id, actor: @actor)
+      end
+
+      log_remove.each do |action|
+        @board.logs.create!( action: 'sauron_actions.remove.' + action, params: {}, user_id: current_user.id, actor: @actor)
       end
 
       @board.update!( sauron_actions: actions_hash )

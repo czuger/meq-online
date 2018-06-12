@@ -53,14 +53,28 @@ en:
           other: "Sauron discard %{count} shadow cards."
 
       sauron_actions:
-        place_influence_1: "Sauron choose action : Place influence 6."
-        place_influence_2: "Sauron choose action : Place influence 5."
-        place_influence_3: "Sauron choose action : Place influence 4."
-
-        draw_cards_1: "Sauron choose action : Draw cards 2."
-        draw_cards_2: "Sauron choose action : Draw cards 2."
-        draw_cards_3: "Sauron choose action : Draw cards 1."
-
-        command_1: "Sauron choose action : Command 3."
-        command_2: "Sauron choose action : Command 2."
-        command_3: "Sauron choose action : Command 1."
+        place:
+          place_influence_1: "Choose action : Place influence 6."
+          place_influence_2: "Choose action : Place influence 5."
+          place_influence_3: "Choose action : Place influence 4."
+  
+          draw_cards_1: "Choose action : Draw cards 2."
+          draw_cards_2: "Choose action : Draw cards 2."
+          draw_cards_3: "Choose action : Draw cards 1."
+  
+          command_1: "Choose action : Command 3."
+          command_2: "Choose action : Command 2."
+          command_3: "Choose action : Command 1."
+          
+        remove:
+          place_influence_1: "Remove token : Place influence 6."
+          place_influence_2: "Remove token : Place influence 5."
+          place_influence_3: "Remove token : Place influence 4."
+  
+          draw_cards_1: "Remove token : Draw cards 2."
+          draw_cards_2: "Remove token : Draw cards 2."
+          draw_cards_3: "Remove token : Draw cards 1."
+  
+          command_1: "Remove token : Command 3."
+          command_2: "Remove token : Command 2."
+          command_3: "Remove token : Command 1."          
