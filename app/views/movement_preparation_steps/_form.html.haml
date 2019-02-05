@@ -2,9 +2,9 @@
 
   %p#notice= notice
 
-  = render partial: 'hero_info'
+  = render partial: 'heros/hero_info'
 
-  = form_for @movement_preparation_step do |f|
+  = form_for [@actor, @movement_preparation_step] do |f|
     - if @movement_preparation_step.errors.any?
       #error_explanation
         %h2= "#{pluralize(@movement_preparation_step.errors.count, "error")} prohibited this movement_preparation_step from being saved:"
@@ -12,19 +12,16 @@
           - @movement_preparation_step.errors.full_messages.each do |message|
             %li= message
 
-  .form-group
-    %b Hand:
-    = render partial: 'heros/cards_hand'
+    .form-group
+      %b Hand:
+      = render partial: 'heros/cards_hand', locals: { selectable_class: 'selectable-card-selection-unique' }
 
-  .form-group
-    = form_tag movement_preparation_steps_path, class: 'form-inline' do
+    .form-group
       .mx-2
         = label_tag :move_to, 'Move to'
       .mx-2
         = select_tag(:move_to, options_for_select( @locations.select_tag_data ), class: 'form-control' )
-      .mx-2
-        = button_tag 'Move', role: :button, class: 'btn btn-secondary disabled', id: :move_hero
-      = hidden_field_tag :card_used, ''
+      = hidden_field_tag :selected_card, nil
 
-  .actions
-    = f.submit 'Save'
+    .actions
+      = f.submit 'Save', role: :button, class: 'btn btn-secondary'

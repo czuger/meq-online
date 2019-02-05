@@ -1,12 +1,14 @@
 class MovementPreparationStepsController < ApplicationController
 
-  before_action :set_hero
+  before_action :require_logged_in
+  before_action :set_actor_ensure_actor
+  before_action :set_heroes_hero_and_locations, only: [:edit, :new]
   before_action :set_movement_preparation_step, only: [:show, :edit, :update, :destroy]
 
   # GET /movement_preparation_steps
   # GET /movement_preparation_steps.json
   def index
-    @movement_preparation_steps = @actor.movement_preparation_steps
+    @movement_preparation_steps = @hero.movement_preparation_steps
   end
 
   # GET /movement_preparation_steps/1
@@ -17,6 +19,7 @@ class MovementPreparationStepsController < ApplicationController
   # GET /movement_preparation_steps/new
   def new
     @movement_preparation_step = MovementPreparationStep.new
+    @heroes_hero = @heroes.get( @actor.name_code )
   end
 
   # GET /movement_preparation_steps/1/edit
@@ -66,11 +69,15 @@ class MovementPreparationStepsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_movement_preparation_step
-      @movement_preparation_step = MovementPreparationStep.find(params[:id])
+      @movement_preparation_step = @actor.movement_preparation_steps.find(params[:id])
     end
 
-    def set_hero
-      @actor = Actor.find(params[:hero_id])
+    def set_heroes_hero_and_locations
+      @heroes = GameData::Heroes.new
+      @heroes_hero = @heroes.get( @actor.name_code )
+
+      @locations = GameData::Locations.new
+      @locations.delete!(@actor.location)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

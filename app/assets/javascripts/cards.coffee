@@ -18,6 +18,7 @@ card_selection_selection_multiple = () ->
   $('.selectable-card-selection-multiple').click () ->
 
     card = $(this)
+    console.log( 'card=', card, card.hasClass('selected-card'))
     if card.hasClass('selected-card')
       card.removeClass('selected-card')
     else
@@ -32,11 +33,10 @@ card_selection_selection_unique = () ->
   $('.selectable-card-selection-unique').click () ->
 
     card = $(this)
-    $('#selected_card').val( JSON.stringify( selected_cards ) )
+    $(".selected-card").removeClass("selected-card")
     card.addClass('selected-card')
 
-    set_selected_cards()
-
+    $('#selected_card').val( card.attr('card_id') )
 
 $(document).on('turbolinks:load'
   ->
