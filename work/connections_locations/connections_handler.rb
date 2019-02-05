@@ -81,6 +81,9 @@ class ConnectionsHandler
         return d[:dest] unless @database.has_key?( d[:dest] ) && @database[d[:dest]][:closed]
       end
     end
+
+    puts 'There is no more unconnected destination'
+    exit
   end
 
   def list_existing_connections(area)
