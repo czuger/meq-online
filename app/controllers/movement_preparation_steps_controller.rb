@@ -79,7 +79,11 @@ class MovementPreparationStepsController < ApplicationController
     end
 
     def set_remaining_cards
-      @cards = @actor.hand - @actor.movement_preparation_steps.pluck(:selected_card)
+      @cards = @actor.hand
+      used_cards = @actor.movement_preparation_steps.pluck(:selected_card).each do |card|
+        first_card_position = @cards.index( card )
+        @cards.delete_at( first_card_position )
+      end
     end
 
     def set_heroes_hero_and_locations
