@@ -1,0 +1,31 @@
+= form_for @movement_preparation_step do |f|
+  - if @movement_preparation_step.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@movement_preparation_step.errors.count, "error")} prohibited this movement_preparation_step from being saved:"
+      %ul
+        - @movement_preparation_step.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = f.label :board
+    = f.text_field :board
+  .field
+    = f.label :hero
+    = f.text_field :hero
+  .field
+    = f.label :origine
+    = f.text_field :origine
+  .field
+    = f.label :destination
+    = f.text_field :destination
+  .field
+    = f.label :card_used
+    = f.number_field :card_used
+  .field
+    = f.label :order
+    = f.number_field :order
+  .field
+    = f.label :validation_required
+    = f.check_box :validation_required
+  .actions
+    = f.submit 'Save'

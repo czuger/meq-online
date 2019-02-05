@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class MapCoordinatesControllerTest < ActionDispatch::IntegrationTest
+
   test "should get edit" do
     get map_coordinates_edit_url
     assert_response :success

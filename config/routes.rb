@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :movement_preparation_steps, except: [ :show ]
+
   get 'map_coordinates/edit'
   post 'map_coordinates/update'
 
