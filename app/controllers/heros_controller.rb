@@ -14,6 +14,8 @@ class HerosController < ApplicationController
 
     @locations = GameData::Locations.new
     @locations.delete!(@actor.location)
+
+    @cards = @actor.hand
   end
 
   def draw_cards

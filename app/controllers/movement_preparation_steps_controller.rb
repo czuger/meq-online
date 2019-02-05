@@ -3,6 +3,7 @@ class MovementPreparationStepsController < ApplicationController
   before_action :require_logged_in
   before_action :set_actor_ensure_actor
   before_action :set_heroes_hero_and_locations, only: [:edit, :new, :create, :index]
+  before_action :set_remaining_cards, only: [:edit, :new]
   before_action :set_movement_preparation_step, only: [:edit, :update, :destroy]
 
   # GET /movement_preparation_steps
@@ -67,7 +68,7 @@ class MovementPreparationStepsController < ApplicationController
   def destroy
     @movement_preparation_step.destroy
     respond_to do |format|
-      format.html { redirect_to hero_movement_preparation_steps_path(@actor), notice: 'Movement preparation step was successfully destroyed.' }
+      format.html { redirect_to hero_movement_preparation_steps_path (@actor), notice: 'Movement preparation step was successfully destroyed.' }
     end
   end
 
@@ -75,6 +76,10 @@ class MovementPreparationStepsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_movement_preparation_step
       @movement_preparation_step = @actor.movement_preparation_steps.find(params[:id])
+    end
+
+    def set_remaining_cards
+      @cards = @actor.hand - @actor.movement_preparation_steps.pluck(:selected_card)
     end
 
     def set_heroes_hero_and_locations
