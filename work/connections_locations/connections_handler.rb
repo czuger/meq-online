@@ -1,12 +1,17 @@
 require 'pp'
 require 'yaml'
 
+# TODO : il faut refaire un check des localisations, elles ne correspondent pas
+
 class ConnectionsHandler
 
   PATHS = { s: :sun, d: :desolation, f: :forest, m: :mountains, h: :hills, a: :any }.freeze
 
   def initialize
     @database = File.exists?( 'connections.yaml' ) ? YAML.load_file( 'connections.yaml' ) : {}
+    @database.each_value do |v|
+      v[:timestamp] ||= DateTime.now
+    end
     @locations = File.open( 'locations.txt', 'r').readlines.map(&:chomp).sort
   end
 
@@ -38,6 +43,7 @@ class ConnectionsHandler
         create_database_entry next_unprocessed_destination, area, path, diff
       else
         puts "Closing #{next_unprocessed_destination}"
+        puts '*' * 20
         @database[next_unprocessed_destination][:closed] = true
       end
 
@@ -50,8 +56,8 @@ class ConnectionsHandler
   private
 
   def create_database_entry( source, dest, path, diff )
-    @database[source] ||= { closed: false, destinations: [] }
-    @database[dest] ||= { closed: false, destinations: [] }
+    @database[source] ||= { closed: false, destinations: [], timestamp: DateTime.now }
+    @database[dest] ||= { closed: false, destinations: [], timestamp: DateTime.now }
 
     @database[source][:destinations] << { dest: dest, path_type: PATHS[path.to_sym].to_s, difficulty: diff.to_i }
     @database[dest][:destinations] << { dest: source, path_type: PATHS[path.to_sym].to_s, difficulty: diff.to_i }
@@ -60,14 +66,18 @@ class ConnectionsHandler
   def get_next_unprocessed_destination
     return 'barad_dur' if @database.empty?
 
+    sorted_db_keys = @database.map{ |k, v| [ v[:timestamp].to_time.to_i, k ] }.sort.map{ |e| e.last }
+    # p @database.map{ |k, v| [ v[:timestamp].to_time.to_i, k ] }.sort
+    # p sorted_db_keys
+
     # First we look for unclosed starts
-    @database.each do |k ,v|
-      return k unless v[:closed]
+    sorted_db_keys.each do |k|
+      return k unless @database[k][:closed]
     end
 
     # Then we look for the next unprocessed destionation
-    @database.each do |k ,v|
-      v[:destinations].each do |d|
+    sorted_db_keys.each do |k|
+      @database[k][:destinations].each do |d|
         return d[:dest] unless @database.has_key?( d[:dest] ) && @database[d[:dest]][:closed]
       end
     end

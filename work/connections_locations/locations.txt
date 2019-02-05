@@ -31,6 +31,7 @@ rivendell
 south_eaves
 the_bight
 the_forest_trail
+the_forest_road
 the_high_pass
 the_northern_waste
 the_redhorn_gate
@@ -52,7 +53,7 @@ helms_deep
 lothlorien
 minas_morgul
 minas_tirith
-mothond
+morthond
 near_harad
 osgiliath
 pelargir
