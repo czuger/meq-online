@@ -2,8 +2,8 @@ class MovementPreparationStepsController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_actor_ensure_actor
-  before_action :set_heroes_hero_and_locations, only: [:edit, :new]
-  before_action :set_movement_preparation_step, only: [:show, :edit, :update, :destroy]
+  before_action :set_heroes_hero_and_locations, only: [:edit, :new, :create]
+  before_action :set_movement_preparation_step, only: [:edit, :update, :destroy]
 
   # GET /movement_preparation_steps
   # GET /movement_preparation_steps.json
@@ -29,15 +29,21 @@ class MovementPreparationStepsController < ApplicationController
   # POST /movement_preparation_steps
   # POST /movement_preparation_steps.json
   def create
-    @movement_preparation_step = MovementPreparationStep.new(movement_preparation_step_params)
+    last_movement_preparation_step = @actor.movement_preparation_steps.last
+    if last_movement_preparation_step
+      last_location = last_movement_preparation_step.destination
+    else
+      last_location = @actor.location
+    end
+
+    params = movement_preparation_step_params.merge(origine: last_location)
+    @movement_preparation_step = @actor.movement_preparation_steps.new(params)
 
     respond_to do |format|
       if @movement_preparation_step.save
-        format.html { redirect_to @movement_preparation_step, notice: 'Movement preparation step was successfully created.' }
-        format.json { render :show, status: :created, location: @movement_preparation_step }
+        format.html { redirect_to hero_movement_preparation_steps_path(@actor), notice: 'Movement preparation step was successfully created.' }
       else
         format.html { render :new }
-        format.json { render json: @movement_preparation_step.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -84,6 +90,6 @@ class MovementPreparationStepsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def movement_preparation_step_params
-      params.require(:movement_preparation_step).permit(:board_id, :hero_id, :origine, :destination, :card_used, :order, :validation_required)
+      params.require(:movement_preparation_step).permit(:destination, :selected_card)
     end
 end

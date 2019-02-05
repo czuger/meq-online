@@ -23,8 +23,8 @@
         -#%td= movement_preparation_step.card_used
         -#%td= movement_preparation_step.order
         -#%td= movement_preparation_step.validation_required
-        %td= link_to 'Modify', edit_hero_movement_preparation_step_path(@hero, movement_preparation_step)
-        %td= link_to 'Remove', hero_movement_preparation_step_path(@hero, movement_preparation_step), method: :delete, data: { confirm: 'Are you sure?' }
+        %td= link_to 'Modify', edit_hero_movement_preparation_step_path(@actor, movement_preparation_step)
+        %td= link_to 'Remove', hero_movement_preparation_step_path(@actor, movement_preparation_step), method: :delete, data: { confirm: 'Are you sure?' }
 
 %br
 

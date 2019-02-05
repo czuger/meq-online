@@ -14,14 +14,14 @@
 
     .form-group
       %b Hand:
-      = render partial: 'heros/cards_hand', locals: { selectable_class: 'selectable-card-selection-unique' }
+      = render partial: 'heros/cards_hand'
 
     .form-group
       .mx-2
         = label_tag :move_to, 'Move to'
       .mx-2
-        = select_tag(:move_to, options_for_select( @locations.select_tag_data ), class: 'form-control' )
-      = hidden_field_tag :selected_card, nil
+        = f.select( :destination, @locations.select_tag_data, {}, class: 'form-control' )
+      %input{ id: :selected_card, name: 'movement_preparation_step[selected_card]', type: :hidden }
 
     .actions
       = f.submit 'Save', role: :button, class: 'btn btn-secondary'
