@@ -8,7 +8,7 @@ class MovementPreparationStepsController < ApplicationController
   # GET /movement_preparation_steps
   # GET /movement_preparation_steps.json
   def index
-    @movement_preparation_steps = @hero.movement_preparation_steps
+    @movement_preparation_steps = @actor.movement_preparation_steps
   end
 
   # GET /movement_preparation_steps/1
@@ -78,6 +78,8 @@ class MovementPreparationStepsController < ApplicationController
 
       @locations = GameData::Locations.new
       @locations.delete!(@actor.location)
+
+      @selectable_card_class = 'selectable-card-selection-unique'
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
