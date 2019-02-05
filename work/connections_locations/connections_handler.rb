@@ -19,12 +19,17 @@ class ConnectionsHandler
       area = nil
       until area
         area = find_area
+        puts "Area found : #{area}" unless area == :close
       end
 
       unless area == :close
         puts "Enter path type : #{PATHS.inspect}"
         path = STDIN.getc
         STDIN.getc
+        unless PATHS.has_key?(path.to_sym)
+          puts "Can't find path of type : '#{path}'"
+          next
+        end
 
         puts 'Enter path difficulty'
         diff = STDIN.getc
@@ -32,6 +37,7 @@ class ConnectionsHandler
 
         create_database_entry next_unprocessed_destination, area, path, diff
       else
+        puts "Closing #{next_unprocessed_destination}"
         @database[next_unprocessed_destination][:closed] = true
       end
 
@@ -48,11 +54,11 @@ class ConnectionsHandler
     @database[dest] ||= { closed: false, destinations: [] }
 
     @database[source][:destinations] << { dest: dest, path_type: PATHS[path.to_sym].to_s, difficulty: diff.to_i }
-    @database[dest][:destinations] = { dest: source, path_type: PATHS[path.to_sym].to_s, difficulty: diff.to_i }
+    @database[dest][:destinations] << { dest: source, path_type: PATHS[path.to_sym].to_s, difficulty: diff.to_i }
   end
 
   def get_next_unprocessed_destination
-    return 'dol_guldur' if @database.empty?
+    return 'barad_dur' if @database.empty?
 
     # First we look for unclosed starts
     @database.each do |k ,v|
@@ -61,13 +67,14 @@ class ConnectionsHandler
 
     # Then we look for the next unprocessed destionation
     @database.each do |k ,v|
-      return v[:dest] unless @database.has_key?( v[:dest] ) && @database[v[:dest]][:closed]
+      v[:destinations].each do |d|
+        return d[:dest] unless @database.has_key?( d[:dest] ) && @database[d[:dest]][:closed]
+      end
     end
   end
 
   def list_existing_connections(area)
-    p @database, area
-    @database[area] ? @database[area].map{ |e| e[:dest] }.join( ', ' ) : ''
+    @database[area] ? @database[area][:destinations].map{ |e| "'#{e[:dest]}'" }.join( ', ' ) : ''
   end
 
   def find_area

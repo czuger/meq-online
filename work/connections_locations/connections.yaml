@@ -1,0 +1,193 @@
+---
+barad_dur:
+  :closed: true
+  :destinations:
+  - :dest: mount_doom
+    :path_type: sun
+    :difficulty: 2
+mount_doom:
+  :closed: true
+  :destinations:
+  - :dest: barad_dur
+    :path_type: sun
+    :difficulty: 2
+  - :dest: sea_of_udun
+    :path_type: sun
+    :difficulty: 2
+  - :dest: plains_of_gorgoroth
+    :path_type: mountains
+    :difficulty: 3
+sea_of_udun:
+  :closed: true
+  :destinations:
+  - :dest: mount_doom
+    :path_type: sun
+    :difficulty: 2
+  - :dest: dagorlad
+    :path_type: sun
+    :difficulty: 3
+  - :dest: dead_marshes
+    :path_type: sun
+    :difficulty: 2
+  - :dest: minas_morgul
+    :path_type: mountains
+    :difficulty: 3
+plains_of_gorgoroth:
+  :closed: true
+  :destinations:
+  - :dest: mount_doom
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: minas_morgul
+    :path_type: mountains
+    :difficulty: 2
+dagorlad:
+  :closed: true
+  :destinations:
+  - :dest: sea_of_udun
+    :path_type: sun
+    :difficulty: 3
+  - :dest: rhun
+    :path_type: sun
+    :difficulty: 3
+  - :dest: dead_marshes
+    :path_type: desolation
+    :difficulty: 3
+  - :dest: emyn_muil
+    :path_type: sun
+    :difficulty: 2
+dead_marshes:
+  :closed: true
+  :destinations:
+  - :dest: sea_of_udun
+    :path_type: sun
+    :difficulty: 2
+  - :dest: dagorlad
+    :path_type: desolation
+    :difficulty: 3
+  - :dest: emyn_muil
+    :path_type: desolation
+    :difficulty: 3
+  - :dest: the_nindale
+    :path_type: desolation
+    :difficulty: 3
+minas_morgul:
+  :closed: true
+  :destinations:
+  - :dest: sea_of_udun
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: plains_of_gorgoroth
+    :path_type: mountains
+    :difficulty: 2
+  - :dest: osgiliath
+    :path_type: sun
+    :difficulty: 2
+rhun:
+  :closed: true
+  :destinations:
+  - :dest: dagorlad
+    :path_type: sun
+    :difficulty: 3
+  - :dest: the_iron_hills
+    :path_type: sun
+    :difficulty: 4
+  - :dest: lake_esgaroth
+    :path_type: ''
+    :difficulty: 0
+  - :dest: the_bight
+    :path_type: sun
+    :difficulty: 2
+emyn_muil:
+  :closed: true
+  :destinations:
+  - :dest: dagorlad
+    :path_type: sun
+    :difficulty: 2
+  - :dest: dead_marshes
+    :path_type: desolation
+    :difficulty: 3
+  - :dest: amon_hen
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: the_nindale
+    :path_type: desolation
+    :difficulty: 2
+  - :dest: dol_guldur
+    :path_type: sun
+    :difficulty: 3
+the_nindale:
+  :closed: true
+  :destinations:
+  - :dest: dead_marshes
+    :path_type: desolation
+    :difficulty: 3
+  - :dest: emyn_muil
+    :path_type: desolation
+    :difficulty: 2
+  - :dest: minas_tirith
+    :path_type: desolation
+    :difficulty: 2
+  - :dest: dunharrow
+    :path_type: desolation
+    :difficulty: 2
+  - :dest: edoras
+    :path_type: desolation
+    :difficulty: 4
+osgiliath:
+  :closed: false
+  :destinations:
+  - :dest: minas_morgul
+    :path_type: sun
+    :difficulty: 2
+the_iron_hills:
+  :closed: false
+  :destinations:
+  - :dest: rhun
+    :path_type: sun
+    :difficulty: 4
+lake_esgaroth:
+  :closed: false
+  :destinations:
+  - :dest: rhun
+    :path_type: ''
+    :difficulty: 0
+the_bight:
+  :closed: false
+  :destinations:
+  - :dest: rhun
+    :path_type: sun
+    :difficulty: 2
+amon_hen:
+  :closed: false
+  :destinations:
+  - :dest: emyn_muil
+    :path_type: mountains
+    :difficulty: 3
+dol_guldur:
+  :closed: false
+  :destinations:
+  - :dest: emyn_muil
+    :path_type: ''
+    :difficulty: 3
+  - :dest: emyn_muil
+    :path_type: sun
+    :difficulty: 3
+minas_tirith:
+  :closed: false
+  :destinations:
+  - :dest: the_nindale
+    :path_type: desolation
+    :difficulty: 2
+dunharrow:
+  :closed: false
+  :destinations:
+  - :dest: the_nindale
+    :path_type: desolation
+    :difficulty: 2
+edoras:
+  :closed: false
+  :destinations:
+  - :dest: the_nindale
+    :path_type: desolation
+    :difficulty: 4
