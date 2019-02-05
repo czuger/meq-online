@@ -5,9 +5,9 @@
     %tr
       -#%th Board
       -#%th Hero
-      -#%th Origine
-      -#%th Destination
-      -#%th Card used
+      %th Origine
+      %th Destination
+      %th
       -#%th Order
       -#%th Validation required
       %th
@@ -18,8 +18,10 @@
       %tr
         -#%td= movement_preparation_step.board
         -#%td= movement_preparation_step.hero
-        -#%td= movement_preparation_step.origine
-        -#%td= movement_preparation_step.destination
+        %td= movement_preparation_step.origine
+        %td= movement_preparation_step.destination
+        %td
+          = image_tag "hero_cards/actions/#{@heroes_hero.cards[movement_preparation_step.selected_card].pic_path}", class: 'small-card'
         -#%td= movement_preparation_step.card_used
         -#%td= movement_preparation_step.order
         -#%td= movement_preparation_step.validation_required

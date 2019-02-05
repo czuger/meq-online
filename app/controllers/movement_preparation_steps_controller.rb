@@ -2,7 +2,7 @@ class MovementPreparationStepsController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_actor_ensure_actor
-  before_action :set_heroes_hero_and_locations, only: [:edit, :new, :create]
+  before_action :set_heroes_hero_and_locations, only: [:edit, :new, :create, :index]
   before_action :set_movement_preparation_step, only: [:edit, :update, :destroy]
 
   # GET /movement_preparation_steps
