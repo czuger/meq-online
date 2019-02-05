@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :hero do
+
     name_code 'argalad'
     name 'Argalad'
     fortitude 1
@@ -11,5 +12,6 @@ FactoryBot.define do
     life_pool { [] }
     rest_pool { [] }
     damage_pool { [] }
+
   end
 end
