@@ -30,14 +30,7 @@ class MovementPreparationStepsController < ApplicationController
   # POST /movement_preparation_steps
   # POST /movement_preparation_steps.json
   def create
-    last_movement_preparation_step = @actor.movement_preparation_steps.last
-    if last_movement_preparation_step
-      last_location = last_movement_preparation_step.destination
-    else
-      last_location = @actor.location
-    end
-
-    params = movement_preparation_step_params.merge(origine: last_location)
+    params = movement_preparation_step_params.merge(origine: @last_location)
     @movement_preparation_step = @actor.movement_preparation_steps.new(params)
 
     respond_to do |format|
@@ -90,8 +83,15 @@ class MovementPreparationStepsController < ApplicationController
       @heroes = GameData::Heroes.new
       @heroes_hero = @heroes.get( @actor.name_code )
 
-      @locations = GameData::Locations.new
-      @locations.delete!(@actor.location)
+      last_movement_preparation_step = @actor.movement_preparation_steps.last
+      if last_movement_preparation_step
+        @last_location = last_movement_preparation_step.destination
+      else
+        @last_location = @actor.location
+      end
+
+      @locations = GameData::LocationsPaths.new.get_connected_locations(@last_location)
+      # @locations.delete!(@actor.location)
 
       @selectable_card_class = 'selectable-card-selection-unique'
     end

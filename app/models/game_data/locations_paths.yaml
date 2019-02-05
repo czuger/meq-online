@@ -1,0 +1,889 @@
+---
+barad_dur:
+  :closed: true
+  :destinations:
+  - :dest: mount_doom
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.246909000 +01:00
+mount_doom:
+  :closed: true
+  :destinations:
+  - :dest: barad_dur
+    :path_type: sun
+    :difficulty: 2
+  - :dest: sea_of_udun
+    :path_type: sun
+    :difficulty: 2
+  - :dest: plains_of_gorgoroth
+    :path_type: mountains
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248247000 +01:00
+sea_of_udun:
+  :closed: true
+  :destinations:
+  - :dest: mount_doom
+    :path_type: sun
+    :difficulty: 2
+  - :dest: dagorlad
+    :path_type: sun
+    :difficulty: 3
+  - :dest: dead_marshes
+    :path_type: sun
+    :difficulty: 2
+  - :dest: minas_morgul
+    :path_type: mountains
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248287000 +01:00
+plains_of_gorgoroth:
+  :closed: true
+  :destinations:
+  - :dest: mount_doom
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: minas_morgul
+    :path_type: mountains
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248290000 +01:00
+dagorlad:
+  :closed: true
+  :destinations:
+  - :dest: sea_of_udun
+    :path_type: sun
+    :difficulty: 3
+  - :dest: rhun
+    :path_type: sun
+    :difficulty: 3
+  - :dest: dead_marshes
+    :path_type: desolation
+    :difficulty: 3
+  - :dest: emyn_muil
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248292000 +01:00
+dead_marshes:
+  :closed: true
+  :destinations:
+  - :dest: sea_of_udun
+    :path_type: sun
+    :difficulty: 2
+  - :dest: dagorlad
+    :path_type: desolation
+    :difficulty: 3
+  - :dest: emyn_muil
+    :path_type: desolation
+    :difficulty: 3
+  - :dest: the_nindale
+    :path_type: desolation
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248294000 +01:00
+minas_morgul:
+  :closed: true
+  :destinations:
+  - :dest: sea_of_udun
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: plains_of_gorgoroth
+    :path_type: mountains
+    :difficulty: 2
+  - :dest: osgiliath
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248296000 +01:00
+rhun:
+  :closed: true
+  :destinations:
+  - :dest: dagorlad
+    :path_type: sun
+    :difficulty: 3
+  - :dest: the_iron_hills
+    :path_type: sun
+    :difficulty: 4
+  - :dest: lake_esgaroth
+    :path_type: ''
+    :difficulty: 0
+  - :dest: the_bight
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248298000 +01:00
+emyn_muil:
+  :closed: true
+  :destinations:
+  - :dest: dagorlad
+    :path_type: sun
+    :difficulty: 2
+  - :dest: dead_marshes
+    :path_type: desolation
+    :difficulty: 3
+  - :dest: amon_hen
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: the_nindale
+    :path_type: desolation
+    :difficulty: 2
+  - :dest: dol_guldur
+    :path_type: sun
+    :difficulty: 3
+  - :dest: south_eaves
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248300000 +01:00
+the_nindale:
+  :closed: true
+  :destinations:
+  - :dest: dead_marshes
+    :path_type: desolation
+    :difficulty: 3
+  - :dest: emyn_muil
+    :path_type: desolation
+    :difficulty: 2
+  - :dest: minas_tirith
+    :path_type: desolation
+    :difficulty: 2
+  - :dest: dunharrow
+    :path_type: desolation
+    :difficulty: 2
+  - :dest: edoras
+    :path_type: desolation
+    :difficulty: 4
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248301000 +01:00
+osgiliath:
+  :closed: true
+  :destinations:
+  - :dest: minas_morgul
+    :path_type: sun
+    :difficulty: 2
+  - :dest: minas_tirith
+    :path_type: any
+    :difficulty: 1
+  - :dest: pelargir
+    :path_type: any
+    :difficulty: 1
+  - :dest: near_harad
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248303000 +01:00
+the_iron_hills:
+  :closed: true
+  :destinations:
+  - :dest: rhun
+    :path_type: sun
+    :difficulty: 4
+  - :dest: lake_esgaroth
+    :path_type: hills
+    :difficulty: 2
+  - :dest: erebor
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: the_withered_heath
+    :path_type: hills
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248305000 +01:00
+lake_esgaroth:
+  :closed: true
+  :destinations:
+  - :dest: rhun
+    :path_type: ''
+    :difficulty: 0
+  - :dest: the_iron_hills
+    :path_type: hills
+    :difficulty: 2
+  - :dest: erebor
+    :path_type: hills
+    :difficulty: 2
+  - :dest: woodland_realm
+    :path_type: forest
+    :difficulty: 2
+  - :dest: the_forest_road
+    :path_type: forest
+    :difficulty: 3
+  - :dest: the_bight
+    :path_type: forest
+    :difficulty: 4
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248307000 +01:00
+the_bight:
+  :closed: true
+  :destinations:
+  - :dest: rhun
+    :path_type: sun
+    :difficulty: 2
+  - :dest: lake_esgaroth
+    :path_type: forest
+    :difficulty: 4
+  - :dest: south_eaves
+    :path_type: forest
+    :difficulty: 2
+  - :dest: rhosgobel
+    :path_type: forest
+    :difficulty: 4
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248309000 +01:00
+amon_hen:
+  :closed: true
+  :destinations:
+  - :dest: emyn_muil
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: plains_of_rohan
+    :path_type: sun
+    :difficulty: 2
+  - :dest: lothlorien
+    :path_type: forest
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248311000 +01:00
+dol_guldur:
+  :closed: true
+  :destinations:
+  - :dest: emyn_muil
+    :path_type: sun
+    :difficulty: 3
+  - :dest: lothlorien
+    :path_type: forest
+    :difficulty: 3
+  - :dest: rhosgobel
+    :path_type: forest
+    :difficulty: 4
+  - :dest: south_eaves
+    :path_type: forest
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248313000 +01:00
+minas_tirith:
+  :closed: true
+  :destinations:
+  - :dest: the_nindale
+    :path_type: desolation
+    :difficulty: 2
+  - :dest: osgiliath
+    :path_type: any
+    :difficulty: 1
+  - :dest: dunharrow
+    :path_type: hills
+    :difficulty: 3
+  - :dest: pelargir
+    :path_type: hills
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248315000 +01:00
+dunharrow:
+  :closed: true
+  :destinations:
+  - :dest: the_nindale
+    :path_type: desolation
+    :difficulty: 2
+  - :dest: edoras
+    :path_type: hills
+    :difficulty: 3
+  - :dest: minas_tirith
+    :path_type: hills
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248317000 +01:00
+edoras:
+  :closed: true
+  :destinations:
+  - :dest: the_nindale
+    :path_type: desolation
+    :difficulty: 4
+  - :dest: dunharrow
+    :path_type: hills
+    :difficulty: 3
+  - :dest: helms_deep
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: plains_of_rohan
+    :path_type: any
+    :difficulty: 1
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248319000 +01:00
+pelargir:
+  :closed: true
+  :destinations:
+  - :dest: osgiliath
+    :path_type: any
+    :difficulty: 1
+  - :dest: minas_tirith
+    :path_type: hills
+    :difficulty: 2
+  - :dest: belfalas
+    :path_type: sun
+    :difficulty: 3
+  - :dest: near_harad
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248321000 +01:00
+erebor:
+  :closed: true
+  :destinations:
+  - :dest: the_iron_hills
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: lake_esgaroth
+    :path_type: hills
+    :difficulty: 2
+  - :dest: the_withered_heath
+    :path_type: mountains
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248323000 +01:00
+the_withered_heath:
+  :closed: true
+  :destinations:
+  - :dest: the_iron_hills
+    :path_type: hills
+    :difficulty: 2
+  - :dest: erebor
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: ered_mithrin
+    :path_type: mountains
+    :difficulty: 4
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248324000 +01:00
+woodland_realm:
+  :closed: true
+  :destinations:
+  - :dest: lake_esgaroth
+    :path_type: forest
+    :difficulty: 2
+  - :dest: the_forest_road
+    :path_type: forest
+    :difficulty: 2
+  - :dest: the_forest_trail
+    :path_type: forest
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248326000 +01:00
+the_forest_road:
+  :closed: true
+  :destinations:
+  - :dest: lake_esgaroth
+    :path_type: forest
+    :difficulty: 3
+  - :dest: rhosgobel
+    :path_type: forest
+    :difficulty: 2
+  - :dest: woodland_realm
+    :path_type: forest
+    :difficulty: 2
+  - :dest: the_high_pass
+    :path_type: forest
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248328000 +01:00
+south_eaves:
+  :closed: true
+  :destinations:
+  - :dest: the_bight
+    :path_type: forest
+    :difficulty: 2
+  - :dest: dol_guldur
+    :path_type: forest
+    :difficulty: 2
+  - :dest: emyn_muil
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248330000 +01:00
+rhosgobel:
+  :closed: true
+  :destinations:
+  - :dest: the_bight
+    :path_type: forest
+    :difficulty: 4
+  - :dest: dol_guldur
+    :path_type: forest
+    :difficulty: 4
+  - :dest: gladden_fields
+    :path_type: any
+    :difficulty: 1
+  - :dest: the_forest_road
+    :path_type: forest
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:34:41.248332000 +01:00
+plains_of_rohan:
+  :closed: true
+  :destinations:
+  - :dest: amon_hen
+    :path_type: sun
+    :difficulty: 2
+  - :dest: edoras
+    :path_type: any
+    :difficulty: 1
+  - :dest: helms_deep
+    :path_type: sun
+    :difficulty: 2
+  - :dest: fangorn
+    :path_type: forest
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:36:14.181512000 +01:00
+lothlorien:
+  :closed: true
+  :destinations:
+  - :dest: amon_hen
+    :path_type: forest
+    :difficulty: 2
+  - :dest: dol_guldur
+    :path_type: forest
+    :difficulty: 3
+  - :dest: fangorn
+    :path_type: forest
+    :difficulty: 2
+  - :dest: moria
+    :path_type: hills
+    :difficulty: 2
+  - :dest: gladden_fields
+    :path_type: hills
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:36:45.645246000 +01:00
+helms_deep:
+  :closed: true
+  :destinations:
+  - :dest: edoras
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: plains_of_rohan
+    :path_type: sun
+    :difficulty: 2
+  - :dest: gap_of_rohan
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:48:41.145666000 +01:00
+belfalas:
+  :closed: true
+  :destinations:
+  - :dest: pelargir
+    :path_type: sun
+    :difficulty: 3
+  - :dest: morthond
+    :path_type: desolation
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:57:17.135585000 +01:00
+near_harad:
+  :closed: true
+  :destinations:
+  - :dest: pelargir
+    :path_type: sun
+    :difficulty: 2
+  - :dest: osgiliath
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:57:25.859857000 +01:00
+gladden_fields:
+  :closed: true
+  :destinations:
+  - :dest: rhosgobel
+    :path_type: any
+    :difficulty: 1
+  - :dest: lothlorien
+    :path_type: hills
+    :difficulty: 3
+  - :dest: the_high_pass
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: the_redhorn_gate
+    :path_type: mountains
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:57:57.101685000 +01:00
+the_high_pass:
+  :closed: true
+  :destinations:
+  - :dest: the_forest_road
+    :path_type: forest
+    :difficulty: 3
+  - :dest: gladden_fields
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: the_forest_trail
+    :path_type: mountains
+    :difficulty: 4
+  - :dest: rivendell
+    :path_type: mountains
+    :difficulty: 4
+  - :dest: mount_gundabad
+    :path_type: mountains
+    :difficulty: 4
+  :timestamp: !ruby/object:DateTime 2019-02-05 17:59:26.915492000 +01:00
+ered_mithrin:
+  :closed: true
+  :destinations:
+  - :dest: the_withered_heath
+    :path_type: mountains
+    :difficulty: 4
+  - :dest: the_northern_waste
+    :path_type: mountains
+    :difficulty: 4
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:00:02.306137000 +01:00
+the_forest_trail:
+  :closed: true
+  :destinations:
+  - :dest: the_high_pass
+    :path_type: mountains
+    :difficulty: 4
+  - :dest: woodland_realm
+    :path_type: forest
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:00:44.947963000 +01:00
+fangorn:
+  :closed: true
+  :destinations:
+  - :dest: plains_of_rohan
+    :path_type: forest
+    :difficulty: 2
+  - :dest: lothlorien
+    :path_type: forest
+    :difficulty: 2
+  - :dest: isengard
+    :path_type: forest
+    :difficulty: 2
+  - :dest: gap_of_rohan
+    :path_type: any
+    :difficulty: 1
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:01:58.599732000 +01:00
+moria:
+  :closed: true
+  :destinations:
+  - :dest: lothlorien
+    :path_type: hills
+    :difficulty: 2
+  - :dest: eregion
+    :path_type: hills
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:02:25.054400000 +01:00
+gap_of_rohan:
+  :closed: true
+  :destinations:
+  - :dest: helms_deep
+    :path_type: sun
+    :difficulty: 2
+  - :dest: fangorn
+    :path_type: any
+    :difficulty: 1
+  - :dest: isengard
+    :path_type: sun
+    :difficulty: 2
+  - :dest: dunland
+    :path_type: sun
+    :difficulty: 2
+  - :dest: enedwaith_plains
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:03:08.665295000 +01:00
+morthond:
+  :closed: true
+  :destinations:
+  - :dest: belfalas
+    :path_type: desolation
+    :difficulty: 3
+  - :dest: anfalas
+    :path_type: hills
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:05:30.166061000 +01:00
+the_redhorn_gate:
+  :closed: true
+  :destinations:
+  - :dest: gladden_fields
+    :path_type: mountains
+    :difficulty: 3
+  - :dest: eregion
+    :path_type: mountains
+    :difficulty: 4
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:06:46.746341000 +01:00
+rivendell:
+  :closed: true
+  :destinations:
+  - :dest: the_high_pass
+    :path_type: mountains
+    :difficulty: 4
+  - :dest: the_trollshaws
+    :path_type: forest
+    :difficulty: 2
+  - :dest: eregion
+    :path_type: forest
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:08:27.838591000 +01:00
+mount_gundabad:
+  :closed: true
+  :destinations:
+  - :dest: the_high_pass
+    :path_type: mountains
+    :difficulty: 4
+  - :dest: the_ruins_of_angmar
+    :path_type: mountains
+    :difficulty: 4
+  - :dest: the_northern_waste
+    :path_type: any
+    :difficulty: 1
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:08:54.785487000 +01:00
+the_northern_waste:
+  :closed: true
+  :destinations:
+  - :dest: ered_mithrin
+    :path_type: mountains
+    :difficulty: 4
+  - :dest: mount_gundabad
+    :path_type: any
+    :difficulty: 1
+  - :dest: the_ruins_of_angmar
+    :path_type: hills
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:09:22.743713000 +01:00
+isengard:
+  :closed: true
+  :destinations:
+  - :dest: fangorn
+    :path_type: forest
+    :difficulty: 2
+  - :dest: gap_of_rohan
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:10:29.406974000 +01:00
+eregion:
+  :closed: true
+  :destinations:
+  - :dest: moria
+    :path_type: hills
+    :difficulty: 2
+  - :dest: the_redhorn_gate
+    :path_type: mountains
+    :difficulty: 4
+  - :dest: rivendell
+    :path_type: forest
+    :difficulty: 3
+  - :dest: dunland
+    :path_type: sun
+    :difficulty: 2
+  - :dest: tharbad
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:11:09.065777000 +01:00
+dunland:
+  :closed: true
+  :destinations:
+  - :dest: gap_of_rohan
+    :path_type: sun
+    :difficulty: 2
+  - :dest: eregion
+    :path_type: sun
+    :difficulty: 2
+  - :dest: tharbad
+    :path_type: any
+    :difficulty: 1
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:11:39.408707000 +01:00
+enedwaith_plains:
+  :closed: true
+  :destinations:
+  - :dest: gap_of_rohan
+    :path_type: sun
+    :difficulty: 2
+  - :dest: tharbad
+    :path_type: sun
+    :difficulty: 3
+  - :dest: anfalas
+    :path_type: sun
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:11:50.136509000 +01:00
+anfalas:
+  :closed: true
+  :destinations:
+  - :dest: morthond
+    :path_type: hills
+    :difficulty: 3
+  - :dest: enedwaith_plains
+    :path_type: sun
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:12:11.266464000 +01:00
+the_trollshaws:
+  :closed: true
+  :destinations:
+  - :dest: rivendell
+    :path_type: forest
+    :difficulty: 2
+  - :dest: weathertop
+    :path_type: any
+    :difficulty: 1
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:13:10.599681000 +01:00
+the_ruins_of_angmar:
+  :closed: true
+  :destinations:
+  - :dest: mount_gundabad
+    :path_type: mountains
+    :difficulty: 4
+  - :dest: the_northern_waste
+    :path_type: hills
+    :difficulty: 2
+  - :dest: ettenmoors
+    :path_type: sun
+    :difficulty: 2
+  - :dest: the_northdowns
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:14:27.092071000 +01:00
+tharbad:
+  :closed: true
+  :destinations:
+  - :dest: eregion
+    :path_type: sun
+    :difficulty: 2
+  - :dest: dunland
+    :path_type: any
+    :difficulty: 1
+  - :dest: enedwaith_plains
+    :path_type: sun
+    :difficulty: 3
+  - :dest: mouth_of_the_greyflood
+    :path_type: sun
+    :difficulty: 3
+  - :dest: bree
+    :path_type: hills
+    :difficulty: 2
+  - :dest: weathertop
+    :path_type: hills
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:16:06.656704000 +01:00
+weathertop:
+  :closed: true
+  :destinations:
+  - :dest: the_trollshaws
+    :path_type: any
+    :difficulty: 1
+  - :dest: tharbad
+    :path_type: hills
+    :difficulty: 2
+  - :dest: bree
+    :path_type: hills
+    :difficulty: 2
+  - :dest: fornost
+    :path_type: hills
+    :difficulty: 3
+  - :dest: ettenmoors
+    :path_type: hills
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:18:33.120091000 +01:00
+ettenmoors:
+  :closed: true
+  :destinations:
+  - :dest: the_ruins_of_angmar
+    :path_type: sun
+    :difficulty: 2
+  - :dest: weathertop
+    :path_type: hills
+    :difficulty: 2
+  - :dest: the_northdowns
+    :path_type: sun
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:18:54.950086000 +01:00
+the_northdowns:
+  :closed: true
+  :destinations:
+  - :dest: the_ruins_of_angmar
+    :path_type: sun
+    :difficulty: 2
+  - :dest: ettenmoors
+    :path_type: sun
+    :difficulty: 2
+  - :dest: fornost
+    :path_type: hills
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:19:21.963638000 +01:00
+mouth_of_the_greyflood:
+  :closed: true
+  :destinations:
+  - :dest: tharbad
+    :path_type: sun
+    :difficulty: 3
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:53:56.123440000 +01:00
+bree:
+  :closed: true
+  :destinations:
+  - :dest: tharbad
+    :path_type: hills
+    :difficulty: 2
+  - :dest: weathertop
+    :path_type: hills
+    :difficulty: 2
+  - :dest: old_forest
+    :path_type: any
+    :difficulty: 1
+  - :dest: fornost
+    :path_type: any
+    :difficulty: 1
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:54:17.404886000 +01:00
+fornost:
+  :closed: true
+  :destinations:
+  - :dest: weathertop
+    :path_type: hills
+    :difficulty: 3
+  - :dest: the_northdowns
+    :path_type: hills
+    :difficulty: 2
+  - :dest: bree
+    :path_type: any
+    :difficulty: 1
+  - :dest: old_forest
+    :path_type: any
+    :difficulty: 1
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:55:10.965700000 +01:00
+old_forest:
+  :closed: true
+  :destinations:
+  - :dest: bree
+    :path_type: any
+    :difficulty: 1
+  - :dest: fornost
+    :path_type: any
+    :difficulty: 1
+  - :dest: the_shire
+    :path_type: forest
+    :difficulty: 2
+  - :dest: hills_of_evendim
+    :path_type: hills
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:57:23.307339000 +01:00
+the_shire:
+  :closed: true
+  :destinations:
+  - :dest: old_forest
+    :path_type: forest
+    :difficulty: 2
+  - :dest: hills_of_evendim
+    :path_type: hills
+    :difficulty: 2
+  - :dest: the_grey_havens
+    :path_type: any
+    :difficulty: 1
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:58:12.792448000 +01:00
+hills_of_evendim:
+  :closed: true
+  :destinations:
+  - :dest: old_forest
+    :path_type: hills
+    :difficulty: 2
+  - :dest: the_shire
+    :path_type: hills
+    :difficulty: 2
+  - :dest: the_grey_havens
+    :path_type: hills
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:58:25.630633000 +01:00
+the_grey_havens:
+  :closed: true
+  :destinations:
+  - :dest: the_shire
+    :path_type: any
+    :difficulty: 1
+  - :dest: hills_of_evendim
+    :path_type: hills
+    :difficulty: 2
+  - :dest: blue_mountains
+    :path_type: mountains
+    :difficulty: 2
+  - :dest: harlingdon
+    :path_type: forest
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 18:59:24.310976000 +01:00
+blue_mountains:
+  :closed: true
+  :destinations:
+  - :dest: the_grey_havens
+    :path_type: mountains
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 19:00:12.191432000 +01:00
+harlingdon:
+  :closed: true
+  :destinations:
+  - :dest: the_grey_havens
+    :path_type: forest
+    :difficulty: 2
+  :timestamp: !ruby/object:DateTime 2019-02-05 19:00:24.455038000 +01:00
