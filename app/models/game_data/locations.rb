@@ -4,6 +4,8 @@ require 'ostruct'
 module GameData
   class Locations < Base
 
+    attr_reader :data
+
     def initialize
       @data = YAML.load_file("#{Rails.root}/app/models/game_data/locations.yaml")
     end
