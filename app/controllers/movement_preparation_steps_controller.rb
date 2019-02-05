@@ -67,8 +67,7 @@ class MovementPreparationStepsController < ApplicationController
   def destroy
     @movement_preparation_step.destroy
     respond_to do |format|
-      format.html { redirect_to movement_preparation_steps_url, notice: 'Movement preparation step was successfully destroyed.' }
-      format.json { head :no_content }
+      format.html { redirect_to hero_movement_preparation_steps_path(@actor), notice: 'Movement preparation step was successfully destroyed.' }
     end
   end
 

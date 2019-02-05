@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
   end
 
   def actor_from_params
-    params[:id] || params[:hero_id] || params[:sauron_id]
+    params[:hero_id] || params[:sauron_id] || params[:id]
   end
 
 end
