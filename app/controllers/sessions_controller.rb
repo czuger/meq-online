@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
 
-  skip_before_action :verify_authenticity_token, if: -> { Rails.env.development? }
+  skip_before_action :verify_authenticity_token, if: -> { Rails.env.development? || Rails.env.test? }
 
   def new
   end

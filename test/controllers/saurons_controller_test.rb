@@ -8,6 +8,7 @@ class SauronsControllerTest < ActionDispatch::IntegrationTest
     @user = create( :user )
     @board = create( :board )
     @sauron = create( :sauron, user: @user, board: @board )
+    @board.users << @user
 
     $google_auth_hash[:uid] = @user.uid
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
@@ -37,8 +38,8 @@ class SauronsControllerTest < ActionDispatch::IntegrationTest
   #   assert_redirected_to sauron_url(Sauron.last)
   # end
 
-  test "should show sauron" do
-    get board_sauron_url(@board, @sauron)
+  test 'should show sauron' do
+    get sauron_url(@sauron)
     assert_response :success
   end
   #

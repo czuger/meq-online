@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_board
-    raise "Board #{@board.inspect} can't be modified by #{current_user.id}" unless @board.users.pluck(:id).include?(current_user.id)
+    raise "Board #{@board.id} can't be accessed by #{current_user.id}" unless @board.users.pluck(:id).include?(current_user.id)
   end
 
   def actor_from_params
