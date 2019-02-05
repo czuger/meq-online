@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_12_091853) do
+ActiveRecord::Schema.define(version: 2019_02_05_092822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -82,6 +82,18 @@ ActiveRecord::Schema.define(version: 2018_06_12_091853) do
     t.index ["board_id"], name: "index_logs_on_board_id"
   end
 
+  create_table "movement_preparation_steps", force: :cascade do |t|
+    t.bigint "actor_id", null: false
+    t.string "origine", null: false
+    t.string "destination", null: false
+    t.integer "card_used", null: false
+    t.integer "order", null: false
+    t.boolean "validation_required", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_movement_preparation_steps_on_actor_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "provider", null: false
     t.string "uid", null: false
@@ -97,4 +109,5 @@ ActiveRecord::Schema.define(version: 2018_06_12_091853) do
   add_foreign_key "logs", "actors"
   add_foreign_key "logs", "boards"
   add_foreign_key "logs", "users"
+  add_foreign_key "movement_preparation_steps", "actors"
 end

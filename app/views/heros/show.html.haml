@@ -6,20 +6,21 @@
 
   .form-group
     .row
-      .col
+      .col-2
         = link_to 'Draw hand', hero_draw_cards_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
-      .col
+      .col-2
         = link_to 'Rest', hero_rest_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
-      .col
+      .col-2
         = link_to 'Heal', hero_heal_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
-      .col
+      .col-2
+        = link_to 'Movement', hero_movement_preparation_steps_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
+      .col-2
         = link_to 'Take damages', hero_take_damages_path(@actor, damage_amount: 3 ), method: :patch, role: :button, class: 'btn btn-secondary btn-block'
-      .col
+      .col-2
         - if @actor.turn_finished
           = button_tag 'Turn finished', role: :button, class: 'btn btn-secondary disabled btn-block'
         - else
           = link_to 'Finish turn', hero_finish_turn_path(@actor), method: :patch, role: :button, class: 'btn btn-secondary btn-block'
-      .col
 
   .form-group
     %b Hand:
@@ -37,17 +38,5 @@
       .mx-2
         = button_tag 'Draw hand', role: :button, class: 'btn btn-secondary'
     = hidden_field_tag :agility_value, @actor.agility
-
-
-
-  .form-group
-    = form_tag hero_move_path(@actor), class: 'form-inline' do
-      .mx-2
-        = label_tag :move_to, 'Move to'
-      .mx-2
-        = select_tag(:move_to,options_for_select( @locations.select_tag_data ), class: 'form-control' )
-      .mx-2
-        = button_tag 'Move', role: :button, class: 'btn btn-secondary disabled', id: :move_hero
-      = hidden_field_tag :card_used, ''
 
   = image_tag "hero_cards/quests/standard/#{@actor.name_code}-#{@actor.current_quest}", class: 'big-card'

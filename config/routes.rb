@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
 
-  resources :movement_preparation_steps, except: [ :show ]
-
   get 'map_coordinates/edit'
   post 'map_coordinates/update'
 
@@ -21,6 +19,8 @@ Rails.application.routes.draw do
     patch :take_damages
     post :move
     patch :finish_turn
+
+    resources :movement_preparation_steps, except: [ :show ]
   end
 
   resources :sauron, only: [:show] do

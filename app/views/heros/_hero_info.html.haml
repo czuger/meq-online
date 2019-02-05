@@ -25,6 +25,12 @@
         %span.badge.badge-light
           = @actor.rest_pool.count
 
+    .col-2
+      %button.btn.btn-secondary.btn-block{ type: :button }
+        Damage
+        %span.badge.badge-light
+          = @actor.damage_pool.count
+
 
 .form-group
   .row
@@ -48,9 +54,3 @@
         Wisdom
         %span.badge.badge-light
           = @actor.wisdom
-
-    .col-2
-      %button.btn.btn-secondary.btn-block{ type: :button }
-        Damage
-        %span.badge.badge-light
-          = @actor.damage_pool.count

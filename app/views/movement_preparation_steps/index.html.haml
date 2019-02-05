@@ -3,31 +3,29 @@
 %table
   %thead
     %tr
-      %th Board
-      %th Hero
-      %th Origine
-      %th Destination
-      %th Card used
-      %th Order
-      %th Validation required
-      %th
+      -#%th Board
+      -#%th Hero
+      -#%th Origine
+      -#%th Destination
+      -#%th Card used
+      -#%th Order
+      -#%th Validation required
       %th
       %th
 
   %tbody
     - @movement_preparation_steps.each do |movement_preparation_step|
       %tr
-        %td= movement_preparation_step.board
-        %td= movement_preparation_step.hero
-        %td= movement_preparation_step.origine
-        %td= movement_preparation_step.destination
-        %td= movement_preparation_step.card_used
-        %td= movement_preparation_step.order
-        %td= movement_preparation_step.validation_required
-        %td= link_to 'Show', movement_preparation_step
-        %td= link_to 'Edit', edit_movement_preparation_step_path(movement_preparation_step)
-        %td= link_to 'Destroy', movement_preparation_step, method: :delete, data: { confirm: 'Are you sure?' }
+        -#%td= movement_preparation_step.board
+        -#%td= movement_preparation_step.hero
+        -#%td= movement_preparation_step.origine
+        -#%td= movement_preparation_step.destination
+        -#%td= movement_preparation_step.card_used
+        -#%td= movement_preparation_step.order
+        -#%td= movement_preparation_step.validation_required
+        %td= link_to 'Modify', edit_hero_movement_preparation_step_path(@actor, movement_preparation_step)
+        %td= link_to 'Remove', hero_movement_preparation_step_path(@actor, movement_preparation_step), method: :delete, data: { confirm: 'Are you sure?' }
 
 %br
 
-= link_to 'New Movement preparation step', new_movement_preparation_step_path
+= link_to 'New Movement preparation step', new_hero_movement_preparation_step_path(@actor)

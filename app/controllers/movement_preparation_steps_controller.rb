@@ -1,11 +1,12 @@
 class MovementPreparationStepsController < ApplicationController
 
+  before_action :set_hero
   before_action :set_movement_preparation_step, only: [:show, :edit, :update, :destroy]
 
   # GET /movement_preparation_steps
   # GET /movement_preparation_steps.json
   def index
-    @movement_preparation_steps = MovementPreparationStep.all
+    @movement_preparation_steps = @actor.movement_preparation_steps
   end
 
   # GET /movement_preparation_steps/1
@@ -66,6 +67,10 @@ class MovementPreparationStepsController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_movement_preparation_step
       @movement_preparation_step = MovementPreparationStep.find(params[:id])
+    end
+
+    def set_hero
+      @actor = Actor.find(params[:hero_id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
