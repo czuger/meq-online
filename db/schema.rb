@@ -86,7 +86,7 @@ ActiveRecord::Schema.define(version: 2019_02_05_092822) do
     t.bigint "actor_id", null: false
     t.string "origine", null: false
     t.string "destination", null: false
-    t.integer "selected_card", null: false
+    t.integer "selected_cards", default: [], null: false, array: true
     t.boolean "validation_required", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

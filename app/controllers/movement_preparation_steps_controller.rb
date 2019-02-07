@@ -73,9 +73,11 @@ class MovementPreparationStepsController < ApplicationController
 
     def set_remaining_cards
       @cards = @actor.hand
-      used_cards = @actor.movement_preparation_steps.pluck(:selected_card).each do |card|
-        first_card_position = @cards.index( card )
-        @cards.delete_at( first_card_position )
+      used_cards = @actor.movement_preparation_steps.pluck(:selected_cards).each do |cards_set|
+        cards_set.each do |card|
+          first_card_position = @cards.index( card )
+          @cards.delete_at( first_card_position )
+        end
       end
     end
 
@@ -93,11 +95,13 @@ class MovementPreparationStepsController < ApplicationController
       @locations = GameData::LocationsPaths.new.get_connected_locations(@last_location)
       # @locations.delete!(@actor.location)
 
-      @selectable_card_class = 'selectable-card-selection-unique'
+      @selectable_card_class = 'selectable-card-selection-multiple'
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def movement_preparation_step_params
-      params.require(:movement_preparation_step).permit(:destination, :selected_card)
+      p = params.require(:movement_preparation_step).permit(:destination, :selected_cards)
+      p[:selected_cards] = p[:selected_cards].split( ',' ).map(&:to_i)
+      p
     end
 end

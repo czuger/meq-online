@@ -21,7 +21,8 @@
         %td= movement_preparation_step.origine
         %td= movement_preparation_step.destination
         %td
-          = image_tag "hero_cards/actions/#{@heroes_hero.cards[movement_preparation_step.selected_card].pic_path}", class: 'small-card'
+          - movement_preparation_step.selected_cards.each do |selected_card|
+            = image_tag "hero_cards/actions/#{@heroes_hero.cards[selected_card].pic_path}", class: 'small-card'
         -#%td= movement_preparation_step.card_used
         -#%td= movement_preparation_step.order
         -#%td= movement_preparation_step.validation_required

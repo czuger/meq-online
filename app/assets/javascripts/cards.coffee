@@ -4,7 +4,7 @@ set_selected_cards = () ->
     $('#validate').removeAttr('disabled')
 
     selected_cards = _.map( $('.selected-card'), (c) -> $(c).attr( 'card_id' ) )
-    $('#selected_cards').val( JSON.stringify( selected_cards ) )
+    $('#selected_cards').val( selected_cards )
   else
     $('#validate').attr('disabled', 'disabled')
 
@@ -18,7 +18,7 @@ card_selection_selection_multiple = () ->
   $('.selectable-card-selection-multiple').click () ->
 
     card = $(this)
-    console.log( 'card=', card, card.hasClass('selected-card'))
+#    console.log( 'card=', card, card.hasClass('selected-card'))
     if card.hasClass('selected-card')
       card.removeClass('selected-card')
     else
