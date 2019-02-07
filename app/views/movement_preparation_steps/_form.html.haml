@@ -18,7 +18,7 @@
 
     .form-group
       .mx-2
-        = label_tag :move_to, "Move from #{@last_location} to :"
+        = label_tag :move_to, "Move from #{@last_location.humanize} to :"
       .mx-2
         = f.select( :destination, @locations, {}, class: 'form-control' )
       %input{ id: :selected_cards, name: 'movement_preparation_step[selected_cards]', type: :hidden }

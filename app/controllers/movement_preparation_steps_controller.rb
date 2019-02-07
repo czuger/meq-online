@@ -92,7 +92,7 @@ class MovementPreparationStepsController < ApplicationController
         @last_location = @actor.location
       end
 
-      @locations = GameData::LocationsPaths.new.get_connected_locations(@last_location)
+      @locations = GameData::LocationsPaths.new.get_connected_locations_for_select(@last_location)
       # @locations.delete!(@actor.location)
 
       @selectable_card_class = 'selectable-card-selection-multiple'
