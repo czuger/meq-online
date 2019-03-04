@@ -18,16 +18,8 @@ class Board < ApplicationRecord
       transitions :from => :created, :to => :waiting_for_players
     end
 
-    event :next_to_heroes_setup do
-      transitions :from => [ :created, :waiting_for_players ], :to => :heroes_setup
-    end
-
-    event :back_to_heroes_setup do
-      transitions :from => [ :sauron_setup ], :to => :heroes_setup
-    end
-
     event :next_to_sauron_setup do
-      transitions :from => :heroes_setup, :to => :sauron_setup, :guard => :all_heroes_played?, :after => Proc.new { clean_heroes_played_status! }
+      transitions :from => [ :created, :waiting_for_players ], :to => :sauron_setup
     end
 
     event :back_to_sauron_setup do

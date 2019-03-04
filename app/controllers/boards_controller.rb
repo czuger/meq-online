@@ -108,7 +108,10 @@ class BoardsController < ApplicationController
 
           life_pool = hero.starting_deck.shuffle
           hand = life_pool.shift( hero[:fortitude] )
-          starting_quest = GameData::HeroQuests.new( 'regular' ).get_starting_quest( hero_code )
+
+          quests_manager = GameData::HeroQuests.new( 'regular' )
+          starting_quest = quests_manager.get_starting_quest( hero_code )
+          quests_manager.hero_setup( @board, hero_code )
 
           @board.heroes.create!(
               name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
@@ -136,7 +139,7 @@ class BoardsController < ApplicationController
           @board.wait_for_players! unless @board.waiting_for_players?
         else
           unless @board.sauron_turn?
-            @board.next_to_heroes_setup!
+            @board.next_to_sauron_setup!
           end
         end
 
