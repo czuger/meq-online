@@ -6,29 +6,59 @@
       - 2
     :advanced_quests:
       - 0
+    :setup:
+      2:
+        -
+          :action: :place
+          :character: aragorn
+          :location: south_eaves
   :beravor:
     :starting_quests:
       - 1
       - 2
     :advanced_quests:
       - 0
+    :setup:
+      2:
+        -
+          :action: :place
+          :character: gandalf
+          :location: the_grey_havens
   :eleanor:
     :starting_quests:
       - 1
       - 2
     :advanced_quests:
       - 0
+    :setup:
+      1:
+        -
+          :action: :place
+          :character: boromir
+          :location: near_harad
   :eometh:
     :starting_quests:
       - 1
       - 2
     :advanced_quests:
       - 0
+    :setup:
+      2:
+        -
+          :action: :place
+          :character: saruman
+          :location: isengard
   :thalin:
     :starting_quests:
       - 1
       - 2
     :advanced_quests:
       - 0
+    :setup:
+      2:
+        -
+          :action: :place
+          :character: dain
+          :location: the_northern_waste
 
 extension_1:
