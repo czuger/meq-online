@@ -7,6 +7,9 @@ namespace :board do
       board.users.clear
       board.logs.delete_all
       # board.combat&.destroy
+
+      board.heroes.each{ |e| MovementPreparationStep.where( actor_id: e.id ).delete_all }
+
       board.heroes.delete_all
       board.destroy
     end
