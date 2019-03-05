@@ -12,8 +12,8 @@
 
     - @characters.each do |char, loc|
       - loc = @locations.get( loc )
-      = image_tag 'characters/small_' + char + '.jpg', class: 'character-on-map', style: "top:#{loc.pos_y-35}px; left:#{loc.pos_x-35}px;"
-
+      = image_tag 'characters/small_' + char + '.jpg', class: 'character-on-map', style: "top:#{loc.pos_y-35}px; left:#{loc.pos_x-35}px;",
+        'data-toggle'=> 'tooltip', 'data-placement' => 'top', title: char.humanize
 
     = image_tag 'map-med.jpg', id: :map
 

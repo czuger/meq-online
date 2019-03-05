@@ -78,6 +78,9 @@ influence= () ->
       type: 'PATCH'
       data: { locations: locations, redirect: false }
 
+activate_tooltips= () ->
+  $('[data-toggle="tooltip"]').tooltip()
+
 $(document).on('turbolinks:load'
   ->
     if window.location.pathname.match( /maps\/\d+\/edit/ )
