@@ -11,6 +11,9 @@ class MapsController < ApplicationController
   def edit
     @positions = GameData::Locations.new.position_list
     @influence = @board.influence
+    @characters = @board.characters
+
+    @locations = GameData::Locations.new
   end
 
 end
