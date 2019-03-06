@@ -4,18 +4,18 @@ module MapsHelper
     root_token = token_key[0..-3]
     count = token_key[-1].to_i
 
-    y = 1047
+    y = 1044
     if root_token == 'place_influence'
-      x = 1603
+      x = 1597
     elsif root_token == 'draw_cards'
-      x = 1700
+      x = 1693
     elsif root_token == 'command'
-      x = 1797
+      x = 1789
     else
       raise "Unknown root token : #{root_token.inspect}"
     end
 
-    x += (count-1)*29
+    x += (count-1)*30
 
     [ x, y ]
   end
