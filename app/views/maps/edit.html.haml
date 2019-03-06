@@ -3,20 +3,24 @@
   %h3
     Press alt for zoom
   #map
-    - @positions.each do |p|
 
+    -# Showing map
+    = image_tag 'map-med.jpg', id: :map
+
+    -# Placing influence tokens
+    - @positions.each do |p|
       .influence-pawn-box{ style: "top:#{p.y+5}px; left:#{p.x-35}px;" }
         = image_tag 'influence.png', class: 'influence-pawn', style: "top:#{p.y+5}px; left:#{p.x-35}px;", location: p.name_code
         %spawn.influence-value
           = @influence[p.name_code] ? @influence[p.name_code] : 0
 
+    -# Placing characters
     - @characters.each do |char, loc|
       - loc = @locations.get( loc )
       = image_tag 'characters/small_' + char + '.jpg', class: 'character-on-map', style: "top:#{loc.pos_y-35}px; left:#{loc.pos_x-35}px;",
         'data-toggle'=> 'tooltip', 'data-placement' => 'top', title: char.humanize
 
-    = image_tag 'map-med.jpg', id: :map
-
+    -# Placing markers on influence token pool
     - y_position = 1181
     - 1.upto( @board.shadow_pool ).to_a.in_groups_of(4).each do |row|
       - x_position = 1695
@@ -27,6 +31,11 @@
         - x_position += 39
       - y_position += 35
 
+    -# Placing markers on sauron actions bar
+    - @board.sauron_actions.keys.each do |key|
+      - x, y = get_sauron_action_token_position( key )
+      .sauron-actions-token{ style: "top:#{y}px; left:#{x}px;" }
+        X
 
   #zoom-area
 
