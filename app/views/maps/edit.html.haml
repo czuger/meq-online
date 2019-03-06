@@ -17,6 +17,17 @@
 
     = image_tag 'map-med.jpg', id: :map
 
+    - y_position = 1181
+    - 1.upto( @board.shadow_pool ).to_a.in_groups_of(4).each do |row|
+      - x_position = 1695
+      - row.each do |element|
+        - next unless element
+        .influence-pool-value{ style: "top:#{y_position}px; left:#{x_position}px;" }
+          1
+        - x_position += 39
+      - y_position += 35
+
+
   #zoom-area
 
 = hidden_field_tag :actor_id, @actor.id

@@ -10,5 +10,9 @@ module GameData
       OpenStruct.new( @data[code] )
     end
 
+    def sauron_setup( board )
+
+    end
+
   end
 end
