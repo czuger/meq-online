@@ -50,6 +50,8 @@ en:
 
         play: "Sauron play a shadow card."
 
+        reshuffle: "Shadow cards deck was near empty. Discarded card has been added, then shadow cards deck was reshuffled."
+
       sauron_actions:
         place:
           place_influence_1: "Choose action : Place influence 6."

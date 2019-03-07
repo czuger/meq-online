@@ -95,14 +95,31 @@ class ShadowCardsController < ApplicationController
 
   def draw_shadow_cards
     nb_cards = params[:nb_cards].to_i
+
+    shadow_card_reshuffled = check_shadow_cards_deck(nb_cards)
+
     @cards = @board.shadow_deck.shift(nb_cards)
     @actor.drawn_shadow_cards= @cards
 
     @board.transaction do
       @actor.save!
       @board.save!
+
+      @board.log!( current_user, @board.sauron, 'shadow_cards.reshuffle' ) if shadow_card_reshuffled
       @board.log!( current_user, @board.sauron, 'shadow_cards.draw', { count: @cards.count } )
     end
+  end
+
+  def check_shadow_cards_deck( nb_cards )
+    result = false
+    p nb_cards
+    if nb_cards > @board.shadow_deck.count
+      # If we don't have enough cards
+      @board.shadow_deck += @board.shadow_discard
+      @board.shadow_discard = []
+      result = true
+    end
+    result
   end
 
 end
