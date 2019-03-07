@@ -8,7 +8,6 @@ class PlotCardPlayController < ApplicationController
   end
 
   def update
-
   end
 
 end

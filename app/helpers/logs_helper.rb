@@ -34,6 +34,9 @@ module LogsHelper
 
   def default_log( log )
     data = log.params.symbolize_keys
+
+    data[:count] = data[:count].to_i if data[:count]
+
     # data[:name] = hero_name(data)
     t( '.' + log.action, data )
   end
