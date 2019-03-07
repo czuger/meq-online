@@ -19,6 +19,6 @@
         = button_tag 'Draw cards(s)', role: :button, class: 'btn btn-secondary btn-block', id: :draw, value: :draw
       .col-2
         = hidden_field_tag :selected_cards, nil
-        = button_tag 'Keep card(s)', role: :button, class: 'btn btn-secondary btn-block', id: :validate, value: :keep, disabled: true
+        = button_tag 'Keep card(s)', role: :button, class: 'btn btn-secondary btn-block', id: :validate_multiple, value: :keep, disabled: true
       .col-3
         = button_tag 'Back to deck bottom', role: :button, class: 'btn btn-secondary btn-block', value: :put_back
