@@ -8,6 +8,9 @@
       .col-3
         = link_to 'Play plot card', edit_plot_card_play_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
 
+      .col-3
+        = link_to 'Manage shadow cards', edit_shadow_card_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
+
   .form-group
     = form_tag edit_plot_cards_draw_path(@actor), method: :get do
       .row
@@ -20,21 +23,26 @@
           = button_tag 'Get golum cards', role: :button, class: 'btn btn-secondary btn-block'
 
 
-  .form-group
-    = form_tag sauron_shadow_cards_path(@actor) do
-      .row
-        = label_tag :nb_shadow_cards, 'Shadow cards', class: 'col-2 col-form-label'
-        .col-1
-          = number_field_tag :nb_shadow_cards, 2, max: 10, class: 'form-control'
-        .col-2
-          = button_tag 'Draw cards', role: :button, value: :draw, class: 'btn btn-secondary btn-block'
-        .col-3
-          = button_tag 'Discard selected cards', role: :button, class: 'btn btn-secondary btn-block'
+  -#.form-group
+  -#  = form_tag sauron_shadow_cards_path(@actor) do
+  -#    .row
+  -#      = label_tag :nb_shadow_cards, 'Shadow cards', class: 'col-2 col-form-label'
+  -#      .col-1
+  -#        = number_field_tag :nb_shadow_cards, 2, max: 10, class: 'form-control'
+  -#      .col-2
+  -#        = button_tag 'Draw cards', role: :button, value: :draw, class: 'btn btn-secondary btn-block'
+  -#      .col-3
+  -#        = button_tag 'Discard selected cards', role: :button, class: 'btn btn-secondary btn-block'
 
 .container-fluid
 
   = render partial: 'plot_cards'
 
+  %hr
+
+  %h4
+    Shadow cards
+
   .card-row
     - @actor.shadow_cards.each do |plot_card_number|
-      = image_tag "sauron/shadows/#{plot_card_number}.png", class: 'big-card'
+      = image_tag "sauron/shadows/#{plot_card_number}.png", class: 'big-card selectable-card-selection-multiple'

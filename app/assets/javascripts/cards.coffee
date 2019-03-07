@@ -18,7 +18,7 @@ card_selection_selection_multiple = () ->
   $('.selectable-card-selection-multiple').click () ->
 
     card = $(this)
-#    console.log( 'card=', card, card.hasClass('selected-card'))
+    console.log( 'card=', card, card.hasClass('selected-card'))
     if card.hasClass('selected-card')
       card.removeClass('selected-card')
     else

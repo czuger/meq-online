@@ -35,9 +35,10 @@
                 .dropdown-menu{"aria-labelledby" => "navbarDropdownSauron"}
                   = link_to 'Screen', sauron_path(@actor), class: 'dropdown-item'
                   = link_to 'Actions', edit_sauron_action_path(@actor), class: 'dropdown-item'
+                  .dropdown-divider
                   = link_to 'Draw plot cards', edit_plot_cards_draw_path(@actor), class: 'dropdown-item'
                   = link_to 'Play plot cards', edit_plot_card_play_path(@actor), class: 'dropdown-item'
-                  = link_to 'Draw shadow cards', edit_shadow_cards_draw_path(@actor), class: 'dropdown-item'
+                  = link_to 'Manage shadow cards', edit_shadow_card_path(@actor), class: 'dropdown-item'
                   .dropdown-divider
                   = link_to 'Get golum gards', '#', class: 'dropdown-item'
 
