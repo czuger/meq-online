@@ -37,6 +37,11 @@
       .sauron-actions-token{ style: "top:#{y}px; left:#{x}px;" }
         = image_tag 'sauron_action.png'
 
+    -# Placing plot cards if any
+    - 1.upto(3).each do |plot_number|
+      - if @board.current_plots["plot-card-#{plot_number}"]
+        = image_tag 'sauron/plots/' + @board.current_plots["plot-card-#{plot_number}"] + '.png', id: "plot-#{plot_number}"
+
   #zoom-area
 
 = hidden_field_tag :actor_id, @actor.id

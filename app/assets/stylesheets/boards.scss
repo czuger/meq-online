@@ -56,7 +56,23 @@
   cursor: pointer;
 }
 
+#plot-1{
+  position: absolute;
+  top: 187px;
+  left: 1684px;
+  width: 97px;
+  z-index: 1;
+}
 
+#plot-2 {
+  @extend #plot-1;
+  top: 374px;
+}
+
+#plot-3 {
+  @extend #plot-1;
+  top: 560px;
+}
 
 //#overlay {
 //  border: 1px solid black;
