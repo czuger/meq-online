@@ -17,4 +17,5 @@
           %td= log.actor.name
           %td= print_log(log)
           %td
-            = image_tag( log.card_pic_path, class: 'log-card' ) if log.card_pic_path
+            = show_card(log)
+            -#= image_tag( log.card_pic_path, class: 'log-card' ) if log.card_pic_path

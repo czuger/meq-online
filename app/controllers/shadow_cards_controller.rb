@@ -18,6 +18,8 @@ class ShadowCardsController < ApplicationController
       discard_drawn_cards
     when 'discard_card_in_hand'
       discard_card_in_hand
+    when 'play_card'
+      play_a_shadow_card
     else
       raise "Unknown order : #{params[:button]}"
     end
@@ -40,14 +42,22 @@ class ShadowCardsController < ApplicationController
   # end
   #
 
-  def discard_card_in_hand
-    cards_count = 1
+  def play_a_shadow_card
     selected_card = params[:selected_card].to_i
-    pp @actor.shadow_cards, selected_card
     @actor.shadow_cards.delete(selected_card)
 
     @board.transaction do
-      @board.save!
+      @actor.save!
+      @board.log!( current_user, @board.sauron, 'shadow_cards.play', { shadow_card: selected_card } )
+    end
+  end
+
+  def discard_card_in_hand
+    cards_count = 1
+    selected_card = params[:selected_card].to_i
+    @actor.shadow_cards.delete(selected_card)
+
+    @board.transaction do
       @actor.save!
       @board.log!( current_user, @board.sauron, 'shadow_cards.discard', { count: cards_count } )
     end

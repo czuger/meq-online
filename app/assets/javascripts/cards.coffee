@@ -1,16 +1,13 @@
-set_selected_cards = () ->
+set_selected_cards_multiple = () ->
 
   if $('.selected-card').length >= 1
-    $('#validate').removeAttr('disabled')
+    $('#validate_multiple').removeAttr('disabled')
 
     selected_cards = _.map( $('.selected-card'), (c) -> $(c).attr( 'card_id' ) )
     $('#selected_cards').val( selected_cards )
   else
-    $('#validate').attr('disabled', 'disabled')
+    $('#validate_multiple').attr('disabled', 'disabled')
 
-# Caution : don't mix unique and multiple selection system
-# Result is put in a hidden field with id selected_cards
-# If a button has an id called validate, it will be turned on or off regarding the fact that cards are selected
 
 # If you want to allow multiple cards selection, add the classe selectable-card-selection-multiple
 # to all cards
@@ -24,7 +21,7 @@ card_selection_selection_multiple = () ->
     else
       card.addClass('selected-card')
 
-    set_selected_cards()
+    set_selected_cards_multiple()
 
 
 # If you want to allow unique cards selection, add the classe selectable-card-selection-unique
@@ -37,6 +34,8 @@ card_selection_selection_unique = () ->
     card.addClass('selected-card')
 
     $('#selected_card').val( card.attr('card_id') )
+
+    $('#validate_unique').removeAttr('disabled')
 
 $(document).on('turbolinks:load'
   ->

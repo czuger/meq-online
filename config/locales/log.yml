@@ -48,6 +48,8 @@ en:
           one: "Sauron discard 1 shadow card."
           other: "Sauron discard %{count} shadow cards."
 
+        play: "Sauron play a shadow card."
+
       sauron_actions:
         place:
           place_influence_1: "Choose action : Place influence 6."

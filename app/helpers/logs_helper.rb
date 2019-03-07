@@ -9,6 +9,12 @@ module LogsHelper
     end
   end
 
+  def show_card(log)
+    if log.params['shadow_card']
+      image_tag( 'sauron/shadows/' + log.params['shadow_card'] + '.png', class: 'log-card' )
+    end
+  end
+
   def movement_log( data )
     t( '.move',
       name: hero_name( data ),
