@@ -10,17 +10,22 @@ en:
       change_shadow_pool: "Shadow pool changed from %{old_value} to %{new_value}."
       update_story_marker: "Story marker %{story_marker} moved from position %{old_value} to %{new_value}."
 
-      draw_plot_cards:
-        one: "Sauron draw 1 plot card."
-        other: "Sauron draw %{count} plot cards."
+      plot_cards:
+        draw:
+          one: "Sauron draw 1 plot card."
+          other: "Sauron draw %{count} plot cards."
 
-      keep_plot_card:
-        one: "Sauron keep 1 plot card."
-        other: "Sauron keep %{count} plot cards."
+        keep:
+          one: "Sauron keep 1 plot card."
+          other: "Sauron keep %{count} plot cards."
 
-      cards_bottom_plot_deck:
-        one: "Sauron replace 1 plot card at the bottom of the plot deck."
-        other: "Sauron replace %{count} card at the bottom of the plot deck."
+        play: "Sauron play a plot card."
+
+        discard: "Sauron remove a plot card from the map."
+
+        back_to_bottom:
+          one: "Sauron replace 1 plot card at the bottom of the plot deck."
+          other: "Sauron replace %{count} card at the bottom of the plot deck."
 
       combat:
         inc_strength: "Before the combat, %{name} use his agility to raise his strength from %{str} to %{nstr}."
