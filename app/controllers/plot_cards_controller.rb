@@ -33,34 +33,10 @@ class PlotCardsController < ApplicationController
     redirect_to plot_cards_draw_screen_path(@actor)
   end
 
-  private
-
-  def back_to_bottom_of_deck
-    cards_count = @actor.drawn_plot_cards.count
-    @board.plot_deck += @actor.drawn_plot_cards
-    @actor.drawn_plot_cards= []
-
-    @board.transaction do
-      @board.save!
-      @actor.save!
-      @board.log!( current_user, @board.sauron, :cards_bottom_plot_deck, { count: cards_count } )
-    end
-  end
-
-  def keep_plot_cards
-    selected_cards = params[:selected_cards].split(',').map{ |e| e.to_i }
-
-    raise "Selected cards should not be empty" if selected_cards.empty?
-    raise "Selected cards should be included in pool cards" unless (selected_cards - @actor.drawn_plot_cards).empty?
-
-    @actor.drawn_plot_cards -= selected_cards
-    @actor.plot_cards += selected_cards
-
-    @board.transaction do
-      @board.save!
-      @actor.save!
-      @board.log!( current_user, @board.sauron, :keep_plot_card, { count: selected_cards.count } )
-    end
+  def keep
+    GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME ).keep_cards(
+        params[:selected_cards].split(',').map{ |e| e.to_i } )
+    redirect_to plot_cards_draw_screen_path(@actor)
   end
 
 end
