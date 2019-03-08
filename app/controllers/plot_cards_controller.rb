@@ -15,7 +15,10 @@ class PlotCardsController < ApplicationController
   def play
     @selected_card_slot = params[:card_slot]
     validate_card_slot_syntax
-    selected_card = @board.current_plots[@selected_card_slot].to_i
+    selected_card = params[:selected_card].to_i
+
+    raise "Actor does not have card #{selected_card} in #{@actor.plot_cards}" unless @actor.plot_cards.include?(selected_card)
+    raise "Slot already in use : #{@selected_card_slot} = #{@board.current_plots[@selected_card_slot]}" if @board.current_plots[@selected_card_slot]
 
     @board.current_plots[@selected_card_slot] = selected_card
     @actor.plot_cards.delete(selected_card)
