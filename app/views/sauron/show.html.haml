@@ -8,6 +8,8 @@
       .col-3
         = link_to 'Play plot card', plot_cards_play_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
       .col-3
+        = link_to 'Discard plot card', plot_cards_discard_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
+      .col-3
         = link_to 'Draw plot card', plot_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
       .col-3
         = link_to 'Manage shadow cards', edit_shadow_card_path(@actor), role: :button, class: 'btn btn-secondary btn-block'

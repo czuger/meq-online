@@ -31,10 +31,15 @@ Rails.application.routes.draw do
   resources :sauron_actions, only: [:edit, :update]
 
   get 'plot_cards/:actor_id/play_screen', to: 'plot_cards#play_screen', as: 'plot_cards_play_screen'
+  post 'plot_cards/:actor_id/play', to: 'plot_cards#play', as: 'plot_cards_play'
+
+  get 'plot_cards/:actor_id/discard_screen', to: 'plot_cards#discard_screen', as: 'plot_cards_discard_screen'
+  post 'plot_cards/:actor_id/discard', to: 'plot_cards#discard', as: 'plot_cards_discard'
+
   get 'plot_cards/:actor_id/draw_screen', to: 'plot_cards#draw_screen', as: 'plot_cards_draw_screen'
   post 'plot_cards/:actor_id/draw', to: 'plot_cards#draw', as: 'plot_cards_draw'
   post 'plot_cards/:actor_id/keep', to: 'plot_cards#keep', as: 'plot_cards_keep'
-  post 'plot_cards/:actor_id/play', to: 'plot_cards#play', as: 'plot_cards_play'
+
 
   resources :shadow_cards, only:[:edit, :update]
 

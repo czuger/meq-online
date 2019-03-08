@@ -2,6 +2,7 @@ class PlotCardsController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_actor_ensure_actor
+  before_action :set_selected_card, only: [ :play, :discard ]
 
   DECK_NAME = 'plot'.freeze
 
@@ -12,8 +13,34 @@ class PlotCardsController < ApplicationController
     @free_slots_options = @free_slots.map{ |e| [ e.gsub( 'plot-card-'.freeze, 'Card slot '.freeze ), e ] }.sort
   end
 
+  def play
+    @board.current_plots[params[:card_slot]] = @selected_card
+    @actor.plot_cards.delete(@selected_card)
+
+    @board.transaction do
+      @actor.save!
+      @board.save!
+      @board.log!( current_user, @board.sauron, 'plot_cards.play', { plot_card: @selected_card } )
+    end
+
+    redirect_to plot_cards_play_screen_path(@actor)
+  end
+
   def discard_screen
-    @plot_cards = @board.current_plots
+    @used_slots = @board.current_plots.keys
+    @used_slots_options = @used_slots.map{ |e| [ e.gsub( 'plot-card-'.freeze, 'Card slot '.freeze ), e ] }.sort
+  end
+
+  def discard
+    @board.plot_deck << @card
+    @board.current_plots.delete(params[:card_slot])
+
+    @board.transaction do
+      @board.save!
+      @board.log!( current_user, @board.sauron, 'plot_cards.discard', { plot_card: card } )
+    end
+
+    redirect_to plot_cards_discard_screen_path(@actor)
   end
 
   def draw_screen
@@ -31,21 +58,11 @@ class PlotCardsController < ApplicationController
     redirect_to plot_cards_draw_screen_path(@actor)
   end
 
-  def play
-    card = params[:selected_card].to_i
+  private
 
+  def set_selected_card
     raise "Bad formatted card slot = #{params[:card_slot]}" unless params[:card_slot] =~ /plot-card-\d/
-
-    @board.current_plots[params[:card_slot]] = card
-    @actor.plot_cards.delete(card)
-
-    @board.transaction do
-      @actor.save!
-      @board.save!
-      @board.log!( current_user, @board.sauron, 'plot_cards.play', { plot_card: card } )
-    end
-
-    redirect_to plot_cards_play_screen_path(@actor)
+    @selected_card = params[:selected_card].to_i
   end
 
 end
