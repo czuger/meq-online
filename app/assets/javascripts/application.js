@@ -14,8 +14,6 @@
 // JQuery has to be set before rails-ujs otherwise we will have crfs token issues.
 //= require rails-ujs
 //= require jquery-ui/widgets/droppable
-//= require popper
-//= require bootstrap
 //= require activestorage
 //= require turbolinks
 //= require underscore.js
