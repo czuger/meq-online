@@ -32,6 +32,7 @@ Rails.application.routes.draw do
 
   get 'plot_cards/:actor_id/play_screen', to: 'plot_cards#play_screen', as: 'plot_cards_play_screen'
   get 'plot_cards/:actor_id/draw_screen', to: 'plot_cards#draw_screen', as: 'plot_cards_draw_screen'
+  post 'plot_cards/:actor_id/draw', to: 'plot_cards#draw', as: 'plot_cards_draw'
 
   resources :shadow_cards, only:[:edit, :update]
 

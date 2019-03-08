@@ -9,7 +9,7 @@
         .col-3
           = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card selectable-card-selection-multiple', card_id: plot_card_number
 
-  = form_tag plot_cards_draw_path(@actor), method: :patch do
+  = form_tag plot_cards_draw_path(@actor) do
     .row
       .col-2.col-form-label
         = label_tag :nb_cards, 'Cards count'

@@ -3,6 +3,8 @@ class PlotCardsController < ApplicationController
   before_action :require_logged_in
   before_action :set_actor_ensure_actor
 
+  DECK_NAME = 'plot'.freeze
+
   def play_screen
     @plot_cards = @board.current_plots
   end
@@ -24,6 +26,11 @@ class PlotCardsController < ApplicationController
     end
 
     redirect_to edit_plot_cards_draw_path(@actor)
+  end
+
+  def draw
+    GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME ).draw_cards(params[:nb_cards])
+    redirect_to plot_cards_draw_screen_path(@actor)
   end
 
   private
@@ -53,18 +60,6 @@ class PlotCardsController < ApplicationController
       @board.save!
       @actor.save!
       @board.log!( current_user, @board.sauron, :keep_plot_card, { count: selected_cards.count } )
-    end
-  end
-
-  def draw_plot_cards
-    nb_cards = params[:nb_cards].to_i
-    @cards = @board.plot_deck.shift(nb_cards)
-    @actor.drawn_plot_cards= @cards
-
-    @board.transaction do
-      @actor.save!
-      @board.save!
-      @board.log!( current_user, @board.sauron, :draw_plot_cards, { count: @cards.count } )
     end
   end
 
