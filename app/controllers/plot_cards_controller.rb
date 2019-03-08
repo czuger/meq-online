@@ -7,25 +7,17 @@ class PlotCardsController < ApplicationController
 
   def play_screen
     @plot_cards = @board.current_plots
+    @free_slots = 1.upto(3).map{ |i| "plot-card-#{i}" } - @board.current_plots.keys
+
+    @free_slots_options = @free_slots.map{ |e| [ e.gsub( 'plot-card-'.freeze, 'Card slot '.freeze ), e ] }.sort
+  end
+
+  def discard_screen
+    @plot_cards = @board.current_plots
   end
 
   def draw_screen
     @cards = @actor.drawn_plot_cards
-  end
-
-  def update
-    case params[:button]
-    when 'draw'
-      draw_plot_cards
-    when 'keep'
-      keep_plot_cards
-    when 'put_back'
-      back_to_bottom_of_deck
-    else
-      raise "Unknown order : #{params[:button]}"
-    end
-
-    redirect_to edit_plot_cards_draw_path(@actor)
   end
 
   def draw
@@ -37,6 +29,23 @@ class PlotCardsController < ApplicationController
     GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME ).keep_cards(
         params[:selected_cards].split(',').map{ |e| e.to_i } )
     redirect_to plot_cards_draw_screen_path(@actor)
+  end
+
+  def play
+    card = params[:selected_card].to_i
+
+    raise "Bad formatted card slot = #{params[:card_slot]}" unless params[:card_slot] =~ /plot-card-\d/
+
+    @board.current_plots[params[:card_slot]] = card
+    @actor.plot_cards.delete(card)
+
+    @board.transaction do
+      @actor.save!
+      @board.save!
+      @board.log!( current_user, @board.sauron, 'plot_cards.play', { plot_card: card } )
+    end
+
+    redirect_to plot_cards_play_screen_path(@actor)
   end
 
 end

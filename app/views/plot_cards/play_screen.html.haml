@@ -1,23 +1,14 @@
-
-.container
-  %h2
-    %div
-      Plot cards on board
-
-    #plot-cards-on-board-area
-      - @plot_cards.each do |slot_id, plot_card_number|
-        %div{ id: slot_id, class: 'plot-card-on-board' }
-          = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card', card_id: plot_card_number
-
-    #action-buttons
-      = form_tag plot_card_play_path(@actor), method: :patch do
-        = hidden_field_tag :selected_cards, {}
-        .row
-          .col-3
-            = button_tag 'Place card', role: :button, class: 'btn btn-secondary btn-block'
-
 #plot-cards-in-hand
   .container-fluid
     %h2
       Cards in hand
     = render partial: 'sauron/plot_cards'
+
+    = form_tag plot_cards_play_path(@actor) do
+      .row
+        .col-3
+          = select_tag( :card_slot, options_for_select( @free_slots_options ), { class: 'form-control' } )
+
+        .col-2
+          = hidden_field_tag :selected_card, nil
+          = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block', id: :validate_unique, value: :keep, disabled: true
