@@ -2,7 +2,6 @@ class PlotCardsController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_actor_ensure_actor
-  before_action :set_selected_card, only: [ :play, :discard ]
 
   DECK_NAME = 'plot'.freeze
 
@@ -14,30 +13,38 @@ class PlotCardsController < ApplicationController
   end
 
   def play
-    @board.current_plots[params[:card_slot]] = @selected_card
-    @actor.plot_cards.delete(@selected_card)
+    @selected_card_slot = params[:card_slot]
+    validate_card_slot_syntax
+    selected_card = @board.current_plots[@selected_card_slot].to_i
+
+    @board.current_plots[@selected_card_slot] = selected_card
+    @actor.plot_cards.delete(selected_card)
 
     @board.transaction do
       @actor.save!
       @board.save!
-      @board.log!( current_user, @board.sauron, 'plot_cards.play', { plot_card: @selected_card } )
+      @board.log!( current_user, @board.sauron, 'plot_cards.play', { plot_card: selected_card } )
     end
 
     redirect_to plot_cards_play_screen_path(@actor)
   end
 
   def discard_screen
-    @used_slots = @board.current_plots.keys
-    @used_slots_options = @used_slots.map{ |e| [ e.gsub( 'plot-card-'.freeze, 'Card slot '.freeze ), e ] }.sort
+    @used_slots = @board.current_plots
+    @used_slots_options = @used_slots.keys.map{ |e| [ e.gsub( 'plot-card-'.freeze, 'Card slot '.freeze ), e ] }.sort
   end
 
   def discard
-    @board.plot_deck << @card
-    @board.current_plots.delete(params[:card_slot])
+    @selected_card_slot = params[:selected_card]
+    validate_card_slot_syntax
+    discarded_card = @board.current_plots[@selected_card_slot]
+
+    @board.plot_deck << discarded_card
+    @board.current_plots.delete(@selected_card_slot)
 
     @board.transaction do
       @board.save!
-      @board.log!( current_user, @board.sauron, 'plot_cards.discard', { plot_card: card } )
+      @board.log!( current_user, @board.sauron, 'plot_cards.discard', { plot_card: discarded_card } )
     end
 
     redirect_to plot_cards_discard_screen_path(@actor)
@@ -60,9 +67,8 @@ class PlotCardsController < ApplicationController
 
   private
 
-  def set_selected_card
-    raise "Bad formatted card slot = #{params[:card_slot]}" unless params[:card_slot] =~ /plot-card-\d/
-    @selected_card = params[:selected_card].to_i
+  def validate_card_slot_syntax
+    raise "Bad formatted card slot = #{@selected_card_slot}" unless @selected_card_slot =~ /plot-card-\d/
   end
 
 end

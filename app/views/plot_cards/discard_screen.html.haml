@@ -1,11 +1,14 @@
 #plot-cards-in-hand
   .container
 
+    .row
+      - 1.upto(3).each do |i|
+        .col-3
+          - if @used_slots["plot-card-#{i}"]
+            = image_tag "sauron/plots/#{@used_slots["plot-card-#{i}"]}.png", class: 'big-card selectable-card-selection-unique', card_id: "plot-card-#{i}"
+
     = form_tag plot_cards_discard_path(@actor) do
       .row
-        .col-3
-          = select_tag( :card_slot, options_for_select( @used_slots_options ), { class: 'form-control' } )
-
         .col-2
           = hidden_field_tag :selected_card, nil
           = button_tag 'Discard card', role: :button, class: 'btn btn-secondary btn-block', id: :validate_unique, value: :keep, disabled: true
