@@ -67,4 +67,12 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test 'should draw cards' do
+    @sauron.drawn_plot_cards = []
+    @sauron.save!
+    post plot_cards_draw_url @sauron, params: { nb_cards: 6 }
+    assert_redirected_to plot_cards_draw_screen_url(@sauron)
+    assert_equal 6, @sauron.reload.drawn_plot_cards.count
+  end
+
 end
