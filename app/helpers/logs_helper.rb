@@ -12,6 +12,8 @@ module LogsHelper
   def show_card(log)
     if log.params['shadow_card']
       image_tag( 'sauron/shadows/' + log.params['shadow_card'] + '.png', class: 'log-card' )
+    elsif log.params['plot_card']
+      image_tag( 'sauron/plots/' + log.params['plot_card'] + '.png', class: 'log-card' )
     end
   end
 
