@@ -40,7 +40,7 @@
     -# Placing plot cards if any
     - 1.upto(3).each do |plot_number|
       - if @board.current_plots["plot-card-#{plot_number}"]
-        = image_tag 'sauron/plots/' + @board.current_plots["plot-card-#{plot_number}"] + '.png', id: "plot-#{plot_number}"
+        = image_tag 'sauron/plots/' + @board.current_plots["plot-card-#{plot_number}"] + '.png', id: "plot-#{plot_number}", class: 'plot-card-on-map'
 
   #zoom-area
 
