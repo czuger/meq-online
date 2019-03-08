@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class StoryTracksControllerTest < ActionDispatch::IntegrationTest
+
   test "should get edit" do
     get story_tracks_edit_url
     assert_response :success
