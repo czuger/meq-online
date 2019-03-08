@@ -28,13 +28,13 @@ module GameEngine
       raise 'Selected cards should not be empty' if selected_cards.empty?
       raise 'Selected cards should be included in pool cards' unless (selected_cards - @actor.send( "drawn_#{@deck_name}_cards" )).empty?
 
-      @hand += selected_cards
-      @drawn_cards -= selected_cards
+      add_cards(:hand, selected_cards)
+      remove_cards(:drawn_cards, selected_cards)
 
       @board.transaction do
 
         if back_to_bottom_of_deck
-          back_to_bottom_of_deck
+          set_cards_back_to_bottom_of_deck
         else
           # To discard deck
         end
@@ -47,10 +47,11 @@ module GameEngine
 
     private
 
-    def back_to_bottom_of_deck
-      cards_count = @drawn_cards.count
-      @deck += @drawn_cards
-      @drawn_cards = []
+    def set_cards_back_to_bottom_of_deck
+      drawn_cards = get_deck(:drawn_cards )
+      cards_count = drawn_cards.count
+      add_cards(:drawn_cards, drawn_cards)
+      remove_cards(:drawn_cards, drawn_cards)
 
       @board.log!( @user, @board.sauron, "#{@deck_name}_cards.back_to_bottom", { count: cards_count } )
     end
