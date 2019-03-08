@@ -30,8 +30,8 @@ Rails.application.routes.draw do
   resources :story_tracks, only: [:edit, :update]
   resources :sauron_actions, only: [:edit, :update]
 
-  resources :plot_cards_draw, only:[:edit, :update]
-  resources :plot_card_play, only: [:edit, :update]
+  get 'plot_cards/:actor_id/play_screen', to: 'plot_cards#play_screen', as: 'plot_cards_play_screen'
+  get 'plot_cards/:actor_id/draw_screen', to: 'plot_cards#draw_screen', as: 'plot_cards_draw_screen'
 
   resources :shadow_cards, only:[:edit, :update]
 
