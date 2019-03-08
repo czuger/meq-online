@@ -78,8 +78,16 @@ influence= () ->
       type: 'PATCH'
       data: { locations: locations, redirect: false }
 
-activate_tooltips= () ->
-  $('[data-toggle="tooltip"]').tooltip()
+zoom_plot_cards= () ->
+  $('.plot-card-on-map').hover () ->
+    console.log($(this))
+    $(this).addClass('zoomed-plot-card')
+  , ->
+    console.log($(this))
+    $(this).removeClass('zoomed-plot-card')
+
+#activate_tooltips= () ->
+#  $('[data-toggle="tooltip"]').tooltip()
 
 $(document).on('turbolinks:load'
   ->
@@ -87,4 +95,5 @@ $(document).on('turbolinks:load'
       influence()
       filter()
       set_zoom_map()
+      zoom_plot_cards()
 )
