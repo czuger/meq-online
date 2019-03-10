@@ -43,7 +43,7 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
     @sauron.plot_cards << 8
     @sauron.save!
     post plot_cards_play_url @sauron, params: { selected_card: 8, card_slot: 'plot-card-2' }
-    assert_redirected_to plot_cards_play_screen_url(@sauron)
+    assert_redirected_to plot_cards_discard_screen_url(@sauron)
     assert_equal '8', @board.reload.current_plots['plot-card-2']
     refute_includes  @sauron.reload.plot_cards, 8
   end
@@ -71,7 +71,7 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
     @sauron.drawn_plot_cards = []
     @sauron.save!
     post plot_cards_draw_url @sauron, params: { nb_cards: 6 }
-    assert_redirected_to plot_cards_draw_screen_url(@sauron)
+    assert_redirected_to plot_cards_keep_screen_url(@sauron)
     assert_equal 6, @sauron.reload.drawn_plot_cards.count
   end
 
@@ -80,7 +80,7 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
     @sauron.drawn_plot_cards = [ 7, 8, 9 ]
     @sauron.save!
     post plot_cards_keep_url @sauron, params: { selected_cards: [ 8, 9 ].join(',' ) }
-    assert_redirected_to plot_cards_draw_screen_url(@sauron)
+    assert_redirected_to plot_cards_play_screen_url(@sauron)
     assert_empty  @sauron.reload.drawn_plot_cards
     assert_equal [ 8, 9 ], @sauron.reload.plot_cards
   end
