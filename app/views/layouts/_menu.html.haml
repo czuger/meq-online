@@ -1,6 +1,9 @@
 .container
   %nav.navbar.navbar-expand-lg.navbar-light.bg-light
 
+    %button.navbar-toggler{"aria-controls" => "navbarSupportedContent", "aria-expanded" => "false", "aria-label" => "Toggle navigation", "data-target" => "#navbarSupportedContent", "data-toggle" => "collapse", :type => "button"}
+      %span.navbar-toggler-icon
+
     #navbarSupportedContent.collapse.navbar-collapse
 
       %ul.navbar-nav.mr-auto
@@ -47,20 +50,22 @@
 
     - if @actor.is_a? Sauron
       = link_to 'Sauron', @actor, role: :button, class: 'btn btn-primary'
-      %button.btn.btn-primary{ type: :button }
+
+      %button.btn.btn-primary.ml-2{ type: :button }
         You play
         %span.badge.badge-light
           Sauron
 
     - if @actor.is_a? Hero
       = link_to @actor.name, @actor, role: :button, class: 'btn btn-primary'
-      %button.btn.btn-primary{ type: :button }
+
+      %button.btn.btn-primary.ml-2{ type: :button }
         You play
         %span.badge.badge-light
           = @actor.name
 
     - if @current_user
-      %button.btn.btn-primary{ type: :button }
+      %button.btn.btn-primary.ml-2{ type: :button }
         You are connected as
         %span.badge.badge-light
           = @current_user.name
