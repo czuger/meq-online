@@ -12,6 +12,7 @@ FactoryBot.define do
     life_pool { [] }
     rest_pool { [] }
     damage_pool { [] }
+    current_quest { 1 }
 
   end
 end

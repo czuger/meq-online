@@ -32,10 +32,10 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to boards_url
   end
 
-  test 'should POST draw_cards' do
-    post hero_draw_cards_url( @hero )
-    assert_redirected_to hero_url(@hero)
-  end
+  # test 'should POST draw_cards' do
+  #   post hero_draw_cards_url( @hero )
+  #   assert_redirected_to hero_url(@hero)
+  # end
 
   test 'should get heal' do
     get hero_heal_url( @hero )
@@ -52,10 +52,10 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to hero_url(@hero)
   end
 
-  test 'should POST move' do
-    post hero_move_url( @hero, params: { move_to: :the_grey_havens, card_used: 1 } )
-    assert_redirected_to hero_url(@hero)
-  end
+  # test 'should POST move' do
+  #   post hero_move_url( @hero, params: { move_to: :the_grey_havens, card_used: 1 } )
+  #   assert_redirected_to hero_url(@hero)
+  # end
 
   # test 'should get new' do
   #   get new_hero_url

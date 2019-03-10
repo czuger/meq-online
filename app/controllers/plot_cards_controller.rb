@@ -29,7 +29,7 @@ class PlotCardsController < ApplicationController
       @board.log!( current_user, @board.sauron, 'plot_cards.play', { plot_card: selected_card } )
     end
 
-    redirect_to plot_cards_play_screen_path(@actor)
+    redirect_to plot_cards_discard_screen_path(@actor)
   end
 
   def discard_screen

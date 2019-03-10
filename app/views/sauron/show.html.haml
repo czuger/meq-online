@@ -1,29 +1,48 @@
 .container
   %p#notice= notice
 
-  = render partial: 'sauron_info'
+  -#= render partial: 'sauron_info'
 
   .form-group
     .row
       .col-3
-        = link_to 'Play plot card', plot_cards_play_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
+        = link_to plot_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Draw plot card
+          %span.badge.badge-light
+            = @actor.drawn_plot_cards.count
+
       .col-3
-        = link_to 'Discard plot card', plot_cards_discard_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
+        = link_to plot_cards_play_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Play plot card
+          %span.badge.badge-light
+            = @actor.plot_cards.count
+
       .col-3
-        = link_to 'Draw plot card', plot_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
+        = link_to plot_cards_discard_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Discard plot card
+          %span.badge.badge-light
+            = @board.current_plots.count
+
+      -#%button.btn.btn-secondary.btn-block{ type: :button }
+      -#  Plot deck size
+      -#  %span.badge.badge-light
+      -#    = @board.plot_deck.count
+
+  .form-group
+    .row
       .col-3
         = link_to 'Manage shadow cards', edit_shadow_card_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
 
-  .form-group
-    = form_tag plot_cards_draw_screen_path(@actor), method: :get do
-      .row
-        = label_tag :nb_cards, 'Plot cards', class: 'col-2 col-form-label'
-        .col-1
-          = number_field_tag :nb_cards, @nb_cards, max: 10, class: 'form-control', disabled: !@nb_cards
-        .col-2
-          = button_tag 'Draw cards', role: :button, class: 'btn btn-secondary btn-block'
-        .col-3
-          = button_tag 'Get golum cards', role: :button, class: 'btn btn-secondary btn-block'
+  -#.form-group
+  -#  = form_tag plot_cards_draw_screen_path(@actor), method: :get do
+  -#    .row
+  -#      = label_tag :nb_cards, 'Plot cards', class: 'col-2 col-form-label'
+  -#      .col-1
+  -#        = number_field_tag :nb_cards, @nb_cards, max: 10, class: 'form-control', disabled: !@nb_cards
+  -#      .col-2
+  -#        = button_tag 'Draw cards', role: :button, class: 'btn btn-secondary btn-block'
+  -#      .col-3
+  -#        = button_tag 'Get golum cards', role: :button, class: 'btn btn-secondary btn-block'
 
 
   -#.form-group
