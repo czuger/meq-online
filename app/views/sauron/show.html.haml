@@ -5,19 +5,19 @@
 
   .form-group
     .row
-      .col-3
+      .col-4
         = link_to plot_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
           Draw plot card
           %span.badge.badge-light
             = @actor.drawn_plot_cards.count
 
-      .col-3
+      .col-4
         = link_to plot_cards_play_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
           Play plot card
           %span.badge.badge-light
             = @actor.plot_cards.count
 
-      .col-3
+      .col-4
         = link_to plot_cards_discard_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
           Discard plot card
           %span.badge.badge-light
@@ -56,15 +56,15 @@
   -#      .col-3
   -#        = button_tag 'Discard selected cards', role: :button, class: 'btn btn-secondary btn-block'
 
-.container-fluid
-
-  = render partial: 'plot_cards'
-
-  %hr
-
-  %h4
-    Shadow cards
-
-  .card-row
-    - @actor.shadow_cards.each do |plot_card_number|
-      = image_tag "sauron/shadows/#{plot_card_number}.png", class: 'big-card selectable-card-selection-multiple'
+-#.container-fluid
+-#
+-#  = render partial: 'plot_cards'
+-#
+-#  %hr
+-#
+-#  %h4
+-#    Shadow cards
+-#
+-#  .card-row
+-#    - @actor.shadow_cards.each do |plot_card_number|
+-#      = image_tag "sauron/shadows/#{plot_card_number}.png", class: 'big-card selectable-card-selection-multiple'

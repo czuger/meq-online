@@ -1,0 +1,11 @@
+.container
+  %p#notice= notice
+
+  %h3 Select plot(s) card(s) to keep
+
+  - @cards.each do |plot_card_number|
+    = image_tag "sauron/plots/#{plot_card_number}.png", class: 'medium-card selectable-card-selection-multiple', card_id: plot_card_number
+
+  = form_tag plot_cards_keep_path(@actor), class: 'ml-3' do
+    = hidden_field_tag :selected_cards, nil
+    = button_tag 'Keep card(s)', role: :button, class: 'btn btn-secondary', id: :validate_multiple, value: :keep, disabled: true

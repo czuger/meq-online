@@ -38,6 +38,8 @@ Rails.application.routes.draw do
 
   get 'plot_cards/:actor_id/draw_screen', to: 'plot_cards#draw_screen', as: 'plot_cards_draw_screen'
   post 'plot_cards/:actor_id/draw', to: 'plot_cards#draw', as: 'plot_cards_draw'
+
+  get 'plot_cards/:actor_id/keep_screen', to: 'plot_cards#keep_screen', as: 'plot_cards_keep_screen'
   post 'plot_cards/:actor_id/keep', to: 'plot_cards#keep', as: 'plot_cards_keep'
 
 

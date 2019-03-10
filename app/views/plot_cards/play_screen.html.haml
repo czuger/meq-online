@@ -1,14 +1,16 @@
-#plot-cards-in-hand
-  .container-fluid
-    %h2
-      Cards in hand
-    = render partial: 'sauron/plot_cards'
+.container
+  %p#notice= notice
 
-    = form_tag plot_cards_play_path(@actor) do
-      .row
-        .col-3
-          = select_tag( :card_slot, options_for_select( @free_slots_options ), { class: 'form-control' } )
+  %h3 Select plot card to play
 
-        .col-2
-          = hidden_field_tag :selected_card, nil
-          = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block', id: :validate_unique, value: :keep, disabled: true
+  - @plot_cards.each do |plot_card_number|
+    = image_tag "sauron/plots/#{plot_card_number}.png", class: 'medium-card selectable-card-selection-unique', card_id: plot_card_number
+
+  = form_tag plot_cards_play_path(@actor), class: 'ml-3' do
+    .row
+      .col-3
+        = select_tag( :card_slot, options_for_select( @free_slots_options ), { class: 'form-control' } )
+
+      .col-2
+        = hidden_field_tag :selected_card, nil
+        = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block', id: :validate_unique, value: :keep, disabled: true

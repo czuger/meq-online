@@ -1,26 +1,22 @@
 .container
   %p#notice= notice
 
-  %h3 Select plot card
+  %h3 Choose numbers of plot cards to draw
 
-  .row
-    - @cards.each do |plot_card_number|
+  = form_tag plot_cards_draw_path(@actor) do
+    .row
       .col-3
-        = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card selectable-card-selection-multiple', card_id: plot_card_number
+        = label_tag :nb_cards, 'Cards count', class: 'col-form-label'
+      .col-3
+        = number_field_tag :nb_cards, 2, max: 8, class: 'form-control'
+      .col-3
+        = button_tag 'Draw cards(s)', role: :button, class: 'btn btn-secondary btn-block', id: :draw, value: :draw
 
+  - unless @cards_already_drawn.empty?
 
-  .row
-    .col-7
-      = form_tag plot_cards_draw_path(@actor) do
-        .row
-          .col-2
-            = label_tag :nb_cards, 'Cards count', class: 'col-form-label'
-          .col-2
-            = number_field_tag :nb_cards, 2, max: 20, class: 'form-control'
-          .col-3
-            = button_tag 'Draw cards(s)', role: :button, class: 'btn btn-secondary btn-block', id: :draw, value: :draw
+    %hr
 
-    .col-2
-      = form_tag plot_cards_keep_path(@actor), class: 'form-inline' do
-        = hidden_field_tag :selected_cards, nil
-        = button_tag 'Keep card(s)', role: :button, class: 'btn btn-secondary btn-block', id: :validate_multiple, value: :keep, disabled: true
+    %h3 Cards already drawn
+
+    - @cards_already_drawn.each do |plot_card_number|
+      = image_tag "sauron/plots/#{plot_card_number}.png", class: 'medium-card'

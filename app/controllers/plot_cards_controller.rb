@@ -6,7 +6,7 @@ class PlotCardsController < ApplicationController
   DECK_NAME = 'plot'.freeze
 
   def play_screen
-    @plot_cards = @board.current_plots
+    @plot_cards = @actor.plot_cards
     @free_slots = 1.upto(3).map{ |i| "plot-card-#{i}" } - @board.current_plots.keys
 
     @free_slots_options = @free_slots.map{ |e| [ e.gsub( 'plot-card-'.freeze, 'Card slot '.freeze ), e ] }.sort
@@ -54,18 +54,22 @@ class PlotCardsController < ApplicationController
   end
 
   def draw_screen
-    @cards = @actor.drawn_plot_cards
+    @cards_already_drawn = @actor.drawn_plot_cards
   end
 
   def draw
     GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME ).draw_cards(params[:nb_cards])
-    redirect_to plot_cards_draw_screen_path(@actor)
+    redirect_to plot_cards_keep_screen_path(@actor)
+  end
+
+  def keep_screen
+    @cards = @actor.drawn_plot_cards
   end
 
   def keep
     GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME ).keep_cards(
         params[:selected_cards].split(',').map{ |e| e.to_i } )
-    redirect_to plot_cards_draw_screen_path(@actor)
+    redirect_to plot_cards_play_screen_path(@actor)
   end
 
   private
