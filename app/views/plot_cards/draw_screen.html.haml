@@ -10,13 +10,15 @@
           = image_tag "sauron/plots/#{plot_card_number}.png", class: 'big-card selectable-card-selection-multiple', card_id: plot_card_number
 
 
+  .form-group
     .row
-      .col-5
-        = form_tag plot_cards_draw_path(@actor) do
-          = label_tag :nb_cards, 'Cards count'
-          = number_field_tag :nb_cards, 2, max: 20, class: 'form-control'
-          = button_tag 'Draw cards(s)', role: :button, class: 'btn btn-secondary btn-block', id: :draw, value: :draw
+      .col-8
+        = form_tag plot_cards_draw_path(@actor), class: 'form-inline' do
+          = label_tag :nb_cards, 'Cards count', class: 'ml-3'
+          = number_field_tag :nb_cards, 2, max: 20, class: 'form-control ml-3'
+          = button_tag 'Draw cards(s)', role: :button, class: 'btn btn-secondary ml-3', id: :draw, value: :draw
+
       .col-2
-        = form_tag plot_cards_keep_path(@actor) do
+        = form_tag plot_cards_keep_path(@actor), class: 'form-inline' do
           = hidden_field_tag :selected_cards, nil
           = button_tag 'Keep card(s)', role: :button, class: 'btn btn-secondary btn-block', id: :validate_multiple, value: :keep, disabled: true
