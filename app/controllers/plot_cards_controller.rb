@@ -20,7 +20,8 @@ class PlotCardsController < ApplicationController
 
   def keep
     GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME ).keep_cards(
-        params[:selected_cards].split(',').map{ |e| e.to_i } )
+        params[:selected_cards].split(',').map{ |e| e.to_i },
+        discard_card_action: :back_to_bottom )
     redirect_to plot_cards_play_screen_path(@actor)
   end
 

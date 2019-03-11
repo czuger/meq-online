@@ -24,7 +24,7 @@ module GameEngine
       end
     end
 
-    def keep_cards( selected_cards, back_to_bottom_of_deck = true )
+    def keep_cards( selected_cards, discard_card_action: nil )
       raise 'Selected cards should not be empty' if selected_cards.empty?
       raise 'Selected cards should be included in pool cards' unless (selected_cards - @actor.send( "drawn_#{@deck_name}_cards" )).empty?
 
@@ -33,10 +33,12 @@ module GameEngine
 
       @board.transaction do
 
-        if back_to_bottom_of_deck
+        if discard_card_action == :back_to_bottom
           set_cards_back_to_bottom_of_deck
+        elsif discard_card_action == :discard
+          discard_cards
         else
-          # To discard deck
+          raise "discard_card_action can't be nil"
         end
 
         @board.save!
@@ -50,10 +52,19 @@ module GameEngine
     def set_cards_back_to_bottom_of_deck
       drawn_cards = get_deck(:drawn_cards )
       cards_count = drawn_cards.count
-      add_cards(:drawn_cards, drawn_cards)
+      add_cards(:deck, drawn_cards)
       remove_cards(:drawn_cards, drawn_cards)
 
       @board.log!( @user, @board.sauron, "#{@deck_name}_cards.back_to_bottom", { count: cards_count } )
+    end
+
+    def discard_cards
+      drawn_cards = get_deck(:drawn_cards )
+      cards_count = drawn_cards.count
+      add_cards(:discard, drawn_cards)
+      remove_cards(:drawn_cards, drawn_cards)
+
+      @board.log!( @user, @board.sauron, "#{@deck_name}_cards.discard", { count: cards_count } )
     end
 
     def add_cards( deck_code_name, cards )
