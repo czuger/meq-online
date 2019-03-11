@@ -23,11 +23,6 @@
           %span.badge.badge-light
             = @board.current_plots.count
 
-      -#%button.btn.btn-secondary.btn-block{ type: :button }
-      -#  Plot deck size
-      -#  %span.badge.badge-light
-      -#    = @board.plot_deck.count
-
   .form-group
     .row
       .col-4
@@ -35,6 +30,19 @@
           Draw shadow card
           %span.badge.badge-light
             = @actor.drawn_shadow_cards.count
+
+      .col-4
+        = link_to shadow_cards_play_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Play shadow card
+          %span.badge.badge-light
+            = @actor.shadow_cards.count
+
+      .col-4
+        %button{ class: 'btn btn-secondary btn-block', disabled: true }
+          Shadow discard
+          %span.badge.badge-light
+            = @board.shadow_discard.count
+
 
   -#.form-group
   -#  = form_tag plot_cards_draw_screen_path(@actor), method: :get do

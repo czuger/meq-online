@@ -43,7 +43,7 @@ class ShadowCardsController < ApplicationController
       @board.log!( current_user, @board.sauron, 'shadow_cards.play', { shadow_card: selected_card } )
     end
 
-    redirect_to shadow_cards_play_screen_path(@actor)
+    redirect_to @actor
   end
 
   #####
