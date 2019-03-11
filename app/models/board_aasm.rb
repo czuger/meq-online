@@ -12,6 +12,7 @@ module BoardAasm
   end
 
   def set_objectives
+    puts '*' * 200
     GameData::Objectives.set_objectives self
   end
 

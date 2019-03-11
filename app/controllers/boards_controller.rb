@@ -14,7 +14,6 @@ class BoardsController < ApplicationController
     end
 
     @heroes = GameData::Heroes.new
-
   end
 
   # GET /boards/1

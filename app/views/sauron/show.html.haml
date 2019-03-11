@@ -49,6 +49,10 @@
 
   = render partial: 'plot_cards/used_plot_cards_slots'
 
+  %hr
+  %h3 Your objective
+  = image_tag GameData::Objectives.sauron_objective_card(@board)
+
   -#.form-group
   -#  = form_tag plot_cards_draw_screen_path(@actor), method: :get do
   -#    .row

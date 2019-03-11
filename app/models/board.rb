@@ -27,7 +27,7 @@ class Board < ApplicationRecord
     end
 
     event :next_to_sauron_first_turn do
-      transitions :from => :sauron_setup, :to => :sauron_first_turn, :before => Proc.new { set_objectives }
+      transitions :from => :sauron_setup, :to => :sauron_first_turn, :after => Proc.new { set_objectives }
     end
 
     # event :back_to_sauron_first_turn do

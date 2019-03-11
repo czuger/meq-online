@@ -31,6 +31,8 @@ radius = 35
     # Apply the mask and write it out
     crop.composite!(mask, Magick::CenterGravity, Magick::CopyOpacityCompositeOp)
 
+    crop.resize!(0.65)
+
     crop.write("output/#{file}/#{file}_#{col}.png")
   end
 
