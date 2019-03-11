@@ -4,10 +4,7 @@
   %h3 Cards currently on board
 
   .row.my-3
-    - 1.upto(3).each do |i|
-      .col-4
-        - if @used_slots["plot-card-#{i}"]
-          = image_tag "sauron/plots/#{@used_slots["plot-card-#{i}"]}.png", class: 'big-card selectable-card-selection-unique', card_id: "plot-card-#{i}"
+    = render partial: 'used_plot_cards_slots'
 
   = form_tag plot_cards_discard_path(@actor) do
     = hidden_field_tag :selected_card, nil

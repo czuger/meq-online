@@ -6,26 +6,6 @@
   .form-group
     .row
       .col-4
-        = link_to plot_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
-          Draw plot card
-          %span.badge.badge-light
-            = @actor.drawn_plot_cards.count
-
-      .col-4
-        = link_to plot_cards_play_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
-          Play plot card
-          %span.badge.badge-light
-            = @actor.plot_cards.count
-
-      .col-4
-        = link_to plot_cards_discard_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
-          Discard plot card
-          %span.badge.badge-light
-            = @board.current_plots.count
-
-  .form-group
-    .row
-      .col-4
         = link_to shadow_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
           Draw shadow card
           %span.badge.badge-light
@@ -43,6 +23,31 @@
           %span.badge.badge-light
             = @board.shadow_discard.count
 
+  .form-group
+    .row
+      .col-4
+        = link_to plot_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Draw plot card
+          %span.badge.badge-light
+            = @actor.drawn_plot_cards.count
+
+      .col-4
+        = link_to plot_cards_play_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Play plot card
+          %span.badge.badge-light
+            = @actor.plot_cards.count
+
+      .col-4
+        = link_to plot_cards_discard_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Discard plot card
+          %span.badge.badge-light
+            = @board.current_plots.count
+
+  %hr
+
+  %h3 Current plots
+
+  = render partial: 'plot_cards/used_plot_cards_slots'
 
   -#.form-group
   -#  = form_tag plot_cards_draw_screen_path(@actor), method: :get do
