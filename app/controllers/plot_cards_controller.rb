@@ -26,7 +26,7 @@ class PlotCardsController < ApplicationController
   end
 
   def play_screen
-    @plot_cards = @actor.plot_cards
+    @cards = @actor.plot_cards
     @free_slots = 1.upto(3).map{ |i| "plot-card-#{i}" } - @board.current_plots.keys
 
     @free_slots_options = @free_slots.map{ |e| [ e.gsub( 'plot-card-'.freeze, 'Card slot '.freeze ), e ] }.sort

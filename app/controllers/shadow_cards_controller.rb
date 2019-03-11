@@ -26,7 +26,7 @@ class ShadowCardsController < ApplicationController
   end
 
   def play_screen
-    @shadow_cards = @actor.shadow_cards
+    @cards = @actor.shadow_cards
   end
 
   def play

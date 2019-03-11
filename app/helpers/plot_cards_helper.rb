@@ -16,6 +16,14 @@ module PlotCardsHelper
     "Select #{controller_to_code}(s) card(s) to keep"
   end
 
+  def play_screen_path
+    Rails.application.routes.url_helpers.send( "#{controller_to_code}_cards_play_path", @actor )
+  end
+
+  def play_screen_title_name
+    "Select #{controller_to_code} card to play"
+  end
+
   def card_picture( card_number, selectable: :none )
     image_class = %w( medium-card )
     image_class << "selectable-card-selection-#{selectable}" if selectable != :none
