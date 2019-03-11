@@ -30,6 +30,9 @@ Rails.application.routes.draw do
   resources :story_tracks, only: [:edit, :update]
   resources :sauron_actions, only: [:edit, :update]
 
+  #
+  # Plot cards actions
+  #
   get 'plot_cards/:actor_id/play_screen', to: 'plot_cards#play_screen', as: 'plot_cards_play_screen'
   post 'plot_cards/:actor_id/play', to: 'plot_cards#play', as: 'plot_cards_play'
 
@@ -42,8 +45,17 @@ Rails.application.routes.draw do
   get 'plot_cards/:actor_id/keep_screen', to: 'plot_cards#keep_screen', as: 'plot_cards_keep_screen'
   post 'plot_cards/:actor_id/keep', to: 'plot_cards#keep', as: 'plot_cards_keep'
 
+  #
+  # Shadow cards actions
+  #
+  get 'shadow_cards/:actor_id/draw_screen', to: 'shadow_cards#draw_screen', as: 'shadow_cards_draw_screen'
+  post 'shadow_cards/:actor_id/draw', to: 'shadow_cards#draw', as: 'shadow_cards_draw'
 
-  resources :shadow_cards, only:[:edit, :update]
+  get 'shadow_cards/:actor_id/keep_screen', to: 'shadow_cards#keep_screen', as: 'shadow_cards_keep_screen'
+  post 'shadow_cards/:actor_id/keep', to: 'shadow_cards#keep', as: 'shadow_cards_keep'
+
+  get 'shadow_cards/:actor_id/play_screen', to: 'shadow_cards#play_screen', as: 'shadow_cards_play_screen'
+  post 'shadow_cards/:actor_id/play', to: 'shadow_cards#play', as: 'shadow_cards_play'
 
   # Caution, in this case, the id is not a shadow_pool or influence, but an Actor.id
   resources :shadow_pools, only: [ :edit, :update ]

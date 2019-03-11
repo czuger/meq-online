@@ -36,12 +36,10 @@
                 %a#navbarDropdownSauron.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => '#', :role => "button"}
                   Sauron
                 .dropdown-menu{"aria-labelledby" => "navbarDropdownSauron"}
-                  = link_to 'Screen', sauron_path(@actor), class: 'dropdown-item'
+                  -#= link_to 'Screen', sauron_path(@actor), class: 'dropdown-item'
                   = link_to 'Actions', edit_sauron_action_path(@actor), class: 'dropdown-item'
-                  .dropdown-divider
-                  = link_to 'Manage shadow cards', edit_shadow_card_path(@actor), class: 'dropdown-item'
-                  .dropdown-divider
-                  = link_to 'Get golum gards', '#', class: 'dropdown-item'
+                  -#.dropdown-divider
+                  -#= link_to 'Get golum gards', '#', class: 'dropdown-item'
 
           %li.nav-item
             = link_to 'Log', board_logs_path( @board ), class: 'nav-link'

@@ -30,8 +30,11 @@
 
   .form-group
     .row
-      .col-3
-        = link_to 'Manage shadow cards', edit_shadow_card_path(@actor), role: :button, class: 'btn btn-secondary btn-block'
+      .col-4
+        = link_to shadow_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Draw shadow card
+          %span.badge.badge-light
+            = @actor.drawn_shadow_cards.count
 
   -#.form-group
   -#  = form_tag plot_cards_draw_screen_path(@actor), method: :get do

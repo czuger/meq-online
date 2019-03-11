@@ -1,7 +1,51 @@
 class ShadowCardsController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_actor_ensure_actor, only: [:edit, :update]
+  before_action :set_actor_ensure_actor
+
+  DECK_NAME = 'shadow'.freeze
+
+  def draw_screen
+    @cards_already_drawn = @actor.drawn_shadow_cards
+  end
+
+  def draw
+    GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME ).draw_cards(params[:nb_cards])
+    redirect_to shadow_cards_keep_screen_path(@actor)
+  end
+
+  def keep_screen
+    @cards = @actor.drawn_shadow_cards
+  end
+
+  def keep
+    GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME ).keep_cards(
+        params[:selected_cards].split(',').map{ |e| e.to_i } )
+    redirect_to shadow_cards_play_screen_path(@actor)
+  end
+
+  def play_screen
+    @shadow_cards = @actor.shadow_cards
+  end
+
+  def play
+    selected_card = params[:selected_card].to_i
+
+    raise "Actor does not have card #{selected_card} in #{@actor.shadow_cards}" unless @actor.shadow_cards.include?(selected_card)
+
+    @board.shadow_discard << selected_card
+    @actor.shadow_cards.delete(selected_card)
+
+    @board.transaction do
+      @actor.save!
+      @board.save!
+      @board.log!( current_user, @board.sauron, 'shadow_cards.play', { shadow_card: selected_card } )
+    end
+
+    redirect_to shadow_cards_play_screen_path(@actor)
+  end
+
+  #####
 
   def edit
     @drawn_cards = @actor.drawn_shadow_cards
@@ -28,19 +72,6 @@ class ShadowCardsController < ApplicationController
   end
 
   private
-
-  # def back_to_bottom_of_deck
-  #   cards_count = @actor.drawn_shadow_cards.count
-  #   @board.plot_deck += @actor.drawn_shadow_cards
-  #   @actor.drawn_shadow_cards= []
-  #
-  #   @board.transaction do
-  #     @board.save!
-  #     @actor.save!
-  #     @board.log!( current_user, @board.sauron, :cards_bottom_plot_deck, { count: cards_count } )
-  #   end
-  # end
-  #
 
   def play_a_shadow_card
     selected_card = params[:selected_card].to_i
