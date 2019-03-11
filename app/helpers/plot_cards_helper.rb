@@ -4,12 +4,23 @@ module PlotCardsHelper
     Rails.application.routes.url_helpers.send( "#{controller_to_code}_cards_draw_path", @actor )
   end
 
-  def title_name
+  def draw_screen_title_name
     "Choose numbers of #{controller_to_code} cards to draw"
   end
 
-  def card_picture( card_number )
-    image_tag "sauron/#{controller_to_code}/#{card_number}.png", class: 'medium-card'
+  def keep_screen_path
+    Rails.application.routes.url_helpers.send( "#{controller_to_code}_cards_keep_path", @actor )
+  end
+
+  def keep_screen_title_name
+    "Select #{controller_to_code}(s) card(s) to keep"
+  end
+
+  def card_picture( card_number, selectable: :none )
+    image_class = %w( medium-card )
+    image_class << "selectable-card-selection-#{selectable}" if selectable != :none
+
+    image_tag "sauron/#{controller_to_code}s/#{card_number}.png", class: image_class, card_id: card_number
   end
 
   private

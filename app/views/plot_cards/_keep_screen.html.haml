@@ -1,0 +1,11 @@
+.container
+  %p#notice= notice
+
+  %h3= keep_screen_title_name
+
+  - @cards.each do |card_number|
+    = card_picture( card_number, selectable: :multiple )
+
+  = form_tag keep_screen_path, class: 'ml-3' do
+    = hidden_field_tag :selected_cards, nil
+    = button_tag 'Keep card(s)', role: :button, class: 'btn btn-secondary', id: :validate_multiple, value: :keep, disabled: true
