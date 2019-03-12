@@ -1,0 +1,50 @@
+##"I played some days with making an interface between our ConceptBase system (essentially a database system to store models) and graphviz. One example graph is attached. It is a so-called petri net for Dutch traffic lights. The example is actually taken from a book by Wil van der Aalst." Contributed by Manfred Jeusfeld.
+
+##Command to produce the output: "neato -Tpng thisfile > thisfile.png"
+
+digraph actor {
+
+    concentrate=true
+
+    waiting -> sauron_actions_step;
+
+    sauron_actions_step -> place_influence;
+    place_influence -> sauron_actions_step;
+
+    sauron_actions_step -> draw_shadow_plot_cards;
+    draw_shadow_plot_cards -> sauron_actions_step;
+
+    sauron_actions_step -> action_play_shadow_card;
+    action_play_shadow_card -> sauron_actions_step;
+
+    sauron_actions_step -> minion_monster;
+    minion_monster -> sauron_actions_step;
+
+    minion_monster -> heal_minion;
+    heal_minion -> minion_monster;
+
+    minion_monster -> move_minion_monster;
+    move_minion_monster -> minion_monster;
+
+    minion_monster -> place_monster;
+    place_monster -> minion_monster;
+
+    sauron_actions_step -> waiting;
+
+    waiting -> sauron_movement_break_planification_step;
+    sauron_movement_break_planification_step -> waiting;
+
+    waiting -> sauron_movement_break_decision_step;
+    sauron_movement_break_decision_step -> waiting;
+
+    sauron_movement_break_decision_step -> play_perilious_card_step;
+    play_perilious_card_step -> waiting;
+
+    sauron_movement_break_decision_step -> combat_step;
+    combat_step -> prepare_combat_cards_step;
+    prepare_combat_cards_step -> reveal_cards_step;
+    reveal_cards_step -> combat_end_check;
+
+    combat_end_check -> waiting;
+    combat_end_check -> combat_step;
+}
