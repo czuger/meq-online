@@ -25,8 +25,15 @@ class CharactersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'should get update' do
-    put character_url @hero
+  test 'should add character' do
+    put character_url @hero, params: { characters: { aragorn: :blue_mountains } }
+    assert_redirected_to edit_character_url @hero
+  end
+
+  test 'should remove character' do
+    @board.characters['aragorn'] = 'blue_mountains'
+    @board.save!
+    put character_url @hero, params: { characters: { aragorn: '' } }
     assert_redirected_to edit_character_url @hero
   end
 
