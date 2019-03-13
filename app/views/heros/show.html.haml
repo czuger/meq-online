@@ -41,6 +41,7 @@
 
   = image_tag "hero_cards/quests/standard/#{@actor.name_code}-#{@actor.current_quest}", class: 'big-card'
 
-  %hr
-  %h3 Your objective
-  = image_tag GameData::Objectives.heroes_objective_card(@board)
+  - if GameData::Objectives.heroes_objective_card(@board)
+    %hr
+    %h3 Your objective
+    = image_tag GameData::Objectives.heroes_objective_card(@board)
