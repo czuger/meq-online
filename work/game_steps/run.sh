@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
-dot -Tpng actor_sauron.txt > actor_sauron.png
-dot -Tpng actor_hero.txt > actor_hero.png
+
+dot -Tpng actor.txt > actor.png
+
+dot -Tpng board.txt > board.png
