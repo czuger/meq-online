@@ -11,9 +11,4 @@ module BoardAasm
     heroes.update_all( turn_finished: false )
   end
 
-  def set_objectives
-    puts '*' * 200
-    GameData::Objectives.set_objectives self
-  end
-
 end

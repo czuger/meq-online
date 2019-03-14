@@ -137,9 +137,9 @@ class BoardsController < ApplicationController
         if @board.current_heroes_count < @board.max_heroes_count || !@board.sauron_created
           @board.wait_for_players! unless @board.waiting_for_players?
         else
-          unless @board.sauron_turn?
+          # unless @board.sauron_turn?
             @board.next_to_sauron_setup!
-          end
+          # end
         end
 
         @board.save!

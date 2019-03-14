@@ -10,6 +10,15 @@ class SauronController < ApplicationController
     @plot_card = GameData::StartingPlots.new.get(@board.current_plots['plot-card-1'])
   end
 
+  def setup_finished
+    @board.transaction do
+      GameData::Objectives.set_objectives @board
+      @board.next_to_sauron_actions!
+    end
+
+    GameEngine::RedirectFromBoardState.redirect(@board, @actor ){ |r| redirect_to r }
+  end
+
   # def shadow_cards
   #   if params[:button]=='draw'
   #     nb_cards = params[:nb_shadow_cards].to_i

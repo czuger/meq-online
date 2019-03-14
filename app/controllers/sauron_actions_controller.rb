@@ -6,6 +6,9 @@ class SauronActionsController < ApplicationController
   def edit
   end
 
+  def show
+  end
+
   def update
     actions_hash = {}
 
