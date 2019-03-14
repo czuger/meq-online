@@ -7,6 +7,7 @@ class ShadowCardsController < ApplicationController
 
   def draw_screen
     @cards_already_drawn = @actor.drawn_shadow_cards
+    @nb_cards = params[:nb_cards] || 2
   end
 
   def draw

@@ -7,6 +7,7 @@ class SauronController < ApplicationController
   end
 
   def setup
+    @plot_card = GameData::StartingPlots.new.get(@board.current_plots['plot-card-1'])
   end
 
   # def shadow_cards
