@@ -1,0 +1,9 @@
+en:
+  notices:
+    shadow_cards_keep_success:
+      one: 'One shadow card successfully kept'
+      other: '%{count} shadows cards successfully kept'
+
+    plot_cards_keep_success:
+      one: 'One plot card successfully kept'
+      other: '%{count} plot cards successfully kept'
