@@ -3,7 +3,12 @@ class SauronController < ApplicationController
   before_action :set_actor_ensure_actor, only: [:show,:shadow_cards]
 
   def show
+    GameEngine::RedirectFromBoardState.redirect(@board){ |r| redirect_to r }
+
     @nb_cards = @actor.drawn_plot_cards && !@actor.drawn_plot_cards.empty? ? nil : 2
+  end
+
+  def sauron_setup
   end
 
   def shadow_cards

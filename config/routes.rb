@@ -23,12 +23,16 @@ Rails.application.routes.draw do
     resources :movement_preparation_steps, except: [ :show ]
   end
 
+  #
+  # Sauron linked actions
+  #
+  get 'sauron/setup', to: 'sauron#setup', as: 'sauron_setup'
   resources :sauron, only: [:show] do
     post :shadow_cards
   end
+  resources :sauron_actions, only: [:edit, :update]
 
   resources :story_tracks, only: [:edit, :update]
-  resources :sauron_actions, only: [:edit, :update]
 
   #
   # Plot cards actions

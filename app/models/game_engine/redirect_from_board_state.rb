@@ -1,0 +1,20 @@
+module GameEngine
+  class RedirectFromBoardState
+
+    STATE_TO_PATH = {}
+
+    def self.redirect( board )
+      # If we have a route that correspond to the current board state, then we use it
+      path = board.aasm_state + '_path'
+      if Rails.application.routes.url_helpers.respond_to?( path )
+        yield Rails.application.routes.url_helpers.send( path )
+
+      # Otherwise, if we have recorded a match, we use it
+      elsif STATE_TO_PATH[board.aasm_state]
+        yield Rails.application.routes.url_helpers.send( STATE_TO_PATH[board.aasm_state] + '_path' )
+      end
+
+    end
+
+  end
+end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_11_155439) do
+ActiveRecord::Schema.define(version: 2019_03_14_081728) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(version: 2019_03_11_155439) do
     t.hstore "sauron_actions", default: {}, null: false
     t.integer "heroes_objective"
     t.integer "sauron_objective"
+    t.integer "turn", default: 1, null: false
   end
 
   create_table "boards_users", id: false, force: :cascade do |t|

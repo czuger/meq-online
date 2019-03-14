@@ -12,7 +12,7 @@ class Board < ApplicationRecord
 
   aasm do
     state :created, :initial => true
-    state :waiting_for_players, :heroes_setup, :sauron_setup, :heroes_turn, :sauron_first_turn, :sauron_turn
+    state :waiting_for_players, :sauron_setup, :heroes_turn, :next_to_sauron_actions_step, :sauron_turn
 
     event :wait_for_players do
       transitions :from => :created, :to => :waiting_for_players
@@ -26,8 +26,8 @@ class Board < ApplicationRecord
       transitions :from => [ :sauron_first_turn ], :to => :sauron_setup
     end
 
-    event :next_to_sauron_first_turn do
-      transitions :from => :sauron_setup, :to => :sauron_first_turn, :after => Proc.new { set_objectives }
+    event :next_to_sauron_actions_step do
+      transitions :from => :sauron_setup, :to => :next_to_sauron_actions_step, :after => Proc.new { set_objectives }
     end
 
     # event :back_to_sauron_first_turn do
