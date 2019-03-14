@@ -31,7 +31,7 @@ Rails.application.routes.draw do
     get :setup
     get :setup_finished
   end
-  resources :sauron_actions, only: [:show, :edit, :update]
+  resources :sauron_actions, only: [:edit, :update]
 
   resources :story_tracks, only: [:edit, :update]
 
