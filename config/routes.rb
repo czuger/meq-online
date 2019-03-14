@@ -26,9 +26,9 @@ Rails.application.routes.draw do
   #
   # Sauron linked actions
   #
-  get 'sauron/setup', to: 'sauron#setup', as: 'sauron_setup'
   resources :sauron, only: [:show] do
     post :shadow_cards
+    get :setup
   end
   resources :sauron_actions, only: [:edit, :update]
 

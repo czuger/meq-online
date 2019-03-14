@@ -1,4 +1,9 @@
-- 1.upto(3).each do |i|
-  .col-4
-    - if @board.current_plots["plot-card-#{i}"]
-      = image_tag "sauron/plots/#{@board.current_plots["plot-card-#{i}"]}.png", class: 'big-card selectable-card-selection-unique', card_id: "plot-card-#{i}"
+- unless @board.current_plots.empty?
+
+  %hr
+  %h3 Current plots
+
+  - 1.upto(3).each do |i|
+    .col-4
+      - if @board.current_plots["plot-card-#{i}"]
+        = image_tag "sauron/plots/#{@board.current_plots["plot-card-#{i}"]}.png", class: 'big-card selectable-card-selection-unique', card_id: "plot-card-#{i}"

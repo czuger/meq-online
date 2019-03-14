@@ -43,10 +43,6 @@
           %span.badge.badge-light
             = @board.current_plots.count
 
-  %hr
-
-  %h3 Current plots
-
   = render partial: 'plot_cards/used_plot_cards_slots'
 
   - if GameData::Objectives.heroes_objective_card(@board)

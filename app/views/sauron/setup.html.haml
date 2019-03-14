@@ -1,0 +1,30 @@
+.container
+  %p#notice= notice
+
+  .jumbotron
+    %ol
+      %li Place the indicated amount of influences tokens on the map. Influence tokens already placed in the shadow strongholds and in the shadow pool.
+      %li Draw and discard the indicated amount of shadow cards.
+      %li Draw and discard the indicated amount of plot cards.
+      %li When you are done, press the finished button.
+
+  .form-group
+    .row
+      .col-3
+        = link_to edit_map_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          1 - Go to map
+
+      .col-3
+        = link_to shadow_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          2 - Draw shadow card
+
+      .col-3
+        = link_to plot_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          3 - Draw plot card
+
+      .col-3
+        = link_to plot_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          4 - Draw plot card
+
+
+  = render partial: 'plot_cards/used_plot_cards_slots'
