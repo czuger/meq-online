@@ -6,8 +6,8 @@ card_height=584
 
 card_x_decal = 2
 
-out_directory = 'sauron/shadow/'
-file = 'sauron/shadow_cards.jpg'
+out_directory = 'events/III/'
+file = 'events/III.jpg'
 
 FileUtils.mkpath out_directory
 
