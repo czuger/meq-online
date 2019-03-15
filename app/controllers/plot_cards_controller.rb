@@ -11,7 +11,9 @@ class PlotCardsController < ApplicationController
   end
 
   def draw
-    GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME ).draw_cards(params[:nb_cards])
+    ge = GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME, discard_card_action: :back_to_bottom )
+    ge.draw_cards(params[:nb_cards])
+
     redirect_to plot_cards_keep_screen_path(@actor)
   end
 
@@ -21,8 +23,9 @@ class PlotCardsController < ApplicationController
 
   def keep
     cards = params[:selected_cards].split(',').map{ |e| e.to_i }
-    GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME ).keep_cards(cards,
-        discard_card_action: :back_to_bottom )
+
+    ge = GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME, discard_card_action: :back_to_bottom )
+    ge.keep_cards(cards)
 
     redirect_try = GameEngine::RedirectFromBoardState.redirect(@board,@actor){ |r|
       redirect_to r, notice: I18n.t( 'notices.plot_cards_keep_success', count: cards.count )

@@ -2,20 +2,38 @@ module GameEngine
   class Deck
 
     DECKS_LOCATION = { deck: 'board'.freeze, discard: 'board'.freeze, drawn_cards: 'actor'.freeze, hand: 'actor'.freeze }
+    DISCARD_CARD_ACTIONS = [ :back_to_bottom, :discard ]
 
-    def initialize( user, board, actor, deck_name )
+    def initialize( user, board, actor, deck_name, discard_card_action: nil )
       @user = user
       @board = board
       @actor = actor
       @deck_name = deck_name
+
+      raise "@user can't be nil" unless @user
+      raise "@board can't be nil" unless @board
+      raise "@actor can't be nil" unless @actor
+      raise "@deck_name can't be nil" unless @deck_name
+
+      @discard_card_action = discard_card_action
+      raise "discard_card_action can't be nil" unless @discard_card_action
+      raise "discard_card_action should be included in #{DISCARD_CARD_ACTIONS}" unless DISCARD_CARD_ACTIONS.include? @discard_card_action
+
+      @back_to_bottom = true if discard_card_action == :back_to_bottom
+      @discard = true if discard_card_action == :discard
     end
 
     def draw_cards( nb_cards = 1 )
       nb_cards = nb_cards.to_i
 
-      cards = get_deck( :deck ).shift(nb_cards)
+      deck = get_deck( :deck )
+      deck = check_and_refill_cards_deck(deck, nb_cards) if @discard
+
+      cards = deck.shift(nb_cards)
       add_cards(:drawn_cards, cards)
-      remove_cards(:deck, cards)
+
+      deck -= cards
+      set_deck(:deck, deck)
 
       @board.transaction do
         @actor.save!
@@ -33,12 +51,11 @@ module GameEngine
 
       @board.transaction do
 
-        if discard_card_action == :back_to_bottom
+        if @back_to_bottom
           set_cards_back_to_bottom_of_deck
-        elsif discard_card_action == :discard
+        elsif @discard
           discard_cards
-        else
-          raise "discard_card_action can't be nil"
+        else raise 'WOOOT ?'
         end
 
         @board.save!
@@ -48,6 +65,16 @@ module GameEngine
     end
 
     private
+
+    def check_and_refill_cards_deck( deck, nb_cards )
+      if nb_cards > deck.count
+        # If we don't have enough cards
+        deck += get_deck( :discard )
+        deck.shuffle!
+        empty_deck( :discard )
+      end
+      deck
+    end
 
     def set_cards_back_to_bottom_of_deck
       drawn_cards = get_deck(:drawn_cards )
@@ -79,9 +106,21 @@ module GameEngine
           { deck_code_to_name( deck_code_name ) => get_deck(deck_code_name) - cards } )
     end
 
+    def empty_deck( deck_code_name )
+      check_decks_location( deck_code_name )
+      instance_variable_get('@'+DECKS_LOCATION[deck_code_name]).assign_attributes(
+          { deck_code_to_name( deck_code_name ) => [] } )
+    end
+
     def get_deck( deck_code_name )
       check_decks_location( deck_code_name )
       instance_variable_get('@'+DECKS_LOCATION[deck_code_name]).send(deck_code_to_name(deck_code_name))
+    end
+
+    def set_deck( deck_code_name, deck )
+      check_decks_location( deck_code_name )
+      instance_variable_get('@'+DECKS_LOCATION[deck_code_name]).assign_attributes(
+          { deck_code_to_name( deck_code_name ) => deck } )
     end
 
     def deck_code_to_name( deck_code_name )

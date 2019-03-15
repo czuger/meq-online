@@ -11,7 +11,8 @@ class ShadowCardsController < ApplicationController
   end
 
   def draw
-    GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME ).draw_cards(params[:nb_cards])
+    ge = GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME, discard_card_action: :discard )
+    ge.draw_cards(params[:nb_cards])
 
     redirect_to shadow_cards_keep_screen_path(@actor)
   end
@@ -22,8 +23,9 @@ class ShadowCardsController < ApplicationController
 
   def keep
     cards = params[:selected_cards].split(',').map{ |e| e.to_i }
-    GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME ).keep_cards(cards,
-        discard_card_action: :discard )
+
+    ge = GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME, discard_card_action: :discard )
+    ge.keep_cards(cards)
 
     redirect_try = GameEngine::RedirectFromBoardState.redirect(@board,@actor){ |r|
       redirect_to r, notice: I18n.t( 'notices.shadow_cards_keep_success', count: cards.count )
