@@ -49,4 +49,9 @@ class SauronActionsController < ApplicationController
     redirect_to edit_sauron_action_path(@actor)
   end
 
+  # Called when Sauron terminate his turn
+  def terminate
+    # Hero cards are not drawn at the setup of the game, but at this step.
+  end
+
 end

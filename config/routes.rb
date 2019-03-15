@@ -31,6 +31,8 @@ Rails.application.routes.draw do
     get :setup
     get :setup_finished
   end
+
+  get 'sauron_actions/:actor_id/terminate', to: 'sauron_actions#terminate', as: 'sauron_actions_terminate'
   resources :sauron_actions, only: [:edit, :update]
 
   resources :story_tracks, only: [:edit, :update]

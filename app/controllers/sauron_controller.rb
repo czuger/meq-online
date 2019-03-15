@@ -16,6 +16,7 @@ class SauronController < ApplicationController
       @board.next_to_sauron_actions!
     end
 
+    # Should lead to event draw
     GameEngine::RedirectFromBoardState.redirect(@board, @actor ){ |r| redirect_to r }
   end
 
