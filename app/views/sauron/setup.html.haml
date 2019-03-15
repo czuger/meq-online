@@ -1,8 +1,8 @@
 .container
   %p#notice= notice
 
-  .jumbotron
-    %ol
+  .alert.alert-secondary
+    %ul.mt-3
       %li Place the indicated amount of influence tokens on the map. Influence tokens already placed in the shadow strongholds and in the shadow pool.
       %li Draw and discard the indicated amount of shadow cards.
       %li Draw and discard the indicated amount of plot cards.
@@ -23,7 +23,7 @@
           3 - Draw plot card
 
       .col-3
-        = link_to sauron_setup_finished_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+        = link_to sauron_setup_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
           4 - Terminate
 
 

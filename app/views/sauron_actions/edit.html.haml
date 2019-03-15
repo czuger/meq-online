@@ -1,64 +1,105 @@
 .container
 
+  .alert.alert-secondary
+    %ul.mt-3
+      %li Select an action and validate it (this only place a marker on the map).
+      %li Then execute your action using the buttons on the bottom.
+      %li Note : no rules are implemented, you are the master at this step.
+      %li When you are done, click on the terminate button.
+
   = form_tag sauron_action_path(@actor), method: :patch do
 
-    .row.mt-2
-      .col-3.col-form-label
-        Place 6 influence
-      .col-3.pt-1
-        = check_box_tag :place_influence_1, :c, @board.sauron_actions['place_influence_1']
+    .row
+      .col
+        .row.mt-2
+          .col-5.col-form-label
+            Place 6 influence
+          .col-1.pt-1
+            = check_box_tag :place_influence_1, :c, @board.sauron_actions['place_influence_1']
+
+        .row
+          .col-5.col-form-label
+            Place 5 influence
+          .col-1.pt-1
+            = check_box_tag :place_influence_2, :c, @board.sauron_actions['place_influence_2']
+
+        .row
+          .col-5.col-form-label
+            Place 4 influence
+          .col-1.pt-1
+            = check_box_tag :place_influence_3, :c, @board.sauron_actions['place_influence_3']
+
+      .col
+        .row
+          .col-5.col-form-label
+            Draw 2 cards
+          .col-1.pt-1
+            = check_box_tag :draw_cards_1, :c, @board.sauron_actions['draw_cards_1']
+
+        .row
+          .col-5.col-form-label
+            Draw 2 cards
+          .col-1.pt-1
+            = check_box_tag :draw_cards_2, :c, @board.sauron_actions['draw_cards_2']
+
+        .row
+          .col-5.col-form-label
+            Draw 1 cards
+          .col-1.pt-1
+            = check_box_tag :draw_cards_3, :c, @board.sauron_actions['draw_cards_3']
+
+      .col
+        .row
+          .col-5.col-form-label
+            Command 3
+          .col-1.pt-1
+            = check_box_tag :command_1, :c, @board.sauron_actions['command_1']
+
+        .row
+          .col-5.col-form-label
+            Command 2
+          .col-1.pt-1
+            = check_box_tag :command_2, :c, @board.sauron_actions['command_2']
+
+        .row
+          .col-5.col-form-label
+            Command 1
+          .col-1.pt-1
+            = check_box_tag :command_3, :c, @board.sauron_actions['command_3']
 
     .row
-      .col-3.col-form-label
-        Place 5 influence
-      .col-3.pt-1
-        = check_box_tag :place_influence_2, :c, @board.sauron_actions['place_influence_2']
+      .col-5
+      .col-2
+        = button_tag 'Validate', role: :button, class: 'btn btn-secondary btn-block'
 
+  %hr
+
+  .form-group
     .row
-      .col-3.col-form-label
-        Place 4 influence
-      .col-3.pt-1
-        = check_box_tag :place_influence_3, :c, @board.sauron_actions['place_influence_3']
+      .col-3
+        = link_to edit_map_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Go to map
 
-    %hr
+      .col-3
+        = link_to shadow_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Draw shadow card
 
+      .col-3
+        = link_to plot_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Draw plot card
+
+      .col-3
+
+  .form-group
     .row
-      .col-3.col-form-label
-        Draw 2 cards
-      .col-3.pt-1
-        = check_box_tag :draw_cards_1, :c, @board.sauron_actions['draw_cards_1']
+      .col-3
 
-    .row
-      .col-3.col-form-label
-        Draw 2 cards
-      .col-3.pt-1
-        = check_box_tag :draw_cards_2, :c, @board.sauron_actions['draw_cards_2']
+      .col-3
+        = link_to shadow_cards_play_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Play shadow card
 
-    .row
-      .col-3.col-form-label
-        Draw 1 cards
-      .col-3.pt-1
-        = check_box_tag :draw_cards_3, :c, @board.sauron_actions['draw_cards_3']
+      .col-3
 
-    %hr
-
-    .row
-      .col-3.col-form-label
-        Command 3
-      .col-3.pt-1
-        = check_box_tag :command_1, :c, @board.sauron_actions['command_1']
-
-    .row
-      .col-3.col-form-label
-        Command 2
-      .col-3.pt-1
-        = check_box_tag :command_2, :c, @board.sauron_actions['command_2']
-
-    .row
-      .col-3.col-form-label
-        Command 1
-      .col-3.pt-1
-        = check_box_tag :command_3, :c, @board.sauron_actions['command_3']
-
-
-    = button_tag 'Validate', role: :button, class: 'btn btn-secondary'
+      .col-3
+        = link_to sauron_setup_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
+          Terminate
