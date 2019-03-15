@@ -86,6 +86,28 @@ zoom_plot_cards= () ->
     console.log($(this))
     $(this).removeClass('zoomed-plot-card')
 
+#
+# Influence pool tokens
+#
+influence_pool= () ->
+  $('.influence-pool-value' ).click () ->
+
+    current_val = parseInt( $(this).html() )
+    actor_id = $('#actor_id').val()
+
+    $.ajax "/shadow_pools/#{actor_id}/update_from_map",
+      type: 'PATCH'
+      data: { current_val: current_val }
+      success: (result) ->
+        console.log( result )
+        for i in [ 0 .. result ]
+#          console.log( i )
+          value = 1 if i < result
+          value = 0 if i >= result
+          $("#pool_token_id_#{i}").html( value )
+
+
+
 #activate_tooltips= () ->
 #  $('[data-toggle="tooltip"]').tooltip()
 
@@ -96,4 +118,5 @@ $(document).on('turbolinks:load'
       filter()
       set_zoom_map()
       zoom_plot_cards()
+      influence_pool()
 )

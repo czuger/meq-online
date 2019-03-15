@@ -63,7 +63,9 @@ Rails.application.routes.draw do
   post 'shadow_cards/:actor_id/play', to: 'shadow_cards#play', as: 'shadow_cards_play'
 
   # Caution, in this case, the id is not a shadow_pool or influence, but an Actor.id
+  patch 'shadow_pools/:actor_id/update_from_map', to: 'shadow_pools#update_from_map', as: 'shadow_pools_update_from_map'
   resources :shadow_pools, only: [ :edit, :update ]
+
   resources :influences, only: [ :show, :edit, :update ]
 
   resources :maps, only: [:edit]
