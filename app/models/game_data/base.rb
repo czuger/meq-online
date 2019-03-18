@@ -6,7 +6,7 @@ module GameData
 
     def initialize
       data_file_name = self.class::FILENAME if defined? self.class::FILENAME
-      data_file_name ||= GameData::Heroes.new.class.name.demodulize.underscore
+      data_file_name ||= self.class.name.demodulize.underscore
 
       data_file = "#{Rails.root}/app/models/game_data/#{data_file_name}.yaml"
       # p data_file

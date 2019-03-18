@@ -66,8 +66,8 @@ ActiveRecord::Schema.define(version: 2019_03_18_105523) do
     t.integer "sauron_objective", limit: 2
     t.integer "turn", limit: 2, default: 1, null: false
     t.integer "last_event_card", limit: 2
-    t.integer "event_deck", limit: 2, array: true
-    t.integer "event_discard", limit: 2, array: true
+    t.integer "event_deck", limit: 2, null: false, array: true
+    t.integer "event_discard", limit: 2, default: [], null: false, array: true
   end
 
   create_table "boards_users", id: false, force: :cascade do |t|

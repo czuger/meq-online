@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :board do
     plot_deck { (3..17).to_a }
     shadow_deck { (0..23).to_a }
+    event_deck { (0..13).to_a }
 
     plot_discard {[]}
     shadow_discard {[]}

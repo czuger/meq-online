@@ -54,15 +54,22 @@ class BoardsController < ApplicationController
 
     plot_deck= (3..17).to_a.shuffle
     shadow_deck= (0..23).to_a.shuffle
+    event_deck = GameData::Events.new.get_starting_event_deck
+
     max_heroes_count= params[:max_heroes_count].to_i
 
-    @board = Board.new( influence: starting_plot.influence.init, plot_deck: plot_deck, shadow_deck: shadow_deck,
-                        plot_discard: [], shadow_discard: [], max_heroes_count: max_heroes_count,
-                        current_plots: { 'plot-card-1' => starting_plot_id }, shadow_pool: starting_plot.influence.shadow_pool,
-                        characters: {}
-                        )
-
-    @board.event_deck = GameData::Events.new.get_starting_event_deck
+    @board = Board.new(
+        influence: starting_plot.influence.init,
+        plot_deck: plot_deck,
+        shadow_deck: shadow_deck,
+        event_deck: event_deck,
+        plot_discard: [],
+        shadow_discard: [],
+        max_heroes_count: max_heroes_count,
+        current_plots: { 'plot-card-1' => starting_plot_id },
+        shadow_pool: starting_plot.influence.shadow_pool,
+        characters: {}
+    )
 
     respond_to do |format|
       @board.transaction do
