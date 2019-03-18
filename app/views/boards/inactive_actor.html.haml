@@ -1,0 +1,8 @@
+.container
+  .jumbotron
+    %h1
+      It is not your turn
+
+  %h3
+    Current state is :
+    = @board.aasm_state.humanize

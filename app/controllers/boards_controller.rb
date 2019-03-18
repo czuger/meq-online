@@ -1,7 +1,7 @@
 class BoardsController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_board, only: [:show, :edit, :update, :destroy, :join_new, :join]
+  before_action :set_board, except: [:index]
   before_action :set_actor_ensure_actor, only: [:map]
 
   # GET /boards
@@ -19,6 +19,8 @@ class BoardsController < ApplicationController
   # GET /boards/1
   # GET /boards/1.json
 
+  def inactive_actor
+  end
 
   # GET /boards/new
   def new
@@ -147,6 +149,8 @@ class BoardsController < ApplicationController
           @board.wait_for_players! unless @board.waiting_for_players?
         else
           # unless @board.sauron_turn?
+
+            @board.sauron.active = true
             @board.next_to_sauron_setup!
           # end
         end

@@ -78,11 +78,12 @@ Rails.application.routes.draw do
     get :join, action: :join_new
     post :join
 
+    get :inactive_actor
+
     resource :maps, only: [:show]
 
     resource :logs, only: [:show ]
     resources :heros, only: [ :index ]
-
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 

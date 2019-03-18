@@ -1,7 +1,7 @@
 class HerosController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_actor_ensure_actor, only: [:show, :edit, :update, :destroy, :draw_cards, :rest, :heal, :take_damages, :move, :finish_turn]
+  before_action :set_actor_ensure_actor
 
   def index
     @board = Board.find(params[:board_id])
@@ -9,13 +9,17 @@ class HerosController < ApplicationController
   end
 
   def show
-    @heroes = GameData::Heroes.new
-    @heroes_hero = @heroes.get( @actor.name_code )
+    if @actor.active
+      @heroes = GameData::Heroes.new
+      @heroes_hero = @heroes.get( @actor.name_code )
 
-    @locations = GameData::Locations.new
-    @locations.delete!(@actor.location)
+      @locations = GameData::Locations.new
+      @locations.delete!(@actor.location)
 
-    @cards = @actor.hand
+      @cards = @actor.hand
+    else
+      redirect_to board_inactive_actor_path(@board)
+    end
   end
 
   def draw_cards

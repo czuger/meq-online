@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_18_105523) do
+ActiveRecord::Schema.define(version: 2019_03_18_152133) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 2019_03_18_105523) do
     t.integer "rest_pool", array: true
     t.integer "damage_pool", array: true
     t.integer "hand", array: true
+    t.boolean "active", default: false, null: false
     t.index ["board_id"], name: "index_actors_on_board_id"
   end
 
