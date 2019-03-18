@@ -50,7 +50,6 @@ class BoardsController < ApplicationController
   # POST /boards
   # POST /boards.json
   def create
-
     starting_plot_id= rand( 0..2 )
     starting_plot = GameData::StartingPlots.new.get(starting_plot_id)
 

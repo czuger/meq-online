@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   get 'map_coordinates/edit'
   post 'map_coordinates/update'
 
+  resources :events, only: [ :edit, :update ]
+
   resources :combats, only: [ :show, :new, :create, :destroy ] do
     get :hero_setup_new
     post :hero_setup_draw_cards

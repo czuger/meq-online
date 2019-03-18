@@ -54,11 +54,13 @@ class Board < ApplicationRecord
   def set_heroes_activation_state( active= false )
     heroes.each do |h|
       h.active = active
+      h.save!
     end
   end
 
   def set_sauron_activation_state( active= false )
     sauron.active = active
+    sauron.save!
   end
 
   def set_all_actors_activation_state( active= false )

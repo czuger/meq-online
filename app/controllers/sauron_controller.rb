@@ -21,8 +21,7 @@ class SauronController < ApplicationController
       @board.next_to_event_state!
     end
 
-    # Should lead to event draw
-    GameEngine::RedirectFromBoardState.redirect(@board, @actor ){ |r| redirect_to r }
+    redirect_to edit_event_path(@actor)
   end
 
   def choose_event_card_screen
