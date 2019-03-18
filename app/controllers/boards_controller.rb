@@ -150,7 +150,7 @@ class BoardsController < ApplicationController
         else
           # unless @board.sauron_turn?
 
-            @board.sauron.active = true
+            @board.set_sauron_activation_state( true )
             @board.next_to_sauron_setup!
           # end
         end

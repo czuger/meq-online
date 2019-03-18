@@ -3,7 +3,6 @@ class SauronController < ApplicationController
   before_action :set_actor_ensure_actor
 
   def show
-    GameEngine::RedirectFromBoardState.redirect(@board, @actor ){ |r| redirect_to r }
   end
 
   def setup

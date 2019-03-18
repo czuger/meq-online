@@ -13,4 +13,9 @@ module BoardsHelper
     link_to hero_name_code.capitalize, GameEngine::RouteFromBoardState.get_route( board,heroes_hash[ hero_name_code ] ) if heroes_hash[ hero_name_code ]
   end
 
+  def sauron_link( board )
+    link_to 'Sauron', GameEngine::RouteFromBoardState.get_route( board,board.sauron ) if board.sauron&.user_id == current_user.id
+  end
+
+
 end

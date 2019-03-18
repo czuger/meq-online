@@ -21,7 +21,9 @@
           %td= players_list(board)
           %td= board.aasm_state.humanize
           %td= link_to( 'Join', board_join_path(board) ) if board.current_heroes_count < board.max_heroes_count || !board.sauron_created
-          %td= link_to 'Sauron', board.sauron if board.sauron&.user_id == current_user.id
+
+          %td= sauron_link( board )
+
           %td= hero_link( board, :argalad )
           %td= hero_link( board, :beravor )
           %td= hero_link( board, :eleanor )
