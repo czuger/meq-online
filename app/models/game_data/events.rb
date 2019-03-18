@@ -6,7 +6,7 @@ module GameData
     end
 
     def set_random_card(board)
-      board.last_event_card = @board.event_deck.shift
+      board.last_event_card = board.event_deck.shift
     end
 
   end

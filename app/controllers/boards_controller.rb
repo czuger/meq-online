@@ -1,7 +1,7 @@
 class BoardsController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_board, except: [:index]
+  before_action :set_board, except: [:index, :new, :create]
   before_action :set_actor_ensure_actor, only: [:map]
 
   # GET /boards

@@ -14,9 +14,11 @@ class SauronController < ApplicationController
     @board.transaction do
       GameData::Objectives.set_objectives @board
 
-      GameData::Events.set_random_card @board
+      GameData::Events.new.set_random_card @board
 
-      @board.next_to_sauron_actions!
+      @board.set_all_actors_activation_state( true )
+
+      @board.next_to_event_state!
     end
 
     # Should lead to event draw

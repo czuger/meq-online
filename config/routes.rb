@@ -30,6 +30,8 @@ Rails.application.routes.draw do
     post :shadow_cards
     get :setup
     get :setup_finished
+
+    get :execute_event_card_screen
   end
 
   get 'sauron_actions/:actor_id/terminate', to: 'sauron_actions#terminate', as: 'sauron_actions_terminate'

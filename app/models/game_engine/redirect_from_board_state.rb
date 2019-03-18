@@ -1,7 +1,7 @@
 module GameEngine
   class RedirectFromBoardState
 
-    STATE_TO_PATH = { sauron_actions: :edit_sauron_action }
+    STATE_TO_PATH = { sauron_actions: :edit_sauron_action, event_step: :sauron_execute_event_card_screen }
 
     def self.redirect( board, actor )
 
