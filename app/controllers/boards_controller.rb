@@ -25,7 +25,8 @@ class BoardsController < ApplicationController
   # GET /boards/new
   def new
     @board = Board.new
-    @remaining_heroes = @board.max_heroes_count
+    @remaining_heroes = 1 # @board.max_heroes_count
+    @sauron_state = true
     load_heroes
   end
 
