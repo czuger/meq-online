@@ -1,7 +1,7 @@
 module GameEngine
   class RouteFromBoardState
 
-    STATE_TO_PATH = { sauron_actions: :edit_sauron_action, event_step: :edit_event_path }
+    STATE_TO_PATH = { sauron_actions: :edit_sauron_action, event_step: :edit_event }
 
     def self.get_route( board, actor )
 

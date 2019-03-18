@@ -17,7 +17,7 @@ class SauronController < ApplicationController
 
       @board.set_all_actors_activation_state( true )
 
-      @board.next_to_event_state!
+      @board.next_to_event_step!
     end
 
     redirect_to edit_event_path(@actor)

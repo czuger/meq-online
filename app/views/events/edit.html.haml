@@ -1,2 +1,31 @@
-%h1 EventsController#edit
-%p Find me in app/views/events_controller/edit.html.haml
+.container
+  %p#notice= notice
+
+  .alert.alert-secondary
+    %ul.mt-3
+      %li Resolve all elements of the card, in the right order.
+      %li As a hero, act only if you are specifically mentioned on the card. All other actions are done by Sauron.
+      %li Sauron also have to place characters and favor.
+
+  .form-group
+    .row
+      .col-3
+        = link_to edit_map_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Go to map
+
+      .col-3
+        = link_to '#', role: :button, class: 'btn btn-secondary btn-block' do
+          Place favor
+
+      .col-3
+        = link_to edit_character_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Place characters
+
+      .col-3
+        = link_to sauron_setup_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
+          Terminate
+
+
+  %hr
+  %h3 Current event card
+  = image_tag "events/I/#{@board.last_event_card}.png", class: 'big-card'
