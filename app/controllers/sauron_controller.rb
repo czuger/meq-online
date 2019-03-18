@@ -13,6 +13,9 @@ class SauronController < ApplicationController
   def setup_finished
     @board.transaction do
       GameData::Objectives.set_objectives @board
+
+
+
       @board.next_to_sauron_actions!
     end
 
@@ -20,16 +23,16 @@ class SauronController < ApplicationController
     GameEngine::RedirectFromBoardState.redirect(@board, @actor ){ |r| redirect_to r }
   end
 
-  def draw_event_card
+  def choose_event_card_screen
   end
 
   def choose_event_card
   end
 
-  def execute_event_card
+  def execute_event_card_screen
   end
 
-  def event_card_step_finished
+  def execute_event_card
   end
 
 end

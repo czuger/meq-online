@@ -62,6 +62,8 @@ class BoardsController < ApplicationController
                         characters: {}
                         )
 
+    @board.event_deck = GameData::Events.new.get_starting_event_deck
+
     respond_to do |format|
       @board.transaction do
         if @board.save
