@@ -14,7 +14,7 @@ class SauronController < ApplicationController
     @board.transaction do
       GameData::Objectives.set_objectives @board
 
-
+      GameData::Events.set_random_card @board
 
       @board.next_to_sauron_actions!
     end
