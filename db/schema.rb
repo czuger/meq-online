@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_18_152133) do
+ActiveRecord::Schema.define(version: 2019_03_18_193606) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -41,6 +41,15 @@ ActiveRecord::Schema.define(version: 2019_03_18_152133) do
     t.integer "hand", array: true
     t.boolean "active", default: false, null: false
     t.index ["board_id"], name: "index_actors_on_board_id"
+  end
+
+  create_table "board_messages", force: :cascade do |t|
+    t.bigint "sender_id"
+    t.bigint "reciever_id"
+    t.string "text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reciever_id"], name: "index_board_messages_on_reciever_id"
   end
 
   create_table "boards", force: :cascade do |t|
@@ -112,6 +121,8 @@ ActiveRecord::Schema.define(version: 2019_03_18_152133) do
 
   add_foreign_key "actors", "boards"
   add_foreign_key "actors", "users"
+  add_foreign_key "board_messages", "actors", column: "reciever_id"
+  add_foreign_key "board_messages", "actors", column: "sender_id"
   add_foreign_key "logs", "actors"
   add_foreign_key "logs", "boards"
   add_foreign_key "logs", "users"

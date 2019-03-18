@@ -1,0 +1,2 @@
+module BoardMessagesHelper
+end

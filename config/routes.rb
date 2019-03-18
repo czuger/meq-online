@@ -1,5 +1,9 @@
 Rails.application.routes.draw do
 
+  resources :actor, only: [] do
+    resources :board_messages, only: [ :index, :new, :create ]
+  end
+
   get 'map_coordinates/edit'
   post 'map_coordinates/update'
 

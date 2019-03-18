@@ -1,0 +1,18 @@
+%p#notice= notice
+
+%p
+  %b Board:
+  = @board_message.board
+%p
+  %b Sender:
+  = @board_message.sender
+%p
+  %b Reciever:
+  = @board_message.reciever
+%p
+  %b Text:
+  = @board_message.text
+
+= link_to 'Edit', edit_board_message_path(@board_message)
+\|
+= link_to 'Back', board_messages_path

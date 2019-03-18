@@ -1,0 +1,18 @@
+.container
+  %h1 Listing board_messages
+
+  %table
+    %thead
+      %tr
+        %th Sender
+        %th Text
+
+    %tbody
+      - @board_messages.each do |board_message|
+        %tr
+          %td= board_message.sender
+          %td= board_message.text
+
+  %br
+
+  = link_to 'New Board message', new_actor_board_message_path(@actor)
