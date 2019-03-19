@@ -8,7 +8,7 @@ class BoardMessagesController < ApplicationController
   # GET /board_messages
   # GET /board_messages.json
   def index
-    @board_messages = BoardMessage.where(reciever_id: @actor)
+    @board_messages = BoardMessage.includes(:actor).where(reciever_id: @actor).or(BoardMessage.includes(:actor).where(sender_id: @actor)).order( 'updated_at DESC' )
   end
 
   # GET /board_messages/1
@@ -33,11 +33,9 @@ class BoardMessagesController < ApplicationController
 
     respond_to do |format|
       if @board_message.save
-        format.html { redirect_to @board_message, notice: 'Board message was successfully created.' }
-        format.json { render :show, status: :created, location: @board_message }
+        format.html { redirect_to actor_board_messages_path(@actor), notice: 'Board message was successfully created.' }
       else
         format.html { render :new }
-        format.json { render json: @board_message.errors, status: :unprocessable_entity }
       end
     end
   end
