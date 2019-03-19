@@ -1,7 +1,7 @@
 .container
   %h3 My messages
 
-  = link_to 'New Board message', new_actor_board_message_path(@actor), class: 'btn btn-primary my-3'
+  = link_to 'New message', new_actor_board_message_path(@actor), class: 'btn btn-primary my-3'
 
   - @board_messages.each do |board_message|
     %p
