@@ -14,7 +14,7 @@ module GameData
 
 
     def get_starting_event_deck
-      @data[:I].shuffle
+      @data[:I].keys.shuffle
     end
 
     def set_random_card(board)

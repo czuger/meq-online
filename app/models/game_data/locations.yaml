@@ -337,8 +337,8 @@ the_forest_road:
   :color_code: :light_green
   :perilous: false
   :heaven: false
-  :pos_x: 1250
-  :pos_y: 350
+  :pos_x: 1253
+  :pos_y: 383
 the_high_pass:
   :name: The High Pass
   :region: Mirkwood
