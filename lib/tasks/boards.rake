@@ -10,7 +10,7 @@ namespace :board do
 
       board.heroes.each{ |e| MovementPreparationStep.where( actor_id: e.id ).delete_all }
 
-      board.heroes.delete_all
+      board.heroes.destroy_all
       board.destroy
     end
 
