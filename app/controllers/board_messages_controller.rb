@@ -3,6 +3,7 @@ class BoardMessagesController < ApplicationController
   before_action :require_logged_in
   before_action :set_actor_ensure_board
   before_action :set_board_message, only: [:show, :edit, :update, :destroy]
+  before_action :set_recievers, only: [:new, :create]
 
   # GET /board_messages
   # GET /board_messages.json
@@ -18,18 +19,6 @@ class BoardMessagesController < ApplicationController
   # GET /board_messages/new
   def new
     @board_message = BoardMessage.new
-
-    @heroes = GameData::Heroes.new
-
-    @recievers = []
-
-    @recievers << [ "Sauron (#{@board.sauron.user.name})", @board.sauron.id ] unless @actor == @board.sauron
-
-    @board.heroes.includes(:user).each do |h|
-      next if @actor == h
-      @heroes_hero = @heroes.get( h.name_code )
-      @recievers << [ "#{@heroes_hero.name} (#{h.user.name})", h.id ]
-    end
   end
 
   # GET /board_messages/1/edit
@@ -40,6 +29,7 @@ class BoardMessagesController < ApplicationController
   # POST /board_messages.json
   def create
     @board_message = BoardMessage.new(board_message_params)
+    @board_message.sender = @actor
 
     respond_to do |format|
       if @board_message.save
@@ -84,6 +74,19 @@ class BoardMessagesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def board_message_params
-      params.require(:board_message).permit(:board_id, :sender, :reciever, :text)
+      params.require(:board_message).permit(:reciever_id, :text)
     end
+
+    def set_recievers
+      @heroes = GameData::Heroes.new
+
+      @recievers = []
+      @recievers << [ "Sauron (#{@board.sauron.user.name})", @board.sauron.id ] unless @actor == @board.sauron
+
+      @board.heroes.includes(:user).each do |h|
+        next if @actor == h
+        @heroes_hero = @heroes.get( h.name_code )
+        @recievers << [ "#{@heroes_hero.name} (#{h.user.name})", h.id ]
+      end
+  end
 end

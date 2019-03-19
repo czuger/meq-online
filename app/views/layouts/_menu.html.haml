@@ -46,10 +46,11 @@
 
         = link_to 'Sign out', sessions_path, method: :delete, class: 'nav-link'
 
-    = link_to actor_board_messages_path(@actor), role: :button, class: 'btn btn-primary ml-2' do
-      Messages
-      %span.badge.badge-light
-        0
+    - if @actor
+      = link_to actor_board_messages_path(@actor), role: :button, class: 'btn btn-primary ml-2' do
+        Messages
+        %span.badge.badge-light
+          0
 
     - if @actor.is_a? Sauron
       = link_to 'Sauron', @actor, role: :button, class: 'btn btn-primary ml-2'
