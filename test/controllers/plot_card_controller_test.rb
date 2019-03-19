@@ -75,14 +75,14 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
     assert_equal 6, @sauron.reload.drawn_plot_cards.count
   end
 
-  test 'should keep cards' do
-    @sauron.plot_cards = []
-    @sauron.drawn_plot_cards = [ 7, 8, 9 ]
-    @sauron.save!
-    post plot_cards_keep_url @sauron, params: { selected_cards: [ 8, 9 ].join(',' ) }
-    assert_redirected_to plot_cards_play_screen_url(@sauron)
-    assert_empty  @sauron.reload.drawn_plot_cards
-    assert_equal [ 8, 9 ], @sauron.reload.plot_cards
-  end
+  # test 'should keep cards' do
+  #   @sauron.plot_cards = []
+  #   @sauron.drawn_plot_cards = [ 7, 8, 9 ]
+  #   @sauron.save!
+  #   post plot_cards_keep_url @sauron, params: { selected_cards: [ 8, 9 ].join(',' ) }
+  #   assert_redirected_to plot_cards_play_screen_url(@sauron)
+  #   assert_empty  @sauron.reload.drawn_plot_cards
+  #   assert_equal [ 8, 9 ], @sauron.reload.plot_cards
+  # end
 
 end

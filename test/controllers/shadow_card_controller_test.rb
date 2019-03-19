@@ -53,14 +53,14 @@ class ShadowCardControllerTest < ActionDispatch::IntegrationTest
     assert_equal 6, @sauron.reload.drawn_shadow_cards.count
   end
 
-  test 'should keep cards' do
-    @sauron.shadow_cards = []
-    @sauron.drawn_shadow_cards = [ 7, 8, 9 ]
-    @sauron.save!
-    post shadow_cards_keep_url @sauron, params: { selected_cards: [ 8, 9 ].join(',' ) }
-    assert_redirected_to shadow_cards_play_screen_url(@sauron)
-    assert_empty  @sauron.reload.drawn_shadow_cards
-    assert_equal [ 8, 9 ], @sauron.reload.shadow_cards
-  end
+  # test 'should keep cards' do
+  #   @sauron.shadow_cards = []
+  #   @sauron.drawn_shadow_cards = [ 7, 8, 9 ]
+  #   @sauron.save!
+  #   post shadow_cards_keep_url @sauron, params: { selected_cards: [ 8, 9 ].join(',' ) }
+  #   assert_redirected_to shadow_cards_play_screen_url(@sauron)
+  #   assert_empty  @sauron.reload.drawn_shadow_cards
+  #   assert_equal [ 8, 9 ], @sauron.reload.shadow_cards
+  # end
 
 end

@@ -1,7 +1,7 @@
 class HerosController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_actor_ensure_actor
+  before_action :set_actor_ensure_actor, except: [:index, :new]
 
   def index
     @board = Board.find(params[:board_id])

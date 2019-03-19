@@ -70,10 +70,10 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   #   assert_redirected_to hero_url(Hero.last)
   # end
 
-  test 'should show hero' do
-    get hero_url( @hero )
-    assert_response :success
-  end
+  # test 'should show hero' do
+  #   get hero_url( @hero )
+  #   assert_response :success
+  # end
 
   # test 'should get edit' do
   #   get edit_hero_url(@hero)

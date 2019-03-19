@@ -27,4 +27,4 @@
 
   %hr
   %h3 Current event card
-  = image_tag "events/I/#{@board.last_event_card}.png", class: 'big-card'
+  = image_tag "events/I/#{@board.last_event_card}.png", class: 'big-card' if @board.last_event_card
