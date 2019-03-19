@@ -1,46 +1,250 @@
 ---
 :I:
-- 0
-- 1
-- 2
-#- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
+  0:
+    :character:
+      :name: 'theoden'
+      :location: 'helms_deep'
+    :favors:
+    - 'bree'
+  1:
+    :character:
+      :name: 'dain'
+      :location: 'the_iron_hills'
+    :favors:
+    - 'the_high_pass'
+  2:
+    :favors:
+    - 'tharbad'
+    - 'the_bight'
+  3:
+    :character:
+      :name: 'dain'
+      :location: 'lake_esgaroth'
+    :favors:
+    - 'osgiliath'
+  4:
+    :character:
+      :name: 'thranduil'
+      :location: 'the_forest_trail'
+    :favors:
+    - 'ettenmoors'
+  5:
+    :character:
+      :name: 'gandalf'
+      :location: 'the_shire'
+    :favors:
+    - 'eregion'
+  6:
+    :character:
+      :name: 'saruman'
+      :location: 'fangorn'
+    :favors:
+    - 'emyn_muil'
+  7:
+    :favors:
+    - 'ered_mithrin'
+    - 'gap_of_rohan'
+  8:
+    :favors:
+    - 'the_northdowns'
+    - 'dead_marshes'
+  9:
+    :character:
+      :name: 'aragorn'
+      :location: 'weathertop'
+    :favors:
+    - 'lothlorien'
+  10:
+    :character:
+      :name: 'theoden'
+      :location: 'plains_of_rohan'
+    :favors:
+    - 'dunland'
+  11:
+    :character:
+      :name: 'denethor'
+      :location: 'pelargir'
+    :favors:
+    - 'rhosgobel'
+  12:
+    :character:
+      :name: 'boromir'
+      :location: 'dunharrow'
+    :favors:
+    - 'the_withered_heath'
+  13:
+    :character:
+      :name: 'aragorn'
+      :location: 'rhun'
+    :favors:
+    - 'the_forest_road'
 :II:
-- 0
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
+  0:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  1:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  2:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  3:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  4:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  5:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  6:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  7:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  8:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  9:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  10:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  11:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  12:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  13:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
 :III:
-- 0
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
-- 10
-- 11
-- 12
-- 13
+  0:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  1:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  2:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  3:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  4:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  5:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  6:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  7:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  8:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  9:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  10:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  11:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  12:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'
+  13:
+    :character:
+      :name: ''
+      :location: ''
+    :favors:
+    - 'location'

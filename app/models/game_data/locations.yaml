@@ -329,6 +329,16 @@ the_forest_trail:
   :heaven: false
   :pos_x: 1181
   :pos_y: 327
+the_forest_road:
+  :name: The Forest Road
+  :region: Misty mountains
+  :region_code: :misty_mountains
+  :color: Light green
+  :color_code: :light_green
+  :perilous: false
+  :heaven: false
+  :pos_x: 1250
+  :pos_y: 350
 the_high_pass:
   :name: The High Pass
   :region: Mirkwood

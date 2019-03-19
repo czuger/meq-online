@@ -11,5 +11,9 @@ module GameData
       @data[char][:name]
     end
 
+    def exist?( code )
+      @data.has_key? code
+    end
+
   end
 end
