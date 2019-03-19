@@ -7,7 +7,7 @@ class LogsControllerTest < ActionDispatch::IntegrationTest
     @user = create( :user )
     @board = create( :board )
     @hero = create( :hero, board: @board, user: @user )
-    @log = create(:log, board: @board, user: @user, actor: @hero )
+    @log = create(:log, board: @board, actor: @hero )
 
     $google_auth_hash[:uid] = @user.uid
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash

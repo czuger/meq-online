@@ -1,8 +1,5 @@
 FactoryBot.define do
   factory :board_message do
-    board { nil }
-    sender { "" }
-    reciever { "" }
-    text { "MyString" }
+    text { 'MyString' }
   end
 end

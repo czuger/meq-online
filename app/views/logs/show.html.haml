@@ -13,7 +13,7 @@
     %tbody
       - @logs.each do |log|
         %tr
-          %td= log.user.name
+          %td= log.actor.user.name
           %td= log.actor.name
           %td= print_log(log)
           %td

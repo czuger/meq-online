@@ -39,7 +39,7 @@ class StoryTracksController < ApplicationController
         @board.logs.create!( action: :update_story_marker,
           params:{
               old_value: old_value, new_value: new_value, story_marker: sm.gsub( 'story_marker_', '' ) },
-                user_id: current_user.id, actor: @actor)
+                actor: @actor)
       end
 
       redirect_to edit_story_track_path( @actor )
