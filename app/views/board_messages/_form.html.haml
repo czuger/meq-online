@@ -1,17 +1,19 @@
-.container
-  = form_for @board_message do |f|
-    - if @board_message.errors.any?
-      #error_explanation
-        %h2= "#{pluralize(@board_message.errors.count, "error")} prohibited this board_message from being saved:"
-        %ul
-          - @board_message.errors.full_messages.each do |message|
-            %li= message
+= form_for actor_board_messages_path( @actor ) do |f|
 
-    .field
-      = f.label :reciever
-      = f.text_field :reciever
-    .field
-      = f.label :text
-      = f.text_field :text
-    .actions
-      = f.submit 'Save'
+  - if @board_message.errors.any?
+    #error_explanation
+      %h3= "#{pluralize(@board_message.errors.count, "error")} prohibited this board_message from being saved:"
+      %ul
+        - @board_message.errors.full_messages.each do |message|
+          %li= message
+
+  .field
+    = f.label :reciever, 'To'
+    = select_tag( :reciever, options_for_select(@recievers), { class: 'form-control' } )
+
+  .field.mt-2
+    = f.label :text, 'Your message'
+    = f.text_area :text, class: 'form-control'
+
+  .actions.mt-3
+    = f.submit 'Send', class: 'btn btn-secondary'
