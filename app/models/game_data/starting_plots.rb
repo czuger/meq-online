@@ -1,8 +1,6 @@
 module GameData
   class StartingPlots < Base
 
-    FILENAME = 'starting_plots'
-
     def get( code )
       code = code.to_i
       @data[code][:influence] = OpenStruct.new( @data[code][:influence] ) unless @data[code][:influence].is_a? OpenStruct

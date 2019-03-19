@@ -13,8 +13,12 @@
     %tbody
       - @logs.each do |log|
         %tr
-          %td= log.actor.user.name
-          %td= log.actor.name
+          - if log.actor
+            %td= log.actor.user.name
+            %td= log.actor.name
+          - else
+            %td{ colspan: 2 }
+              System
           %td= print_log(log)
           %td
             = show_card(log)

@@ -2,6 +2,15 @@ en:
   logs:
     show:
 
+      setup:
+        set_starting_plot: 'set starting plot.'
+        set_influence_in_shadow_pool:
+          one: "place 1 influence token in shadow pool."
+          other: "place %{count} influence token in shadow pool."
+        set_influence_in_location:
+          one: "place 1 influence token in %{location}."
+          other: "place %{count} influence token in %{location}."
+
       move: "%{name} move from %{from} to %{to} using"
       # TODO : pluralize this
       draw_cards: "%{name} draw %{cards_drawn} cards. Remains %{lp_cards} cards in life pool."
