@@ -1,0 +1,22 @@
+.container
+
+  %p#notice= notice
+
+  = render partial: 'hero_info'
+
+  .form-group
+    %b Hand:
+
+    = render partial: 'cards_hand'
+
+    .form-group.mt-3
+      = form_tag hero_draw_cards_path(@actor), class: 'form-inline' do
+        .mx-2
+          = label_tag :nb_cards, 'Cards count'
+        .mx-2
+          = number_field_tag :nb_cards, @actor.fortitude, max: 20, class: 'form-control'
+        .mx-2
+          = button_tag 'Agility', role: :button, type: :button, class: 'btn btn-secondary', id: :set_agility
+        .mx-2
+          = button_tag 'Draw hand', role: :button, class: 'btn btn-secondary'
+      = hidden_field_tag :agility_value, @actor.agility

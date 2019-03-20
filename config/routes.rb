@@ -19,12 +19,14 @@ Rails.application.routes.draw do
   end
 
   resources :heros, only: [ :show ] do
-    post :draw_cards
     get :rest
     get :heal
     patch :take_damages
     post :move
     patch :finish_turn
+
+    get :draw_cards_screen
+    post :draw_cards
 
     resources :movement_preparation_steps, except: [ :show ]
   end

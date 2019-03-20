@@ -22,17 +22,6 @@ class HerosController < ApplicationController
     end
   end
 
-  def draw_cards
-    nb_cards_to_draw = params[:nb_cards].to_i
-    cards = @actor.life_pool.shift(nb_cards_to_draw)
-    @actor.hand += cards
-    @actor.save!
-
-    @actor.log_draw_cards!( @board, cards.count)
-
-    redirect_to @actor
-  end
-
   def rest
     @actor.life_pool += @actor.rest_pool
     @actor.rest_pool = []
@@ -83,6 +72,25 @@ class HerosController < ApplicationController
     else
       raise "Can't find a card position. card = #{card.inspect}, hand = #{@actor.hand.inspect}"
     end
+
+    redirect_to @actor
+  end
+
+  def draw_cards_screen
+    # nb_cards_to_draw = params[:nb_cards].to_i
+    @cards = @actor.hand
+
+    @heroes = GameData::Heroes.new
+    @heroes_hero = @heroes.get( @actor.name_code )
+  end
+
+  def draw_cards
+    nb_cards_to_draw = params[:nb_cards].to_i
+    cards = @actor.life_pool.shift(nb_cards_to_draw)
+    @actor.hand += cards
+    @actor.save!
+
+    @actor.log_draw_cards!( @board, cards.count)
 
     redirect_to @actor
   end

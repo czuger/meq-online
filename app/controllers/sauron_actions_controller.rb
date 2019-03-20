@@ -1,7 +1,7 @@
 class SauronActionsController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_actor_ensure_board, only: [:edit, :update]
+  before_action :set_actor_ensure_board
 
   def edit
   end
@@ -52,6 +52,15 @@ class SauronActionsController < ApplicationController
   # Called when Sauron terminate his turn
   def terminate
     # Hero cards are not drawn at the setup of the game, but at this step.
+
+    ActiveRecord::Base.transaction do
+      @board.set_heroes_activation_state( true )
+      @board.set_sauron_activation_state( false )
+
+      @board.next_to_heroes_draw_cards!
+
+      redirect_to board_inactive_actor_path(@board)
+    end
   end
 
 end
