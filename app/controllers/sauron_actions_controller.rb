@@ -33,15 +33,14 @@ class SauronActionsController < ApplicationController
       end
 
       log_add.each do |action|
-        @board.logs.create!( action: 'sauron_actions.place.' + action, params: {}, user_id: current_user.id, actor: @actor)
+        @board.log( @actor, 'sauron_actions.place.' + action )
       end
 
       log_remove.each do |action|
-        @board.logs.create!( action: 'sauron_actions.remove.' + action, params: {}, user_id: current_user.id, actor: @actor)
+        @board.log( @actor, 'sauron_actions.remove.' + action )
       end
 
       @board.update!( sauron_actions: actions_hash )
-
     end
 
     flash[:success] = 'Actions updated successfully.'
