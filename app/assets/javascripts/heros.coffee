@@ -16,6 +16,7 @@
 #    else
 #      $('#move_hero').addClass('disabled')
 #
+
 #set_draw_card_count_equal_agility = () ->
 #  $('#set_agility').click () ->
 #    agility_value = $('#agility_value').val()
@@ -23,7 +24,7 @@
 #
 #$(document).on('turbolinks:load'
 #  ->
-#    if window.location.pathname.match( /boards\/\d+\/heros\/\d+/ )
-#      card_selection()
+#    if window.location.pathname.match( /heros\/\d+/ )
+##      card_selection()
 #      set_draw_card_count_equal_agility()
 #)

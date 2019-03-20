@@ -90,9 +90,9 @@ class HerosController < ApplicationController
     @actor.hand += cards
     @actor.save!
 
-    @actor.log_draw_cards!( @board, cards.count)
+    # @actor.log_draw_cards!( @board, cards.count)
 
-    redirect_to @actor
+    redirect_to hero_draw_cards_screen_path(@actor)
   end
 
 end

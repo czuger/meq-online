@@ -15,8 +15,8 @@
           = label_tag :nb_cards, 'Cards count'
         .mx-2
           = number_field_tag :nb_cards, @actor.fortitude, max: 20, class: 'form-control'
+        -#.mx-2
+        -#  = button_tag 'Agility', role: :button, type: :button, class: 'btn btn-secondary', id: :set_agility
         .mx-2
-          = button_tag 'Agility', role: :button, type: :button, class: 'btn btn-secondary', id: :set_agility
-        .mx-2
-          = button_tag 'Draw hand', role: :button, class: 'btn btn-secondary'
+          = button_tag 'Draw cards', role: :button, class: 'btn btn-secondary'
       = hidden_field_tag :agility_value, @actor.agility
