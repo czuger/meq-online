@@ -101,6 +101,25 @@ class HerosController < ApplicationController
     # If no more heroes are actives, then we goes to next step
     unless @board.heroes_actives?
 
+      @board.heroes.each do |hero|
+
+        # If all heroes have finished their draw step, we find the first hero to play and we activate him
+        if hero.playing_order == 0
+          @board.transaction do
+            @board.current_hero = hero
+            @board.set_all_actors_activation_state(false)
+            @board.set_hero_activation_state(hero, true)
+            @board.save!
+
+            #TODO : next step here
+
+            break
+          end
+        end
+      end
+
+    else
+      redirect_to :boards
     end
   end
 

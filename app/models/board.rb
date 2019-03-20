@@ -10,6 +10,8 @@ class Board < ApplicationRecord
 
   has_and_belongs_to_many :users
 
+  belongs_to :current_hero, class_name: 'Hero', optional: true
+
   aasm do
     state :created, :initial => true
     state :waiting_for_players, :sauron_setup, :event_step, :sauron_actions, :heroes_draw_cards

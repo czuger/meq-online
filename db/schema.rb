@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_20_115921) do
+ActiveRecord::Schema.define(version: 2019_03_20_124233) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -80,6 +80,8 @@ ActiveRecord::Schema.define(version: 2019_03_20_115921) do
     t.integer "event_deck", limit: 2, null: false, array: true
     t.integer "event_discard", limit: 2, default: [], null: false, array: true
     t.jsonb "favors", default: [], null: false
+    t.bigint "current_hero_id"
+    t.index ["current_hero_id"], name: "index_boards_on_current_hero_id"
   end
 
   create_table "boards_users", id: false, force: :cascade do |t|
@@ -124,6 +126,7 @@ ActiveRecord::Schema.define(version: 2019_03_20_115921) do
   add_foreign_key "actors", "users"
   add_foreign_key "board_messages", "actors", column: "reciever_id"
   add_foreign_key "board_messages", "actors", column: "sender_id"
+  add_foreign_key "boards", "actors", column: "current_hero_id"
   add_foreign_key "logs", "actors"
   add_foreign_key "logs", "boards"
   add_foreign_key "movement_preparation_steps", "actors"
