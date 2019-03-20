@@ -38,7 +38,7 @@ module GameEngine
       @board.transaction do
         @actor.save!
         @board.save!
-        @board.log!( @user, @board.sauron, "#{@deck_name}_cards.draw", { count: cards.count } )
+        @board.log( @board.sauron, "#{@deck_name}_cards.draw", { count: cards.count } )
       end
     end
 
@@ -60,7 +60,7 @@ module GameEngine
 
         @board.save!
         @actor.save!
-        @board.log!( @user, @board.sauron, "#{@deck_name}_cards.keep", { count: selected_cards.count } )
+        @board.log( @board.sauron, "#{@deck_name}_cards.keep", { count: selected_cards.count } )
       end
     end
 
@@ -82,7 +82,7 @@ module GameEngine
       add_cards(:deck, drawn_cards)
       remove_cards(:drawn_cards, drawn_cards)
 
-      @board.log!( @user, @board.sauron, "#{@deck_name}_cards.back_to_bottom", { count: cards_count } )
+      @board.log( @board.sauron, "#{@deck_name}_cards.back_to_bottom", { count: cards_count } )
     end
 
     def discard_cards
@@ -91,7 +91,7 @@ module GameEngine
       add_cards(:discard, drawn_cards)
       remove_cards(:drawn_cards, drawn_cards)
 
-      @board.log!( @user, @board.sauron, "#{@deck_name}_cards.discard", { count: cards_count } )
+      @board.log( @board.sauron, "#{@deck_name}_cards.discard", { count: cards_count } )
     end
 
     def add_cards( deck_code_name, cards )

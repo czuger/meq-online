@@ -16,7 +16,7 @@ class BoardStepsController < ApplicationController
     old_state = @board.aasm_state
     @board.transaction do
       @board.send( "#{next_event}!" )
-      @board.log!( current_user, @actor, :switch_state, old_state: old_state.humanize, new_state: @board.aasm_state.humanize )
+      @board.log( @actor, :switch_state, old_state: old_state.humanize, new_state: @board.aasm_state.humanize )
     end
 
     redirect_to edit_board_step_path(@actor)

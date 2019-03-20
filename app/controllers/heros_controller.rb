@@ -62,7 +62,7 @@ class HerosController < ApplicationController
   def finish_turn
     @actor.transaction do
       @actor.update( turn_finished: true )
-      @board.log!( current_user, @actor, :finish_turn )
+      @board.log( @actor, :finish_turn )
     end
     redirect_to @actor
   end

@@ -78,11 +78,11 @@ class BoardsController < ApplicationController
         if @board.save
           add_players_to_board
 
-          @board.system_log( 'setup.set_starting_plot', { plot_card: starting_plot_id } )
-          @board.system_log( 'setup.set_influence_in_shadow_pool', { count: starting_plot.influence.shadow_pool } )
+          @board.log( nil, 'setup.set_starting_plot', { plot_card: starting_plot_id } )
+          @board.log( nil, 'setup.set_influence_in_shadow_pool', { count: starting_plot.influence.shadow_pool } )
 
           starting_plot.influence.init.each do |key, value|
-            @board.system_log( 'setup.set_influence_in_location', { count: value, location: key.to_s.humanize } )
+            @board.log( nil, 'setup.set_influence_in_location', { count: value, location: key.to_s.humanize } )
           end
 
           format.html { redirect_to boards_path, notice: 'Board was successfully created.' }

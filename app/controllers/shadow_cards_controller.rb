@@ -51,7 +51,7 @@ class ShadowCardsController < ApplicationController
     @board.transaction do
       @actor.save!
       @board.save!
-      @board.log!( current_user, @board.sauron, 'shadow_cards.play', { shadow_card: selected_card } )
+      @board.log( @board.sauron, 'shadow_cards.play', { shadow_card: selected_card } )
     end
 
     redirect_to @actor

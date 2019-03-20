@@ -57,7 +57,7 @@ class PlotCardsController < ApplicationController
     @board.transaction do
       @actor.save!
       @board.save!
-      @board.log!( current_user, @board.sauron, 'plot_cards.play', { plot_card: selected_card } )
+      @board.log( @board.sauron, 'plot_cards.play', { plot_card: selected_card } )
     end
 
     redirect_to plot_cards_discard_screen_path(@actor)
@@ -78,7 +78,7 @@ class PlotCardsController < ApplicationController
 
     @board.transaction do
       @board.save!
-      @board.log!( current_user, @board.sauron, 'plot_cards.discard', { plot_card: discarded_card } )
+      @board.log( @board.sauron, 'plot_cards.discard', { plot_card: discarded_card } )
     end
 
     redirect_to plot_cards_discard_screen_path(@actor)

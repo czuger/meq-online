@@ -19,12 +19,12 @@ class CharactersController < ApplicationController
         if location.empty?
           if @board.characters[char]
             @board.characters[char] = nil
-            @board.log!( current_user, @actor, 'character.remove', name: @characters.name( char ) )
+            @board.log( @actor, 'character.remove', name: @characters.name( char ) )
           end
         else
           next unless @locations.exist?(location)
           @board.characters[char] = location.to_sym
-          @board.log!( current_user, @actor, 'character.place', name: @characters.name( char ),
+          @board.log( @actor, 'character.place', name: @characters.name( char ),
                        location: @locations.get( location ).name )
         end
       end
