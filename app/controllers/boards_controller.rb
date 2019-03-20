@@ -25,7 +25,7 @@ class BoardsController < ApplicationController
   # GET /boards/new
   def new
     @board = Board.new
-    @remaining_heroes = 1 # @board.max_heroes_count
+    @remaining_heroes = @board.max_heroes_count
     @sauron_state = true
     load_heroes
   end
@@ -119,12 +119,13 @@ class BoardsController < ApplicationController
       # Adding heroes
       @board.transaction do
         heroes_to_process = [:hero_1, :hero_2, :hero_3].map{ |h| params[h]&.to_sym }.compact.reject{ |h| h.empty? }.uniq
-        heroes_to_process.each do |hero_code|
+        heroes_to_process.each_with_index do |hero_code, index|
 
           hero = @heroes.get( hero_code )
 
           life_pool = hero.starting_deck.shuffle
-          hand = life_pool.shift( hero[:fortitude] )
+          # hand = life_pool.shift( hero[:fortitude] )
+          hand = []
 
           quests_manager = GameData::HeroQuests.new( 'regular' )
           starting_quest = quests_manager.get_starting_quest( hero_code )
@@ -134,7 +135,7 @@ class BoardsController < ApplicationController
               name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
               wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: life_pool,
               rest_pool: [], damage_pool: [], hand: hand, user_id: @current_user.id, name: hero.name,
-              current_quest: starting_quest
+              current_quest: starting_quest, playing_order: index
           )
           # Just tell that the user is connected to this board
           @current_user.boards << @board unless @current_user.boards.include?( @board )

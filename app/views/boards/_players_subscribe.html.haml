@@ -20,15 +20,15 @@
 .row
   - if @remaining_heroes >= 2
     .col-2
-      = label_tag :hero_2, 'Hero you play', class: 'col-form-label heroes_count_2'
+      = label_tag :hero_2, 'Hero you play', class: 'col-form-label heroes_count_2', style: 'display: none'
     .col-4
-      = select_tag(:hero_2, options_for_select( @heroes.select_tag_data ), include_blank: true, class: 'form-control heroes_count_2' )
+      = select_tag(:hero_2, options_for_select( @heroes.select_tag_data ), include_blank: true, class: 'form-control heroes_count_2', style: 'display: none' )
 
   - if @remaining_heroes >= 3
     .col-2
-      = label_tag :hero_3, 'Hero you play', class: 'col-form-label heroes_count_3'
+      = label_tag :hero_3, 'Hero you play', class: 'col-form-label heroes_count_3', style: 'display: none'
     .col-4
-      = select_tag(:hero_3, options_for_select( @heroes.select_tag_data ), include_blank: true, class: 'form-control heroes_count_3' )
+      = select_tag(:hero_3, options_for_select( @heroes.select_tag_data ), include_blank: true, class: 'form-control heroes_count_3', style: 'display: none' )
 
 .actions
   = submit_tag 'Save', class: 'btn btn-primary'
