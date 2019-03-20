@@ -19,6 +19,9 @@ module GameEngine
         # Otherwise, if we have recorded a match, we use it
         elsif (path = STATE_TO_PATH[board.aasm_state.to_sym])
           Rails.application.routes.url_helpers.send( path.to_s + '_path', actor  )
+
+        else
+          raise "Route not found for state #{board.aasm_state}"
         end
 
       else

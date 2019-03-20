@@ -14,5 +14,6 @@ FactoryBot.define do
     damage_pool { [] }
     current_quest { 1 }
 
+    active { true }
   end
 end
