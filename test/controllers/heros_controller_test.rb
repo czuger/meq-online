@@ -7,6 +7,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     @user = create( :user )
     @board = create( :board )
     @hero = create( :hero, user: @user, board: @board )
+    @sauron = create( :sauron, user: @user, board: @board )
     @board.users << @user
 
     $google_auth_hash[:uid] = @user.uid
@@ -50,6 +51,16 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   test 'should patch take_damages' do
     patch hero_take_damages_url( @hero, damage_amount: 3 )
     assert_redirected_to hero_url(@hero)
+  end
+
+  test 'state should be play_shadow_card_at_start_of_hero_turn' do
+    @board.aasm_state = 'heroes_draw_cards'
+    @board.save!
+
+    get hero_draw_cards_finished_url( @hero )
+
+    assert_equal 'play_shadow_card_at_start_of_hero_turn', @board.reload.aasm_state
+    assert_redirected_to boards_url
   end
 
   # test 'should POST move' do

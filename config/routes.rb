@@ -27,6 +27,7 @@ Rails.application.routes.draw do
 
     get :draw_cards_screen
     post :draw_cards
+    get :draw_cards_finished
 
     resources :movement_preparation_steps, except: [ :show ]
   end

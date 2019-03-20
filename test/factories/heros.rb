@@ -15,5 +15,6 @@ FactoryBot.define do
     current_quest { 1 }
 
     active { true }
+    playing_order { 0 }
   end
 end

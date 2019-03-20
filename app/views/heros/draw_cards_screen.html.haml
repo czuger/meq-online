@@ -4,6 +4,11 @@
 
   = render partial: 'hero_info'
 
+  .row
+    .col-3
+      = link_to hero_draw_cards_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
+        Terminate
+
   .form-group
     %b Hand:
 

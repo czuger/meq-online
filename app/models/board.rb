@@ -15,6 +15,7 @@ class Board < ApplicationRecord
   aasm do
     state :created, :initial => true
     state :waiting_for_players, :sauron_setup, :event_step, :sauron_actions, :heroes_draw_cards
+    state :play_shadow_card_at_start_of_hero_turn
 
     event :wait_for_players do
       transitions :from => :created, :to => :waiting_for_players
@@ -34,6 +35,10 @@ class Board < ApplicationRecord
 
     event :next_to_heroes_draw_cards do
       transitions :from => :sauron_actions, :to => :heroes_draw_cards
+    end
+
+    event :next_to_play_shadow_card_at_start_of_hero_turn do
+      transitions :from => :heroes_draw_cards, :to => :play_shadow_card_at_start_of_hero_turn
     end
 
     # event :back_to_sauron_first_turn do
