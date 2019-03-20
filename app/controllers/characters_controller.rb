@@ -18,14 +18,10 @@ class CharactersController < ApplicationController
 
         if location.empty?
           if @board.characters[char]
-            @board.characters[char] = nil
-            @board.log( @actor, 'character.remove', name: @characters.name( char ) )
+            @characters.remove_from_map(@board, @actor, char)
           end
         else
-          next unless @locations.exist?(location)
-          @board.characters[char] = location.to_sym
-          @board.log( @actor, 'character.place', name: @characters.name( char ),
-                       location: @locations.get( location ).name )
+          @characters.place_on_map(@board, @actor, char, location)
         end
       end
 
@@ -38,8 +34,8 @@ class CharactersController < ApplicationController
   private
 
   def set_characters
-    @locations= GameData::Locations.new
-    @characters = GameData::Characters.new
+    @locations = GameData::Locations.new
+    @characters = GameData::Characters.new( @locations )
   end
 
 end

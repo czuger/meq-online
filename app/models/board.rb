@@ -27,7 +27,7 @@ class Board < ApplicationRecord
     end
 
     event :next_to_sauron_actions do
-      transitions :from => :sauron_setup, :to => :sauron_actions
+      transitions :from => :event_step, :to => :sauron_actions
     end
 
     # event :back_to_sauron_first_turn do

@@ -13,16 +13,18 @@ class SauronController < ApplicationController
     @board.transaction do
       GameData::Objectives.set_objectives @board
 
-      GameData::Events.new.set_random_card @board
+      events = GameData::Events.new
 
-
-
-      @board.set_all_actors_activation_state( true )
+      events.set_random_card @board
+      events.place_characters_and_influence @board, @actor, @board.last_event_card
 
       @board.next_to_event_step!
+      @board.next_to_sauron_actions!
+
+      @board.set_sauron_activation_state( true )
     end
 
-    redirect_to edit_event_path(@actor)
+    redirect_to edit_sauron_action_path(@actor)
   end
 
   def choose_event_card_screen

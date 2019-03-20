@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_19_134429) do
+ActiveRecord::Schema.define(version: 2019_03_20_083341) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(version: 2019_03_19_134429) do
     t.integer "last_event_card", limit: 2
     t.integer "event_deck", limit: 2, null: false, array: true
     t.integer "event_discard", limit: 2, default: [], null: false, array: true
+    t.jsonb "favors", default: [], null: false
   end
 
   create_table "boards_users", id: false, force: :cascade do |t|

@@ -20,10 +20,16 @@ module GameData
       board.last_event_card = board.event_deck.shift
     end
 
-    def place_characters_and_influence(board)
-      if @data[:I][:character]
+    def place_characters_and_influence(board, actor, card)
+      characters = GameData::Characters.new
+      char_data = @data[:I][card][:character]
+      favors_data = @data[:I][card][:favors]
+
+      if char_data
+        characters.place_on_map(board, actor, char_data.name, char_data.location)
       end
 
+      board.favors += favors_data
     end
 
   end
