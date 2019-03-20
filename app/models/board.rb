@@ -68,13 +68,8 @@ class Board < ApplicationRecord
     set_heroes_activation_state active
   end
 
-  def log!( _, actor, action, params= {} )
-    actor = actor.is_a?( Integer ) ? actor : actor.id
+  def log( actor, action, params= {} )
     logs.create!( board: self, actor_id: actor, action: action, params: params )
-  end
-
-  def system_log( action, params= {} )
-    logs.create!( board: self, action: action, params: params )
   end
 
 end

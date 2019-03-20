@@ -15,6 +15,8 @@ class SauronController < ApplicationController
 
       GameData::Events.new.set_random_card @board
 
+
+
       @board.set_all_actors_activation_state( true )
 
       @board.next_to_event_step!

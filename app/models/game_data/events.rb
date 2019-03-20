@@ -12,13 +12,18 @@ module GameData
       end
     end
 
-
     def get_starting_event_deck
       @data[:I].keys.shuffle
     end
 
     def set_random_card(board)
       board.last_event_card = board.event_deck.shift
+    end
+
+    def place_characters_and_influence(board)
+      if @data[:I][:character]
+      end
+
     end
 
   end
