@@ -17,22 +17,28 @@ module GameData
     end
 
     def set_random_card(board)
-      board.last_event_card = board.event_deck.shift
+      card = board.event_deck.shift
+
+      # raise "On board #{board.id} : Event deck is empty" unless card
+
+      board.last_event_card = card
+
+      board.log( nil, 'event.choose_card', { event_card: "I/#{card}.png" } )
     end
 
-    def place_characters_and_influence(board, actor, card)
+    def place_characters_and_influence(board, card)
       characters = GameData::Characters.new
       char_data = @data[:I][card][:character]
       favors_data = @data[:I][card][:favors]
 
       if char_data
-        characters.place_on_map(board, actor, char_data.name, char_data.location)
+        characters.place_on_map(board, nil, char_data.name, char_data.location)
       end
 
       board.favors += favors_data
 
       favors_data.each do |fd|
-        board.log( actor, 'favor.place', location: fd.to_s.humanize )
+        board.log( nil, 'favor.place', location: fd.to_s.humanize )
       end
     end
 

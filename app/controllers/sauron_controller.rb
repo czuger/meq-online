@@ -16,7 +16,7 @@ class SauronController < ApplicationController
       events = GameData::Events.new
 
       events.set_random_card @board
-      events.place_characters_and_influence @board, @actor, @board.last_event_card
+      events.place_characters_and_influence @board, @board.last_event_card
 
       @board.next_to_event_step!
       @board.next_to_sauron_actions!

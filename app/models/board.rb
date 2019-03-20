@@ -69,7 +69,7 @@ class Board < ApplicationRecord
   end
 
   def log( actor, action, params= {} )
-    logs.create!( board: self, actor_id: actor, action: action, params: params )
+    logs.create!( board: self, actor: actor, action: action, params: params )
   end
 
 end

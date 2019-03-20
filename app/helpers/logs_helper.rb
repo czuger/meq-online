@@ -14,6 +14,8 @@ module LogsHelper
       image_tag( 'sauron/shadows/' + log.params['shadow_card'] + '.png', class: 'log-card' )
     elsif log.params['plot_card']
       image_tag( 'sauron/plots/' + log.params['plot_card'] + '.png', class: 'log-card' )
+    elsif log.params['event_card']
+      image_tag( 'events/' + log.params['event_card'], class: 'log-card' )
     end
   end
 
