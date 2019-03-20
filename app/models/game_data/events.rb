@@ -30,6 +30,10 @@ module GameData
       end
 
       board.favors += favors_data
+
+      favors_data.each do |fd|
+        board.log( actor, 'favor.place', location: fd.to_s.humanize )
+      end
     end
 
   end

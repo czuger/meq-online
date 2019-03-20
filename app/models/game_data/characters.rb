@@ -32,7 +32,7 @@ module GameData
       validate_location_code location_code
 
       board.characters[character_code] = location_code
-      board.log( actor, 'character.place', name: name( character_code ), location: @locations.get( character_code ).name )
+      board.log( actor, 'character.place', name: name( character_code ), location: @locations.get( location_code ).name )
     end
 
     private

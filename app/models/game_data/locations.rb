@@ -11,7 +11,8 @@ module GameData
     end
 
     def get( name_code )
-      OpenStruct.new( @data[name_code] )
+      raise "Location '#{name_code.inspect}' not found" unless @data.has_key?(name_code.to_s)
+      OpenStruct.new( @data[name_code.to_s] )
     end
 
     def exist?( name_code )

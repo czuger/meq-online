@@ -46,6 +46,9 @@ en:
         remove: "Removing %{name}"
         place: "Placing %{name} at %{location}"
 
+      favor:
+        place: "Placing a favor at %{location}"
+
       switch_state: "Changed state from %{old_state} to %{new_state}"
       finish_turn: "Set his turn finished"
 
