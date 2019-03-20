@@ -95,4 +95,13 @@ class HerosController < ApplicationController
     redirect_to hero_draw_cards_screen_path(@actor)
   end
 
+  def draw_cards_finished
+    set_hero_activation_state(@actor, false)
+
+    # If no more heroes are actives, then we goes to next step
+    unless @board.heroes_actives?
+
+    end
+  end
+
 end

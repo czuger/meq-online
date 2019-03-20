@@ -55,6 +55,18 @@ class Board < ApplicationRecord
     end
   end
 
+  #
+  # Activation state methode
+  #
+  def heroes_actives?
+    heroes.map{ |e| e.active }.inject(:|)
+  end
+
+  def set_hero_activation_state( hero, active= false )
+    hero.active = active
+    hero.save!
+  end
+
   def set_heroes_activation_state( active= false )
     heroes.each do |h|
       h.active = active
@@ -72,6 +84,9 @@ class Board < ApplicationRecord
     set_heroes_activation_state active
   end
 
+  #
+  # Log methodes
+  #
   def log( actor, action, params= {} )
     logs.create!( board: self, actor: actor, action: action, params: params )
   end
