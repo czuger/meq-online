@@ -110,7 +110,7 @@ class HerosController < ApplicationController
           @board.transaction do
             @board.current_hero = hero
             @board.set_all_actors_activation_state(false)
-            @board.set_hero_activation_state(hero, true)
+            @board.set_sauron_activation_state( true)
             @board.save!
 
             #TODO : next step here

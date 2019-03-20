@@ -59,7 +59,7 @@ class SauronActionsController < ApplicationController
 
       @board.next_to_heroes_draw_cards!
 
-      redirect_to board_inactive_actor_path(@board)
+      redirect_to boards_path
     end
   end
 

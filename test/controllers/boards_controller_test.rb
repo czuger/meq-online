@@ -68,6 +68,8 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1, created_board.current_heroes_count
     assert_equal 2, created_board.max_heroes_count
 
+    assert_equal 0, created_board.heroes.first.playing_order
+
     assert_redirected_to boards_url
   end
 
