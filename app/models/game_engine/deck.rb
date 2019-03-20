@@ -44,7 +44,9 @@ module GameEngine
 
     def keep_cards( selected_cards, discard_card_action: nil )
       raise 'Selected cards should not be empty' if selected_cards.empty?
-      raise 'Selected cards should be included in pool cards' unless (selected_cards - @actor.send( "drawn_#{@deck_name}_cards" )).empty?
+      unless (selected_cards - get_deck(:drawn_cards)).empty?
+        raise "Selected cards should be included in pool cards. selected_cards : #{selected_cards}, drawn_cards : #{get_deck(:drawn_cards)}"
+      end
 
       add_cards(:hand, selected_cards)
       remove_cards(:drawn_cards, selected_cards)

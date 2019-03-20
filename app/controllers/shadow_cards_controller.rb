@@ -27,13 +27,7 @@ class ShadowCardsController < ApplicationController
     ge = GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME, discard_card_action: :discard )
     ge.keep_cards(cards)
 
-    redirect_try = GameEngine::RedirectFromBoardState.redirect(@board,@actor){ |r|
-      redirect_to r, notice: I18n.t( 'notices.shadow_cards_keep_success', count: cards.count )
-    }
-
-    unless redirect_try
-      redirect_to shadow_cards_play_screen_path(@actor)
-    end
+    redirect_to GameEngine::RouteFromBoardState.get_route(@board,@actor), notice: I18n.t( 'notices.shadow_cards_keep_success', count: cards.count )
   end
 
   def play_screen
