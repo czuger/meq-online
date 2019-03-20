@@ -1,18 +1,15 @@
-.container
-  %p#notice= notice
+%h3= play_screen_title_name
 
-  %h3= play_screen_title_name
+- @cards.each do |card|
+  = card_picture( card, selectable: :unique )
 
-  - @cards.each do |card|
-    = card_picture( card, selectable: :unique )
+= form_tag play_screen_path, class: 'ml-3' do
+  .row
 
-  = form_tag play_screen_path, class: 'ml-3' do
-    .row
+    - if controller_to_code == 'plot'
+      .col-3
+        = select_tag( :card_slot, options_for_select( @free_slots_options ), { class: 'form-control' } )
 
-      - if controller_to_code == 'plot'
-        .col-3
-          = select_tag( :card_slot, options_for_select( @free_slots_options ), { class: 'form-control' } )
-
-      .col-2
-        = hidden_field_tag :selected_card, nil
-        = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block', id: :validate_unique, value: :keep, disabled: true
+    .col-2
+      = hidden_field_tag :selected_card, nil
+      = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block', id: :validate_unique, value: :keep, disabled: true
