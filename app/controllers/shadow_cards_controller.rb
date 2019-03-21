@@ -43,12 +43,18 @@ class ShadowCardsController < ApplicationController
     @actor.shadow_cards.delete(selected_card)
 
     @board.transaction do
+
+      # We can play shadow card from many steps
+      if @board.play_shadow_card_at_start_of_hero_turn?
+        @board.next_to_rest_step!
+      end
+
       @actor.save!
       @board.save!
       @board.log( @board.sauron, 'shadow_cards.play', { shadow_card: selected_card } )
     end
 
-    redirect_to @actor
+    redirect_to GameEngine::RouteFromBoardState.get_route(@board,@actor)
   end
 
 end

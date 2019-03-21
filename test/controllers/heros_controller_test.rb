@@ -38,15 +38,15 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   #   assert_redirected_to hero_url(@hero)
   # end
 
-  test 'should get heal' do
-    get hero_heal_url( @hero )
-    assert_redirected_to hero_url(@hero)
-  end
+  # test 'should get heal' do
+  #   get hero_heal_url( @hero )
+  #   assert_redirected_to hero_url(@hero)
+  # end
 
-  test 'should get rest' do
-    get hero_rest_url( @hero )
-    assert_redirected_to hero_url(@hero)
-  end
+  # test 'should get rest' do
+  #   get hero_rest_url( @hero )
+  #   assert_redirected_to hero_url(@hero)
+  # end
 
   test 'should patch take_damages' do
     patch hero_take_damages_url( @hero, damage_amount: 3 )

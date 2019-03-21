@@ -1,0 +1,26 @@
+.container
+
+  %p#notice= notice
+
+  = render partial: 'hero_info'
+
+  = form_tag hero_rest_path, class: 'ml-3' do
+    = hidden_field_tag :selected_cards, nil
+    = button_tag 'Keep card(s)', role: :button, class: 'btn btn-secondary', id: :validate_multiple, value: :keep, disabled: true
+
+  .form-group
+    .row
+      .col-4
+        = label_tag :rest, 'Do you want to rest ?', class: 'col-form-label'
+      .col-4
+        = check_box_tag( :rest, 'yes', false, 'data-toggle' => 'toggle', class: :toggle )
+
+    .row
+      .col-4
+        = label_tag :heal, 'Do you want to heal ?', class: 'col-form-label'
+      .col-4
+        = check_box_tag( :heal, 'yes', false, 'data-toggle' => 'toggle', class: :toggle )
+
+    .row
+      .col-4
+        = button_tag 'Process', role: :button, class: 'btn btn-secondary btn-block'

@@ -22,6 +22,10 @@ class HerosController < ApplicationController
     end
   end
 
+  def rest_screen
+
+  end
+
   def rest
     @actor.life_pool += @actor.rest_pool
     @actor.rest_pool = []

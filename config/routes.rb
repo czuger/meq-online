@@ -19,8 +19,11 @@ Rails.application.routes.draw do
   end
 
   resources :heros, only: [ :show ] do
-    get :rest
-    get :heal
+
+    get :rest_screen
+    post :rest
+    # get :heal
+
     patch :take_damages
     post :move
     patch :finish_turn
@@ -41,6 +44,11 @@ Rails.application.routes.draw do
     get :setup_finished
 
     get :execute_event_card_screen
+
+    resource :shadow_cards, only: [] do
+      get :test
+    end
+
   end
 
   get 'sauron_actions/:actor_id/terminate', to: 'sauron_actions#terminate', as: 'sauron_actions_terminate'
@@ -77,6 +85,8 @@ Rails.application.routes.draw do
 
   # Caution, in this case, the id is not a shadow_pool or influence, but an Actor.id
   patch 'shadow_pools/:actor_id/update_from_map', to: 'shadow_pools#update_from_map', as: 'shadow_pools_update_from_map'
+
+
   resources :shadow_pools, only: [ :edit, :update ]
 
   resources :influences, only: [ :show, :edit, :update ]
