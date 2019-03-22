@@ -1,0 +1,8 @@
+- unless @cards_already_drawn.empty?
+
+  %hr
+
+  %h3 Cards already drawn
+
+  - @cards_already_drawn.each do |card_number|
+    = card_picture(card_number)

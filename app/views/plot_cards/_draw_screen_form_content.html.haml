@@ -1,0 +1,7 @@
+.row
+  .col-3
+    = label_tag :nb_cards, 'Cards count', class: 'col-form-label'
+  .col-3
+    = number_field_tag :nb_cards, @nb_cards, max: 8, class: 'form-control'
+  .col-3
+    = button_tag 'Draw cards(s)', role: :button, class: 'btn btn-secondary btn-block', id: :draw, value: :draw

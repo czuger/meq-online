@@ -41,10 +41,10 @@ class SauronsControllerTest < ActionDispatch::IntegrationTest
   #   assert_redirected_to sauron_url(Sauron.last)
   # end
 
-  test 'should show sauron' do
-    get sauron_url(@sauron)
-    assert_response :success
-  end
+  # test 'should show sauron' do
+  #   get sauron_url(@sauron)
+  #   assert_response :success
+  # end
   #
   # test "should get edit" do
   #   get edit_sauron_url(@sauron)

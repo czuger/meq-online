@@ -39,14 +39,27 @@ Rails.application.routes.draw do
   # Sauron linked actions
   #
   resources :sauron, only: [:show] do
-    post :shadow_cards
+    # post :shadow_cards
     get :setup
     get :setup_finished
 
     get :execute_event_card_screen
 
     resource :shadow_cards, only: [] do
-      get :test
+      get :play_screen
+      post :play
+
+      get :start_hero_turn_play_screen
+      post :start_hero_turn_play
+
+      get :discard_screen
+      post :discard
+
+      get :draw_screen
+      post :draw
+
+      get :keep_screen
+      post :keep
     end
 
   end
@@ -71,17 +84,17 @@ Rails.application.routes.draw do
   get 'plot_cards/:actor_id/keep_screen', to: 'plot_cards#keep_screen', as: 'plot_cards_keep_screen'
   post 'plot_cards/:actor_id/keep', to: 'plot_cards#keep', as: 'plot_cards_keep'
 
+  # #
+  # # Shadow cards actions
+  # #
+  # get 'shadow_cards/:actor_id/draw_screen', to: 'shadow_cards#draw_screen', as: 'shadow_cards_draw_screen'
+  # post 'shadow_cards/:actor_id/draw', to: 'shadow_cards#draw', as: 'shadow_cards_draw'
   #
-  # Shadow cards actions
+  # get 'shadow_cards/:actor_id/keep_screen', to: 'shadow_cards#keep_screen', as: 'shadow_cards_keep_screen'
+  # post 'shadow_cards/:actor_id/keep', to: 'shadow_cards#keep', as: 'shadow_cards_keep'
   #
-  get 'shadow_cards/:actor_id/draw_screen', to: 'shadow_cards#draw_screen', as: 'shadow_cards_draw_screen'
-  post 'shadow_cards/:actor_id/draw', to: 'shadow_cards#draw', as: 'shadow_cards_draw'
-
-  get 'shadow_cards/:actor_id/keep_screen', to: 'shadow_cards#keep_screen', as: 'shadow_cards_keep_screen'
-  post 'shadow_cards/:actor_id/keep', to: 'shadow_cards#keep', as: 'shadow_cards_keep'
-
-  get 'shadow_cards/:actor_id/play_screen', to: 'shadow_cards#play_screen', as: 'shadow_cards_play_screen'
-  post 'shadow_cards/:actor_id/play', to: 'shadow_cards#play', as: 'shadow_cards_play'
+  # get 'shadow_cards/:actor_id/play_screen', to: 'shadow_cards#play_screen', as: 'shadow_cards_play_screen'
+  # post 'shadow_cards/:actor_id/play', to: 'shadow_cards#play', as: 'shadow_cards_play'
 
   # Caution, in this case, the id is not a shadow_pool or influence, but an Actor.id
   patch 'shadow_pools/:actor_id/update_from_map', to: 'shadow_pools#update_from_map', as: 'shadow_pools_update_from_map'
