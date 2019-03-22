@@ -23,6 +23,11 @@ class SauronsControllerTest < ActionDispatch::IntegrationTest
     OmniAuth.config.test_mode = false
   end
 
+  test 'should get sauron setup screen' do
+    get sauron_setup_url(@sauron)
+    assert_response :success
+  end
+
   # test "should get index" do
   #   get saurons_url
   #   assert_response :success

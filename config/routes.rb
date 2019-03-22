@@ -39,7 +39,7 @@ Rails.application.routes.draw do
   # Sauron linked actions
   #
   resources :sauron, only: [:show] do
-    # post :shadow_cards
+
     get :setup
     get :setup_finished
 
