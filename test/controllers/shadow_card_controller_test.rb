@@ -34,6 +34,12 @@ class ShadowCardControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test 'should get keep_screen' do
+    get keep_screen_sauron_shadow_cards_url @sauron
+    assert_response :success
+  end
+
+
   test 'should play card' do
     @sauron.shadow_cards << 8
     @sauron.save!

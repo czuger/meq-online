@@ -1,1 +1,11 @@
-= render partial: 'plot_cards/keep_screen'
+.container
+  %p#notice= notice
+
+  %h3= 'Select shadow card(s) to keep'
+
+  - @cards.each do |card_number|
+    = card_picture( card_number, selectable: :multiple )
+
+  = form_tag keep_sauron_shadow_cards_path(@actor), class: 'ml-3' do
+    = hidden_field_tag :selected_cards, nil
+    = button_tag 'Keep card(s)', role: :button, class: 'btn btn-secondary', id: :validate_multiple, value: :keep, disabled: true

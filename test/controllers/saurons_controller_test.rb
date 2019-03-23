@@ -51,10 +51,10 @@ class SauronsControllerTest < ActionDispatch::IntegrationTest
   #   assert_response :success
   # end
   #
-  # test "should get edit" do
-  #   get edit_sauron_url(@sauron)
-  #   assert_response :success
-  # end
+  test 'should get edit' do
+    get edit_sauron_action_url(@sauron)
+    assert_response :success
+  end
   #
   # test "should update sauron" do
   #   patch sauron_url(@sauron), params: { sauron: { board_id: @sauron.board_id, plot_cards: @sauron.plot_cards, shadow_cards: @sauron.shadow_cards, user_id: @sauron.user_id } }

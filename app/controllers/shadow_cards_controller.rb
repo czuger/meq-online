@@ -14,7 +14,7 @@ class ShadowCardsController < ApplicationController
     ge = GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME, discard_card_action: :discard )
     ge.draw_cards(params[:nb_cards])
 
-    redirect_to keep_sauron_shadow_cards_url(@actor)
+    redirect_to keep_screen_sauron_shadow_cards_url(@actor)
   end
 
   def keep_screen

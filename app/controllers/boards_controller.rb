@@ -8,9 +8,9 @@ class BoardsController < ApplicationController
   # GET /boards.json
   def index
     if params[:all]
-      @boards = Board.all.includes( :heroes, :sauron, { heroes: :user }, { sauron: :user } )
+      @boards = Board.all.includes( :heroes, :sauron, { heroes: :user }, { sauron: :user } ).order( 'updated_at DESC' )
     else
-      @boards = @current_user.boards.includes( :heroes, :sauron, { heroes: :user }, { sauron: :user } )
+      @boards = @current_user.boards.includes( :heroes, :sauron, { heroes: :user }, { sauron: :user } ).order( 'updated_at DESC' )
     end
 
     @heroes = GameData::Heroes.new

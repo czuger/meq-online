@@ -15,7 +15,7 @@
           1 - Go to map
 
       .col-3
-        = link_to sauron_setup_path(@actor, nb_cards: @plot_card.shadow_cards.draw), role: :button, class: 'btn btn-secondary btn-block' do
+        = link_to draw_screen_sauron_shadow_cards_path(@actor, nb_cards: @plot_card.shadow_cards.draw), role: :button, class: 'btn btn-secondary btn-block' do
           2 - Draw shadow card
 
       .col-3
