@@ -2,6 +2,7 @@ $(document).on('turbolinks:load'
   ->
     $('.toggle').bootstrapToggle({
       on: 'Yes',
-      off: 'No'
+      off: 'No',
+      offstyle: "secondary"
     })
 )
