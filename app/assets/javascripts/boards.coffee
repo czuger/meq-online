@@ -23,13 +23,6 @@ match_players_count = () ->
     else
       $('.heroes_count_2').show()
 
-
-toogle_switch_initialize = () ->
-  # assumes the checkboxes have the class 'toggle'
-  # Toggle should have the toggle class for it to work
-  $('input[type="checkbox"].toggle').bootstrapToggle()
-
-
 # Seems that bootstrap-toggle is not loaded by turbolinks
 # So it is a good idea to interact with it to be sure it is loaded
 $(document).on('turbolinks:load'
@@ -37,5 +30,4 @@ $(document).on('turbolinks:load'
     if window.location.pathname == '/boards/new' || window.location.pathname.match( /boards\/\d+\/join/ )
       sauron_checkbox()
       match_players_count()
-      toogle_switch_initialize()
 )
