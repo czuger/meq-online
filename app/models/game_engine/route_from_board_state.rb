@@ -5,7 +5,7 @@ module GameEngine
       sauron_actions: :edit_sauron_action,
       event_step: :edit_event,
       heroes_draw_cards: :hero_draw_cards_screen,
-      play_shadow_card_at_start_of_hero_turn: :start_hero_turn_play_screen_sauron_shadow_cards,
+      play_shadow_card_at_start_of_hero_turn: :start_hero_turn_play_card_screen_sauron_shadow_cards,
       rest_step: :hero_rest_screen
     }
 

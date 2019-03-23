@@ -30,7 +30,7 @@ class ShadowCardControllerTest < ActionDispatch::IntegrationTest
   # end
 
   test 'should get play_screen at start of hero turn' do
-    get start_hero_turn_play_screen_sauron_shadow_cards_url @sauron
+    get start_hero_turn_play_card_screen_sauron_shadow_cards_url @sauron
     assert_response :success
   end
 

@@ -49,8 +49,9 @@ Rails.application.routes.draw do
       get :play_screen
       post :play
 
-      get :start_hero_turn_play_screen
-      post :start_hero_turn_play
+      get :start_hero_turn_play_card_screen
+      post :start_hero_turn_play_card
+      get :start_hero_turn_play_card_finished
 
       get :discard_screen
       post :discard

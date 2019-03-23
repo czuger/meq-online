@@ -6,7 +6,7 @@
   - @cards.each do |card|
     = card_picture( card, selectable: :unique )
 
-  = form_tag start_hero_turn_play_sauron_shadow_cards_path(@actor), class: 'ml-3' do
+  = form_tag start_hero_turn_play_card_sauron_shadow_cards_path(@actor), class: 'ml-3' do
     .row
       .col-2
         = hidden_field_tag :selected_card, nil

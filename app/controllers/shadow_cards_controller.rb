@@ -57,11 +57,11 @@ class ShadowCardsController < ApplicationController
     redirect_to GameEngine::RouteFromBoardState.get_route(@board,@actor)
   end
 
-  def start_hero_turn_play_screen
+  def start_hero_turn_play_card_screen
     @cards = @actor.shadow_cards
   end
 
-  def start_hero_turn_play
+  def start_hero_turn_play_card
     selected_card = params[:selected_card].to_i
 
     raise "Actor does not have card #{selected_card} in #{@actor.shadow_cards}" unless @actor.shadow_cards.include?(selected_card)
@@ -80,6 +80,10 @@ class ShadowCardsController < ApplicationController
       @board.log( @board.sauron, 'shadow_cards.play', { shadow_card: selected_card } )
     end
 
+    redirect_to start_hero_turn_play_screen_sauron_shadow_cards_path(@actor)
+  end
+
+  def start_hero_turn_play_card_finished
     redirect_to boards_path
   end
 
