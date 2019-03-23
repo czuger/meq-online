@@ -70,11 +70,6 @@ class ShadowCardsController < ApplicationController
     @actor.shadow_cards.delete(selected_card)
 
     @board.transaction do
-      @board.next_to_rest_step!
-
-      @board.set_sauron_activation_state( false )
-      @board.set_hero_activation_state( @board.current_hero,true )
-
       @actor.save!
       @board.save!
       @board.log( @board.sauron, 'shadow_cards.play', { shadow_card: selected_card } )
