@@ -3,6 +3,8 @@ class Board < ApplicationRecord
   include AASM
   include BoardAasm
 
+  include GameEngine::ActorActivation
+
   has_many :logs, dependent: :destroy
 
   has_many :heroes, dependent: :destroy
@@ -64,35 +66,6 @@ class Board < ApplicationRecord
     event :back_to_sauron_turn do
       transitions :from => [ :heroes_turn ], :to => :sauron_turn
     end
-  end
-
-  #
-  # Activation state methode
-  #
-  def heroes_actives?
-    heroes.map{ |e| e.active }.inject(:|)
-  end
-
-  def set_hero_activation_state( hero, active= false )
-    hero.active = active
-    hero.save!
-  end
-
-  def set_heroes_activation_state( active= false )
-    heroes.each do |h|
-      h.active = active
-      h.save!
-    end
-  end
-
-  def set_sauron_activation_state( active= false )
-    sauron.active = active
-    sauron.save!
-  end
-
-  def set_all_actors_activation_state( active= false )
-    set_sauron_activation_state active
-    set_heroes_activation_state active
   end
 
   #

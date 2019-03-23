@@ -11,3 +11,7 @@
       .col-2
         = hidden_field_tag :selected_card, nil
         = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block', id: :validate_unique, value: :keep, disabled: true
+
+      .col-2
+        = link_to start_hero_turn_play_card_finished_sauron_shadow_cards_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
+          Terminate

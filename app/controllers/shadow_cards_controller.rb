@@ -84,7 +84,15 @@ class ShadowCardsController < ApplicationController
   end
 
   def start_hero_turn_play_card_finished
-    redirect_to boards_path
+
+    @board.transaction do
+      @board.activate_current_hero
+
+      @board.next_to_rest_step!
+
+      redirect_to boards_path
+    end
+
   end
 
 end
