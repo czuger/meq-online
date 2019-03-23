@@ -10,14 +10,16 @@
     .row
       .col-2
         = label_tag :rest, 'Do you want to rest ?', class: 'col-form-label'
-      .col-2
+      .col-1
         = check_box_tag( :rest, 'yes', false, 'data-toggle' => 'toggle', class: :toggle )
 
       .col-2
         = label_tag :heal, 'Do you want to heal ?', class: 'col-form-label'
-      .col-2
+      .col-1
         = check_box_tag( :heal, 'yes', false, 'data-toggle' => 'toggle', class: :toggle )
 
-    .row
-      .col-4
+      .col-3
+        = button_tag 'Process', role: :button, class: 'btn btn-secondary btn-block'
+
+      .col-3
         = button_tag 'Process', role: :button, class: 'btn btn-secondary btn-block'
