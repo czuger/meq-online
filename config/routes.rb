@@ -22,7 +22,7 @@ Rails.application.routes.draw do
 
     get :rest_screen
     post :rest
-    # get :heal
+    get :rest_finished
 
     patch :take_damages
     post :move

@@ -6,20 +6,22 @@
 
   %hr
 
-  .form-group
-    .row
-      .col-2
-        = label_tag :rest, 'Do you want to rest ?', class: 'col-form-label'
-      .col-1
-        = check_box_tag( :rest, 'yes', false, 'data-toggle' => 'toggle', class: :toggle )
+  = form_tag hero_rest_path(@actor) do
+    .form-group
+      .row
+        .col-2
+          = label_tag :rest, 'Do you want to rest ?', class: 'col-form-label'
+        .col-1
+          = check_box_tag( :rest, 'yes', false, 'data-toggle' => 'toggle', class: :toggle )
 
-      .col-2
-        = label_tag :heal, 'Do you want to heal ?', class: 'col-form-label'
-      .col-1
-        = check_box_tag( :heal, 'yes', false, 'data-toggle' => 'toggle', class: :toggle )
+        .col-2
+          = label_tag :heal, 'Do you want to heal ?', class: 'col-form-label'
+        .col-1
+          = check_box_tag( :heal, 'yes', false, 'data-toggle' => 'toggle', class: :toggle )
 
-      .col-3
-        = button_tag 'Process', role: :button, class: 'btn btn-secondary btn-block'
+        .col-3
+          = button_tag 'Process', role: :button, class: 'btn btn-secondary btn-block'
 
-      .col-3
-        = button_tag 'Process', role: :button, class: 'btn btn-secondary btn-block'
+        .col-3
+          = link_to hero_rest_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
+            Terminate

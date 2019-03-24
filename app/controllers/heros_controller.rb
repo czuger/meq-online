@@ -23,23 +23,19 @@ class HerosController < ApplicationController
   end
 
   def rest_screen
-
   end
 
   def rest
-    @actor.life_pool += @actor.rest_pool
-    @actor.rest_pool = []
-    @actor.life_pool.shuffle
-    @actor.save!
-    redirect_to @actor
+    if params[:rest]
+      @actor.rest
+    elsif params[:heal]
+      @actor.heal
+    end
+
+    redirect_to hero_rest_screen_path(@actor)
   end
 
-  def heal
-    @actor.life_pool += @actor.damage_pool
-    @actor.damage_pool = []
-    @actor.life_pool.shuffle
-    @actor.save!
-    redirect_to @actor
+  def rest_finished
   end
 
   def take_damages

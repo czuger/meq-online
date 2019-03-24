@@ -16,6 +16,24 @@ class Hero < Actor
     end
   end
 
+  def rest
+    self.life_pool += rest_pool
+    self.rest_pool = []
+    self.life_pool.shuffle
+    save!
+  end
+
+  def heal
+    transaction do
+      rest
+
+      self.life_pool += damage_pool
+      self.damage_pool = []
+      self.life_pool.shuffle
+      save!
+    end
+  end
+
   #
   # Log methods
   #
