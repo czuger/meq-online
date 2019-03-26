@@ -7,7 +7,7 @@ module GameEngine
       base.send(:aasm) do
         state :created, :initial => true
         state :waiting_for_players, :sauron_setup, :event_step, :sauron_actions, :heroes_draw_cards
-        state :play_shadow_card_at_start_of_hero_turn, :rest_step
+        state :play_shadow_card_at_start_of_hero_turn, :rest_step, :movement_preparation_step
 
         event :wait_for_players do
           transitions :from => :created, :to => :waiting_for_players
@@ -37,25 +37,14 @@ module GameEngine
           transitions :from => :play_shadow_card_at_start_of_hero_turn, :to => :rest_step
         end
 
-        # event :back_to_sauron_first_turn do
-        #   transitions :from => [ :heroes_turn ], :to => :sauron_first_turn
+        event :next_to_movement_preparation_step do
+          transitions :from => :rest_step, :to => :movement_preparation_step
+        end
+
+        # event :next_to_sauron_turn do
+        #   transitions :from => [ :heroes_turn ], :to => [ :sauron_turn, :heroes_turn ], :guard => :all_heroes_played?, :after => Proc.new { clean_heroes_played_status! }
         # end
 
-        event :next_to_heroes_turn do
-          transitions :from => [ :sauron_turn, :sauron_first_turn ], :to => :heroes_turn
-        end
-
-        event :back_to_heroes_turn do
-          transitions :from => [ :sauron_turn ], :to => :heroes_turn
-        end
-
-        event :next_to_sauron_turn do
-          transitions :from => [ :heroes_turn ], :to => [ :sauron_turn, :heroes_turn ], :guard => :all_heroes_played?, :after => Proc.new { clean_heroes_played_status! }
-        end
-
-        event :back_to_sauron_turn do
-          transitions :from => [ :heroes_turn ], :to => :sauron_turn
-        end
       end
     end
 

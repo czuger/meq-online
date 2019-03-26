@@ -100,8 +100,8 @@ rhun:
     :path_type: sun
     :difficulty: 4
   - :dest: lake_esgaroth
-    :path_type: ''
-    :difficulty: 0
+    :path_type: sun
+    :difficulty: 3
   - :dest: the_bight
     :path_type: sun
     :difficulty: 2
@@ -183,8 +183,8 @@ lake_esgaroth:
   :closed: true
   :destinations:
   - :dest: rhun
-    :path_type: ''
-    :difficulty: 0
+    :path_type: sun
+    :difficulty: 3
   - :dest: the_iron_hills
     :path_type: hills
     :difficulty: 2

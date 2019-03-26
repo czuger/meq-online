@@ -36,6 +36,9 @@ class HerosController < ApplicationController
   end
 
   def rest_finished
+    @board.next_to_movement_preparation_step!
+
+    redirect_to hero_movement_preparation_steps_path(@actor)
   end
 
   def take_damages
