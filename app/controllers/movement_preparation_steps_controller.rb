@@ -65,6 +65,16 @@ class MovementPreparationStepsController < ApplicationController
     end
   end
 
+  def terminate
+    @board.transaction do
+      @board.next_to_movement_break_schedule!
+      @board.switch_to_sauron
+      @board.save!
+
+      redirect_to sauron_movement_break_schedule_screen_path(@actor)
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_movement_preparation_step

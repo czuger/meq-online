@@ -1,34 +1,37 @@
-%h1 Listing movement_preparation_steps
+.container
 
-%table
-  %thead
-    %tr
-      -#%th Board
-      -#%th Hero
-      %th Origine
-      %th Destination
-      %th
-      -#%th Order
-      -#%th Validation required
-      %th
-      %th
+  %h1 Movement preparation
 
-  %tbody
-    - @movement_preparation_steps.each do |movement_preparation_step|
+  %table.table-bordered
+    %thead
       %tr
-        -#%td= movement_preparation_step.board
-        -#%td= movement_preparation_step.hero
-        %td= movement_preparation_step.origine
-        %td= movement_preparation_step.destination
-        %td
-          - movement_preparation_step.selected_cards.each do |selected_card|
-            = image_tag "hero_cards/actions/#{@heroes_hero.cards[selected_card].pic_path}", class: 'small-card'
-        -#%td= movement_preparation_step.card_used
-        -#%td= movement_preparation_step.order
-        -#%td= movement_preparation_step.validation_required
-        %td= link_to 'Modify', edit_hero_movement_preparation_step_path(@actor, movement_preparation_step)
-        %td= link_to 'Remove', hero_movement_preparation_step_path(@actor, movement_preparation_step), method: :delete, data: { confirm: 'Are you sure?' }
+        -#%th Board
+        -#%th Hero
+        %th Origine
+        %th Destination
+        %th
+        -#%th Order
+        -#%th Validation required
+        %th
+        %th
 
-%br
+    %tbody
+      - @movement_preparation_steps.each do |movement_preparation_step|
+        %tr
+          -#%td= movement_preparation_step.board
+          -#%td= movement_preparation_step.hero
+          %td= movement_preparation_step.origine.to_s.humanize
+          %td= movement_preparation_step.destination.to_s.humanize
+          %td
+            - movement_preparation_step.selected_cards.each do |selected_card|
+              = image_tag "hero_cards/actions/#{@heroes_hero.cards[selected_card].pic_path}", class: 'small-card'
+          -#%td= movement_preparation_step.card_used
+          -#%td= movement_preparation_step.order
+          -#%td= movement_preparation_step.validation_required
+          %td= link_to 'Modify', edit_hero_movement_preparation_step_path(@actor, movement_preparation_step), role: :button, class: 'btn btn-secondary'
+          %td= link_to 'Remove', hero_movement_preparation_step_path(@actor, movement_preparation_step), role: :button, class: 'btn btn-secondary', method: :delete, data: { confirm: 'Are you sure?' }
 
-= link_to 'New Movement preparation step', new_hero_movement_preparation_step_path(@actor)
+  %br
+
+  = link_to 'New Movement preparation step', new_hero_movement_preparation_step_path(@actor), role: :button, class: 'btn btn-secondary'
+  = link_to 'Terminate', terminate_hero_movement_preparation_steps_path(@actor), role: :button, class: 'btn btn-danger'

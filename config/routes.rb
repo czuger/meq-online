@@ -32,8 +32,14 @@ Rails.application.routes.draw do
     post :draw_cards
     get :draw_cards_finished
 
-    resources :movement_preparation_steps, except: [ :show ]
+    resources :movement_preparation_steps, except: [ :show ] do
+      collection do
+        get :terminate
+      end
+    end
+
   end
+
 
   #
   # Sauron linked actions
@@ -44,6 +50,10 @@ Rails.application.routes.draw do
     get :setup_finished
 
     get :execute_event_card_screen
+
+    get :movement_break_schedule_screen
+    post :movement_break_schedule_add
+    get :movement_break_schedule_finished
 
     resource :shadow_cards, only: [] do
       get :play_screen

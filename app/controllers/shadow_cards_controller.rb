@@ -81,7 +81,7 @@ class ShadowCardsController < ApplicationController
   def start_hero_turn_play_card_finished
 
     @board.transaction do
-      @board.activate_current_hero
+      @board.switch_to_current_hero
 
       @board.next_to_rest_step!
 

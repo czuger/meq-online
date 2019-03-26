@@ -1,3 +1,6 @@
+# This module is included in board.
+# To use it, call @board.
+
 module GameEngine
   module ActorActivation
 
@@ -5,10 +8,17 @@ module GameEngine
     # Activation state methode
     #
 
-    def activate_current_hero
+    def switch_to_current_hero
       transaction do
         set_hero_activation_state( current_hero, true )
         set_sauron_activation_state( false )
+      end
+    end
+
+    def switch_to_sauron
+      transaction do
+        set_hero_activation_state( current_hero, false )
+        set_sauron_activation_state( true )
       end
     end
 

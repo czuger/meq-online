@@ -1,0 +1,13 @@
+.container
+  %p#notice= notice
+
+  .alert.alert-secondary
+    %ul.mt-3
+      %li At this step, Sauron may schedule movements break.
+      %li This step is not working for now.
+
+  .form-group
+    .row
+      .col-3
+        = link_to sauron_movement_break_schedule_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
+          Terminate

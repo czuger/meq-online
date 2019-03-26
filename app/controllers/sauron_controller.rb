@@ -39,4 +39,16 @@ class SauronController < ApplicationController
   def execute_event_card
   end
 
+  #
+  # Mouvement break schedule methods
+  #
+  def movement_break_schedule_screen
+  end
+
+  def movement_break_schedule_add
+  end
+
+  def movement_break_schedule_finished
+  end
+
 end

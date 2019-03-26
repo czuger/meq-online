@@ -10,6 +10,11 @@ module GameEngine
       movement_preparation_step: :hero_movement_preparation_steps,
     }
 
+    STATE_TO_PATH_PATTERNS = [
+        'sauron_%s_screen_path'
+    ]
+
+
     def self.get_route( board, actor )
 
       if actor.active
@@ -28,6 +33,15 @@ module GameEngine
           Rails.application.routes.url_helpers.send( path.to_s + '_path', actor  )
 
         else
+          # We also check for corresponding patterns
+          STATE_TO_PATH_PATTERNS.each do |pattern|
+            path = pattern % board.aasm_state
+
+            if Rails.application.routes.url_helpers.respond_to?( path, actor )
+              return Rails.application.routes.url_helpers.send( path, actor )
+            end
+          end
+
           raise "Route not found for state #{board.aasm_state}"
         end
 
@@ -36,9 +50,11 @@ module GameEngine
       end
     end
 
-    # def self.event_state( board, actor )
-    #   if actor.is_a?
-    # end
+    private
+
+    def sauron_screen_path(board)
+      'sauron_' + board.aasm_state + 'screen_path'
+    end
 
   end
 end
