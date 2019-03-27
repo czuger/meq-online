@@ -71,7 +71,7 @@ class MovementPreparationStepsController < ApplicationController
       @board.switch_to_sauron
       @board.save!
 
-      redirect_to sauron_movement_break_schedule_screen_path(@actor)
+      redirect_to boards_path
     end
   end
 

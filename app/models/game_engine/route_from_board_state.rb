@@ -42,7 +42,7 @@ module GameEngine
             end
           end
 
-          raise "Route not found for state #{board.aasm_state}"
+          raise "Route not found for state << #{board.aasm_state} >>"
         end
 
       else
