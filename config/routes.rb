@@ -32,6 +32,10 @@ Rails.application.routes.draw do
     post :explore
     get :exploration_finished
 
+    get :encounter_screen
+    post :encounter
+    get :encounter_finished
+
     get :draw_cards_screen
     post :draw_cards
     get :draw_cards_finished

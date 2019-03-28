@@ -86,6 +86,27 @@ class HerosController < ApplicationController
     end
   end
 
+  #
+  # Encounter methods
+  #
+  def encounter_screen
+  end
+
+  def encounter
+  end
+
+  def encounter_finished
+    # At this step we need to switch to next player, and if all players have finished theire turn
+    # We need to skip to Sauron turn.
+    # @board.transaction do
+    #   @board.next_to_exploration!
+    #   @board.switch_to_current_hero
+    #   @board.save!
+    #
+    #   redirect_to hero_exploration_screen_path(@actor)
+    # end
+  end
+
   ###
 
   def take_damages
