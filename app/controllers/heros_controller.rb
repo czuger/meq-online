@@ -77,10 +77,11 @@ class HerosController < ApplicationController
 
   def exploration_finished
     @board.transaction do
-      @board.next_to_encounter!
+      @board.next_to_story!
+      @board.switch_to_sauron
       @board.save!
 
-      redirect_to hero_encounter_screen_path(@actor)
+      redirect_to sauron_story_screen_path(@actor)
     end
   end
 
@@ -96,8 +97,10 @@ class HerosController < ApplicationController
   def encounter_finished
     unless @board.switch_to_next_hero
       # This mean that all heroes have finished their turn.
-      # We need to switch to sauron, then.
-      # Activate him, then switch to the rally step
+      # We need to :
+      # - Execute the rally step
+
+      @board.switch_to_sauron
     end
 
     redirect_to boards_path
@@ -163,12 +166,15 @@ class HerosController < ApplicationController
   end
 
   def draw_cards_finished
+    @board.set_hero_activation_state(@actor, false)
+
     # If no more heroes are actives, then we goes to next step
     unless @board.heroes_actives?
 
       # We switch to the first hero to play an switch to sauron shadow card play turn
       @board.transaction do
         @board.switch_to_next_hero
+        @board.switch_to_sauron
         @board.next_to_play_shadow_card_at_start_of_hero_turn!
       end
     end
