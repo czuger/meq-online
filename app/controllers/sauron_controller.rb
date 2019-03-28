@@ -100,7 +100,7 @@ class SauronController < ApplicationController
                              actor: @actor)
       end
 
-      redirect_to edit_story_track_path( @actor )
+      redirect_to sauron_story_screen_path( @actor ), notice: 'Story track successfully updated.'
     end
   end
 
