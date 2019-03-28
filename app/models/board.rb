@@ -2,6 +2,7 @@ class Board < ApplicationRecord
 
   include GameEngine::BoardAasm
   include GameEngine::ActorActivation
+  include GameEngine::ActorTurnManagement
 
   has_many :logs, dependent: :destroy
 

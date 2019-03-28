@@ -4,10 +4,10 @@
 module GameEngine
   module ActorActivation
 
+
     #
     # Activation state methode
     #
-
     def switch_to_current_hero
       transaction do
         set_hero_activation_state( current_hero, true )

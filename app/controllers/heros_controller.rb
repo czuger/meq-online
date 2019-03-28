@@ -167,35 +167,17 @@ class HerosController < ApplicationController
   end
 
   def draw_cards_finished
-    @board.set_hero_activation_state(@actor, false)
-
     # If no more heroes are actives, then we goes to next step
     unless @board.heroes_actives?
 
-      @board.heroes.each do |hero|
-
-        raise "Board #{@board.id} : hero.playing order should not be nil" unless hero.playing_order
-
-        # If all heroes have finished their draw step, we find the first hero to play and we activate him
-        if hero.playing_order == 0
-          @board.transaction do
-            @board.current_hero = hero
-            @board.set_all_actors_activation_state(false)
-            @board.set_sauron_activation_state( true)
-            @board.save!
-
-            #TODO : next step here
-
-            @board.next_to_play_shadow_card_at_start_of_hero_turn!
-
-            break
-          end
-        end
+      # We switch to the first hero to play an switch to sauron shadow card play turn
+      @board.transaction do
+        @board.set_current_hero
+        @board.next_to_play_shadow_card_at_start_of_hero_turn!
       end
     end
 
     redirect_to :boards
-
   end
 
 end
