@@ -8,7 +8,7 @@ module GameEngine
         state :created, :initial => true
         state :waiting_for_players, :sauron_setup, :event_step, :sauron_actions, :heroes_draw_cards
         state :play_shadow_card_at_start_of_hero_turn, :rest_step, :movement_preparation_step
-        state :movement_break_schedule
+        state :movement_break_schedule, :movement, :exploration
 
         event :wait_for_players do
           transitions :from => :created, :to => :waiting_for_players
@@ -44,6 +44,14 @@ module GameEngine
 
         event :next_to_movement_break_schedule do
           transitions :from => :movement_preparation_step, :to => :movement_break_schedule
+        end
+
+        event :next_to_movement do
+          transitions :from => [:movement_break_schedule, :exploration], :to => :movement
+        end
+
+        event :next_to_exploration do
+          transitions :from => :movement, :to => :exploration
         end
 
         # event :next_to_sauron_turn do

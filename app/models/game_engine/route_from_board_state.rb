@@ -10,10 +10,7 @@ module GameEngine
       movement_preparation_step: :hero_movement_preparation_steps,
     }
 
-    STATE_TO_PATH_PATTERNS = [
-        'sauron_%s_screen_path'
-    ]
-
+    STATE_TO_PATH_PATTERNS = %w( sauron_%s_screen_path hero_%s_screen_path )
 
     def self.get_route( board, actor )
 

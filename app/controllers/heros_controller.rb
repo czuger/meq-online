@@ -22,6 +22,9 @@ class HerosController < ApplicationController
     end
   end
 
+  #
+  # Rest methods
+  #
   def rest_screen
   end
 
@@ -41,6 +44,39 @@ class HerosController < ApplicationController
     redirect_to hero_movement_preparation_steps_path(@actor)
   end
 
+  #
+  # Movement methods
+  #
+  def movement_screen
+  end
+
+  def move
+  end
+
+  def movement_finished
+    @board.transaction do
+      @board.next_to_movement!
+      @board.switch_to_current_hero
+      @board.save!
+
+      redirect_to boards_path
+    end
+  end
+
+  #
+  # Exploration methods
+  #
+  def exploration_screen
+  end
+
+  def explore
+  end
+
+  def exploration_finished
+  end
+
+  ###
+
   def take_damages
     damage_amount = params[:damage_amount].to_i
     damages_taken_from_life_pool = @actor.life_pool.shift(damage_amount)
@@ -59,25 +95,25 @@ class HerosController < ApplicationController
     redirect_to @actor
   end
 
-  def move
-    hero_location = @actor.location
-    @actor.location = params['move_to']
-    card = params['card_used'].to_i
-
-    card_position = @actor.hand.index( card )
-    if card_position
-      @actor.hand.delete_at( card_position )
-
-      @actor.rest_pool << card
-      @actor.save!
-
-      @actor.log_movement!( @board, card )
-    else
-      raise "Can't find a card position. card = #{card.inspect}, hand = #{@actor.hand.inspect}"
-    end
-
-    redirect_to @actor
-  end
+  # def move
+  #   hero_location = @actor.location
+  #   @actor.location = params['move_to']
+  #   card = params['card_used'].to_i
+  #
+  #   card_position = @actor.hand.index( card )
+  #   if card_position
+  #     @actor.hand.delete_at( card_position )
+  #
+  #     @actor.rest_pool << card
+  #     @actor.save!
+  #
+  #     @actor.log_movement!( @board, card )
+  #   else
+  #     raise "Can't find a card position. card = #{card.inspect}, hand = #{@actor.hand.inspect}"
+  #   end
+  #
+  #   redirect_to @actor
+  # end
 
   def draw_cards_screen
     # nb_cards_to_draw = params[:nb_cards].to_i

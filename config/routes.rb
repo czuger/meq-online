@@ -24,22 +24,28 @@ Rails.application.routes.draw do
     post :rest
     get :rest_finished
 
-    patch :take_damages
+    get :movement_screen
     post :move
-    patch :finish_turn
+    get :movement_finished
+
+    get :exploration_screen
+    post :explore
+    get :exploration_finished
 
     get :draw_cards_screen
     post :draw_cards
     get :draw_cards_finished
+
+    patch :take_damages
+    patch :finish_turn
+
 
     resources :movement_preparation_steps, except: [ :show ] do
       collection do
         get :terminate
       end
     end
-
   end
-
 
   #
   # Sauron linked actions
@@ -95,21 +101,7 @@ Rails.application.routes.draw do
   get 'plot_cards/:actor_id/keep_screen', to: 'plot_cards#keep_screen', as: 'plot_cards_keep_screen'
   post 'plot_cards/:actor_id/keep', to: 'plot_cards#keep', as: 'plot_cards_keep'
 
-  # #
-  # # Shadow cards actions
-  # #
-  # get 'shadow_cards/:actor_id/draw_screen', to: 'shadow_cards#draw_screen', as: 'shadow_cards_draw_screen'
-  # post 'shadow_cards/:actor_id/draw', to: 'shadow_cards#draw', as: 'shadow_cards_draw'
-  #
-  # get 'shadow_cards/:actor_id/keep_screen', to: 'shadow_cards#keep_screen', as: 'shadow_cards_keep_screen'
-  # post 'shadow_cards/:actor_id/keep', to: 'shadow_cards#keep', as: 'shadow_cards_keep'
-  #
-  # get 'shadow_cards/:actor_id/play_screen', to: 'shadow_cards#play_screen', as: 'shadow_cards_play_screen'
-  # post 'shadow_cards/:actor_id/play', to: 'shadow_cards#play', as: 'shadow_cards_play'
-
-  # Caution, in this case, the id is not a shadow_pool or influence, but an Actor.id
   patch 'shadow_pools/:actor_id/update_from_map', to: 'shadow_pools#update_from_map', as: 'shadow_pools_update_from_map'
-
 
   resources :shadow_pools, only: [ :edit, :update ]
 

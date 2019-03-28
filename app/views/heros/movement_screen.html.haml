@@ -1,0 +1,25 @@
+.container
+  %p#notice= notice
+
+  %h3
+    Movement screen
+
+  .alert.alert-secondary
+    %ul.mt-3
+      %li At this step, you can decide to move one step further.
+      %li This step is not implemented now.
+
+  = render partial: 'hero_info'
+
+  %hr
+
+  = form_tag hero_move_path(@actor) do
+    .form-group
+      .row
+
+        .col-3
+          = button_tag 'Process', role: :button, class: 'btn btn-secondary btn-block'
+
+        .col-3
+          = link_to hero_movement_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
+            Terminate
