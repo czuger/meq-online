@@ -18,8 +18,8 @@
       .row
 
         .col-3
-          = button_tag 'Process', role: :button, class: 'btn btn-secondary btn-block'
+          = button_tag 'Do movement', role: :button, class: 'btn btn-secondary btn-block'
 
         .col-3
-          = link_to hero_movement_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
-            Terminate
+          = link_to hero_movement_finished_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+            Next to exploration step

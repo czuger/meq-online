@@ -55,11 +55,11 @@ class HerosController < ApplicationController
 
   def movement_finished
     @board.transaction do
-      @board.next_to_movement!
+      @board.next_to_exploration!
       @board.switch_to_current_hero
       @board.save!
 
-      redirect_to boards_path
+      redirect_to hero_exploration_screen_path(@actor)
     end
   end
 
@@ -70,9 +70,20 @@ class HerosController < ApplicationController
   end
 
   def explore
+    @board.next_to_movement!
+    @board.save!
+
+    redirect_to hero_movement_screen_path(@actor)
   end
 
   def exploration_finished
+    @board.transaction do
+      @board.next_to_movement!
+      @board.switch_to_current_hero
+      @board.save!
+
+      redirect_to boards_path
+    end
   end
 
   ###
