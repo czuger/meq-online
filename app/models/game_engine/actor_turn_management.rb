@@ -4,10 +4,10 @@
 module GameEngine
   module ActorTurnManagement
 
-    # Activate the next current hero
+    # Set the variable current_hero to  the next current hero
     # Return true if a hero had been activated
     # Return false if all heroes had finished their turn
-    def set_current_hero
+    def switch_to_next_hero
       remaining_heroes = heroes.where( turn_finished: false )
 
       return false if remaining_heroes.count == 0
@@ -19,6 +19,7 @@ module GameEngine
       transaction do
         self.current_hero = next_hero
         self.switch_to_current_hero
+        self.save!
       end
 
       true

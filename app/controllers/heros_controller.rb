@@ -56,7 +56,6 @@ class HerosController < ApplicationController
   def movement_finished
     @board.transaction do
       @board.next_to_exploration!
-      @board.switch_to_current_hero
       @board.save!
 
       redirect_to hero_exploration_screen_path(@actor)
@@ -78,11 +77,10 @@ class HerosController < ApplicationController
 
   def exploration_finished
     @board.transaction do
-      @board.next_to_movement!
-      @board.switch_to_current_hero
+      @board.next_to_encounter!
       @board.save!
 
-      redirect_to boards_path
+      redirect_to hero_encounter_screen_path(@actor)
     end
   end
 
@@ -96,15 +94,13 @@ class HerosController < ApplicationController
   end
 
   def encounter_finished
-    # At this step we need to switch to next player, and if all players have finished theire turn
-    # We need to skip to Sauron turn.
-    # @board.transaction do
-    #   @board.next_to_exploration!
-    #   @board.switch_to_current_hero
-    #   @board.save!
-    #
-    #   redirect_to hero_exploration_screen_path(@actor)
-    # end
+    unless @board.switch_to_next_hero
+      # This mean that all heroes have finished their turn.
+      # We need to switch to sauron, then.
+      # Activate him, then switch to the rally step
+    end
+
+    redirect_to boards_path
   end
 
   ###
@@ -172,7 +168,7 @@ class HerosController < ApplicationController
 
       # We switch to the first hero to play an switch to sauron shadow card play turn
       @board.transaction do
-        @board.set_current_hero
+        @board.switch_to_next_hero
         @board.next_to_play_shadow_card_at_start_of_hero_turn!
       end
     end
