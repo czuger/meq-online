@@ -51,7 +51,7 @@ class SauronController < ApplicationController
   def movement_break_schedule_finished
     @board.transaction do
       @board.next_to_movement!
-      @board.switch_to_current_hero
+      @board.activate_current_hero
       @board.save!
 
       redirect_to boards_path

@@ -59,7 +59,7 @@ module GameEngine
         end
 
         event :next_to_story do
-          transitions :from => :exploration, :to => :story
+          transitions :from => :encounter, :to => :story
         end
 
         # event :next_to_sauron_turn do

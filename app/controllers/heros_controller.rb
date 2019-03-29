@@ -77,11 +77,10 @@ class HerosController < ApplicationController
 
   def exploration_finished
     @board.transaction do
-      @board.next_to_story!
-      @board.switch_to_sauron
+      @board.next_to_encounter!
       @board.save!
 
-      redirect_to sauron_story_screen_path(@actor)
+      redirect_to hero_encounter_screen_path(@actor)
     end
   end
 
@@ -100,7 +99,11 @@ class HerosController < ApplicationController
       # We need to :
       # - Execute the rally step
 
-      @board.switch_to_sauron
+      @board.transaction do
+        @board.next_to_story!
+        @board.switch_to_sauron
+        @board.save!
+      end
     end
 
     redirect_to boards_path
@@ -173,7 +176,7 @@ class HerosController < ApplicationController
 
       # We switch to the first hero to play an switch to sauron shadow card play turn
       @board.transaction do
-        @board.switch_to_next_hero
+        @board.set_first_hero_to_play
         @board.switch_to_sauron
         @board.next_to_play_shadow_card_at_start_of_hero_turn!
       end
