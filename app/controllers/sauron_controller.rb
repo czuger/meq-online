@@ -105,13 +105,11 @@ class SauronController < ApplicationController
   end
 
   def story_step_finished
-    # @board.transaction do
-    #   @board.next_to_movement!
-    #   @board.switch_to_current_hero
-    #   @board.save!
-    #
-    #   redirect_to boards_path
-    # end
+    @board.transaction do
+      @board.next_to_plot!
+
+      redirect_to plot_cards_play_screen_path(@actor)
+    end
   end
 
 end
