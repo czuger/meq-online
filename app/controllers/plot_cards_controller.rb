@@ -30,6 +30,9 @@ class PlotCardsController < ApplicationController
     redirect_to GameEngine::RouteFromBoardState.get_route(@board,@actor), notice: I18n.t( 'notices.plot_cards_keep_success', count: cards.count )
   end
 
+  #
+  # Play area
+  #
   def play_screen
     @cards = @actor.plot_cards
     @free_slots = 1.upto(3).map{ |i| "plot-card-#{i}" } - @board.current_plots.keys
@@ -54,9 +57,19 @@ class PlotCardsController < ApplicationController
       @board.log( @board.sauron, 'plot_cards.play', { plot_card: selected_card } )
     end
 
-    redirect_to plot_cards_discard_screen_path(@actor)
+    redirect_to plot_cards_play_screen_path(@actor), notice: 'Card successfuly played'
   end
 
+  def play_finished
+    @board.transaction do
+      @board.next_to_plot!
+      redirect_to edit_event_path(@actor)
+    end
+  end
+
+  #
+  # Discard area
+  #
   def discard_screen
     @used_slots = @board.current_plots
     @used_slots_options = @used_slots.keys.map{ |e| [ e.gsub( 'plot-card-'.freeze, 'Card slot '.freeze ), e ] }.sort

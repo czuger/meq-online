@@ -97,6 +97,7 @@ Rails.application.routes.draw do
   #
   get 'plot_cards/:actor_id/play_screen', to: 'plot_cards#play_screen', as: 'plot_cards_play_screen'
   post 'plot_cards/:actor_id/play', to: 'plot_cards#play', as: 'plot_cards_play'
+  get 'plot_cards/:actor_id/play_finished', to: 'plot_cards#play_finished', as: 'plot_cards_play_finished'
 
   get 'plot_cards/:actor_id/discard_screen', to: 'plot_cards#discard_screen', as: 'plot_cards_discard_screen'
   post 'plot_cards/:actor_id/discard', to: 'plot_cards#discard', as: 'plot_cards_discard'

@@ -141,6 +141,15 @@ class MainFlowTest < ActionDispatch::IntegrationTest
 
     get "/sauron/#{@sauron.id}/story_screen"
     assert_response :success
+
+    get "/sauron/#{@sauron.id}/story_step_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    # assert_select 'h3', 'Encounter screen'
+
+    get "/events/#{@sauron.id}/edit"
+    assert_response :success
   end
 
   # This test only validate that the main flow is working
@@ -166,7 +175,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'h1', 'Listing boards'
 
-    puts @response.body
+    # puts @response.body
 
     assert_select 'td', 'Sauron'
     assert_select 'td', 'Thalin'
