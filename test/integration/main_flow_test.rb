@@ -102,6 +102,37 @@ class MainFlowTest < ActionDispatch::IntegrationTest
 
     assert_select 'td', 'Argalad'
     assert_select "a[href=?]", "/sauron/#{@sauron.id}/movement_break_schedule_screen"
+
+    get "/sauron/#{@sauron.id}/movement_break_schedule_screen"
+    assert_response :success
+
+    get "/sauron/#{@sauron.id}/movement_break_schedule_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    assert_select 'h1', 'Listing boards'
+
+    assert_select 'td', 'Sauron'
+    assert_select "a[href=?]", "/heros/#{@hero.id}/movement_screen"
+
+    get "/heros/#{@hero.id}/movement_screen"
+    assert_response :success
+
+    get "/heros/#{@hero.id}/movement_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+
+    get "/heros/#{@hero.id}/exploration_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+
+    get "/heros/#{@hero.id}/encounter_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+
   end
 
 end
