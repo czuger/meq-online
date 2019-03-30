@@ -104,6 +104,12 @@ class HerosController < ApplicationController
         @board.switch_to_sauron
         @board.save!
       end
+    else
+      @board.transaction do
+        @board.next_to_play_shadow_card_at_start_of_hero_turn!
+        @board.switch_to_sauron
+        @board.save!
+      end
     end
 
     redirect_to boards_path

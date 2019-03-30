@@ -31,7 +31,7 @@ module GameEngine
         end
 
         event :next_to_play_shadow_card_at_start_of_hero_turn do
-          transitions :from => :heroes_draw_cards, :to => :play_shadow_card_at_start_of_hero_turn
+          transitions :from => [:heroes_draw_cards, :encounter], :to => :play_shadow_card_at_start_of_hero_turn
         end
 
         event :next_to_rest_step do
