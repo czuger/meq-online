@@ -13,10 +13,7 @@ class SauronController < ApplicationController
     @board.transaction do
       GameData::Objectives.set_objectives @board
 
-      events = GameData::Events.new
-
-      events.set_random_card @board
-      events.place_characters_and_influence @board, @board.last_event_card
+      GameData::Events.new.draw_next_event_card(@board)
 
       @board.next_to_event_step!
       @board.next_to_sauron_actions!

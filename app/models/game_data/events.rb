@@ -12,9 +12,17 @@ module GameData
       end
     end
 
+    def draw_next_event_card(board)
+      set_random_card board
+      place_characters_and_favor board, board.last_event_card
+      board.save!
+    end
+
     def get_starting_event_deck
       @data[:I].keys.shuffle
     end
+
+    private
 
     def set_random_card(board)
       card = board.event_deck.shift
@@ -26,7 +34,7 @@ module GameData
       board.log( nil, 'event.choose_card', { event_card: "I/#{card}.png" } )
     end
 
-    def place_characters_and_influence(board, card)
+    def place_characters_and_favor(board, card)
       characters = GameData::Characters.new
       char_data = @data[:I][card][:character]
       favors_data = @data[:I][card][:favors]
