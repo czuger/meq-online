@@ -148,7 +148,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
     # assert_select 'h3', 'Encounter screen'
 
-    get "/events/#{@sauron.id}/edit"
+    get "/sauron/#{@sauron.id}/event/edit"
     assert_response :success
   end
 

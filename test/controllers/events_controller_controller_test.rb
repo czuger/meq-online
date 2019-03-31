@@ -21,12 +21,12 @@ class EventsControllerControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get edit' do
-    get edit_event_url( @sauron )
+    get edit_sauron_action_url( @sauron )
     assert_response :success
   end
 
   test 'should get update' do
-    patch event_url( @sauron ), params: {}
+    patch sauron_event_url( @sauron ), params: {}
     assert_response :success
   end
 
