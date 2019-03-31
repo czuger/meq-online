@@ -62,7 +62,7 @@ class PlotCardsController < ApplicationController
 
   def play_finished
     @board.transaction do
-      @board.next_to_plot!
+      @board.next_to_event_step!
       redirect_to edit_event_path(@actor)
     end
   end

@@ -7,8 +7,6 @@ Rails.application.routes.draw do
   get 'map_coordinates/edit'
   post 'map_coordinates/update'
 
-  resources :events, only: [ :edit, :update ]
-
   resources :combats, only: [ :show, :new, :create, :destroy ] do
     get :hero_setup_new
     post :hero_setup_draw_cards
@@ -59,8 +57,6 @@ Rails.application.routes.draw do
     get :setup
     get :setup_finished
 
-    get :execute_event_card_screen
-
     get :movement_break_schedule_screen
     post :movement_break_schedule_add
     get :movement_break_schedule_finished
@@ -85,6 +81,10 @@ Rails.application.routes.draw do
 
       get :keep_screen
       post :keep
+    end
+
+    resource :event, only: [ :edit, :update ] do
+      get :finished
     end
 
   end

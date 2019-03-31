@@ -27,18 +27,6 @@ class SauronController < ApplicationController
     redirect_to edit_sauron_action_path(@actor)
   end
 
-  def choose_event_card_screen
-  end
-
-  def choose_event_card
-  end
-
-  def execute_event_card_screen
-  end
-
-  def execute_event_card
-  end
-
   #
   # Mouvement break schedule methods
   #

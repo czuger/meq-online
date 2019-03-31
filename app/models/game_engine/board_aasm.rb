@@ -19,7 +19,7 @@ module GameEngine
         end
 
         event :next_to_event_step do
-          transitions :from => :sauron_setup, :to => :event_step
+          transitions :from => [:sauron_setup, :plot], :to => :event_step
         end
 
         event :next_to_sauron_actions do
