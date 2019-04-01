@@ -30,10 +30,17 @@ class Board < ApplicationRecord
 
     starting_plot ||= GameData::Plots.new.get(plot_id)
 
+    # TODO : protect against multiple plots
+
     self.current_plots.create!( plot_position: plot_position, plot_card: plot_id, affected_location: starting_plot.affect,
                                 story_type: starting_plot.story.type, story_advance: starting_plot.story.advance )
 
     log( actor, :place_plot )
+  end
+
+  def get_plot_card( plot_position )
+    pp = current_plots.where( plot_position: plot_position ).first
+    pp && pp.plot_card
   end
 
   def discard_plot( actor, plot_position )
