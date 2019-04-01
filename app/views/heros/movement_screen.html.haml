@@ -17,9 +17,10 @@
     .form-group
       .row
 
-        .col-3
-          = button_tag 'Do movement', role: :button, class: 'btn btn-secondary btn-block'
+        .col-8
+          = hidden_field_tag :movement_id, @next_movement.id
+          = button_tag "Move from #{@from} to #{@to}", role: :button, class: 'btn btn-primary btn-block'
 
         .col-3
-          = link_to hero_movement_finished_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          = link_to hero_movement_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
             Next to exploration step

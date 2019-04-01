@@ -48,6 +48,10 @@ class HerosController < ApplicationController
   # Movement methods
   #
   def movement_screen
+    @locations_data = GameData::Locations.new
+    @next_movement = @actor.movement_preparation_steps.first
+    @from = @locations_data.get( @next_movement.origine ).name
+    @to = @locations_data.get( @next_movement.destination ).name
   end
 
   def move
