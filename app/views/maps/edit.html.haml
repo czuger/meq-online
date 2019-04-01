@@ -14,11 +14,12 @@
         %spawn.influence-value
           = @influence[p.name_code] ? @influence[p.name_code] : 0
 
-    -# Placing characters
-    - @characters.each do |char, loc|
+    -# Placing tokens
+    - @tokens.each do |loc, tokens_path_array|
       - loc = @locations.get( loc )
-      = image_tag 'characters/small_' + char + '.jpg', class: 'character-on-map', style: "top:#{loc.pos_y-35}px; left:#{loc.pos_x-35}px;",
-        'data-toggle'=> 'tooltip', 'data-placement' => 'top', title: char.humanize
+      - tokens_path_array.each do |token_path|
+        = image_tag token_path, class: 'token-on-map', style: "top:#{loc.pos_y-25}px; left:#{loc.pos_x-23}px;",
+          'data-toggle'=> 'tooltip', 'data-placement' => 'top', title: 'toto'
 
     -# Placing markers on influence token pool
     - y_position = 1181
@@ -43,7 +44,7 @@
 
     -# Placing plot cards if any
     - @plots.each do |plot|
-      = image_tag 'sauron/plots/' + plot.plot_card.to_s + '.png', id: "plot-#{plot.plot_card}", class: 'plot-card-on-map'
+      = image_tag 'sauron/plots/' + plot.plot_card.to_s + '.png', id: "plot-#{plot.plot_position}", class: 'plot-card-on-map'
 
   #zoom-area
 
