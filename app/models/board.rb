@@ -30,8 +30,7 @@ class Board < ApplicationRecord
 
     starting_plot ||= GameData::Plots.new.get(plot_id)
 
-    # TODO : protect against multiple plots
-
+    # Protection agains multiple plots is done at functional level.
     self.current_plots.create!( plot_position: plot_position, plot_card: plot_id, affected_location: starting_plot.affect,
                                 story_type: starting_plot.story.type, story_advance: starting_plot.story.advance )
 

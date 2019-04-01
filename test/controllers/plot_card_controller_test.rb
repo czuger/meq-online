@@ -59,10 +59,10 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should fail because slot is already used' do
-    @board.current_plots['plot-card-1'] = 10
-    @board.save!
+    @board.current_plots.create!( plot_position: 1, plot_card: 8, affected_location: 'dummy',
+                                  story_type: 'dummy', story_advance: 1 )
     assert_raise do
-      post plot_cards_play_url @sauron, params: { selected_card: 8, card_slot: 'plot-card-1' }
+      post plot_cards_play_url @sauron, params: { selected_card: 8, card_slot: 1 }
     end
   end
 
