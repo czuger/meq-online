@@ -34,8 +34,7 @@ class ShadowPoolsController < ApplicationController
 
   def update_shadow_pool( old_value, new_value )
     @board.transaction do
-      @board.logs.create!( action: :change_shadow_pool, params:{ old_value: old_value, new_value: new_value },
-                           user_id: current_user.id, actor: @actor)
+      @board.log( @actor, :change_shadow_pool, params:{ old_value: old_value, new_value: new_value } )
 
       @board.update!(shadow_pool: new_value )
     end

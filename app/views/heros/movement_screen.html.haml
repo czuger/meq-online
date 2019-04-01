@@ -7,7 +7,6 @@
   .alert.alert-secondary
     %ul.mt-3
       %li At this step, you can decide to move one step further.
-      %li This step is not implemented now.
 
   = render partial: 'hero_info'
 
@@ -18,8 +17,11 @@
       .row
 
         .col-8
-          = hidden_field_tag :movement_id, @next_movement.id
-          = button_tag "Move from #{@from} to #{@to}", role: :button, class: 'btn btn-primary btn-block'
+          - if @next_movement
+            = hidden_field_tag :movement_id, @next_movement.id
+            = button_tag "Move from #{@from} to #{@to}", role: :button, class: 'btn btn-primary btn-block'
+          - else
+            = button_tag 'No more movements scheduled', role: :button, class: 'btn btn-secondary btn-block disabled', disabled: true
 
         .col-3
           = link_to hero_movement_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do

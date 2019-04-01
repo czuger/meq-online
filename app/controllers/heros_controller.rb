@@ -50,11 +50,28 @@ class HerosController < ApplicationController
   def movement_screen
     @locations_data = GameData::Locations.new
     @next_movement = @actor.movement_preparation_steps.first
-    @from = @locations_data.get( @next_movement.origine ).name
-    @to = @locations_data.get( @next_movement.destination ).name
+    if @next_movement
+      @from = @locations_data.get( @next_movement.origine ).name
+      @to = @locations_data.get( @next_movement.destination ).name
+    end
   end
 
   def move
+    @next_movement = @actor.movement_preparation_steps.find(params[:movement_id].to_i)
+
+    @actor.transaction do
+      @actor.location = @next_movement.destination
+      @actor.life_pool -= @next_movement.selected_cards
+      @actor.rest_pool += @next_movement.selected_cards
+      @actor.save!
+
+      MovementPreparationStep.delete(@next_movement.id)
+
+      @board.next_to_exploration!
+      @board.save!
+
+      redirect_to hero_exploration_screen_path(@actor)
+    end
   end
 
   def movement_finished
