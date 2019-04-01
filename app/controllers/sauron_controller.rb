@@ -6,7 +6,7 @@ class SauronController < ApplicationController
   end
 
   def setup
-    @plot_card = GameData::Plots.new.get(@board.current_plots.first)
+    @plot_card = GameData::Plots.new.get(@board.current_plots.first.plot_card)
   end
 
   def setup_finished

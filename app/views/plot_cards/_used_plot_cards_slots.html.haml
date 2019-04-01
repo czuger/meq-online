@@ -3,9 +3,8 @@
   %hr
   %h3 Current plots
 
-  - 1.upto(3).each do |i|
+  - @board.current_plots.each do |p|
     .col-4
-      - if @board.current_plots["plot-card-#{i}"]
-        -# in controller set @selection =
-        -# selectable-card-selection-unique or selectable-card-selection-multiple
-        = image_tag "sauron/plots/#{@board.current_plots["plot-card-#{i}"]}.png", class: "big-card #{@selection}", card_id: "plot-card-#{i}"
+      -# in controller set @selection =
+      -# selectable-card-selection-unique or selectable-card-selection-multiple
+      = image_tag "sauron/plots/#{p.plot_card}.png", class: "big-card #{@selection}", card_id: p.plot_card

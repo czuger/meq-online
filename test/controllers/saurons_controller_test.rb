@@ -10,6 +10,8 @@ class SauronsControllerTest < ActionDispatch::IntegrationTest
     @sauron = create( :sauron, user: @user, board: @board )
     @board.users << @user
 
+    create( :board_plot, board: @board )
+
     @board.aasm_state = 'sauron_actions'
     @board.save!
 
