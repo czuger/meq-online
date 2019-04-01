@@ -61,7 +61,11 @@ class HerosController < ApplicationController
 
     @actor.transaction do
       @actor.location = @next_movement.destination
-      @actor.life_pool -= @next_movement.selected_cards
+
+      if @next_movement.selected_cards - @actor.hand != []
+        raise "Selected cards not in hand. selected_cards = #{@next_movement.selected_cards}, hand = #{@actor.hand}"
+      end
+      @actor.hand -= @next_movement.selected_cards
       @actor.rest_pool += @next_movement.selected_cards
       @actor.save!
 
