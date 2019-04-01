@@ -1,7 +1,19 @@
 .container
   %p#notice= notice
 
-  = render partial: 'used_plot_cards_slots'
+  %h3 Discard plot card
+
+  .alert.alert-secondary
+    %ul.mt-3
+      %li In this screen you can discard a card.
+      %li Remember you can only place or discard on card per turn.
+
+  .row
+    - @board.current_plots.each do |p|
+      .col-4
+        -# in controller set @selection =
+        -# selectable-card-selection-unique or selectable-card-selection-multiple
+        = image_tag "sauron/plots/#{p.plot_card}.png", class: "big-card #{@selection}", card_id: p.plot_position
 
   = form_tag plot_cards_discard_path(@actor), class: 'my-3 ml-3' do
     .row
