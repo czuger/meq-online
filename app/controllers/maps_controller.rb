@@ -15,15 +15,7 @@ class MapsController < ApplicationController
 
     @locations = GameData::Locations.new
 
-    @quests_positions = []
-    %w( plot-card-1 plot-card-2 plot-card-3 ).each do |plot|
-      if @board.current_plots[plot]
-        @quest = @board.current_plots[plot]
-
-      end
-
-    end
-
+    @plots = @board.current_plots.order(:plot_position)
   end
 
 end
