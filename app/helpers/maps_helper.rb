@@ -1,7 +1,16 @@
 module MapsHelper
 
   def get_token_positions
+    @tokens.each do |loc, tokens|
+      loc = @locations.get( loc )
 
+      tokens_count = tokens.count
+      first_token = tokens.sort_by { |t| t.priority }.first
+      tokens_hover_text = tokens.map{ |t| t.name }.join( ', ' )
+      style = "top:#{loc.pos_y-25}px; left:#{loc.pos_x-23}px;"
+
+      yield first_token.pic_path, style, tokens_hover_text, tokens_count
+    end
   end
 
 

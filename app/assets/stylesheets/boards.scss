@@ -97,5 +97,20 @@
 .token-on-map{
   position: absolute;
   z-index: 1;
+}
+
+.token-on-map-pic{
   width: 48px;
+  position: absolute;
+}
+
+.tokens-count{
+  z-index: 2;
+  width: 24px;
+  background-color: #ffffff88;
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  padding-left: 7px;
+  border: solid 1px black;
 }
