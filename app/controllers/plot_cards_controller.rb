@@ -37,7 +37,7 @@ class PlotCardsController < ApplicationController
     @cards = @actor.plot_cards
     @free_slots = 1.upto(3).to_a - @board.current_plots.map{ |e| e.plot_position }
 
-    @free_slots_options = @free_slots.map{ |e| [ e.gsub( "Card slot ".freeze ), e ] }.sort
+    @free_slots_options = @free_slots.map{ |e| [ "Card slot #{e}".freeze, e ] }.sort
   end
 
   def play
