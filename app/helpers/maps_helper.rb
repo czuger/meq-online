@@ -1,5 +1,10 @@
 module MapsHelper
 
+  def get_token_positions
+
+  end
+
+
   def get_sauron_action_token_position( token_key )
     root_token = token_key[0..-3]
     count = token_key[-1].to_i

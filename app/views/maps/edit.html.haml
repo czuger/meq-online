@@ -15,11 +15,11 @@
           = @influence[p.name_code] ? @influence[p.name_code] : 0
 
     -# Placing tokens
-    - @tokens.each do |loc, tokens_path_array|
+    - @tokens.each do |loc, tokens|
       - loc = @locations.get( loc )
-      - tokens_path_array.each do |token_path|
-        = image_tag token_path, class: 'token-on-map', style: "top:#{loc.pos_y-25}px; left:#{loc.pos_x-23}px;",
-          'data-toggle'=> 'tooltip', 'data-placement' => 'top', title: 'toto'
+      - tokens.each do |token|
+        = image_tag token.pic_path, class: 'token-on-map', style: "top:#{loc.pos_y-25}px; left:#{loc.pos_x-23}px;",
+          'data-toggle'=> 'tooltip', 'data-placement' => 'top', title: token.text
 
     -# Placing markers on influence token pool
     - y_position = 1181
