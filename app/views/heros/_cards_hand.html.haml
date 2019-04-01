@@ -1,6 +1,6 @@
-- @cards.in_groups_of(6).each do |group|
+- @cards.in_groups_of(5).each do |group|
   .row
     - group.each do |card_number|
-      .col
+      .col.mb-3
         - if card_number
           = image_tag "hero_cards/actions/#{@heroes_hero.cards[card_number].pic_path}", class: small_cards_classes, card_id: card_number

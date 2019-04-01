@@ -17,6 +17,12 @@
   .row
     .col-2
       %button.btn.btn-secondary.btn-block{ type: :button }
+        Hand
+        %span.badge.badge-light
+          = @actor.hand.count
+
+    .col-2
+      %button.btn.btn-secondary.btn-block{ type: :button }
         Life
         %span.badge.badge-light
           = @actor.life_pool.count
