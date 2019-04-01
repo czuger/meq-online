@@ -25,14 +25,15 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should discard empty slot' do
-    post plot_cards_discard_url @sauron, params: { selected_card: 'plot-card-1' }
+    post plot_cards_discard_url @sauron, params: { selected_card: 1 }
     assert_redirected_to plot_cards_discard_screen_url(@sauron)
   end
 
   test 'should discard non empty slot' do
-    @board.current_plots['plot-card-1'] = 8
+    @board.current_plots.create!( plot_position: 1, plot_card: 8, affected_location: 'dummy',
+        story_type: 'dummy', story_advance: 1 )
     @board.save!
-    post plot_cards_discard_url @sauron, params: { selected_card: 'plot-card-1' }
+    post plot_cards_discard_url @sauron, params: { selected_card: 1 }
     assert_redirected_to plot_cards_discard_screen_url(@sauron)
     assert_empty @board.reload.current_plots
   end

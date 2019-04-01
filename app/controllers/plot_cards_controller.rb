@@ -79,10 +79,10 @@ class PlotCardsController < ApplicationController
 
   def discard
     @selected_card_slot = params[:selected_card]
-    discarded_card = @board.current_plots[@selected_card_slot]
+    discarded_card = @board.get_plot_card @selected_card_slot
 
     @board.plot_deck << discarded_card
-    @board.current_plots.delete(@selected_card_slot)
+    @board.current_plots.where( plot_position: @selected_card_slot ).delete_all
 
     @board.transaction do
       @board.save!
