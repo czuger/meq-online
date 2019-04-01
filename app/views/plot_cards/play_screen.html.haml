@@ -1,8 +1,12 @@
 .container
   %p#notice= notice
 
-  %h3
-    Play plot card
+  %h3 Play plot card
+
+  .alert.alert-secondary
+    %ul.mt-3
+      %li In this screen you can play a plot card.
+      %li Remember you can only place or discard on card per turn.
 
   - @cards.each do |card|
     = card_picture( card, selectable: :unique )
