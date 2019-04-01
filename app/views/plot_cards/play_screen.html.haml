@@ -19,5 +19,9 @@
         = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block', id: :validate_unique, value: :keep, disabled: true
 
       .col-2
+        = link_to plot_cards_discard_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Discard card
+
+      .col-2
         = link_to plot_cards_play_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
           Finished

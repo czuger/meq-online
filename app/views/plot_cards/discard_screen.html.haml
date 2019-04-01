@@ -1,11 +1,19 @@
 .container
   %p#notice= notice
 
-  %h3 Cards currently on board
+  = render partial: 'used_plot_cards_slots'
 
-  .row.my-3
-    = render partial: 'used_plot_cards_slots'
+  = form_tag plot_cards_discard_path(@actor), class: 'my-3 ml-3' do
+    .row
 
-  = form_tag plot_cards_discard_path(@actor) do
-    = hidden_field_tag :selected_card, nil
-    = button_tag 'Discard card', role: :button, class: 'btn btn-secondary ml-4', id: :validate_unique, value: :keep, disabled: true
+      .col-2
+        = hidden_field_tag :selected_card, nil
+        = button_tag 'Discard card', role: :button, class: 'btn btn-secondary btn-block', id: :validate_unique, disabled: true
+
+      .col-2
+        = link_to plot_cards_play_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+          Play card
+
+      .col-2
+        = link_to plot_cards_play_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
+          Finished

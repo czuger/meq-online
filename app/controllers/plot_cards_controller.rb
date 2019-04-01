@@ -75,6 +75,7 @@ class PlotCardsController < ApplicationController
   def discard_screen
     @used_slots = @board.current_plots
     @used_slots_options = @used_slots.map{ |e| [ "Card slot #{e.plot_position}".freeze, e.plot_position ] }.sort
+    @selection = 'selectable-card-selection-unique'
   end
 
   def discard
