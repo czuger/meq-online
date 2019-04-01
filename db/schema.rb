@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_20_124233) do
+ActiveRecord::Schema.define(version: 2019_04_01_104936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -53,6 +53,18 @@ ActiveRecord::Schema.define(version: 2019_03_20_124233) do
     t.index ["reciever_id"], name: "index_board_messages_on_reciever_id"
   end
 
+  create_table "board_plots", force: :cascade do |t|
+    t.bigint "board_id", null: false
+    t.integer "plot_position", limit: 2, null: false
+    t.integer "plot_card", limit: 2, null: false
+    t.string "affected_location", null: false
+    t.string "story_type", null: false
+    t.integer "story_advance", limit: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["board_id"], name: "index_board_plots_on_board_id"
+  end
+
   create_table "boards", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -66,7 +78,6 @@ ActiveRecord::Schema.define(version: 2019_03_20_124233) do
     t.integer "shadow_discard", array: true
     t.integer "shadow_pool", limit: 2, null: false
     t.hstore "influence", null: false
-    t.hstore "current_plots", null: false
     t.hstore "characters", null: false
     t.integer "story_marker_heroes", limit: 2, default: 0, null: false
     t.integer "story_marker_ring", limit: 2, default: 0, null: false
@@ -126,6 +137,7 @@ ActiveRecord::Schema.define(version: 2019_03_20_124233) do
   add_foreign_key "actors", "users"
   add_foreign_key "board_messages", "actors", column: "reciever_id"
   add_foreign_key "board_messages", "actors", column: "sender_id"
+  add_foreign_key "board_plots", "boards"
   add_foreign_key "boards", "actors", column: "current_hero_id"
   add_foreign_key "logs", "actors"
   add_foreign_key "logs", "boards"

@@ -44,7 +44,9 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
 
   test 'should create board with sauron' do
     assert_difference('Board.count') do
-      post boards_url, params: { sauron: true, max_heroes_count: 3, hero_1: 'eometh', hero_2: 'eleanor', hero_3: '' }
+      assert_difference('BoardPlot.count') do
+        post boards_url, params: { sauron: true, max_heroes_count: 3, hero_1: 'eometh', hero_2: 'eleanor', hero_3: '' }
+      end
     end
 
     created_board_id = Board.pluck( :id ).max
@@ -53,6 +55,10 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 2, created_board.current_heroes_count
     assert_equal 3, created_board.max_heroes_count
     assert created_board.sauron_created
+
+    created_plot = created_board.current_plots.first
+    assert_equal 1, created_plot.plot_position
+    assert_includes [0, 1, 2], created_plot.plot_card
 
     assert_redirected_to boards_url
   end

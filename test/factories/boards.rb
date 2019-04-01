@@ -10,8 +10,6 @@ FactoryBot.define do
     influence { GameData::Plots.new.get(0).influence.init }
     shadow_pool { GameData::Plots.new.get(0).influence.shadow_pool }
 
-    current_plots { { 'plot-card-1' => 0 } }
-
     characters { {} }
 
     max_heroes_count { 2 }

@@ -68,7 +68,6 @@ class BoardsController < ApplicationController
         plot_discard: [],
         shadow_discard: [],
         max_heroes_count: max_heroes_count,
-        current_plots: { 'plot-card-1' => starting_plot_id },
         shadow_pool: starting_plot.influence.shadow_pool,
         characters: {}
     )
@@ -84,6 +83,8 @@ class BoardsController < ApplicationController
           starting_plot.influence.init.each do |key, value|
             @board.log( nil, 'setup.set_influence_in_location', { count: value, location: key.to_s.humanize } )
           end
+
+          @board.set_plot nil, 1, starting_plot_id, starting_plot
 
           format.html { redirect_to boards_path, notice: 'Board was successfully created.' }
           format.json { render :show, status: :created, location: @board }

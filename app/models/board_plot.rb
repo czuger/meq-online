@@ -1,0 +1,2 @@
+class BoardPlot < ApplicationRecord
+end
