@@ -7,8 +7,8 @@ FactoryBot.define do
     plot_discard {[]}
     shadow_discard {[]}
 
-    influence { GameData::StartingPlots.new.get(0).influence.init }
-    shadow_pool { GameData::StartingPlots.new.get(0).influence.shadow_pool }
+    influence { GameData::Plots.new.get(0).influence.init }
+    shadow_pool { GameData::Plots.new.get(0).influence.shadow_pool }
 
     current_plots { { 'plot-card-1' => 0 } }
 

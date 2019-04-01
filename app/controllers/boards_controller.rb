@@ -52,7 +52,7 @@ class BoardsController < ApplicationController
   # POST /boards.json
   def create
     starting_plot_id= rand( 0..2 )
-    starting_plot = GameData::StartingPlots.new.get(starting_plot_id)
+    starting_plot = GameData::Plots.new.get(starting_plot_id)
 
     plot_deck= (3..17).to_a.shuffle
     shadow_deck= (0..23).to_a.shuffle

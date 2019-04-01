@@ -1,0 +1,180 @@
+---
+0:
+  :influence:
+    :init:
+      :barad_dur: 2
+      :dol_guldur: 2
+      :mount_gundabad: 2
+    :add: 7
+    :shadow_pool: 1
+  :shadow_cards:
+    :draw: 2
+    :keep: 1
+  :plot_cards:
+    :draw: 5
+    :keep: 2
+  :favor_to_discard: 3
+  :story:
+    :type: ring
+    :advance: 1
+  :affect: gladden_fields
+
+1:
+  :influence:
+    :init:
+      :barad_dur: 2
+      :dol_guldur: 2
+      :mount_gundabad: 2
+    :add: 9
+    :shadow_pool: 0
+  :shadow_cards:
+    :draw: 3
+    :keep: 1
+  :plot_cards:
+    :draw: 3
+    :keep: 2
+  :favor_to_discard: 2
+  :story:
+    :type: conquest
+    :advance: 1
+  :affect: sea_of_udun
+
+2:
+  :influence:
+    :init:
+      :barad_dur: 3
+      :dol_guldur: 3
+      :mount_gundabad: 3
+    :add: 3
+    :shadow_pool: 2
+  :shadow_cards:
+    :draw: 3
+    :keep: 2
+  :plot_cards:
+    :draw: 4
+    :keep: 2
+  :favor_to_discard: 3
+  :story:
+    :type: conquest
+    :advance: 1
+  :affect: isengard
+
+3:
+  :min_shadow_pool: 0
+  :favor_to_discard: 5
+  :story:
+    :type: corruption
+    :advance: 1
+  :affect: erebor
+
+4:
+  :min_shadow_pool: 0
+  :favor_to_discard: 3
+  :story:
+    :type: conquest
+    :advance: 1
+  :affect: osgiliath
+
+5:
+  :min_shadow_pool: 2
+  :favor_to_discard: 2
+  :story:
+    :type: ring
+    :advance: 2
+  :affect: sea_of_udun
+
+6:
+  :min_shadow_pool: 5
+  :favor_to_discard: 5
+  :story:
+    :type: corruption
+    :advance: 2
+  :affect: isengard
+
+7:
+  :min_shadow_pool: 5
+  :favor_to_discard: 5
+  :story:
+    :type: corruption
+    :advance: 2
+  :affect: edoras
+
+8:
+  :min_shadow_pool: 8
+  :favor_to_discard: 6
+  :story:
+    :type: corruption
+    :advance: 3
+  :affect: minas_tirith
+
+9:
+  :min_shadow_pool: 0
+  :favor_to_discard: 3
+  :story:
+    :type: conquest
+    :advance: 2
+  :affect: mount_gundabad
+
+10:
+  :min_shadow_pool: 0
+  :favor_to_discard: 4
+  :story:
+    :type: conquest
+    :advance: 2
+  :affect:
+
+11:
+  :min_shadow_pool: 0
+  :favor_to_discard: 4
+  :story:
+    :type: conquest
+    :advance: 2
+  :affect:
+
+12:
+  :min_shadow_pool: 4
+  :favor_to_discard: 0
+  :story:
+    :type: ring
+    :advance: 2
+  :affect: barad_dur
+
+13:
+  :min_shadow_pool: 0
+  :favor_to_discard: 3
+  :story:
+    :type: ring
+    :advance: 1
+  :affect: woodland_realm
+
+14:
+  :min_shadow_pool: 0
+  :favor_to_discard: 3
+  :story:
+    :type: corruption
+    :advance: 1
+  :affect:
+
+15:
+  :min_shadow_pool: 0
+  :favor_to_discard: 3
+  :story:
+    :type: ring
+    :advance: 2
+  :affect:
+
+16:
+  :min_shadow_pool: 5
+  :favor_to_discard: 4
+  :story:
+    :type: conquest
+    :advance: 3
+  :affect: isengard
+
+17:
+  :min_shadow_pool: 4
+  :favor_to_discard: 3
+  :story:
+    :type: ring
+    :advance: 2
+  :affect:
