@@ -1,6 +1,6 @@
 class CreateHeros < ActiveRecord::Migration[5.2]
   def change
-    create_table :heros do |t|
+    create_table :heroes do |t|
       t.references :board, index: true, foreign_key: true
       t.string :name_code
       t.integer :fortitude
