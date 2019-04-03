@@ -19,6 +19,8 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     @board.aasm_state = 'sauron_setup'
     @board.save!
 
+    create( :board_plot, board: @board )
+
     $google_auth_hash[:uid] = @user.uid
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
     get '/auth/google_oauth2'
