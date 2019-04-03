@@ -31,6 +31,8 @@ Dir.entries( directory ).each do |f|
 
   new_img = round( new_img, 20 )
 
+  new_img.resize_to_fit!( 48, 48 )
+
   new_img.write( new_image_name )
 end
 
