@@ -55,7 +55,9 @@ class BoardsController < ApplicationController
     starting_plot = GameData::Plots.new.get(starting_plot_id)
 
     plot_deck= (3..17).to_a.shuffle
-    shadow_deck= (0..23).to_a.shuffle
+
+    # We currently remove shadow cards that are played during hero movement.
+    shadow_deck= ((0..23).to_a - [1, 21]).shuffle
     event_deck = GameData::Events.new.get_starting_event_deck
 
     max_heroes_count= params[:max_heroes_count].to_i
