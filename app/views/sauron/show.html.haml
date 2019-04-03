@@ -3,85 +3,20 @@
 
   -#= render partial: 'sauron_info'
 
-  .form-group
-    .row
-      .col-4
-        = link_to shadow_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
-          Draw shadow card
-          %span.badge.badge-light
-            = @actor.drawn_shadow_cards.count
+  %h3 Shadow cards in hand
+  - @actor.shadow_cards.each do |card_number|
+    = image_tag "sauron/shadows/#{card_number}.png", class: 'medium-card'
 
-      .col-4
-        = link_to shadow_cards_play_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
-          Play shadow card
-          %span.badge.badge-light
-            = @actor.shadow_cards.count
-
-      .col-4
-        %button{ class: 'btn btn-secondary btn-block', disabled: true }
-          Shadow discard
-          %span.badge.badge-light
-            = @board.shadow_discard.count
-
-  .form-group
-    .row
-      .col-4
-        = link_to plot_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
-          Draw plot card
-          %span.badge.badge-light
-            = @actor.drawn_plot_cards.count
-
-      .col-4
-        = link_to plot_cards_play_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
-          Play plot card
-          %span.badge.badge-light
-            = @actor.plot_cards.count
-
-      .col-4
-        = link_to plot_cards_discard_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
-          Discard plot card
-          %span.badge.badge-light
-            = @board.current_plots.count
+  %hr
+  %h3 Plot cards in hand
+  - @actor.plot_cards.each do |card_number|
+    = image_tag "sauron/plots/#{card_number}.png", class: 'medium-card'
 
   = render partial: 'plot_cards/used_plot_cards_slots'
 
   - if GameData::Objectives.heroes_objective_card(@board)
     %hr
     %h3 Your objective
-    = image_tag GameData::Objectives.sauron_objective_card(@board)
-
-  -#.form-group
-  -#  = form_tag plot_cards_draw_screen_path(@actor), method: :get do
-  -#    .row
-  -#      = label_tag :nb_cards, 'Plot cards', class: 'col-2 col-form-label'
-  -#      .col-1
-  -#        = number_field_tag :nb_cards, @nb_cards, max: 10, class: 'form-control', disabled: !@nb_cards
-  -#      .col-2
-  -#        = button_tag 'Draw cards', role: :button, class: 'btn btn-secondary btn-block'
-  -#      .col-3
-  -#        = button_tag 'Get golum cards', role: :button, class: 'btn btn-secondary btn-block'
+    = image_tag GameData::Objectives.sauron_objective_card(@board), id: 'objectives-card'
 
 
-  -#.form-group
-  -#  = form_tag sauron_shadow_cards_path(@actor) do
-  -#    .row
-  -#      = label_tag :nb_shadow_cards, 'Shadow cards', class: 'col-2 col-form-label'
-  -#      .col-1
-  -#        = number_field_tag :nb_shadow_cards, 2, max: 10, class: 'form-control'
-  -#      .col-2
-  -#        = button_tag 'Draw cards', role: :button, value: :draw, class: 'btn btn-secondary btn-block'
-  -#      .col-3
-  -#        = button_tag 'Discard selected cards', role: :button, class: 'btn btn-secondary btn-block'
-
--#.container-fluid
--#
--#  = render partial: 'plot_cards'
--#
--#  %hr
--#
--#  %h4
--#    Shadow cards
--#
--#  .card-row
--#    - @actor.shadow_cards.each do |plot_card_number|
--#      = image_tag "sauron/shadows/#{plot_card_number}.png", class: 'big-card selectable-card-selection-multiple'
