@@ -7,9 +7,17 @@ module MapsHelper
       tokens_count = tokens.count
       first_token = tokens.sort_by { |t| t.priority }.first
       tokens_hover_text = tokens.map{ |t| t.name }.join( ', ' )
-      style = "top:#{loc.pos_y-25}px; left:#{loc.pos_x-23}px;"
 
-      yield first_token.pic_path, style, tokens_hover_text, tokens_count
+      px = loc.pos_x-23
+      py = loc.pos_y-25
+
+      token_decal = first_token.type == :plot ? 7 : 0
+
+      py += token_decal
+
+      style = "top:#{py}px; left:#{px}px;"
+
+      yield first_token.pic_path, style, tokens_hover_text, tokens_count, token_decal
     end
   end
 

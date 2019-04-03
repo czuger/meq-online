@@ -97,6 +97,7 @@
 .token-on-map{
   position: absolute;
   z-index: 1;
+  cursor: pointer;
 }
 
 .token-on-map-pic{
@@ -113,4 +114,5 @@
   left: 14px;
   padding-left: 7px;
   border: solid 1px black;
+  cursor: pointer;
 }

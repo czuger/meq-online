@@ -14,11 +14,11 @@
         %spawn.influence-value
           = @influence[p.name_code] ? @influence[p.name_code] : 0
 
-    - get_token_positions do |pic_path, style, tokens_hover_text, tokens_count|
+    - get_token_positions do |pic_path, style, tokens_hover_text, tokens_count, token_decal|
       .token-on-map{ style: style, 'data-toggle'=> 'tooltip', 'data-placement' => 'top', title: tokens_hover_text }
         = image_tag pic_path, class: 'token-on-map-pic'
         - if tokens_count > 1
-          .tokens-count
+          .tokens-count{ style: "top:#{14-token_decal}px" }
             = tokens_count
 
 
