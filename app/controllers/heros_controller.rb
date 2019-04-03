@@ -39,37 +39,30 @@ class HerosController < ApplicationController
   end
 
   def rest_finished
-    @board.next_to_movement_preparation_step!
+    @board.next_to_movement!
 
-    redirect_to hero_movement_preparation_steps_path(@actor)
+    redirect_to hero_movement_screen_path(@actor)
   end
 
   #
   # Movement methods
   #
   def movement_screen
-    @locations_data = GameData::Locations.new
-    @next_movement = @actor.movement_preparation_steps.first
-    if @next_movement
-      @from = @locations_data.get( @next_movement.origine ).name
-      @to = @locations_data.get( @next_movement.destination ).name
-    end
+    set_heroes_hero_and_locations
   end
 
   def move
-    @next_movement = @actor.movement_preparation_steps.find(params[:movement_id].to_i)
-
     @actor.transaction do
-      @actor.location = @next_movement.destination
+      @actor.location = params[:destination]
 
-      if @next_movement.selected_cards - @actor.hand != []
-        raise "Selected cards not in hand. selected_cards = #{@next_movement.selected_cards}, hand = #{@actor.hand}"
+      selected_cards = params[:selected_cards].split(',').map(&:to_i)
+
+      if selected_cards - @actor.hand != []
+        raise "Selected cards not in hand. selected_cards = #{selected_cards}, hand = #{@actor.hand}"
       end
-      @actor.hand -= @next_movement.selected_cards
-      @actor.rest_pool += @next_movement.selected_cards
+      @actor.hand -= selected_cards
+      @actor.rest_pool += selected_cards
       @actor.save!
-
-      MovementPreparationStep.delete(@next_movement.id)
 
       @board.next_to_exploration!
       @board.save!
@@ -215,5 +208,61 @@ class HerosController < ApplicationController
 
     redirect_to :boards
   end
+
+  private
+
+  def set_heroes_hero_and_locations
+    @heroes = GameData::Heroes.new
+    @heroes_hero = @heroes.get( @actor.name_code )
+
+    @last_location = @actor.location
+
+    @locations = GameData::LocationsPaths.new.get_connected_locations_for_select(@last_location)
+
+    @selectable_card_class = 'selectable-card-selection-multiple'
+  end
+
+  #
+  # Movement methods (with movement preparation step)
+  #
+  # def movement_screen
+  #   @locations_data = GameData::Locations.new
+  #   @next_movement = @actor.movement_preparation_steps.first
+  #   if @next_movement
+  #     @from = @locations_data.get( @next_movement.origine ).name
+  #     @to = @locations_data.get( @next_movement.destination ).name
+  #   end
+  # end
+  #
+  # def move
+  #   @next_movement = @actor.movement_preparation_steps.find(params[:movement_id].to_i)
+  #
+  #   @actor.transaction do
+  #     @actor.location = @next_movement.destination
+  #
+  #     if @next_movement.selected_cards - @actor.hand != []
+  #       raise "Selected cards not in hand. selected_cards = #{@next_movement.selected_cards}, hand = #{@actor.hand}"
+  #     end
+  #     @actor.hand -= @next_movement.selected_cards
+  #     @actor.rest_pool += @next_movement.selected_cards
+  #     @actor.save!
+  #
+  #     MovementPreparationStep.delete(@next_movement.id)
+  #
+  #     @board.next_to_exploration!
+  #     @board.save!
+  #
+  #     redirect_to hero_exploration_screen_path(@actor)
+  #   end
+  # end
+  #
+  # def movement_finished
+  #   @board.transaction do
+  #     @board.next_to_exploration!
+  #     @board.save!
+  #
+  #     redirect_to hero_exploration_screen_path(@actor)
+  #   end
+  # end
 
 end

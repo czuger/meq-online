@@ -15,7 +15,7 @@ module GameData
     end
 
     def get_connected_locations_for_select( name_code )
-      @data[name_code][:destinations].map{ |e| [ [ e[:dest].to_s.humanize, e[:path_type], e[:difficulty] ].join( ', '), e[:dest] ] }
+      @data[name_code][:destinations].map{ |e| [ "#{e[:dest].to_s.humanize} - #{e[:path_type]}(#{e[:difficulty]})", e[:dest] ] }
     end
 
     def exist?( name_code )

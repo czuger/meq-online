@@ -8,21 +8,27 @@
     %ul.mt-3
       %li At this step, you can decide to move one step further.
 
-  = render partial: 'hero_info'
+  -#= render partial: 'hero_info'
+  -#%hr
 
-  %hr
+  %h3 Cards in hand
+  = render partial: 'heros/cards_hand'
 
   = form_tag hero_move_path(@actor) do
     .form-group
       .row
 
-        .col-8
-          - if @next_movement
-            = hidden_field_tag :movement_id, @next_movement.id
-            = button_tag "Move from #{@from} to #{@to}", role: :button, class: 'btn btn-primary btn-block'
-          - else
-            = button_tag 'No more movements scheduled', role: :button, class: 'btn btn-secondary btn-block disabled', disabled: true
+    .form-group
+      .mx-2
+        = label_tag :move_to, "Move from #{@last_location.humanize} to :"
+      .mx-2
+        = select_tag( :destination, options_for_select(@locations), class: 'form-control' )
 
-        .col-3
-          = link_to hero_movement_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
-            Next to exploration step
+      %input{ id: :selected_cards, name: 'selected_cards', type: :hidden }
+
+    .actions
+      = submit_tag 'Save', role: :button, class: 'btn btn-secondary'
+
+-#.col-3
+-#  = link_to hero_movement_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
+-#    Next to exploration step

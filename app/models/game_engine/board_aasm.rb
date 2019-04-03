@@ -38,16 +38,17 @@ module GameEngine
           transitions :from => :play_shadow_card_at_start_of_hero_turn, :to => :rest_step
         end
 
-        event :next_to_movement_preparation_step do
-          transitions :from => :rest_step, :to => :movement_preparation_step
-        end
-
-        event :next_to_movement_break_schedule do
-          transitions :from => :movement_preparation_step, :to => :movement_break_schedule
-        end
+        # event :next_to_movement_preparation_step do
+        #   transitions :from => :rest_step, :to => :movement_preparation_step
+        # end
+        #
+        # event :next_to_movement_break_schedule do
+        #   transitions :from => :movement_preparation_step, :to => :movement_break_schedule
+        # end
 
         event :next_to_movement do
-          transitions :from => [:movement_break_schedule, :exploration], :to => :movement
+          # transitions :from => [:movement_break_schedule, :exploration, :rest_step], :to => :movement
+          transitions :from => [:exploration, :rest_step], :to => :movement
         end
 
         event :next_to_exploration do
