@@ -42,11 +42,12 @@ Rails.application.routes.draw do
     patch :finish_turn
 
 
-    resources :movement_preparation_steps, except: [ :show ] do
-      collection do
-        get :terminate
-      end
-    end
+    # Good example on how to have a route like : /foo/:foo_id/bar/foobar rather than /foo/:foo_id/bar/:id/foobar
+    # resources :movement_preparation_steps, except: [ :show ] do
+    #   collection do
+    #     get :terminate
+    #   end
+    # end
   end
 
   #
@@ -73,18 +74,11 @@ Rails.application.routes.draw do
       post :start_hero_turn_play_card
       get :start_hero_turn_play_card_finished
 
-      get :discard_screen
-      post :discard
-
       get :draw_screen
       post :draw
 
       get :keep_screen
       post :keep
-    end
-
-    resource :event, only: [ :edit, :update ] do
-      get :finished
     end
 
   end
