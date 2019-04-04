@@ -55,16 +55,16 @@ module GameEngine
           transitions :from => :movement, :to => :exploration
         end
 
-        event :next_to_encounter do
-          transitions :from => :exploration, :to => :encounter
-        end
-
-        event :next_to_story do
-          transitions :from => :encounter, :to => :story
-        end
+        # event :next_to_encounter do
+        #   transitions :from => :exploration, :to => :encounter
+        # end
+        #
+        # event :next_to_story do
+        #   transitions :from => :encounter, :to => :story
+        # end
 
         event :next_to_plot do
-          transitions :from => :story, :to => :plot
+          transitions :from => :exploration, :to => :plot
         end
 
         # event :next_to_sauron_turn do

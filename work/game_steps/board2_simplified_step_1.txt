@@ -25,8 +25,7 @@ digraph test {
     single_hero_draw -> single_hero_rally;
     single_hero_rally -> play_shadow_card;
 
-    rest -> ambush;
-    ambush -> movement;
+    rest -> movement;
 
     movement -> simplified_peril;
     simplified_peril -> explore;

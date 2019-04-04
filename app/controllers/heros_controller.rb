@@ -95,10 +95,8 @@ class HerosController < ApplicationController
 
   def exploration_finished
     @board.transaction do
-      @board.next_to_encounter!
-      @board.save!
-
-      redirect_to hero_encounter_screen_path(@actor)
+      @board.finish_hero_turn!
+      redirect_to boards_path
     end
   end
 
@@ -112,25 +110,10 @@ class HerosController < ApplicationController
   end
 
   def encounter_finished
-    unless @board.switch_to_next_hero
-      # This mean that all heroes have finished their turn.
-      # We need to :
-      # - Execute the rally step
-
-      @board.transaction do
-        @board.next_to_story!
-        @board.switch_to_sauron
-        @board.save!
-      end
-    else
-      @board.transaction do
-        @board.next_to_play_shadow_card_at_start_of_hero_turn!
-        @board.switch_to_sauron
-        @board.save!
-      end
+    @board.transaction do
+      @board.finish_hero_turn!
+      redirect_to boards_path
     end
-
-    redirect_to boards_path
   end
 
   ###

@@ -1,5 +1,5 @@
 # This module is included in board.
-# To use it, call @board.
+# To use it, call self.
 
 module GameEngine
   module ActorTurnManagement
@@ -16,6 +16,29 @@ module GameEngine
       end
     end
 
+    def finish_hero_turn!
+      self.transaction do
+
+      unless switch_to_next_hero
+        # If all heroes have played, we switch to sauron turn
+
+        # At this place we need to :
+        # - Call the automated rally step
+        # - Call the automated story step
+        self.next_to_plot!
+        self.switch_to_sauron
+      else
+        # Otherwise, we switch to the sauron ability to play a shadow card at the beginning of the player
+        self.next_to_play_shadow_card_at_start_of_hero_turn!
+        self.switch_to_sauron
+      end
+
+      self.save!
+      end
+    end
+    
+    private
+
     # Set the variable current_hero to  the next current hero
     # Return true if a hero had been activated
     # Return false if all heroes had finished their turn
@@ -30,7 +53,7 @@ module GameEngine
 
         if remaining_heroes.count >= 1
           next_hero = remaining_heroes.order('playing_order ASC').first
-          raise "Board #{@board.id} : hero.playing_order should not be nil" unless next_hero.playing_order
+          raise "Board #{self.id} : hero.playing_order should not be nil" unless next_hero.playing_order
 
           self.current_hero = next_hero
           self.activate_current_hero
