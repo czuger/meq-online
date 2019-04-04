@@ -15,7 +15,6 @@ class SauronController < ApplicationController
 
       GameData::Events.new.draw_next_event_card(@board)
 
-      @board.next_to_event_step!
       @board.next_to_sauron_actions!
 
       @board.set_sauron_activation_state( true )

@@ -61,11 +61,11 @@ class PlotCardsController < ApplicationController
 
   def play_finished
     @board.transaction do
-      @board.next_to_event_step!
+      @board.next_to_sauron_actions!
 
       GameData::Events.new.draw_next_event_card(@board)
 
-      redirect_to edit_sauron_event_path(@actor)
+      redirect_to edit_sauron_action_path(@actor)
     end
   end
 

@@ -18,12 +18,12 @@ module GameEngine
           transitions :from => [ :created, :waiting_for_players ], :to => :sauron_setup
         end
 
-        event :next_to_event_step do
-          transitions :from => [:sauron_setup, :plot], :to => :event_step
-        end
+        # event :next_to_event_step do
+        #   transitions :from => [:sauron_setup, :plot], :to => :event_step
+        # end
 
         event :next_to_sauron_actions do
-          transitions :from => :event_step, :to => :sauron_actions
+          transitions :from => [:sauron_setup, :plot], :to => :sauron_actions
         end
 
         event :next_to_heroes_draw_cards do
