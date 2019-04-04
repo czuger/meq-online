@@ -89,38 +89,15 @@ class MainFlowTest < ActionDispatch::IntegrationTest
 
     get "/heros/#{@hero.id}/rest_screen"
     assert_response :success
+    assert_select 'label', 'Do you want to rest ?'
 
     get "/heros/#{@hero.id}/rest_finished"
-    # assert_response :redirect
-    # follow_redirect!
-    # assert_response :success
-    # assert_select 'h1', 'Movement preparation'
-    #
-    # get "/heros/#{@hero.id}/movement_preparation_steps/terminate"
-    # assert_response :redirect
-    # follow_redirect!
-    # assert_response :success
-    # assert_select 'h1', 'Listing boards'
-    #
-    # assert_select 'td', 'Argalad'
-    # assert_select "a[href=?]", "/sauron/#{@sauron.id}/movement_break_schedule_screen"
-    #
-    # get "/sauron/#{@sauron.id}/movement_break_schedule_screen"
-    # assert_response :success
-    #
-    # get "/sauron/#{@sauron.id}/movement_break_schedule_finished"
-    # assert_response :redirect
-    # follow_redirect!
-    # assert_response :success
-    # assert_select 'h1', 'Listing boards'
-    #
-    # assert_select 'td', 'Sauron'
-    # assert_select "a[href=?]", "/heros/#{@hero.id}/movement_screen"
-
-    get "/heros/#{@hero.id}/movement_screen"
+    assert_response :redirect
+    follow_redirect!
     assert_response :success
+    assert_select 'h3', 'Movement screen'
 
-    get "/heros/#{@hero.id}/movement_finished"
+    post "/heros/#{@hero.id}/move", params: { selected_cards: '1' }
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -130,28 +107,20 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     follow_redirect!
     assert_response :success
-    # assert_select 'h3', 'Encounter screen'
-    #
-    # get "/heros/#{@hero.id}/encounter_finished"
-    # assert_response :redirect
-    # follow_redirect!
-    # assert_response :success
-    # assert_select 'h1', 'Listing boards'
-    #
-    # assert_select 'td', 'Argalad'
-    # assert_select "a[href=?]", "/sauron/#{@sauron.id}/story_screen"
-    #
-    # get "/sauron/#{@sauron.id}/story_screen"
-    # assert_response :success
-    #
-    # get "/sauron/#{@sauron.id}/story_step_finished"
-    # assert_response :redirect
-    # follow_redirect!
-    # assert_response :success
-    # # assert_select 'h3', 'Encounter screen'
-    #
-    # get "/sauron/#{@sauron.id}/event/edit"
-    # assert_response :success
+    assert_select 'h1', 'Listing boards'
+
+    assert_select 'td', 'Argalad'
+    assert_select "a[href=?]", "/plot_cards/#{@sauron.id}/play_screen"
+
+    get "/plot_cards/#{@sauron.id}/play_screen"
+    assert_response :success
+    assert_select 'h3', 'Play plot card'
+
+    get "/plot_cards/#{@sauron.id}/play_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    assert_select 'li', 'Select an action and validate it (this only place a marker on the map).'
   end
 
   # This test only validate that the main flow is working
