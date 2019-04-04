@@ -1,1 +1,0 @@
-json.partial! "movement_preparation_steps/movement_preparation_step", movement_preparation_step: @movement_preparation_step
