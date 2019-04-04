@@ -1,0 +1,48 @@
+##"I played some days with making an interface between our ConceptBase system (essentially a database system to store models) and graphviz. One example graph is attached. It is a so-called petri net for Dutch traffic lights. The example is actually taken from a book by Wil van der Aalst." Contributed by Manfred Jeusfeld.
+
+##Command to produce the output: "neato -Tpng thisfile > thisfile.png"
+
+digraph test {
+
+    event,next_hero,rally,story,end_game[shape=box]
+
+    sauron_setup -> event;
+    rally -> story;
+
+    story -> plot;
+    story -> tie_break;
+    story -> end_game;
+    tie_break -> end_game;
+
+    plot -> event;
+    event -> sauron_actions;
+
+    sauron_actions -> heros_draw_cards;
+    heros_draw_cards -> next_hero;
+
+    next_hero -> play_shadow_card;
+    play_shadow_card -> rest;
+
+    next_hero -> single_hero_draw;
+    single_hero_draw -> single_hero_rally;
+    single_hero_rally -> play_shadow_card;
+
+    rest -> ambush;
+    ambush -> movement;
+
+    movement -> combat_peril;
+    combat_peril -> explore;
+
+    ambush -> fight;
+    combat_peril -> fight;
+    fight -> ambush;
+    fight -> combat_peril;
+
+    combat_peril -> peril;
+    peril -> combat_peril;
+
+    explore -> movement;
+    explore -> next_hero;
+    next_hero -> rally;
+
+}
