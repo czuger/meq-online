@@ -18,12 +18,11 @@ digraph test {
     sauron_actions -> heros_draw_cards;
     heros_draw_cards -> next_hero;
 
-    next_hero -> play_shadow_card;
-    play_shadow_card -> rest;
+    next_hero -> rest;
 
     next_hero -> single_hero_draw;
     single_hero_draw -> single_hero_rally;
-    single_hero_rally -> play_shadow_card;
+    single_hero_rally -> rest;
 
     rest -> movement;
 
