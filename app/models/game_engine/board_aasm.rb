@@ -18,10 +18,6 @@ module GameEngine
           transitions :from => [ :created, :waiting_for_players ], :to => :sauron_setup
         end
 
-        # event :next_to_event_step do
-        #   transitions :from => [:sauron_setup, :plot], :to => :event_step
-        # end
-
         event :next_to_sauron_actions do
           transitions :from => [:sauron_setup, :plot], :to => :sauron_actions
         end
@@ -38,16 +34,7 @@ module GameEngine
           transitions :from => :play_shadow_card_at_start_of_hero_turn, :to => :rest_step
         end
 
-        # event :next_to_movement_preparation_step do
-        #   transitions :from => :rest_step, :to => :movement_preparation_step
-        # end
-        #
-        # event :next_to_movement_break_schedule do
-        #   transitions :from => :movement_preparation_step, :to => :movement_break_schedule
-        # end
-
         event :next_to_movement do
-          # transitions :from => [:movement_break_schedule, :exploration, :rest_step], :to => :movement
           transitions :from => [:exploration, :rest_step], :to => :movement
         end
 
@@ -55,22 +42,9 @@ module GameEngine
           transitions :from => :movement, :to => :exploration
         end
 
-        # event :next_to_encounter do
-        #   transitions :from => :exploration, :to => :encounter
-        # end
-        #
-        # event :next_to_story do
-        #   transitions :from => :encounter, :to => :story
-        # end
-
         event :next_to_plot do
           transitions :from => :exploration, :to => :plot
         end
-
-        # event :next_to_sauron_turn do
-        #   transitions :from => [ :heroes_turn ], :to => [ :sauron_turn, :heroes_turn ], :guard => :all_heroes_played?, :after => Proc.new { clean_heroes_played_status! }
-        # end
-
       end
     end
 

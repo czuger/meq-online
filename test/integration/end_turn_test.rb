@@ -1,0 +1,72 @@
+require 'test_helper'
+
+class EndTurnTest < ActionDispatch::IntegrationTest
+
+  setup do
+    OmniAuth.config.test_mode = true
+
+    @user = create( :user )
+    @board = create( :board )
+
+    @sauron = create( :sauron, user: @user, board: @board, active: true )
+    @hero = create( :hero, user: @user, board: @board, active: false )
+
+    @board.sauron_created = true
+    @board.current_heroes_count = 1
+    @board.max_heroes_count = 1
+    @board.users << @user
+
+    @board.current_hero = @hero
+
+    @board.aasm_state = 'sauron_setup'
+    @board.save!
+
+    create( :board_plot, board: @board )
+
+    $google_auth_hash[:uid] = @user.uid
+    OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
+    get '/auth/google_oauth2'
+    follow_redirect!
+  end
+
+  test 'Test user second turn (1 players)' do
+    @board.aasm_state = 'exploration'
+    @board.save!
+
+    get "/heros/#{@hero.id}/exploration_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    assert_select 'b', 'Hand:'
+  end
+
+  test 'Test user switch at the end of user turn (2 players)' do
+
+    @thalin = create( :hero, name_code: :thalin, name: 'Thalin', user: @user, board: @board, active: false )
+    @thalin.save!
+
+    @argalad = @hero
+
+    @board.sauron_created = true
+    @board.current_heroes_count = 2
+    @board.max_heroes_count = 2
+
+    @board.current_hero = @argalad
+
+    @board.aasm_state = 'encounter'
+    @board.save!
+
+    get "/heros/#{@hero.id}/encounter_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    assert_select 'h1', 'Listing boards'
+
+    # puts @response.body
+
+    assert_select 'td', 'Sauron'
+    assert_select 'td', 'Thalin'
+    assert_select "a[href=?]", "/sauron/#{@sauron.id}/shadow_cards/start_hero_turn_play_card_screen"
+  end
+
+end
