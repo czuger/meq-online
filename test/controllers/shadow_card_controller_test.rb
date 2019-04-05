@@ -40,13 +40,13 @@ class ShadowCardControllerTest < ActionDispatch::IntegrationTest
   end
 
 
-  test 'should play card' do
-    @sauron.shadow_cards << 8
-    @sauron.save!
-    post play_sauron_shadow_cards_url @sauron, params: { selected_card: 8 }
-    # assert_redirected_to sauron_url(@sauron)
-    refute_includes  @sauron.reload.shadow_cards, 8
-  end
+  # test 'should play card' do
+  #   @sauron.shadow_cards << 8
+  #   @sauron.save!
+  #   post play_sauron_shadow_cards_url @sauron, params: { selected_card: 8 }
+  #   # assert_redirected_to sauron_url(@sauron)
+  #   refute_includes  @sauron.reload.shadow_cards, 8
+  # end
 
   test "should fail because user don't have the card in hand card" do
     assert_raise do

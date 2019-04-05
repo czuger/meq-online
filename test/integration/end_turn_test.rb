@@ -61,7 +61,7 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", "/plot_cards/#{@sauron.id}/play_screen"
   end
 
-  test 'Test user switch at the end of user turn (2 players)' do
+  test 'Test 2 player switch to next player.' do
 
     @thalin = create( :hero, name_code: :thalin, name: 'Thalin', user: @user, board: @board, active: false )
     @thalin.save!
@@ -88,6 +88,37 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     assert_select 'td', 'Argalad'
     assert_select 'td', 'Sauron'
     assert_select "a[href=?]", "/heros/#{@thalin.id}/rest_screen"
+  end
+
+  test 'Test 2 player switch to sauron (after everybody has played).' do
+
+    @thalin = create( :hero, name_code: :thalin, name: 'Thalin', user: @user, board: @board, active: false, turn_finished: true )
+    @thalin.save!
+
+    @argalad = @hero
+    @argalad.turn_finished = true
+    @argalad.save!
+
+    @board.sauron_created = true
+    @board.current_heroes_count = 2
+    @board.max_heroes_count = 2
+
+    @board.current_hero = @argalad
+
+    @board.aasm_state = 'exploration'
+    @board.save!
+
+    get "/heros/#{@hero.id}/exploration_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    assert_select 'h1', 'Listing boards'
+
+    # puts @response.body
+
+    assert_select 'td', 'Argalad'
+    assert_select 'td', 'Thalin'
+    assert_select "a[href=?]", "/plot_cards/#{@sauron.id}/play_screen"
   end
 
 end
