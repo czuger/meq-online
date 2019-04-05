@@ -184,12 +184,11 @@ class HerosController < ApplicationController
       # We switch to the first hero to play an switch to sauron shadow card play turn
       @board.transaction do
         @board.set_first_hero_to_play
-        @board.switch_to_sauron
-        @board.next_to_play_shadow_card_at_start_of_hero_turn!
+        @board.next_to_rest_step!
       end
     end
 
-    redirect_to :boards
+    redirect_to hero_rest_screen_path(@actor)
   end
 
   private

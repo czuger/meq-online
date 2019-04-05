@@ -69,26 +69,6 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     follow_redirect!
     assert_response :success
-    assert_select 'h1', 'Listing boards'
-
-    assert_select 'td', 'Argalad'
-    assert_select "a[href=?]", "/sauron/#{@sauron.id}/shadow_cards/start_hero_turn_play_card_screen"
-
-    get "/sauron/#{@sauron.id}/shadow_cards/start_hero_turn_play_card_screen"
-    assert_response :success
-    assert_select 'h3', 'Select shadow card to play'
-
-    get "/sauron/#{@sauron.id}/shadow_cards/start_hero_turn_play_card_finished"
-    assert_response :redirect
-    follow_redirect!
-    assert_response :success
-    assert_select 'h1', 'Listing boards'
-
-    assert_select 'td', 'Sauron'
-    assert_select "a[href=?]", "/heros/#{@hero.id}/rest_screen"
-
-    get "/heros/#{@hero.id}/rest_screen"
-    assert_response :success
     assert_select 'label', 'Do you want to rest ?'
 
     get "/heros/#{@hero.id}/rest_finished"

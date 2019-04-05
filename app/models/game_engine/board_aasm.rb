@@ -6,9 +6,9 @@ module GameEngine
 
       base.send(:aasm) do
         state :created, :initial => true
-        state :waiting_for_players, :sauron_setup, :event_step, :sauron_actions, :heroes_draw_cards
-        state :play_shadow_card_at_start_of_hero_turn, :rest_step, :movement_preparation_step
-        state :movement_break_schedule, :movement, :exploration, :encounter, :story, :plot
+        state :waiting_for_players, :sauron_setup, :sauron_actions, :heroes_draw_cards
+        state :rest_step
+        state :movement, :exploration, :plot
 
         event :wait_for_players do
           transitions :from => :created, :to => :waiting_for_players
@@ -26,12 +26,8 @@ module GameEngine
           transitions :from => :sauron_actions, :to => :heroes_draw_cards
         end
 
-        event :next_to_play_shadow_card_at_start_of_hero_turn do
-          transitions :from => [:heroes_draw_cards, :encounter], :to => :play_shadow_card_at_start_of_hero_turn
-        end
-
         event :next_to_rest_step do
-          transitions :from => :play_shadow_card_at_start_of_hero_turn, :to => :rest_step
+          transitions :from => :heroes_draw_cards, :to => :rest_step
         end
 
         event :next_to_movement do
