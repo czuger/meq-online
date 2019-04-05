@@ -29,7 +29,7 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     follow_redirect!
   end
 
-  test 'Test user second turn (1 players)' do
+  test 'Test 1 player switch to second turn.' do
     @board.aasm_state = 'exploration'
     @board.save!
 
@@ -38,9 +38,27 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_response :success
 
-    puts @response.body
+    # puts @response.body
 
     assert_select 'b', 'Hand:'
+  end
+
+  test 'Test 1 player switch to sauron after finishing his second turn.' do
+    @board.aasm_state = 'exploration'
+    @board.save!
+
+    @hero.turn = 2
+    @hero.save!
+
+    get "/heros/#{@hero.id}/exploration_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+
+    # puts @response.body
+
+    assert_select 'td', 'Argalad'
+    assert_select "a[href=?]", "/plot_cards/#{@sauron.id}/play_screen"
   end
 
   test 'Test user switch at the end of user turn (2 players)' do

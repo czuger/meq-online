@@ -21,7 +21,7 @@ module GameEngine
         hero.turn == 1
         hero.save!
 
-        switch_to_sauron
+        actions_before_switch_to_sauron
 
         return false
       else
@@ -37,7 +37,7 @@ module GameEngine
       self.transaction do
         unless switch_to_next_hero
           # If all heroes have played, we switch to sauron turn
-          switch_to_sauron
+          actions_before_switch_to_sauron
         else
           # Otherwise, we start the next hero turn
           self.next_to_rest_step!
@@ -49,7 +49,7 @@ module GameEngine
     
     private
 
-    def switch_to_sauron
+    def actions_before_switch_to_sauron
       # At this place we need to :
       # - Call the automated rally step
       # - Call the automated story step
