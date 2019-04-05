@@ -37,6 +37,9 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     follow_redirect!
     assert_response :success
+
+    puts @response.body
+
     assert_select 'b', 'Hand:'
   end
 
@@ -53,10 +56,10 @@ class EndTurnTest < ActionDispatch::IntegrationTest
 
     @board.current_hero = @argalad
 
-    @board.aasm_state = 'encounter'
+    @board.aasm_state = 'exploration'
     @board.save!
 
-    get "/heros/#{@hero.id}/encounter_finished"
+    get "/heros/#{@hero.id}/exploration_finished"
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -64,9 +67,9 @@ class EndTurnTest < ActionDispatch::IntegrationTest
 
     # puts @response.body
 
+    assert_select 'td', 'Argalad'
     assert_select 'td', 'Sauron'
-    assert_select 'td', 'Thalin'
-    assert_select "a[href=?]", "/sauron/#{@sauron.id}/shadow_cards/start_hero_turn_play_card_screen"
+    assert_select "a[href=?]", "/heros/#{@thalin.id}/rest_screen"
   end
 
 end

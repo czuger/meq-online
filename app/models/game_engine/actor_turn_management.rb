@@ -16,28 +16,46 @@ module GameEngine
       end
     end
 
-    def finish_hero_turn!
-      self.transaction do
+    def start_hero_second_turn(hero)
+      if hero.turn == 2
+        hero.turn == 1
+        hero.save!
 
-      unless switch_to_next_hero
-        # If all heroes have played, we switch to sauron turn
+        switch_to_sauron
 
-        # At this place we need to :
-        # - Call the automated rally step
-        # - Call the automated story step
-        self.next_to_plot!
-        self.switch_to_sauron
+        return false
       else
-        # Otherwise, we switch to the sauron ability to play a shadow card at the beginning of the player
-        self.next_to_play_shadow_card_at_start_of_hero_turn!
-        self.switch_to_sauron
-      end
+        hero.turn == 2
+        hero.save!
 
-      self.save!
+        self.next_to_single_hero_draw!
+      end
+    end
+
+    # Use this method when we have more than one heroes
+    def finish_heroes_turn!
+      self.transaction do
+        unless switch_to_next_hero
+          # If all heroes have played, we switch to sauron turn
+          switch_to_sauron
+        else
+          # Otherwise, we start the next hero turn
+          self.next_to_rest_step!
+        end
+
+        self.save!
       end
     end
     
     private
+
+    def switch_to_sauron
+      # At this place we need to :
+      # - Call the automated rally step
+      # - Call the automated story step
+      self.next_to_plot!
+      self.switch_to_sauron
+    end
 
     # Set the variable current_hero to  the next current hero
     # Return true if a hero had been activated

@@ -7,7 +7,7 @@ module GameEngine
       base.send(:aasm) do
         state :created, :initial => true
         state :waiting_for_players, :sauron_setup, :sauron_actions, :heroes_draw_cards
-        state :rest_step
+        state :rest_step, :single_hero_draw, :single_hero_rally
         state :movement, :exploration, :plot
 
         event :wait_for_players do
@@ -27,7 +27,7 @@ module GameEngine
         end
 
         event :next_to_rest_step do
-          transitions :from => :heroes_draw_cards, :to => :rest_step
+          transitions :from => [:heroes_draw_cards, :exploration], :to => :rest_step
         end
 
         event :next_to_movement do

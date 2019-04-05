@@ -94,9 +94,17 @@ class HerosController < ApplicationController
   end
 
   def exploration_finished
+    # - 1 hero, hero.turn == 1 => hero second turn
+    # - 1 hero, hero.turn == 2 => sauron turn
+    # - 2-3 heroes => hero second turn
+    # - 1 hero, hero.turn == 2 => sauron turn
     @board.transaction do
-      @board.finish_hero_turn!
-      redirect_to boards_path
+      if @board.current_heroes_count > 1
+        @board.finish_heroes_turn!
+        redirect_to boards_path
+      else
+
+      end
     end
   end
 
