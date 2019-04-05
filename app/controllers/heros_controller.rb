@@ -94,16 +94,19 @@ class HerosController < ApplicationController
   end
 
   def exploration_finished
-    # - 1 hero, hero.turn == 1 => hero second turn
-    # - 1 hero, hero.turn == 2 => sauron turn
-    # - 2-3 heroes => hero second turn
-    # - 1 hero, hero.turn == 2 => sauron turn
     @board.transaction do
+      # If we have more than one player
       if @board.current_heroes_count > 1
         @board.finish_heroes_turn!
         redirect_to boards_path
       else
-
+      # If we have more than one player
+        if @board.start_hero_second_turn(@actor)
+          # We started a new turn for hero
+          redirect_to hero_draw_cards_screen_path(@actor)
+        else
+          redirect_to boards_path
+        end
       end
     end
   end

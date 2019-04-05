@@ -22,6 +22,10 @@ module GameEngine
           transitions :from => [:sauron_setup, :plot], :to => :sauron_actions
         end
 
+        event :next_to_single_hero_draw do
+          transitions :from => :exploration, :to => :single_hero_draw
+        end
+
         event :next_to_heroes_draw_cards do
           transitions :from => :sauron_actions, :to => :heroes_draw_cards
         end
