@@ -29,6 +29,16 @@
           = link_to 'Sign out', sessions_path, method: :delete, class: 'nav-link'
 
     - if @actor
+      = link_to edit_map_path(@actor, scale: 'x1'), role: :button, class: 'btn btn-primary ml-2' do
+        X1
+    - if @actor
+      = link_to edit_map_path(@actor, scale: 'x2'), role: :button, class: 'btn btn-primary ml-2' do
+        X2
+    - if @actor
+      = link_to edit_map_path(@actor, scale: 'x4'), role: :button, class: 'btn btn-primary ml-2' do
+        X4
+
+    - if @actor
       = link_to actor_board_messages_path(@actor), role: :button, class: 'btn btn-primary ml-2' do
         Messages
         -#%span.badge.badge-light

@@ -1,5 +1,9 @@
 module MapsHelper
 
+  def map_filename
+    'map_' + @scale
+  end
+
   def get_token_positions
     @tokens.each do |loc, tokens|
       loc = @locations.get( loc )

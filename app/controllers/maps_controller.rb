@@ -20,6 +20,8 @@ class MapsController < ApplicationController
     @plots = @board.current_plots.order(:plot_position)
 
     @tokens = GameEngine::DataAtLocation.new.gather(@board).tokens
+
+    @scale = params[:scale] || 'x1'
   end
 
 end
