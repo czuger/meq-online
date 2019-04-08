@@ -9,8 +9,8 @@
 
     -# Placing influence tokens
     - @positions.each do |p|
-      .influence-pawn-box{ style: "top:#{p.y+5}px; left:#{p.x-35}px;" }
-        = image_tag 'influence.png', class: 'influence-pawn', style: "top:#{p.y+5}px; left:#{p.x-35}px;", location: p.name_code
+      .influence-pawn-box{ style: "top:#{(p.y*1.28)-35}px; left:#{(p.x*1.285)-25}px;" }
+        = image_tag 'influence.png', style: "top:#{p.y+5}px; left:#{p.x-35}px;", location: p.name_code
         %spawn.influence-value
           = @influence[p.name_code] ? @influence[p.name_code] : 0
 
