@@ -16,6 +16,17 @@ class Board < ApplicationRecord
   belongs_to :current_hero, class_name: 'Hero', optional: true
 
   #
+  # Tokens methods
+  #
+  def get_tokens
+    GameEngine::DataAtLocation.new.gather(self).tokens
+  end
+
+  def get_tokens_at_location(location)
+    GameEngine::DataAtLocation.new.gather(self).tokens[location.to_s]
+  end
+
+  #
   # Log methods
   #
   def log( actor, action, params= {} )

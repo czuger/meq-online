@@ -19,7 +19,7 @@ class MapsController < ApplicationController
 
     @plots = @board.current_plots.order(:plot_position)
 
-    @tokens = GameEngine::DataAtLocation.new.gather(@board).tokens
+    @tokens = @board.get_tokens
   end
 
 end

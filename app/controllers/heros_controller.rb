@@ -86,6 +86,8 @@ class HerosController < ApplicationController
   # Exploration methods
   #
   def exploration_screen
+    # Need to process that.
+    @tokens_at_location = @board.get_tokens_at_location(@actor.location)
   end
 
   def explore
