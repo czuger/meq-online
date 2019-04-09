@@ -42,6 +42,19 @@ class HeroTest < ActiveSupport::TestCase
     end
   end
 
+  test 'If a hero has no more cards, then he loose nothing' do
+    Kernel.stubs( :rand ).returns( 2 )
+
+    @hero.hand = []
+    @hero.save!
+
+    assert_no_difference '@hero.reload.hand.count', -1 do
+      assert_no_difference '@hero.reload.life_pool.count' do
+        @hero.suffer_peril!(@board)
+      end
+    end
+  end
+
   test 'On a roll of 3, should loose a favor' do
     Kernel.stubs( :rand ).returns( 3 )
 

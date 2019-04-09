@@ -59,19 +59,11 @@ class Hero < Actor
   end
 
   def hand_to_rest(cards)
-    cards = [ cards ] if cards.is_a? Integer
-
-    self.hand -= cards
-    self.life_rest += cards
-    self.save!
+    discard_cards(cards){ |c| self.rest_pool += c }
   end
 
   def hand_to_life(cards)
-    cards = [ cards ] if cards.is_a? Integer
-
-    self.hand -= cards
-    self.life_pool += cards
-    self.save!
+    discard_cards(cards){ |c| self.life_pool += c }
   end
 
   private
@@ -93,6 +85,16 @@ class Hero < Actor
     action << 'combat.' if before_combat
     action << 'draw_cards'
     board.logs.create!( action: action, params: { name: name_code.to_sym, cards_drawn: cards_drawn, lp_cards: life_pool.count } )
+  end
+
+  # Used only with hand_to_rest and hand_to_life
+  def discard_cards(cards)
+    cards = [] unless cards
+    cards = [ cards ] if cards.is_a? Integer
+
+    self.hand -= cards
+    yield(cards)
+    self.save!
   end
 
 end

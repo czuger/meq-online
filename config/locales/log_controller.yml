@@ -2,6 +2,12 @@ en:
   logs:
     show:
 
+      peril:
+         pass_trough: 'enter a perilous location, but was lucky.'
+         lose_card: 'enter a perilous location and loose a card.'
+         lose_favor: 'enter a perilous location and loose a favor.'
+         lose_favor_and_card: 'enter a perilous location, and loose a favor and a card.'
+
       setup:
         set_starting_plot: 'set starting plot.'
         set_influence_in_shadow_pool:

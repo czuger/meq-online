@@ -64,6 +64,8 @@ class HerosController < ApplicationController
       @actor.hand_to_rest(selected_cards)
       @actor.save!
 
+      @actor.suffer_peril!(@board)
+
       @board.next_to_exploration!
       @board.save!
 
