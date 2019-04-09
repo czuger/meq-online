@@ -486,7 +486,7 @@ edoras:
   :color: Dark blue
   :color_code: :dark_blue
   :perilous: false
-  :heaven: false
+  :heaven: true
   :pos_x: 1042
   :pos_y: 928
 emyn_muil:

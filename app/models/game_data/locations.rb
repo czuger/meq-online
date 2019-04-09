@@ -32,7 +32,7 @@ module GameData
     end
 
     def position_list
-      @data.map{ |k, v| OpenStruct.new( name_code: k, x: v[:pos_x], y: v[:pos_y] ) }
+      @data.map{ |k, v| OpenStruct.new( name_code: k, x: v[:pos_x], y: v[:pos_y], haven: v[:heaven] ) }
     end
 
     def alpha_select_tag_data
