@@ -77,7 +77,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'h3', 'Movement screen'
 
-    post "/heros/#{@hero.id}/move", params: { selected_cards: '1' }
+    post "/heros/#{@hero.id}/move", params: { selected_cards: '1', destination: :the_shire }
     assert_response :redirect
     follow_redirect!
     assert_response :success

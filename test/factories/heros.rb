@@ -7,7 +7,7 @@ FactoryBot.define do
     strength {1}
     agility {1}
     wisdom {1}
-    location {'harlingdon'}
+    location {'the_shire'}
     hand { [ 1 ] }
     life_pool { [] }
     rest_pool { [] }
