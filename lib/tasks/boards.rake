@@ -9,6 +9,7 @@ namespace :board do
       # board.combat&.destroy
 
       board.current_hero = nil
+      board.aasm_state = :created
       board.save!
 
       board.heroes.each{ |e| MovementPreparationStep.where( actor_id: e.id ).delete_all }

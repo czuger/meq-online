@@ -8,4 +8,5 @@ class Actor < ApplicationRecord
   def assert_sauron
     raise "#{self.inspect} should be a Sauron type." unless self.is_a? Sauron
   end
+
 end

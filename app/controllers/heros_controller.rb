@@ -60,8 +60,8 @@ class HerosController < ApplicationController
       if selected_cards - @actor.hand != []
         raise "Selected cards not in hand. selected_cards = #{selected_cards}, hand = #{@actor.hand}"
       end
-      @actor.hand -= selected_cards
-      @actor.rest_pool += selected_cards
+
+      @actor.hand_to_rest(selected_cards)
       @actor.save!
 
       @board.next_to_exploration!

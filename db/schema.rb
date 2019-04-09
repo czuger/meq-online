@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_05_091110) do
+ActiveRecord::Schema.define(version: 2019_04_09_120036) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 2019_04_05_091110) do
     t.boolean "active", default: false, null: false
     t.integer "playing_order", limit: 2
     t.integer "turn", limit: 2, default: 1, null: false
+    t.integer "favor", limit: 2, default: 0
     t.index ["board_id"], name: "index_actors_on_board_id"
   end
 
@@ -78,7 +79,6 @@ ActiveRecord::Schema.define(version: 2019_04_05_091110) do
     t.integer "plot_discard", null: false, array: true
     t.integer "shadow_discard", array: true
     t.integer "shadow_pool", limit: 2, null: false
-    t.hstore "influence", null: false
     t.hstore "characters", null: false
     t.integer "story_marker_heroes", limit: 2, default: 0, null: false
     t.integer "story_marker_ring", limit: 2, default: 0, null: false
@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(version: 2019_04_05_091110) do
     t.integer "event_discard", limit: 2, default: [], null: false, array: true
     t.jsonb "favors", default: [], null: false
     t.bigint "current_hero_id"
+    t.jsonb "influence", default: {}, null: false
     t.index ["current_hero_id"], name: "index_boards_on_current_hero_id"
   end
 

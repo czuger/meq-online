@@ -31,7 +31,7 @@ module GameEngine
         end
 
         event :next_to_rest_step do
-          transitions :from => [:heroes_draw_cards, :exploration], :to => :rest_step
+          transitions :from => [:heroes_draw_cards, :exploration, :single_hero_draw], :to => :rest_step
         end
 
         event :next_to_movement do

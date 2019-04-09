@@ -15,6 +15,10 @@ module GameData
       OpenStruct.new( @data[name_code.to_s] )
     end
 
+    def perilous?( name_code )
+      get(name_code).perilous
+    end
+
     def exist?( name_code )
       @data.has_key?( name_code )
     end
