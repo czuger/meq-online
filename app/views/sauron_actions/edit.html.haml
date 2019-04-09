@@ -49,24 +49,24 @@
           .col-1.pt-1
             = check_box_tag :draw_cards_3, :c, @board.sauron_actions['draw_cards_3']
 
-      .col
-        .row
-          .col-5.col-form-label
-            Command 3
-          .col-1.pt-1
-            = check_box_tag :command_1, :c, @board.sauron_actions['command_1']
-
-        .row
-          .col-5.col-form-label
-            Command 2
-          .col-1.pt-1
-            = check_box_tag :command_2, :c, @board.sauron_actions['command_2']
-
-        .row
-          .col-5.col-form-label
-            Command 1
-          .col-1.pt-1
-            = check_box_tag :command_3, :c, @board.sauron_actions['command_3']
+      -#.col
+      -#  .row
+      -#    .col-5.col-form-label
+      -#      Command 3
+      -#    .col-1.pt-1
+      -#      = check_box_tag :command_1, :c, @board.sauron_actions['command_1']
+      -#
+      -#  .row
+      -#    .col-5.col-form-label
+      -#      Command 2
+      -#    .col-1.pt-1
+      -#      = check_box_tag :command_2, :c, @board.sauron_actions['command_2']
+      -#
+      -#  .row
+      -#    .col-5.col-form-label
+      -#      Command 1
+      -#    .col-1.pt-1
+      -#      = check_box_tag :command_3, :c, @board.sauron_actions['command_3']
 
     .row
       .col-5
@@ -80,10 +80,10 @@
       .col-3
         = link_to edit_map_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
           Go to map
-
-      .col-3
-        = link_to draw_screen_sauron_shadow_cards_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
-          Draw shadow card
+      -#
+      -#.col-3
+      -#  = link_to draw_screen_sauron_shadow_cards_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+      -#    Draw shadow card
 
       .col-3
         = link_to plot_cards_draw_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
@@ -95,9 +95,9 @@
     .row
       .col-3
 
-      .col-3
-        = link_to play_screen_sauron_shadow_cards_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
-          Play shadow card
+      -#.col-3
+      -#  = link_to play_screen_sauron_shadow_cards_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+      -#    Play shadow card
 
       .col-3
 
