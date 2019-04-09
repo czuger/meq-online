@@ -1,6 +1,7 @@
 require 'test_helper'
 require 'pp'
 
+# This is to test the GameData::Heroes (static heroes data)
 class HeroesTest < ActiveSupport::TestCase
 
   def setup

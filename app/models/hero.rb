@@ -34,12 +34,58 @@ class Hero < Actor
     end
   end
 
-  #
-  # Log methods
-  #
-  def log_movement!( board, card )
-    board.logs.create!( action: :move, params: { name: name_code.to_sym, from: location.to_sym, to: location.to_sym,
-        card: card } )
+  def suffer_peril!(board)
+    transaction do
+      if current_location_perilous?(board)
+        case Hazard.d4
+          when 1
+            board.log( self, 'peril.pass_trough' )
+          when 2
+            hand_to_life(hand.sample)
+            board.log( self, 'peril.lose_card' )
+          when 3
+            self.favor -= 1
+            board.log( self, 'peril.lose_favor' )
+          when 4
+            hand_to_life(hand.sample)
+            self.favor -= 1
+            board.log( self, 'peril.lose_favor_and_card' )
+          else
+            raise 'Hazard is not working, arghhhhh !!!'
+        end
+      end
+      self.save!
+    end
+  end
+
+  def hand_to_rest(cards)
+    cards = [ cards ] if cards.is_a? Integer
+
+    self.hand -= cards
+    self.life_rest += cards
+    self.save!
+  end
+
+  def hand_to_life(cards)
+    cards = [ cards ] if cards.is_a? Integer
+
+    self.hand -= cards
+    self.life_pool += cards
+    self.save!
+  end
+
+  private
+
+  def current_location_perilous?(board)
+    locations = GameData::Locations.new
+    locations.perilous?(location) || ( board.influence[location] && board.influence[location] > wisdom )
+  end
+
+  def cards_from_hand(pool, cards)
+    cards = [ cards ] if cards.is_a? Integer
+    pool_var = instance_variable_get('@'+pool.to_s+'_pool')
+    self.hand -= cards
+    pool_var.assign_attributes( pool_var + cards )
   end
 
   def log_draw_cards!( board, cards_drawn, before_combat= nil )
