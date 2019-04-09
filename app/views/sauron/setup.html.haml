@@ -4,7 +4,7 @@
   .alert.alert-secondary
     %ul.mt-3
       %li Place the indicated amount of influence tokens on the map. Influence tokens already placed in the shadow strongholds and in the shadow pool.
-      %li Draw and discard the indicated amount of shadow cards.
+      %li Shadow cards are not used at the moment, so ignore them.
       %li Draw and discard the indicated amount of plot cards.
       %li When you are done, press the terminate button.
 
@@ -14,9 +14,9 @@
         = link_to edit_map_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
           1 - Go to map
 
-      .col-3
-        = link_to draw_screen_sauron_shadow_cards_path(@actor, nb_cards: @plot_card.shadow_cards.draw), role: :button, class: 'btn btn-secondary btn-block' do
-          2 - Draw shadow card
+      -#.col-3
+      -#  = link_to draw_screen_sauron_shadow_cards_path(@actor, nb_cards: @plot_card.shadow_cards.draw), role: :button, class: 'btn btn-secondary btn-block' do
+      -#    2 - Draw shadow card
 
       .col-3
         = link_to plot_cards_draw_screen_path(@actor, nb_cards: @plot_card.plot_cards.draw), role: :button, class: 'btn btn-secondary btn-block' do
