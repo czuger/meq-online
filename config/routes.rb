@@ -29,6 +29,7 @@ Rails.application.routes.draw do
     get :exploration_screen
     post :explore
     get :exploration_finished
+    get :exploration_back_to_movement
 
     get :encounter_screen
     post :encounter

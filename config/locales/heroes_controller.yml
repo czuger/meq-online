@@ -1,0 +1,6 @@
+en:
+  heros:
+    exploration_screen:
+      explore:
+        favor: 'Gain one favor'
+        character: 'Encounter %{character_name} and gain 2 favors'

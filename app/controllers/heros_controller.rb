@@ -91,6 +91,9 @@ class HerosController < ApplicationController
   end
 
   def explore
+  end
+
+  def exploration_back_to_movement
     @board.next_to_movement!
     @board.save!
 
