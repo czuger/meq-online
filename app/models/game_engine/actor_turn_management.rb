@@ -55,6 +55,9 @@ module GameEngine
       # - Call the automated story step
       self.next_to_plot!
       self.switch_to_sauron
+      self.turn += 1
+
+      self.save!
     end
 
     # Set the variable current_hero to  the next current hero

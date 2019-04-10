@@ -55,6 +55,8 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_response :success
 
+    assert_equal 2, @board.reload.turn
+
     # puts @response.body
 
     assert_select 'td', 'Argalad'
