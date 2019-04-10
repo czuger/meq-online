@@ -41,6 +41,9 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_select 'td', 'Argalad'
     assert_select "a[href=?]", "/sauron/#{@sauron.id}/setup"
 
+    refute @hero.reload.active
+    assert @sauron.reload.active
+
     get "/sauron/#{@sauron.id}/setup"
     assert_response :success
 
@@ -48,6 +51,9 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     follow_redirect!
     assert_response :success
+
+    refute @hero.reload.active
+    assert @sauron.reload.active
 
     # We should be at sauron actions
     assert_select 'li', 'Select an action and validate it (this only place a marker on the map).'
@@ -62,8 +68,14 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_select 'td', 'Sauron'
     assert_select "a[href=?]", "/heros/#{@hero.id}/draw_cards_screen"
 
+    assert @hero.reload.active
+    refute @sauron.reload.active
+
     get "/heros/#{@hero.id}/draw_cards_screen"
     assert_response :success
+
+    assert @hero.reload.active
+    refute @sauron.reload.active
 
     get "/heros/#{@hero.id}/draw_cards_finished"
     assert_response :redirect
@@ -71,11 +83,17 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'label', 'Do you want to rest ?'
 
+    assert @hero.reload.active
+    refute @sauron.reload.active
+
     get "/heros/#{@hero.id}/rest_finished"
     assert_response :redirect
     follow_redirect!
     assert_response :success
     assert_select 'h3', 'Movement screen'
+
+    assert @hero.reload.active
+    refute @sauron.reload.active
 
     post "/heros/#{@hero.id}/move", params: { selected_cards: '1', destination: :the_shire }
     assert_response :redirect
@@ -83,11 +101,17 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'h3', 'Exploration screen'
 
+    assert @hero.reload.active
+    refute @sauron.reload.active
+
     get "/heros/#{@hero.id}/exploration_finished"
     assert_response :redirect
     follow_redirect!
     assert_response :success
     assert_select 'h3', 'Draw cards screen'
+
+    assert @hero.reload.active
+    refute @sauron.reload.active
 
     get "/heros/#{@hero.id}/draw_cards_finished"
     assert_response :redirect
@@ -95,17 +119,26 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'h3', 'Rest screen'
 
+    assert @hero.reload.active
+    refute @sauron.reload.active
+
     get "/heros/#{@hero.id}/rest_finished"
     assert_response :redirect
     follow_redirect!
     assert_response :success
     assert_select 'h3', 'Movement screen'
 
+    assert @hero.reload.active
+    refute @sauron.reload.active
+
     post "/heros/#{@hero.id}/move", params: { selected_cards: '2', destination: :the_shire }
     assert_response :redirect
     follow_redirect!
     assert_response :success
     assert_select 'h3', 'Exploration screen'
+
+    assert @hero.reload.active
+    refute @sauron.reload.active
 
     get "/heros/#{@hero.id}/exploration_finished"
     assert_response :redirect
@@ -116,6 +149,9 @@ class MainFlowTest < ActionDispatch::IntegrationTest
 
     assert_select 'td', 'Argalad'
     assert_select "a[href=?]", "/plot_cards/#{@sauron.id}/play_screen"
+
+    refute @hero.reload.active
+    assert @sauron.reload.active
 
     # puts @response.body
     # assert_select 'h1', 'Listing boards'

@@ -178,26 +178,6 @@ class HerosController < ApplicationController
     redirect_to @actor
   end
 
-  # def move
-  #   hero_location = @actor.location
-  #   @actor.location = params['move_to']
-  #   card = params['card_used'].to_i
-  #
-  #   card_position = @actor.hand.index( card )
-  #   if card_position
-  #     @actor.hand.delete_at( card_position )
-  #
-  #     @actor.rest_pool << card
-  #     @actor.save!
-  #
-  #     @actor.log_movement!( @board, card )
-  #   else
-  #     raise "Can't find a card position. card = #{card.inspect}, hand = #{@actor.hand.inspect}"
-  #   end
-  #
-  #   redirect_to @actor
-  # end
-
   def draw_cards_screen
     # nb_cards_to_draw = params[:nb_cards].to_i
     @cards = @actor.hand
@@ -245,48 +225,5 @@ class HerosController < ApplicationController
 
     @selectable_card_class = 'selectable-card-selection-multiple'
   end
-
-  #
-  # Movement methods (with movement preparation step)
-  #
-  # def movement_screen
-  #   @locations_data = GameData::Locations.new
-  #   @next_movement = @actor.movement_preparation_steps.first
-  #   if @next_movement
-  #     @from = @locations_data.get( @next_movement.origine ).name
-  #     @to = @locations_data.get( @next_movement.destination ).name
-  #   end
-  # end
-  #
-  # def move
-  #   @next_movement = @actor.movement_preparation_steps.find(params[:movement_id].to_i)
-  #
-  #   @actor.transaction do
-  #     @actor.location = @next_movement.destination
-  #
-  #     if @next_movement.selected_cards - @actor.hand != []
-  #       raise "Selected cards not in hand. selected_cards = #{@next_movement.selected_cards}, hand = #{@actor.hand}"
-  #     end
-  #     @actor.hand -= @next_movement.selected_cards
-  #     @actor.rest_pool += @next_movement.selected_cards
-  #     @actor.save!
-  #
-  #     MovementPreparationStep.delete(@next_movement.id)
-  #
-  #     @board.next_to_exploration!
-  #     @board.save!
-  #
-  #     redirect_to hero_exploration_screen_path(@actor)
-  #   end
-  # end
-  #
-  # def movement_finished
-  #   @board.transaction do
-  #     @board.next_to_exploration!
-  #     @board.save!
-  #
-  #     redirect_to hero_exploration_screen_path(@actor)
-  #   end
-  # end
 
 end

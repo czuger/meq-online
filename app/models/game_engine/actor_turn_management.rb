@@ -12,6 +12,8 @@ module GameEngine
         self.current_hero = first_hero
         self.save!
 
+        activate_current_hero
+
         self.heroes.update_all( turn_finished: false )
       end
     end
