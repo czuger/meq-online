@@ -18,14 +18,14 @@ module GameEngine
 
     def start_hero_second_turn(hero)
       if hero.turn == 2
-        hero.turn == 1
+        hero.turn = 1
         hero.save!
 
         actions_before_switch_to_sauron
 
         return false
       else
-        hero.turn == 2
+        hero.turn = 2
         hero.save!
 
         self.next_to_single_hero_draw!
