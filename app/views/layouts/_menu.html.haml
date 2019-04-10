@@ -36,6 +36,19 @@
 
       = link_to @actor.name, @actor, role: :button, class: 'btn btn-primary ml-2'
 
+    - if @board
+
+      - if @board.current_heroes_count == 1 && @actor && @actor.is_a?(Hero)
+        %button.btn.btn-primary.ml-2{ type: :button }
+          Single hero turn
+          %span.badge.badge-light
+            = @actor.turn
+
+      %button.btn.btn-primary.ml-2{ type: :button }
+        Turn
+        %span.badge.badge-light
+          = @board.turn
+
     - if @current_user
       %button.btn.btn-primary.ml-2{ type: :button }
         You are connected as
