@@ -38,7 +38,7 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_response :success
 
-    # puts @response.body
+    assert_equal 2, @hero.reload.turn
 
     assert_select 'b', 'Hand:'
   end

@@ -131,7 +131,7 @@ class HerosController < ApplicationController
         @board.finish_heroes_turn!
         redirect_to boards_path
       else
-      # If we have more than one player
+      # If we have only one
         if @board.start_hero_second_turn(@actor)
           # We started a new turn for hero
           redirect_to hero_draw_cards_screen_path(@actor)

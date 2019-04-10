@@ -1,13 +1,12 @@
 .container
-
   %p#notice= notice
 
-  = render partial: 'hero_info'
+  %h3
+    Draw cards screen
 
-  .row
-    .col-3
-      = link_to hero_draw_cards_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
-        Terminate
+  .alert.alert-secondary
+    %ul.mt-3
+      %li At this step, you can draw cards.
 
   .form-group
     %b Hand:
@@ -25,3 +24,8 @@
         .mx-2
           = button_tag 'Draw cards', role: :button, class: 'btn btn-secondary'
       = hidden_field_tag :agility_value, @actor.agility
+
+  .row
+    .col-3
+      = link_to hero_draw_cards_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
+        Terminate

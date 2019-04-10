@@ -9,7 +9,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     @board = create( :board )
 
     @sauron = create( :sauron, user: @user, board: @board, active: true )
-    @hero = create( :hero, user: @user, board: @board, active: false )
+    @hero = create( :hero, user: @user, board: @board, active: false, hand: [ 1, 2 ] )
 
     @board.sauron_created = true
     @board.current_heroes_count = 1
@@ -32,7 +32,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
   end
 
   # This test only validate that the main flow is working
-  test 'Must goes trough all steps and make a full turn' do
+  test 'Must goes trough all steps and make a double turn then go to next turn' do
 
     get '/boards'
     assert_response :success
@@ -87,7 +87,35 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     follow_redirect!
     assert_response :success
+    assert_select 'h3', 'Draw cards screen'
 
+    get "/heros/#{@hero.id}/draw_cards_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    assert_select 'h3', 'Rest screen'
+
+    get "/heros/#{@hero.id}/rest_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    assert_select 'h3', 'Movement screen'
+
+    post "/heros/#{@hero.id}/move", params: { selected_cards: '2', destination: :the_shire }
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    assert_select 'h3', 'Exploration screen'
+
+    get "/heros/#{@hero.id}/exploration_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    # We shoudl be back at board screen
+    assert_select 'h1', 'Listing boards'
+
+    assert_select 'td', 'Argalad'
+    assert_select "a[href=?]", "/plot_cards/#{@sauron.id}/play_screen"
 
     # puts @response.body
     # assert_select 'h1', 'Listing boards'
