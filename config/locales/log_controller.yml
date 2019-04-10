@@ -2,6 +2,10 @@ en:
   logs:
     show:
 
+      exploration:
+         get_favor: 'Get a favor at %{location_name}.'
+         encounter_character: 'Encounter %{character_name} at %{location_name} and get 2 favors.'
+
       peril:
          pass_trough: 'Enter a perilous location, but was lucky.'
          lose_card: 'Enter a perilous location and loose a card.'
