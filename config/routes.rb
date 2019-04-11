@@ -19,8 +19,9 @@ Rails.application.routes.draw do
   resources :heros, only: [ :show ] do
 
     get :rest_screen
-    post :rest
-    get :rest_finished
+    get :rest_rest
+    get :rest_heal
+    get :rest_skip
 
     get :movement_screen
     post :move

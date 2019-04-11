@@ -28,19 +28,23 @@ class HerosController < ApplicationController
   def rest_screen
   end
 
-  def rest
-    if params[:rest]
-      @actor.rest
-    elsif params[:heal]
-      @actor.heal
-    end
+  def rest_rest
+    @actor.rest
 
-    redirect_to hero_rest_screen_path(@actor)
+    @board.next_to_movement!
+    redirect_to hero_movement_screen_path(@actor)
   end
 
-  def rest_finished
-    @board.next_to_movement!
+  def rest_heal
+    @actor.heal
 
+    @board.next_to_movement!
+    redirect_to hero_movement_screen_path(@actor)
+  end
+
+
+  def rest_skip
+    @board.next_to_movement!
     redirect_to hero_movement_screen_path(@actor)
   end
 
