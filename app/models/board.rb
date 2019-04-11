@@ -16,6 +16,14 @@ class Board < ApplicationRecord
   belongs_to :current_hero, class_name: 'Hero', optional: true
 
   #
+  # Location methods
+  #
+  def location_name( location_code )
+    @locations ||= GameData::Locations.new
+    @locations.get(location_code).name
+  end
+
+  #
   # Tokens methods
   #
   def get_tokens

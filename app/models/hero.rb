@@ -7,6 +7,17 @@ class Hero < Actor
 
   has_many :movement_preparation_steps, foreign_key: :actor_id
 
+  #
+  # Location methods
+  #
+  def current_location_name
+    @locations ||= GameData::Locations.new
+    @locations.get(location).name
+  end
+
+  #
+  # Cards methods
+  #
   def draw_cards( board, nb_cards_to_draw, before_combat= false )
     transaction do
       cards = life_pool.shift(nb_cards_to_draw)

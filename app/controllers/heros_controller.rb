@@ -107,17 +107,16 @@ class HerosController < ApplicationController
   end
 
   def explore
+    notice = nil
+
     @board.transaction do
-
-      notice = nil
-
       params[:tokens].each do |type, elements|
         case type
           when 'character'
             elements.each do |character|
               @actor.favor += 2
               @board.characters.delete(character)
-              @board.log( @actor, 'exploration.encounter_character', { location_name: @actor.location, character_name: character } )
+              @board.log( @actor, 'exploration.encounter_character', { location_name: @actor.current_location_name, character_name: character } )
             end
             notice = 'Character successfully encountered.'
           when 'favor'
@@ -125,7 +124,7 @@ class HerosController < ApplicationController
               @actor.favor += 1
               # Ensure that only one favor is removed at one time.
               @board.favors.slice!(@board.favors.index(@actor.location))
-              @board.log( @actor, 'exploration.get_favor', { location_name: @actor.location } )
+              @board.log( @actor, 'exploration.get_favor', { location_name: @actor.current_location_name } )
             end
             notice = 'Favor successfully taken.'
           when 'plot'
@@ -135,7 +134,7 @@ class HerosController < ApplicationController
             if plot.favor_to_discard <= @actor.favor
               @actor.favor -= plot.favor_to_discard
               plot.destroy!
-              @board.log( @actor, 'exploration.plot.remove', { location_name: @actor.location } )
+              @board.log( @actor, 'exploration.plot.remove', { location_name: @actor.current_location_name } )
               notice = 'Plot successfully removed.'
             else
               raise "This shouldn't happens"
