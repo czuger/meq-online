@@ -18,6 +18,15 @@ module GameData
       @data[name_code][:destinations].map{ |e| [ "#{e[:dest].to_s.humanize} - #{e[:path_type]}(#{e[:difficulty]})", e[:dest] ] }
     end
 
+    def path_data( source, required_dest )
+      @data[source][:destinations].each do |destination|
+        if destination[:dest] == required_dest
+          return [ destination[:path_type], destination[:difficulty] ]
+        end
+      end
+      raise "Path from #{source} to #{required_dest} does not exist."
+    end
+
     def exist?( name_code )
       @data.has_key?( name_code )
     end

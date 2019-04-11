@@ -53,30 +53,34 @@ class HerosController < ApplicationController
 
   def move
     @actor.transaction do
-      @actor.location = params[:button]
-
       selected_cards = params[:selected_cards].split(',').map(&:to_i)
 
-      if selected_cards - @actor.hand != []
-        raise "Selected cards not in hand. selected_cards = #{selected_cards}, hand = #{@actor.hand}"
-      end
-
-      @actor.hand_to_rest(selected_cards)
-      @actor.save!
-
-      @actor.suffer_peril!(@board)
-
-      tokens_at_location = @board.get_tokens_at_location(@actor.location)
-      tokens_at_location.delete_if{ |e| e.type == :hero }
-
-      # We go to the exploration screen only if we found something on the location (other than a hero of course)
-      if tokens_at_location.empty?
-        redirect_to hero_movement_screen_path(@actor)
+      unless validate_movement( selected_cards )
+        redirect_to hero_movement_screen_path( @actor ), notice: 'Selected cards does not match requirements.'
       else
-        @board.next_to_exploration!
-        @board.save!
+        @actor.location = params[:button]
 
-        redirect_to hero_exploration_screen_path(@actor)
+        if selected_cards - @actor.hand != []
+          raise "Selected cards not in hand. selected_cards = #{selected_cards}, hand = #{@actor.hand}"
+        end
+
+        @actor.hand_to_rest(selected_cards)
+        @actor.save!
+
+        @actor.suffer_peril!(@board)
+
+        tokens_at_location = @board.get_tokens_at_location(@actor.location)
+        tokens_at_location.delete_if{ |e| e.type == :hero }
+
+        # We go to the exploration screen only if we found something on the location (other than a hero of course)
+        if tokens_at_location.empty?
+          redirect_to hero_movement_screen_path(@actor)
+        else
+          @board.next_to_exploration!
+          @board.save!
+
+          redirect_to hero_exploration_screen_path(@actor)
+        end
       end
     end
   end
@@ -233,6 +237,33 @@ class HerosController < ApplicationController
     @locations = GameData::LocationsPaths.new.get_connected_locations_for_select(@last_location)
 
     @selectable_card_class = 'selectable-card-selection-multiple'
+  end
+
+  def validate_movement( selected_cards )
+    heroes_data = GameData::Heroes.new
+    skills_data = GameData::Skills.new
+
+    path_type, path_difficulty = GameData::LocationsPaths.new.path_data(@actor.location, params[:button] )
+
+    selected_cards.each do |card|
+      if card >= 100
+        # This is a skill
+        card = skills_data.get(card)
+      else
+        # This is a hero card
+        card = heroes_data.get(@actor.name_code).cards[card]
+      end
+
+      # If the card is the same type than the path, then it is ok. We return true.
+      return true if card.movement_type == path_type.to_sym
+
+      path_difficulty -= 1
+      # If we have the good number of cards, then we have it. We return true.
+      return true if path_difficulty == 0
+    end
+
+    # If no conditions have been satisfied, then the cards does not match the path requirements. We return false.
+    false
   end
 
 end
