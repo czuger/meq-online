@@ -6,7 +6,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     OmniAuth.config.test_mode = true
 
     @user = create( :user )
-    @board = create( :board, favors: [ :the_shire ] )
+    @board = create( :board, favors: [ :the_shire, :the_grey_havens ] )
 
     @sauron = create( :sauron, user: @user, board: @board, active: true )
     @hero = create( :hero, user: @user, board: @board, active: false, hand: [ 1, 2 ] )
@@ -81,12 +81,12 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     follow_redirect!
     assert_response :success
-    assert_select 'label', 'Do you want to rest ?'
+    assert_select 'h3', 'Rest screen'
 
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    get "/heros/#{@hero.id}/rest_finished"
+    get "/heros/#{@hero.id}/rest_skip"
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -95,7 +95,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    post "/heros/#{@hero.id}/move", params: { selected_cards: '1', button: :the_shire }
+    post "/heros/#{@hero.id}/move", params: { selected_cards: '1', button: :the_grey_havens }
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -122,7 +122,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    get "/heros/#{@hero.id}/rest_finished"
+    get "/heros/#{@hero.id}/rest_skip"
     assert_response :redirect
     follow_redirect!
     assert_response :success

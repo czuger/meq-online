@@ -6,6 +6,6 @@ FactoryBot.define do
     affected_location { 'dummy' }
     story_type { 'corruption' }
     story_advance { 3 }
-
+    favor_to_discard { 3 }
   end
 end

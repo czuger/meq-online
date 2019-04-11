@@ -31,7 +31,7 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
 
   test 'should discard non empty slot' do
     @board.current_plots.create!( plot_position: 1, plot_card: 8, affected_location: 'dummy',
-        story_type: 'dummy', story_advance: 1 )
+        story_type: 'dummy', story_advance: 1, favor_to_discard: 3 )
     @board.save!
     post plot_cards_discard_url @sauron, params: { selected_card: 1 }
     assert_redirected_to plot_cards_discard_screen_url(@sauron)
@@ -60,7 +60,7 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
 
   test 'should fail because slot is already used' do
     @board.current_plots.create!( plot_position: 1, plot_card: 8, affected_location: 'dummy',
-                                  story_type: 'dummy', story_advance: 1 )
+                                  story_type: 'dummy', story_advance: 1, favor_to_discard: 3  )
     assert_raise do
       post plot_cards_play_url @sauron, params: { selected_card: 8, card_slot: 1 }
     end
