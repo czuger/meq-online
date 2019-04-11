@@ -63,7 +63,7 @@
       :attack: 3
       :defense: 0
       :strength_cost: 3
-      :movement_type: :mountain
+      :movement_type: :mountains
       :pic_path: argalad/aimed_shot.jpg
     4:
       :name: :Fall Back
@@ -87,7 +87,7 @@
       :attack: 1
       :defense: 1
       :strength_cost: 1
-      :movement_type: :hill
+      :movement_type: :hills
       :pic_path: argalad/parry.jpg
     7:
       :name: :Anticipate
@@ -95,7 +95,7 @@
       :attack: 1
       :defense: 1
       :strength_cost: 2
-      :movement_type: :hill
+      :movement_type: :hills
       :pic_path: argalad/anticipate.jpg
     8:
       :name: :Attack of Opportunity
@@ -103,7 +103,7 @@
       :attack: 2
       :defense: 0
       :strength_cost: 3
-      :movement_type: :hill
+      :movement_type: :hills
       :pic_path: argalad/attack_of_opportunity.jpg
 :beravor:
   :name: Beravor
@@ -145,7 +145,7 @@
       :attack: 1
       :defense: 1
       :strength_cost: 1
-      :movement_type: :hill
+      :movement_type: :hills
       :pic_path: beravor/ranged_strike.jpg
     1:
       :name: :Evade
@@ -201,7 +201,7 @@
       :attack: 1
       :defense: 1
       :strength_cost: 2
-      :movement_type: :mountain
+      :movement_type: :mountains
       :pic_path: beravor/anticipate.jpg
     8:
       :name: :Deadly Finesse
@@ -209,7 +209,7 @@
       :attack: 4
       :defense: 0
       :strength_cost: 3
-      :movement_type: :mountain
+      :movement_type: :mountains
       :pic_path: beravor/deadly_finesse.jpg
 :eleanor:
   :name: Eleanor
@@ -251,7 +251,7 @@
       :attack: 1
       :defense: 1
       :strength_cost: 1
-      :movement_type: :hill
+      :movement_type: :hills
       :pic_path: eleanor/ranged_strike.jpg
     1:
       :name: :Concentrate
@@ -275,7 +275,7 @@
       :attack: 0
       :defense: 2
       :strength_cost: 2
-      :movement_type: :mountain
+      :movement_type: :mountains
       :pic_path: eleanor/retreat.jpg
     4:
       :name: :Volley
@@ -283,7 +283,7 @@
       :attack: 2
       :defense: 2
       :strength_cost: 2
-      :movement_type: :hill
+      :movement_type: :hills
       :pic_path: eleanor/volley.jpg
     5:
       :name: :Dodge
@@ -291,7 +291,7 @@
       :attack: 0
       :defense: 4
       :strength_cost: 3
-      :movement_type: :mountain
+      :movement_type: :mountains
       :pic_path: eleanor/dodge.jpg
     6:
       :name: :Parry
@@ -373,7 +373,7 @@
       :attack: 1
       :defense: 1
       :strength_cost: 1
-      :movement_type: :hill
+      :movement_type: :hills
       :pic_path: eometh/ranged_strike.jpg
     1:
       :name: :Evade
@@ -397,7 +397,7 @@
       :attack: 1
       :defense: 1
       :strength_cost: 1
-      :movement_type: :hill
+      :movement_type: :hills
       :pic_path: eometh/fall_back.jpg
     4:
       :name: :Parry
@@ -437,7 +437,7 @@
       :attack: 2
       :defense: 1
       :strength_cost: 2
-      :movement_type: :mountain
+      :movement_type: :mountains
       :pic_path: eometh/smash.jpg
     9:
       :name: :Reckless
@@ -519,7 +519,7 @@
       :attack: 1
       :defense: 1
       :strength_cost: 1
-      :movement_type: :hill
+      :movement_type: :hills
       :pic_path: thalin/parry.jpg
     5:
       :name: :Sweep
@@ -527,7 +527,7 @@
       :attack: 3
       :defense: 0
       :strength_cost: 1
-      :movement_type: :mountain
+      :movement_type: :mountains
       :pic_path: thalin/sweep.jpg
     6:
       :name: :Rush
@@ -535,7 +535,7 @@
       :attack: 1
       :defense: 1
       :strength_cost: 1
-      :movement_type: :mountain
+      :movement_type: :mountains
       :pic_path: thalin/rush.jpg
     7:
       :name: :Overpower
@@ -543,7 +543,7 @@
       :attack: 2
       :defense: 2
       :strength_cost: 2
-      :movement_type: :hill
+      :movement_type: :hills
       :pic_path: thalin/overpower.jpg
     8:
       :name: :Crush

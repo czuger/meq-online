@@ -5,7 +5,7 @@
   :attack: 3
   :defense: 0
   :strength_cost: 2
-  :movement_type: :hill
+  :movement_type: :hills
   :pic_path: skills/endure.jpg
 101:
   :name: :Crossbow Shot
@@ -13,7 +13,7 @@
   :attack: 4
   :defense: 0
   :strength_cost: 2
-  :movement_type: :hill
+  :movement_type: :hills
   :pic_path: skills/crossbow_shot.jpg
 102:
   :name: :Heightened Senses
@@ -77,7 +77,7 @@
   :attack: 0
   :defense: 3
   :strength_cost: 1
-  :movement_type: :hill
+  :movement_type: :hills
   :pic_path: skills/shield_smash.jpg
 1010:
   :name: :Execute
@@ -85,7 +85,7 @@
   :attack: 1
   :defense: 0
   :strength_cost: 2
-  :movement_type: :hill
+  :movement_type: :hills
   :pic_path: skills/execute.jpg
 1011:
   :name: :Reversal
@@ -101,7 +101,7 @@
   :attack: 2
   :defense: 0
   :strength_cost: 2
-  :movement_type: :mountain
+  :movement_type: :mountains
   :pic_path: skills/crushing_blow.jpg
 1013:
   :name: :Hamstring
@@ -109,7 +109,7 @@
   :attack: 2
   :defense: 2
   :strength_cost: 3
-  :movement_type: :mountain
+  :movement_type: :mountains
   :pic_path: skills/hamstring.jpg
 1014:
   :name: :Overhead Swing
@@ -117,7 +117,7 @@
   :attack: 2
   :defense: 1
   :strength_cost: 3
-  :movement_type: :mountain
+  :movement_type: :mountains
   :pic_path: skills/overhead_swing.jpg
 1015:
   :name: :Brutal Finisher
@@ -125,5 +125,5 @@
   :attack: 3
   :defense: 1
   :strength_cost: 4
-  :movement_type: :mountain
+  :movement_type: :mountains
   :pic_path: skills/brutal_finisher.jpg
