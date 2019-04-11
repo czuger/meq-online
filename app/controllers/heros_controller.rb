@@ -104,7 +104,7 @@ class HerosController < ApplicationController
           when 'favor'
             elements.each do |favor_location|
               @actor.favor += 1
-              @board.favors.delete(favor_location)
+              @board.favors.delete(@actor.location)
               @board.log( @actor, 'exploration.get_favor', { location_name: @actor.location } )
             end
         end

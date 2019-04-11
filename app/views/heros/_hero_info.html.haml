@@ -2,39 +2,39 @@
 .form-group
   .row
     .col-4
-      %button.btn.btn-secondary.btn-block{ type: :button }
-        Name code
-        %span.badge.badge-light
-          = @actor.name_code
-
-    .col-4
-      %button.btn.btn-secondary.btn-block{ type: :button }
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Location
         %span.badge.badge-light
-          = @actor.location
+          = @actor.location.humanize
+
+    .col-2
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+        Favors
+        %span.badge.badge-light
+          = @actor.favor
 
 .form-group
   .row
     .col-2
-      %button.btn.btn-secondary.btn-block{ type: :button }
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Hand
         %span.badge.badge-light
           = @actor.hand.count
 
     .col-2
-      %button.btn.btn-secondary.btn-block{ type: :button }
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Life
         %span.badge.badge-light
           = @actor.life_pool.count
 
     .col-2
-      %button.btn.btn-secondary.btn-block{ type: :button }
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Rest
         %span.badge.badge-light
           = @actor.rest_pool.count
 
     .col-2
-      %button.btn.btn-secondary.btn-block{ type: :button }
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Damage
         %span.badge.badge-light
           = @actor.damage_pool.count
@@ -43,22 +43,22 @@
 .form-group
   .row
     .col-2
-      %button.btn.btn-secondary.btn-block{ type: :button }
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Fortitude
         %span.badge.badge-light
           = @actor.fortitude
     .col-2
-      %button.btn.btn-secondary.btn-block{ type: :button }
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Strength
         %span.badge.badge-light
           = @actor.strength
     .col-2
-      %button.btn.btn-secondary.btn-block{ type: :button }
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Agility
         %span.badge.badge-light
           = @actor.agility
     .col-2
-      %button.btn.btn-secondary.btn-block{ type: :button }
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Wisdom
         %span.badge.badge-light
           = @actor.wisdom
