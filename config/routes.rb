@@ -63,10 +63,6 @@ Rails.application.routes.draw do
     post :movement_break_schedule_add
     get :movement_break_schedule_finished
 
-    get :story_screen
-    post :story_update
-    get :story_step_finished
-
     resource :shadow_cards, only: [] do
       get :play_screen
       post :play
@@ -123,6 +119,8 @@ Rails.application.routes.draw do
 
     resource :logs, only: [:show ]
     resources :heros, only: [ :index ]
+
+    get :story_screen
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 

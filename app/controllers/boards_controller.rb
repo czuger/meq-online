@@ -2,7 +2,7 @@ class BoardsController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_board, except: [:index, :new, :create]
-  before_action :set_actor_ensure_actor, only: [:map]
+  before_action :set_actor_ensure_actor, only: [:map], except: [:story_screen]
 
   # GET /boards
   # GET /boards.json
@@ -95,6 +95,29 @@ class BoardsController < ApplicationController
           format.json { render json: @board.errors, status: :unprocessable_entity }
         end
       end
+    end
+  end
+
+  def story_screen
+    @heroes_to_final = 18 - @board.story_marker_heroes
+
+    sauron_highest_marker = [ @board.story_marker_ring, @board.story_marker_conquest, @board.story_marker_corruption ].max
+    @sauron_to_final = 18 - sauron_highest_marker
+
+    shadowfall_points = 0
+    %w( story_marker_ring story_marker_conquest story_marker_corruption ).each do |sm|
+      shadowfall_points += [ @board.send( sm ), 10 ].min
+    end
+    @sauron_to_shadowfall = 30 - shadowfall_points
+
+    @sauron_dominance = [ @sauron_to_final, @sauron_to_shadowfall ].min
+
+    if @heroes_to_final < @sauron_dominance
+      @dominance = :heroes
+    elsif @heroes_to_final > @sauron_dominance
+      @dominance = :sauron
+    else
+      @dominance = :nobody
     end
   end
 
