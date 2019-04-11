@@ -2,6 +2,11 @@ en:
   logs:
     show:
 
+      story:
+        advance:
+          one: 'Marker %{marker_name} advanced by 1 position'
+          other: 'Marker %{marker_name} advanced by %{count} position'
+
       exploration:
          get_favor: 'Get a favor at %{location_name}.'
          encounter_character: 'Encounter %{character_name} at %{location_name} and get 2 favors.'

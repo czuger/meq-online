@@ -6,6 +6,7 @@ module GameEngine
 
     def advance_stories_markers
       self.story_marker_heroes += 2
+      log( nil, 'story.advance', marker_name: :heroes, count: 2 )
 
       current_plots.each do |plot|
         case plot.story_type
@@ -16,7 +17,9 @@ module GameEngine
           when 'corruption'
             self.story_marker_corruption += plot.story_advance
         end
+        log( nil, 'story.advance', marker_name: plot.story_type, count: plot.story_advance )
       end
+
     end
 
   end
