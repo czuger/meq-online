@@ -39,11 +39,12 @@ class Board < ApplicationRecord
   def set_plot( actor, plot_position, plot_id, starting_plot = nil )
     actor.assert_sauron if actor
 
-    starting_plot ||= GameData::Plots.new.get(plot_id)
+    plot = starting_plot || GameData::Plots.new.get(plot_id)
 
     # Protection agains multiple plots is done at functional level.
-    self.current_plots.create!( plot_position: plot_position, plot_card: plot_id, affected_location: starting_plot.affect,
-                                story_type: starting_plot.story.type, story_advance: starting_plot.story.advance )
+    self.current_plots.create!( plot_position: plot_position, plot_card: plot_id, affected_location: plot.affect,
+                                story_type: plot.story.type, story_advance: plot.story.advance,
+                                favor_to_discard: plot.favor_to_discard )
 
     log( actor, :place_plot )
   end

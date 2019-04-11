@@ -9,9 +9,18 @@ module HerosHelper
   def get_token_text(token)
     case token.type
       when :favor
-        t('.explore.favor')
+        [true, t('.explore.favor')]
       when :character
-        t('.explore.character', character_name: token.name)
+        [true, t('.explore.character', character_name: token.name)]
+      when :plot
+        plot = @board.current_plots.where(affected_location: @actor.location).first
+
+        if plot.favor_to_discard < @actor.favor
+          [true, t('.explore.plot.can_discard')]
+        else
+          [false, t('.explore.plot.cannot_discard')]
+        end
+
       else
         nil
     end

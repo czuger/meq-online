@@ -4,3 +4,7 @@ en:
       explore:
         favor: 'Gain one favor'
         character: 'Encounter %{character_name} and gain 2 favors'
+
+        plot:
+          can_discard: 'You can spend favor to remove the local plot'
+          cannot_discard: "You can't spend favor to remove the local plot"

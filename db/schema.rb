@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_09_120036) do
+ActiveRecord::Schema.define(version: 2019_04_11_113341) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(version: 2019_04_09_120036) do
     t.integer "story_advance", limit: 2, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "favor_to_discard", limit: 2, null: false
     t.index ["board_id"], name: "index_board_plots_on_board_id"
   end
 

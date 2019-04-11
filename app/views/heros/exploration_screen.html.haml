@@ -14,13 +14,13 @@
 
     - tokens_at_location = 0
     - @tokens_at_location.each_with_index do |token, i|
-      - token_text = get_token_text(token)
+      - token_selectable, token_text = get_token_text(token)
       - if token_text
         .form-check
-          %input{ class: 'form-check-input', type: 'checkbox', name: "tokens[#{token.type}][]", value: token.code, id: "token_check_#{i}" }
+          %input{ class: 'form-check-input', type: 'checkbox', name: "tokens[#{token.type}][]", value: token.code, id: "token_check_#{i}", disabled: !token_selectable }
           %label{ class: 'form-check-label', for: "token_check_#{i}" }
             = token_text
-        - tokens_at_location += 1
+        - tokens_at_location += 1 if token_selectable
 
     %hr
 
