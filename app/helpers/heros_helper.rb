@@ -15,7 +15,7 @@ module HerosHelper
       when :plot
         plot = @board.current_plots.where(affected_location: @actor.location).first
 
-        if plot.favor_to_discard < @actor.favor
+        if plot.favor_to_discard <= @actor.favor
           [true, t('.explore.plot.can_discard')]
         else
           [false, t('.explore.plot.cannot_discard')]

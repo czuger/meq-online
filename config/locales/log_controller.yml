@@ -8,8 +8,10 @@ en:
           other: 'Marker %{marker_name} advanced by %{count} position'
 
       exploration:
-         get_favor: 'Get a favor at %{location_name}.'
-         encounter_character: 'Encounter %{character_name} at %{location_name} and get 2 favors.'
+        get_favor: 'Get a favor at %{location_name}.'
+        encounter_character: 'Encounter %{character_name} at %{location_name} and get 2 favors.'
+        plot:
+          remove: 'Removing a plot at %{location_name}.'
 
       peril:
          pass_trough: 'Enter a perilous location (%{location_name}), but was lucky.'
