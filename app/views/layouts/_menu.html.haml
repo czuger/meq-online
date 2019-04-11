@@ -16,7 +16,7 @@
             = link_to 'My boards', boards_path, role: :button, class: 'dropdown-item'
             = link_to 'New Board', new_board_path, role: :button, class: 'dropdown-item'
 
-        - if @board
+        - if @board && @board.id
           %li.nav-item.dropdown
             %a#navbarDropdownMisc.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
               Misc

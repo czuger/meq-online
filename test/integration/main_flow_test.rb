@@ -6,7 +6,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     OmniAuth.config.test_mode = true
 
     @user = create( :user )
-    @board = create( :board )
+    @board = create( :board, favors: [ :the_shire ] )
 
     @sauron = create( :sauron, user: @user, board: @board, active: true )
     @hero = create( :hero, user: @user, board: @board, active: false, hand: [ 1, 2 ] )
@@ -95,7 +95,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    post "/heros/#{@hero.id}/move", params: { selected_cards: '1', destination: :the_shire }
+    post "/heros/#{@hero.id}/move", params: { selected_cards: '1', button: :the_shire }
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -131,7 +131,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    post "/heros/#{@hero.id}/move", params: { selected_cards: '2', destination: :the_shire }
+    post "/heros/#{@hero.id}/move", params: { selected_cards: '2', button: :the_shire }
     assert_response :redirect
     follow_redirect!
     assert_response :success
