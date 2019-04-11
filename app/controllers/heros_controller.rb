@@ -66,10 +66,18 @@ class HerosController < ApplicationController
 
       @actor.suffer_peril!(@board)
 
-      @board.next_to_exploration!
-      @board.save!
+      tokens_at_location = @board.get_tokens_at_location(@actor.location)
+      tokens_at_location.delete_if{ |e| e.type == :hero }
 
-      redirect_to hero_exploration_screen_path(@actor)
+      # We go to the exploration screen only if we found something on the location (other than a hero of course)
+      if tokens_at_location.empty?
+        redirect_to hero_movement_screen_path(@actor)
+      else
+        @board.next_to_exploration!
+        @board.save!
+
+        redirect_to hero_exploration_screen_path(@actor)
+      end
     end
   end
 
