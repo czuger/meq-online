@@ -16,17 +16,10 @@
             = link_to 'My boards', boards_path, role: :button, class: 'dropdown-item'
             = link_to 'New Board', new_board_path, role: :button, class: 'dropdown-item'
 
-        - if @board && @board.id
-          - if @actor
-
-            %li.nav-item
-              = link_to 'Map', edit_map_path(@actor), class: 'nav-link'
-
-          %li.nav-item
-            = link_to 'Log', board_logs_path( @board ), class: 'nav-link'
-
-        %li.nav-item
-          = link_to 'Sign out', sessions_path, method: :delete, class: 'nav-link'
+    - if @board && @board.id
+      - if @actor
+        = link_to 'Map', edit_map_path(@actor), role: :button, class: 'btn btn-primary ml-2', target: '_blank'
+      = link_to 'Log', board_logs_path( @board ), role: :button, class: 'btn btn-primary ml-2'
 
     - if @actor
       = link_to actor_board_messages_path(@actor), role: :button, class: 'btn btn-primary ml-2' do
@@ -34,23 +27,23 @@
         -#%span.badge.badge-light
         -#  0
 
-      = link_to @actor.name, @actor, role: :button, class: 'btn btn-primary ml-2'
-
-    - if @board
-
-      - if @board.current_heroes_count == 1 && @actor && @actor.is_a?(Hero)
-        %button.btn.btn-primary.ml-2{ type: :button }
-          Single hero turn
+      = link_to @actor, role: :button, class: 'btn btn-primary ml-2' do
+        = @actor.name
+        - if @board.current_heroes_count == 1 && @actor && @actor.is_a?(Hero)
           %span.badge.badge-light
             = @actor.turn
 
-      %button.btn.btn-primary.ml-2{ type: :button }
+    - if @board
+
+      %button.btn.btn-primary.ml-2{ type: :button, disabled: true }
         Turn
         %span.badge.badge-light
           = @board.turn
 
     - if @current_user
-      %button.btn.btn-primary.ml-2{ type: :button }
-        You are connected as
+      %button.btn.btn-primary.ml-2{ type: :button, disabled: true }
+        Connected as
         %span.badge.badge-light
           = @current_user.name
+
+    = link_to 'Sign out', sessions_path, method: :delete, role: :button, class: 'btn btn-primary ml-2'
