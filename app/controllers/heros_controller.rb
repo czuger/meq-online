@@ -53,7 +53,7 @@ class HerosController < ApplicationController
 
   def move
     @actor.transaction do
-      @actor.location = params[:destination]
+      @actor.location = params[:button]
 
       selected_cards = params[:selected_cards].split(',').map(&:to_i)
 

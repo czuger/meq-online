@@ -14,21 +14,19 @@
   %h3 Cards in hand
   = render partial: 'heros/cards_hand'
 
+  %hr
+
   = form_tag hero_move_path(@actor) do
-    .form-group
+    - @locations.in_groups_of(3).each do |location_group|
       .row
+        - location_group.each do |location|
+          .col.mt-2
+            - if location
+              = button_tag class: 'btn btn-primary btn-block', value: location.last do
+                = location.first
+    %input{ id: :selected_cards, name: 'selected_cards', type: :hidden }
 
-    .form-group
-      .mx-2
-        = label_tag :move_to, "Move from #{@last_location.humanize} to :"
-      .mx-2
-        = select_tag( :destination, options_for_select(@locations), class: 'form-control' )
-
-      %input{ id: :selected_cards, name: 'selected_cards', type: :hidden }
-
-    .actions
-      = submit_tag 'Save', role: :button, class: 'btn btn-secondary'
-
--#.col-3
--#  = link_to hero_movement_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
--#    Next to exploration step
+  .row.my-2
+    .col-4
+      = link_to hero_movement_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
+        Movement finished
