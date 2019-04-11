@@ -55,7 +55,7 @@
       :attack: 2
       :defense: 1
       :strength_cost: 2
-      :movement_type: :swamp
+      :movement_type: :desolation
       :pic_path: argalad/precision.jpg
     3:
       :name: :Aimed Shot
@@ -169,7 +169,7 @@
       :attack: 0
       :defense: 2
       :strength_cost: 2
-      :movement_type: :swamp
+      :movement_type: :desolation
       :pic_path: beravor/sneak_attack.jpg
     4:
       :name: :Aimed Shot
@@ -177,7 +177,7 @@
       :attack: 3
       :defense: 0
       :strength_cost: 3
-      :movement_type: :swamp
+      :movement_type: :desolation
       :pic_path: beravor/aimed_shot.jpg
     5:
       :name: :Parry
@@ -315,7 +315,7 @@
       :attack: 1
       :defense: 1
       :strength_cost: 2
-      :movement_type: :swamp
+      :movement_type: :desolation
       :pic_path: eleanor/anticipate.jpg
     9:
       :name: :Rest
@@ -331,7 +331,7 @@
       :attack: 2
       :defense: 0
       :strength_cost: 3
-      :movement_type: :swamp
+      :movement_type: :desolation
       :pic_path: eleanor/attack_of_opportunity.jpg
 :eometh:
   :name: Eometh
@@ -445,7 +445,7 @@
       :attack: 5
       :defense: 0
       :strength_cost: 3
-      :movement_type: :swamp
+      :movement_type: :desolation
       :pic_path: eometh/reckless.jpg
 :thalin:
   :name: Thàlin
@@ -495,7 +495,7 @@
       :attack: 1
       :defense: 2
       :strength_cost: 2
-      :movement_type: :swamp
+      :movement_type: :desolation
       :pic_path: thalin/strategize.jpg
     2:
       :name: :Dodge
@@ -551,7 +551,7 @@
       :attack: 3
       :defense: 3
       :strength_cost: 4
-      :movement_type: :swamp
+      :movement_type: :desolation
       :pic_path: thalin/crush.jpg
     9:
       :name: :Reckless
@@ -559,5 +559,5 @@
       :attack: 5
       :defense: 0
       :strength_cost: 3
-      :movement_type: :swamp
+      :movement_type: :desolation
       :pic_path: thalin/reckless.jpg

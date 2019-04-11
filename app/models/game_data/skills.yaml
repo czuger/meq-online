@@ -21,7 +21,7 @@
   :attack: 2
   :defense: 2
   :strength_cost: 2
-  :movement_type: :swamp
+  :movement_type: :desolation
   :pic_path: skills/heightened_senses.jpg
 103:
   :name: :Flaming Arrow
@@ -29,7 +29,7 @@
   :attack: 3
   :defense: 0
   :strength_cost: 3
-  :movement_type: :swamp
+  :movement_type: :desolation
   :pic_path: skills/flaming_arrow.jpg
 104:
   :name: :Concussive Shot
@@ -37,7 +37,7 @@
   :attack: 2
   :defense: 1
   :strength_cost: 3
-  :movement_type: :swamp
+  :movement_type: :desolation
   :pic_path: skills/concussive_shot.jpg
 105:
   :name: :Outmaneuver
@@ -45,7 +45,7 @@
   :attack: 3
   :defense: 3
   :strength_cost: 4
-  :movement_type: :swamp
+  :movement_type: :desolation
   :pic_path: skills/outmaneuver.jpg
 106:
   :name: :Retaliate
