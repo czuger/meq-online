@@ -5,8 +5,8 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     OmniAuth.config.test_mode = true
 
     @user = create( :user )
-    @board = create( :board )
-    @hero = create( :hero, user: @user, board: @board )
+    @board = create( :board, favors: [ :the_shire, :old_forest ] )
+    @hero = create( :hero, user: @user, board: @board, location: :the_shire )
     @sauron = create( :sauron, user: @user, board: @board )
     @board.users << @user
 
@@ -33,6 +33,39 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to boards_url
   end
 
+  test 'should patch take_damages' do
+    patch hero_take_damages_url( @hero, damage_amount: 3 )
+    assert_redirected_to hero_url(@hero)
+  end
+
+  test 'should get a favor' do
+    post hero_explore_url( @hero, tokens: { favor: [ :favor ] } )
+    assert_redirected_to hero_exploration_screen_url(@hero)
+    assert_equal 1, @hero.reload.favor
+  end
+
+  test 'should get only one favor and leave one' do
+    @board.favors << :the_shire
+    @board.save
+
+    post hero_explore_url( @hero, tokens: { favor: [ :favor ] } )
+    assert_redirected_to hero_exploration_screen_url(@hero)
+    assert_equal 1, @hero.reload.favor
+
+    assert_equal %w( the_shire old_forest ).sort, @board.reload.favors.sort
+  end
+
+  test 'should get two favors and leave none' do
+    @board.favors << :the_shire
+    @board.save
+
+    post hero_explore_url( @hero, tokens: { favor: [ :favor, :favor ] } )
+    assert_redirected_to hero_exploration_screen_url(@hero)
+    assert_equal 2, @hero.reload.favor
+
+    assert_equal %w( old_forest ).sort, @board.reload.favors.sort
+  end
+
   # test 'should POST draw_cards' do
   #   post hero_draw_cards_url( @hero )
   #   assert_redirected_to hero_url(@hero)
@@ -47,11 +80,6 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   #   get hero_rest_url( @hero )
   #   assert_redirected_to hero_url(@hero)
   # end
-
-  test 'should patch take_damages' do
-    patch hero_take_damages_url( @hero, damage_amount: 3 )
-    assert_redirected_to hero_url(@hero)
-  end
 
   # test 'should POST move' do
   #   post hero_move_url( @hero, params: { move_to: :the_grey_havens, card_used: 1 } )

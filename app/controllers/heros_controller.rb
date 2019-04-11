@@ -102,9 +102,10 @@ class HerosController < ApplicationController
               @board.log( @actor, 'exploration.encounter_character', { location_name: @actor.location, character_name: character } )
             end
           when 'favor'
-            elements.each do |favor_location|
+            elements.each do |_|
               @actor.favor += 1
-              @board.favors.delete(@actor.location)
+              # Ensure that only one favor is removed at one time.
+              @board.favors.slice!(@board.favors.index(@actor.location))
               @board.log( @actor, 'exploration.get_favor', { location_name: @actor.location } )
             end
         end
