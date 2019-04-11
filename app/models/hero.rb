@@ -36,20 +36,21 @@ class Hero < Actor
 
   def suffer_peril!(board)
     transaction do
+      # current_location_perilous? also instantiate @locations
       if current_location_perilous?(board)
         case Hazard.d4
           when 1
-            board.log( self, 'peril.pass_trough', location_name: location )
+            board.log( self, 'peril.pass_trough', location_name: @locations.get(location).name )
           when 2
             hand_to_life(hand.sample)
-            board.log( self, 'peril.lose_card', location_name: location )
+            board.log( self, 'peril.lose_card', location_name: @locations.get(location).name )
           when 3
             self.favor -= 1
-            board.log( self, 'peril.lose_favor', location_name: location )
+            board.log( self, 'peril.lose_favor', location_name: @locations.get(location).name )
           when 4
             hand_to_life(hand.sample)
             self.favor -= 1
-            board.log( self, 'peril.lose_favor_and_card', location_name: location )
+            board.log( self, 'peril.lose_favor_and_card', location_name: @locations.get(location).name )
           else
             raise 'Hazard is not working, arghhhhh !!!'
         end
@@ -69,8 +70,8 @@ class Hero < Actor
   private
 
   def current_location_perilous?(board)
-    locations = GameData::Locations.new
-    locations.perilous?(location) || ( board.influence[location] && board.influence[location] > wisdom )
+    @locations = GameData::Locations.new
+    @locations.perilous?(location) || ( board.influence[location] && board.influence[location] > wisdom )
   end
 
   def cards_from_hand(pool, cards)
