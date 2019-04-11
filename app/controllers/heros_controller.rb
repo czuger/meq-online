@@ -56,7 +56,7 @@ class HerosController < ApplicationController
       selected_cards = params[:selected_cards].split(',').map(&:to_i)
 
       unless validate_movement( selected_cards )
-        redirect_to hero_movement_screen_path( @actor ), notice: 'Selected cards does not match requirements.'
+        redirect_to hero_movement_screen_path( @actor ), alert: 'Selected cards does not match requirements.'
       else
         @actor.location = params[:button]
 
