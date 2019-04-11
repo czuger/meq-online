@@ -54,7 +54,7 @@ class BoardsController < ApplicationController
     starting_plot_id= rand( 0..2 )
     starting_plot = GameData::Plots.new.get(starting_plot_id)
 
-    plot_deck= ((0..17).to_a - [10, 11, 14, 15, 17]).to_a.shuffle
+    plot_deck= ((3..17).to_a - [10, 11, 14, 15, 17]).to_a.shuffle
 
     # We currently remove shadow cards that are played during hero movement.
     shadow_deck= ((0..23).to_a - [1, 21]).shuffle
