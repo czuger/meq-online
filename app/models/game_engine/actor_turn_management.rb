@@ -4,6 +4,8 @@
 module GameEngine
   module ActorTurnManagement
 
+    include StoryStep
+
     # Set the variable current_hero to the first hero to play
     def set_first_hero_to_play
       first_hero = heroes.order('playing_order ASC').first
@@ -54,7 +56,8 @@ module GameEngine
     def actions_before_switch_to_sauron
       # At this place we need to :
       # - Call the automated rally step
-      # - Call the automated story step
+      advance_stories_markers
+
       self.next_to_plot!
       self.switch_to_sauron
       self.turn += 1

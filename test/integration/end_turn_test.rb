@@ -56,6 +56,8 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_equal 2, @board.reload.turn
+    assert_equal 2, @board.story_marker_heroes
+    assert_equal 3, @board.story_marker_corruption
 
     # puts @response.body
 
