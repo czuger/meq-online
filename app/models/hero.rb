@@ -39,17 +39,17 @@ class Hero < Actor
       if current_location_perilous?(board)
         case Hazard.d4
           when 1
-            board.log( self, 'peril.pass_trough' )
+            board.log( self, 'peril.pass_trough', location_name: location )
           when 2
             hand_to_life(hand.sample)
-            board.log( self, 'peril.lose_card' )
+            board.log( self, 'peril.lose_card', location_name: location )
           when 3
             self.favor -= 1
-            board.log( self, 'peril.lose_favor' )
+            board.log( self, 'peril.lose_favor', location_name: location )
           when 4
             hand_to_life(hand.sample)
             self.favor -= 1
-            board.log( self, 'peril.lose_favor_and_card' )
+            board.log( self, 'peril.lose_favor_and_card', location_name: location )
           else
             raise 'Hazard is not working, arghhhhh !!!'
         end
