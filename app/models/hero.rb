@@ -92,7 +92,12 @@ class Hero < Actor
     cards = [] unless cards
     cards = [ cards ] if cards.is_a? Integer
 
-    self.hand -= cards
+    # We must remove cards one by one, otherwise we would remove too much cards
+    # remember that [2, 3, 3, 4] - [2, 3] = [4] and not [3, 4]
+    cards.each do |card|
+      self.hand.slice!(self.hand.index(card))
+    end
+
     yield(cards)
     self.save!
   end
