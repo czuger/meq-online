@@ -17,57 +17,57 @@
           .col-5.col-form-label
             Place 6 influence
           .col-1.pt-1
-            = check_box_tag :place_influence_1, :c, @board.sauron_actions['place_influence_1']
+            = check_box_tag :place_influence_1, :c, @board.sauron_actions['place_influence_1'], class: :sauron_action
 
         .row
           .col-5.col-form-label
             Place 5 influence
           .col-1.pt-1
-            = check_box_tag :place_influence_2, :c, @board.sauron_actions['place_influence_2']
+            = check_box_tag :place_influence_2, :c, @board.sauron_actions['place_influence_2'], class: :sauron_action
 
         .row
           .col-5.col-form-label
             Place 4 influence
           .col-1.pt-1
-            = check_box_tag :place_influence_3, :c, @board.sauron_actions['place_influence_3']
+            = check_box_tag :place_influence_3, :c, @board.sauron_actions['place_influence_3'], class: :sauron_action
 
       .col
         .row
           .col-5.col-form-label
             Draw 2 cards
           .col-1.pt-1
-            = check_box_tag :draw_cards_1, :c, @board.sauron_actions['draw_cards_1']
+            = check_box_tag :draw_cards_1, :c, @board.sauron_actions['draw_cards_1'], class: :sauron_action
 
         .row
           .col-5.col-form-label
             Draw 2 cards
           .col-1.pt-1
-            = check_box_tag :draw_cards_2, :c, @board.sauron_actions['draw_cards_2']
+            = check_box_tag :draw_cards_2, :c, @board.sauron_actions['draw_cards_2'], class: :sauron_action
 
         .row
           .col-5.col-form-label
             Draw 1 cards
           .col-1.pt-1
-            = check_box_tag :draw_cards_3, :c, @board.sauron_actions['draw_cards_3']
+            = check_box_tag :draw_cards_3, :c, @board.sauron_actions['draw_cards_3'], class: :sauron_action
 
-      -#.col
-      -#  .row
-      -#    .col-5.col-form-label
-      -#      Command 3
-      -#    .col-1.pt-1
-      -#      = check_box_tag :command_1, :c, @board.sauron_actions['command_1']
-      -#
-      -#  .row
-      -#    .col-5.col-form-label
-      -#      Command 2
-      -#    .col-1.pt-1
-      -#      = check_box_tag :command_2, :c, @board.sauron_actions['command_2']
-      -#
-      -#  .row
-      -#    .col-5.col-form-label
-      -#      Command 1
-      -#    .col-1.pt-1
-      -#      = check_box_tag :command_3, :c, @board.sauron_actions['command_3']
+      .col
+        .row
+          .col-5.col-form-label
+            Command 3
+          .col-1.pt-1
+            = check_box_tag :command_1, :c, @board.sauron_actions['command_1'], class: :sauron_action
+
+        .row
+          .col-5.col-form-label
+            Command 2
+          .col-1.pt-1
+            = check_box_tag :command_2, :c, @board.sauron_actions['command_2'], class: :sauron_action
+
+        .row
+          .col-5.col-form-label
+            Command 1
+          .col-1.pt-1
+            = check_box_tag :command_3, :c, @board.sauron_actions['command_3'], class: :sauron_action
 
     .row
       .col-5
