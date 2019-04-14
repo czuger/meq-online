@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_11_113341) do
+ActiveRecord::Schema.define(version: 2019_04_13_211533) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -85,7 +85,6 @@ ActiveRecord::Schema.define(version: 2019_04_11_113341) do
     t.integer "story_marker_ring", limit: 2, default: 0, null: false
     t.integer "story_marker_conquest", limit: 2, default: 0, null: false
     t.integer "story_marker_corruption", limit: 2, default: 0, null: false
-    t.hstore "sauron_actions", default: {}, null: false
     t.integer "heroes_objective", limit: 2
     t.integer "sauron_objective", limit: 2
     t.integer "turn", limit: 2, default: 1, null: false
@@ -95,6 +94,7 @@ ActiveRecord::Schema.define(version: 2019_04_11_113341) do
     t.jsonb "favors", default: [], null: false
     t.bigint "current_hero_id"
     t.jsonb "influence", default: {}, null: false
+    t.jsonb "sauron_actions", default: [], null: false
     t.index ["current_hero_id"], name: "index_boards_on_current_hero_id"
   end
 

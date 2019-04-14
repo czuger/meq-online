@@ -17,35 +17,37 @@ class SauronActionsController < ApplicationController
 
     ActiveRecord::Base.transaction do
 
-      %w( place_influence draw_cards command ).each do |action|
-        1.upto(3).each do |index|
-          action_code = "#{action}_#{index}"
+      # %w( place_influence draw_cards command ).each do |action|
+      #   1.upto(3).each do |index|
+      #     action_code = "#{action}_#{index}"
+      #
+      #     if params[ action_code ]
+      #
+      #       actions_hash[ action_code ] = params[ action_code ]
+      #       log_add << action_code unless @board.sauron_actions[action_code]
+      #
+      #     else
+      #       log_remove << action_code if @board.sauron_actions[action_code]
+      #     end
+      #   end
+      # end
+      #
+      # log_add.each do |action|
+      #   @board.log( @actor, 'sauron_actions.place.' + action )
+      # end
+      #
+      # log_remove.each do |action|
+      #   @board.log( @actor, 'sauron_actions.remove.' + action )
+      # end
 
-          if params[ action_code ]
+      p params[:actions]
 
-            actions_hash[ action_code ] = params[ action_code ]
-            log_add << action_code unless @board.sauron_actions[action_code]
-
-          else
-            log_remove << action_code if @board.sauron_actions[action_code]
-          end
-        end
-      end
-
-      log_add.each do |action|
-        @board.log( @actor, 'sauron_actions.place.' + action )
-      end
-
-      log_remove.each do |action|
-        @board.log( @actor, 'sauron_actions.remove.' + action )
-      end
-
-      @board.update!( sauron_actions: actions_hash )
+      @board.update!( sauron_actions: params[:actions].to_a )
     end
 
     flash[:success] = 'Actions updated successfully.'
 
-    redirect_to edit_sauron_action_path(@actor)
+    # redirect_to edit_sauron_action_path(@actor)
   end
 
   # Called when Sauron terminate his turn

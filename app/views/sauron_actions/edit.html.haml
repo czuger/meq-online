@@ -105,3 +105,6 @@
       .col-3
         = link_to sauron_actions_terminate_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
           Terminate
+
+
+  = hidden_field_tag :actor_id, @actor.id
