@@ -1,15 +1,20 @@
 .container
 
   %h3
-    Monsters on board
+    Move monster
 
   %hr
 
-  %ul
-    - @monsters_list.each do |monster|
-      %li= monster.join( ' - ' )
+  = form_tag sauron_sauron_monster_path(@actor), method: :patch do
+    - @available_locations.in_groups_of(3).each do |location_group|
+      .row
+        - location_group.each do |location|
+          .col.mt-2
+            - if location
+              = button_tag class: 'btn btn-secondary btn-block', value: location do
+                = @board.location_name( location )
 
-    .row
-      .col-3.mt-2
-        = link_to 'Back to actions', edit_sauron_action_path(@actor), role: :button, class: 'btn btn-primary btn-block'
+  .row
+    .col-4.mt-2
+      = link_to 'Back to actions', edit_sauron_action_path(@actor), role: :button, class: 'btn btn-primary btn-block'
 
