@@ -79,6 +79,8 @@ class BoardsController < ApplicationController
         if @board.save
           add_players_to_board
 
+          GameData::LocationsMonsters.new.fill_board(@board)
+
           @board.log( nil, 'setup.set_starting_plot', { plot_card: starting_plot_id } )
           @board.log( nil, 'setup.set_influence_in_shadow_pool', { count: starting_plot.influence.shadow_pool } )
 

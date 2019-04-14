@@ -19,8 +19,16 @@ class Board < ApplicationRecord
   # Location methods
   #
   def location_name( location_code )
-    @locations ||= GameData::Locations.new
-    @locations.get(location_code).name
+    @game_data_locations ||= GameData::Locations.new
+    @game_data_locations.get(location_code).name
+  end
+
+  #
+  # Monster methods
+  #
+  def monster_name( monster_code )
+    @game_data_monsters ||= GameData::Monsters.new
+    @game_data_monsters.get(monster_code).name
   end
 
   #

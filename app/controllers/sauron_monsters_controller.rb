@@ -8,9 +8,13 @@ class SauronMonstersController < ApplicationController
 
     @board.monsters_on_board.each do |location, monsters|
       monsters.each do |monster|
-        @monsters_list << [ location, monster['monster'] ]
+        @monsters_list << [
+            @board.location_name(location),
+            @board.monster_name(monster['monster'] ) ]
       end
     end
+
+    @monsters_list.sort!
   end
 
   def new
@@ -25,6 +29,7 @@ class SauronMonstersController < ApplicationController
     location = params[:location]
 
     # If location is crap, this should fail, so it is protected (against injections).
+    # TODO : we need to handle an empty monster pool
     monster = @game_data_locations_monsters.pick_monster_from_board(@board, location )
 
     @board.monsters_on_board[location] ||= []
