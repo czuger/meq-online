@@ -14,7 +14,7 @@ module GameData
       end
     end
 
-    def pick_monster_from_board(board, location)
+    def place_new_monster(board, location)
       game_data_locations = GameData::Locations.new
       location_color = game_data_locations.get(location).color_code
 

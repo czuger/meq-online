@@ -6,12 +6,10 @@ class SauronMonstersController < ApplicationController
   def show
     @monsters_list = []
 
-    @board.monsters_on_board.each do |location, monsters|
-      monsters.each do |monster|
-        @monsters_list << [
-            @board.location_name(location),
-            @board.monster_name(monster['monster'] ) ]
-      end
+    @board.monsters.each do |monster|
+      @monsters_list << [
+          @board.location_name(monster.location),
+          @board.monster_name(monster.code ) ]
     end
 
     @monsters_list.sort!
@@ -30,11 +28,7 @@ class SauronMonstersController < ApplicationController
 
     # If location is crap, this should fail, so it is protected (against injections).
     # TODO : we need to handle an empty monster pool
-    monster = @game_data_locations_monsters.pick_monster_from_board(@board, location )
-
-    @board.monsters_on_board << monster
-
-    @board.save!
+    @game_data_locations_monsters.place_new_monster(@board, location )
 
     redirect_to sauron_sauron_monsters_path(@actor)
   end

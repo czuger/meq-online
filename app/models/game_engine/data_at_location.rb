@@ -39,8 +39,8 @@ module GameEngine
       end
 
       board.monsters.each do |monster|
-        @tokens[location] ||= []
-        @tokens[location] << OpenStruct.new( type: :monster, code: monster.code,
+        @tokens[monster.location] ||= []
+        @tokens[monster.location] << OpenStruct.new( type: :monster, code: monster.code,
           name: 'Monster', priority: 100,
           pic_path: "monsters/tokens/covers/#{monster.pool_key}.jpg".freeze,
           sauron_pic_path: "monsters/tokens/sauron_map/#{monster.code}.jpg".freeze,
