@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_14_115632) do
+ActiveRecord::Schema.define(version: 2019_04_14_145212) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -100,7 +100,6 @@ ActiveRecord::Schema.define(version: 2019_04_14_115632) do
     t.jsonb "monsters_pool_dark_blue", default: [], null: false
     t.jsonb "monsters_pool_brown", default: [], null: false
     t.jsonb "monsters_pool_dark_green", default: [], null: false
-    t.jsonb "monsters_on_board", default: {}, null: false
     t.index ["current_hero_id"], name: "index_boards_on_current_hero_id"
   end
 
@@ -119,6 +118,16 @@ ActiveRecord::Schema.define(version: 2019_04_14_115632) do
     t.bigint "actor_id"
     t.hstore "params", null: false
     t.index ["board_id"], name: "index_logs_on_board_id"
+  end
+
+  create_table "monsters", force: :cascade do |t|
+    t.bigint "board_id", null: false
+    t.string "pool_key", null: false
+    t.string "code", null: false
+    t.string "location", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["board_id"], name: "index_monsters_on_board_id"
   end
 
   create_table "movement_preparation_steps", force: :cascade do |t|
@@ -150,5 +159,6 @@ ActiveRecord::Schema.define(version: 2019_04_14_115632) do
   add_foreign_key "boards", "actors", column: "current_hero_id"
   add_foreign_key "logs", "actors"
   add_foreign_key "logs", "boards"
+  add_foreign_key "monsters", "boards"
   add_foreign_key "movement_preparation_steps", "actors"
 end

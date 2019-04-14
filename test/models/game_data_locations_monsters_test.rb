@@ -18,13 +18,13 @@ class GameDataLocationsMonsters < ActiveSupport::TestCase
       m = @lm.pick_monster_from_board(@board, :the_shire)
     end
 
-    assert_equal 'monsters_pool_orange', m[:monster_pool_key]
+    assert_equal 'monsters_pool_orange', m.pool_key
 
     assert_difference '@board.reload.monsters_pool_orange.length', -1 do
       m = @lm.pick_monster_from_board(@board, :the_shire)
     end
 
-    assert_equal 'monsters_pool_orange', m[:monster_pool_key]
+    assert_equal 'monsters_pool_orange', m.pool_key
   end
 
 
@@ -35,13 +35,13 @@ class GameDataLocationsMonsters < ActiveSupport::TestCase
       m = @lm.pick_monster_from_board(@board, :near_harad)
     end
 
-    assert_equal 'monsters_pool_dark_blue', m[:monster_pool_key]
+    assert_equal 'monsters_pool_dark_blue', m.pool_key
 
     assert_difference '@board.reload.monsters_pool_dark_blue.length', -1 do
       m = @lm.pick_monster_from_board(@board, :near_harad)
     end
 
-    assert_equal 'monsters_pool_dark_blue', m[:monster_pool_key]
+    assert_equal 'monsters_pool_dark_blue', m.pool_key
   end
 
   test 'test monster pick on all locations' do

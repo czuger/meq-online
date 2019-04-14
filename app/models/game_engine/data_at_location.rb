@@ -38,15 +38,13 @@ module GameEngine
                                                    pic_path: "heroes_tokens/#{hero.name_code}.png".freeze )
       end
 
-      board.monsters_on_board.each do |location, monsters_list|
-        monsters_list.each do |monster_hash|
-          @tokens[location] ||= []
-          @tokens[location] << OpenStruct.new( type: :monster, code: monster_hash['monster'],
-            name: 'Monster', priority: 100,
-            pic_path: "monsters/tokens/covers/#{monster_hash['monster_pool_key']}.jpg".freeze,
-            sauron_pic_path: "monsters/tokens/sauron_map/#{monster_hash['monster']}.jpg".freeze,
-            sauron_name: board.monster_name(monster_hash['monster'] ) )
-        end
+      board.monsters.each do |monster|
+        @tokens[location] ||= []
+        @tokens[location] << OpenStruct.new( type: :monster, code: monster.code,
+          name: 'Monster', priority: 100,
+          pic_path: "monsters/tokens/covers/#{monster.pool_key}.jpg".freeze,
+          sauron_pic_path: "monsters/tokens/sauron_map/#{monster.code}.jpg".freeze,
+          sauron_name: board.monster_name(monster.code) )
       end
 
       self

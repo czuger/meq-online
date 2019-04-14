@@ -24,16 +24,16 @@ module GameData
       current_monsters_list = board.send(monster_color_key)
       monster = current_monsters_list.sample
       current_monsters_list.slice!( current_monsters_list.index( monster ) )
-
       board.update( monster_color_key => current_monsters_list )
 
-      { 'monster_pool_key' => monster_color_key, 'monster' => monster }
+      board.monsters.create!( pool_key: monster_color_key, code: monster, location: location )
     end
 
     def place_monster_back_to_monster_pool(board, monster)
-      current_monsters_list = board.send(monster['monster_pool_key'])
-      current_monsters_list << monster['monster']
-      board.update( monster['monster_pool_key'] => current_monsters_list )
+      current_monsters_list = board.send(monster.pool_key)
+      current_monsters_list << monster.code
+      board.update( monster.pool_key => current_monsters_list )
+      monster.destroy
     end
 
     private

@@ -32,8 +32,7 @@ class SauronMonstersController < ApplicationController
     # TODO : we need to handle an empty monster pool
     monster = @game_data_locations_monsters.pick_monster_from_board(@board, location )
 
-    @board.monsters_on_board[location] ||= []
-    @board.monsters_on_board[location] << monster
+    @board.monsters_on_board << monster
 
     @board.save!
 
