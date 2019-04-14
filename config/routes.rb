@@ -17,7 +17,6 @@ Rails.application.routes.draw do
   end
 
   resources :heros, only: [ :show ] do
-
     get :rest_screen
     get :rest_rest
     get :rest_heal
@@ -78,6 +77,11 @@ Rails.application.routes.draw do
       get :keep_screen
       post :keep
     end
+
+    resource :sauron_monsters, only: [ :new, :show ] do
+      get :place_monster
+    end
+
 
   end
 

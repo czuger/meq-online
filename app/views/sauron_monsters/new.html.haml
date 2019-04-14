@@ -1,0 +1,19 @@
+.container
+
+  %h3
+    Place a new monster
+
+  .alert.alert-secondary
+    %ul.mt-3
+      %li At this step, you can choose a location to place a monster.
+      %li If you can't see the location, it is because it is either occupied by a hero or you don't match the influence criteria.
+      %li Remember : You can't place a monster where there is a hero or if you don't have at least one influence on the location.
+      %li Remember : You can place only one monster per command, even if this command gives you 3 commands points.
+
+  %hr
+  - @available_locations.in_groups_of(4).each do |g|
+    .row
+      - g.each do |l|
+        .col.mt-2
+          - if l
+            = link_to @board.location_name( l ), place_monster_sauron_sauron_monsters_path(@actor, location: l), role: :button, class: 'btn btn-danger btn-block'

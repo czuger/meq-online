@@ -14,11 +14,5 @@ module GameData
       end
     end
 
-    def fill_board!(board)
-      @data.each do |key, values|
-        board.update( "monsters_pool_#{key}" => values )
-      end
-    end
-
   end
 end
