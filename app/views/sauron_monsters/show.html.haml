@@ -9,3 +9,7 @@
     - @monsters_list.each do |monster|
       %li= monster.join( ' - ' )
 
+    .row
+      .col-3.mt-2
+        = link_to 'Back to actions', edit_sauron_action_path(@actor), role: :button, class: 'btn btn-primary btn-block'
+
