@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_13_211533) do
+ActiveRecord::Schema.define(version: 2019_04_14_095100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -95,6 +95,11 @@ ActiveRecord::Schema.define(version: 2019_04_13_211533) do
     t.bigint "current_hero_id"
     t.jsonb "influence", default: {}, null: false
     t.jsonb "sauron_actions", default: [], null: false
+    t.jsonb "monsters_pool_orange", default: [], null: false
+    t.jsonb "monsters_pool_purple", default: [], null: false
+    t.jsonb "monsters_pool_dark_blue", default: [], null: false
+    t.jsonb "monsters_pool_brown", default: [], null: false
+    t.jsonb "monsters_pool_dark_green", default: [], null: false
     t.index ["current_hero_id"], name: "index_boards_on_current_hero_id"
   end
 
