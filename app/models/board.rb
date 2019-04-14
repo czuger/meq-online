@@ -27,8 +27,12 @@ class Board < ApplicationRecord
   # Monster methods
   #
   def monster_name( monster_code )
-    @game_data_monsters ||= GameData::Monsters.new
-    @game_data_monsters.get(monster_code).name
+    if monster_code != 'nothing'
+      @game_data_monsters ||= GameData::Monsters.new
+      @game_data_monsters.get(monster_code).name
+    else
+      'Nothing'
+    end
   end
 
   #
