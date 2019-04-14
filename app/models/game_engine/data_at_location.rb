@@ -44,7 +44,8 @@ module GameEngine
           @tokens[location] << OpenStruct.new( type: :monster, code: monster_hash['monster'],
             name: 'Monster', priority: 100,
             pic_path: "monsters/tokens/covers/#{monster_hash['monster_pool_key']}.jpg".freeze,
-            private_pic_path: nil, private_name: board.monster_name(monster_hash['monster'] ) )
+            sauron_pic_path: "monsters/tokens/sauron_map/#{monster_hash['monster']}.jpg".freeze,
+            sauron_name: board.monster_name(monster_hash['monster'] ) )
         end
       end
 

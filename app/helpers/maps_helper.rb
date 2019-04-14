@@ -6,7 +6,8 @@ module MapsHelper
 
       tokens_count = tokens.count
       first_token = tokens.sort_by { |t| t.priority }.first
-      tokens_hover_text = tokens.map{ |t| t.name }.join( ', ' )
+
+      tokens_hover_text = tokens.map{ |t| monster_name_sauron_filter(t) }.join( ', ' )
 
       px = loc.pos_x-23
       py = loc.pos_y-25
@@ -17,7 +18,13 @@ module MapsHelper
 
       style = "top:#{py}px; left:#{px}px;"
 
-      yield first_token.pic_path, style, tokens_hover_text, tokens_count, token_decal
+      pic_path = first_token.pic_path
+
+      if @actor.is_a?(Sauron) && first_token.sauron_pic_path
+        pic_path = first_token.sauron_pic_path
+      end
+
+      yield pic_path, style, tokens_hover_text, tokens_count, token_decal
     end
   end
 
@@ -40,6 +47,17 @@ module MapsHelper
     x += (count-1)*30
 
     [ x, y ]
+  end
+
+  private
+
+  # This method is used to filter the monsters names (Monster for heroes map and real monster name for Sauron)
+  def monster_name_sauron_filter( token_data )
+    if @actor.is_a?(Sauron) && token_data.sauron_name
+      token_data.sauron_name
+    else
+      token_data.name
+    end
   end
 
 end
