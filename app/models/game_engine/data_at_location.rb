@@ -7,6 +7,7 @@ module GameEngine
 
     def initialize
       @characters = GameData::Characters.new
+      @monsters = GameData::Monsters.new
       @tokens = {}
     end
 
@@ -35,6 +36,16 @@ module GameEngine
         @tokens[hero.location] ||= []
         @tokens[hero.location] << OpenStruct.new( type: :hero, code: hero.name_code, name: hero.name, priority: 10,
                                                    pic_path: "heroes_tokens/#{hero.name_code}.png".freeze )
+      end
+
+      board.monsters_on_board.each do |location, monsters_list|
+        monsters_list.each do |monster_hash|
+          @tokens[location] ||= []
+          @tokens[location] << OpenStruct.new( type: :monster, code: monster_hash['monster'],
+            name: 'Monster', priority: 100,
+            pic_path: "monsters/tokens/covers/#{monster_hash['monster_pool_key']}.jpg".freeze,
+            private_pic_path: nil, private_name: board.monster_name(monster_hash['monster'] ) )
+        end
       end
 
       self
