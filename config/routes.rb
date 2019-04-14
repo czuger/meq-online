@@ -110,7 +110,7 @@ Rails.application.routes.draw do
 
   resources :influences, only: [ :show, :edit, :update ]
 
-  resources :maps, only: [:edit]
+  resources :maps, only: [:edit, :show]
   resources :characters, only: [:edit,:update]
   resources :board_steps, only: [:edit,:update]
 
@@ -119,8 +119,6 @@ Rails.application.routes.draw do
     post :join
 
     get :inactive_actor
-
-    resource :maps, only: [:show]
 
     resource :logs, only: [:show ]
     resources :heros, only: [ :index ]
