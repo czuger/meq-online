@@ -10,42 +10,24 @@ class SauronActionsController < ApplicationController
   end
 
   def update
-    actions_hash = {}
-
-    log_add = []
-    log_remove = []
+    actions_array = params[:actions].to_a
 
     ActiveRecord::Base.transaction do
 
-      # %w( place_influence draw_cards command ).each do |action|
-      #   1.upto(3).each do |index|
-      #     action_code = "#{action}_#{index}"
-      #
-      #     if params[ action_code ]
-      #
-      #       actions_hash[ action_code ] = params[ action_code ]
-      #       log_add << action_code unless @board.sauron_actions[action_code]
-      #
-      #     else
-      #       log_remove << action_code if @board.sauron_actions[action_code]
-      #     end
-      #   end
-      # end
-      #
-      # log_add.each do |action|
-      #   @board.log( @actor, 'sauron_actions.place.' + action )
-      # end
-      #
-      # log_remove.each do |action|
-      #   @board.log( @actor, 'sauron_actions.remove.' + action )
-      # end
+      log_add = actions_array - @board.sauron_actions
+      log_add.each do |action|
+        @board.log( @actor, 'sauron_actions.place.' + action )
+      end
 
-      p params[:actions]
+      log_remove = @board.sauron_actions - actions_array
+      log_remove.each do |action|
+        @board.log( @actor, 'sauron_actions.remove.' + action )
+      end
 
-      @board.update!( sauron_actions: params[:actions].to_a )
+      @board.update!( sauron_actions: actions_array )
     end
 
-    flash[:success] = 'Actions updated successfully.'
+    # flash[:success] = 'Actions updated successfully.'
 
     # redirect_to edit_sauron_action_path(@actor)
   end
