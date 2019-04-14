@@ -3,7 +3,7 @@ class SauronMonstersController < ApplicationController
   before_action :require_logged_in
   before_action :set_actor_ensure_actor
 
-  def show
+  def index
     @monsters_list = []
 
     @board.monsters.each do |monster|
@@ -21,7 +21,7 @@ class SauronMonstersController < ApplicationController
     @available_locations -= heroes_locations
   end
 
-  def place_monster
+  def create
     @game_data_locations_monsters = GameData::LocationsMonsters.new
 
     location = params[:location]
@@ -31,6 +31,12 @@ class SauronMonstersController < ApplicationController
     @game_data_locations_monsters.place_new_monster(@board, location )
 
     redirect_to sauron_sauron_monsters_path(@actor)
+  end
+
+  def edit
+  end
+
+  def update
   end
 
 end

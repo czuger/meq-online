@@ -78,10 +78,7 @@ Rails.application.routes.draw do
       post :keep
     end
 
-    resource :sauron_monsters, only: [ :new, :show ] do
-      get :place_monster
-    end
-
+    resources :sauron_monsters, except: [ :delete, :show ]
 
   end
 
