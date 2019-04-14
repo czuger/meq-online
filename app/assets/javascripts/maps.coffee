@@ -18,7 +18,6 @@ keyboard_probe = () ->
     shift_pressed = e.shiftKey
     $('#zoom-area').hide()
 
-
 zoom_map = () ->
   page_x = event.pageX if event.pageX
   page_y = event.pageY if event.pageY
@@ -48,14 +47,6 @@ set_zoom_map = () ->
   keyboard_probe()
   $('#map').mousemove(zoom_map)
   $('#zoom-area').mousemove(zoom_map)
-
-filter= () ->
-  $('#filter').on 'keyup', ->
-    value = $(this).val().toLowerCase()
-    $('#influences_table tr').filter ->
-      $(this).toggle $(this).text().toLowerCase().indexOf(value) > -1
-      return
-    return
 
 influence= () ->
   $('.influence-pawn-box' ).click () ->
@@ -87,9 +78,9 @@ zoom_plot_cards= () ->
     $(this).removeClass('zoomed-plot-card')
 
 #
-# Influence pool tokens
+# Shadow pool tokens
 #
-influence_pool= () ->
+shadow_pool= () ->
   $('.influence-pool-value' ).click () ->
 
     current_val = parseInt( $(this).html() )
@@ -107,16 +98,13 @@ influence_pool= () ->
           $("#pool_token_id_#{i}").html( value )
 
 
-
-#activate_tooltips= () ->
-#  $('[data-toggle="tooltip"]').tooltip()
-
 $(document).on('turbolinks:load'
   ->
-    if window.location.pathname.match( /maps\/\d+\/edit/ )
-      influence()
-      filter()
+    if window.location.pathname.match( /maps\/\d+\/edit/ ) || window.location.pathname.match( /maps\/\d+\/show/ )
       set_zoom_map()
       zoom_plot_cards()
-      influence_pool()
+
+    if window.location.pathname.match( /maps\/\d+\/edit/ )
+      influence()
+      shadow_pool()
 )
