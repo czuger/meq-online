@@ -1,0 +1,2 @@
+class Minion < Mob
+end

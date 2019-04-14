@@ -15,7 +15,8 @@ class Board < ApplicationRecord
 
   belongs_to :current_hero, class_name: 'Hero', optional: true
 
-  has_many :monsters, dependent: :destroy
+  has_many :mobs, dependent: :destroy
+  has_many :minions
 
   #
   # Location methods

@@ -1,3 +1,2 @@
-class Monster < ApplicationRecord
-  belongs_to :board
+class Monster < Mob
 end

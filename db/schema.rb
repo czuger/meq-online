@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_14_145212) do
+ActiveRecord::Schema.define(version: 2019_04_14_165420) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -120,14 +120,15 @@ ActiveRecord::Schema.define(version: 2019_04_14_145212) do
     t.index ["board_id"], name: "index_logs_on_board_id"
   end
 
-  create_table "monsters", force: :cascade do |t|
+  create_table "mobs", force: :cascade do |t|
     t.bigint "board_id", null: false
-    t.string "pool_key", null: false
+    t.string "pool_key"
     t.string "code", null: false
     t.string "location", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["board_id"], name: "index_monsters_on_board_id"
+    t.string "type", null: false
+    t.index ["board_id"], name: "index_mobs_on_board_id"
   end
 
   create_table "movement_preparation_steps", force: :cascade do |t|
@@ -159,6 +160,6 @@ ActiveRecord::Schema.define(version: 2019_04_14_145212) do
   add_foreign_key "boards", "actors", column: "current_hero_id"
   add_foreign_key "logs", "actors"
   add_foreign_key "logs", "boards"
-  add_foreign_key "monsters", "boards"
+  add_foreign_key "mobs", "boards"
   add_foreign_key "movement_preparation_steps", "actors"
 end
