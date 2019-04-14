@@ -39,7 +39,7 @@
       - y_position += 35
 
     -# Placing markers on sauron actions bar
-    - @board.sauron_actions.keys.each do |key|
+    - @board.sauron_actions.each do |key|
       - x, y = get_sauron_action_token_position( key )
       .sauron-actions-token{ style: "top:#{y}px; left:#{x}px;" }
         = image_tag 'sauron_action.png'
