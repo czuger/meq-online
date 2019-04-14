@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_14_095100) do
+ActiveRecord::Schema.define(version: 2019_04_14_115632) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -100,6 +100,7 @@ ActiveRecord::Schema.define(version: 2019_04_14_095100) do
     t.jsonb "monsters_pool_dark_blue", default: [], null: false
     t.jsonb "monsters_pool_brown", default: [], null: false
     t.jsonb "monsters_pool_dark_green", default: [], null: false
+    t.jsonb "monsters_on_board", default: {}, null: false
     t.index ["current_hero_id"], name: "index_boards_on_current_hero_id"
   end
 

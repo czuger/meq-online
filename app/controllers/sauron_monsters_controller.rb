@@ -4,6 +4,13 @@ class SauronMonstersController < ApplicationController
   before_action :set_actor_ensure_actor
 
   def show
+    @monsters_list = []
+
+    @board.monsters_on_board.each do |location, monsters|
+      monsters.each do |monster|
+        @monsters_list << [ location, monster['monster'] ]
+      end
+    end
   end
 
   def new
@@ -13,6 +20,17 @@ class SauronMonstersController < ApplicationController
   end
 
   def place_monster
+    @game_data_locations_monsters = GameData::LocationsMonsters.new
+
+    location = params[:location]
+
+    # If location is crap, this should fail, so it is protected (against injections).
+    monster = @game_data_locations_monsters.pick_monster_from_board(@board, location )
+
+    @board.monsters_on_board[location] ||= []
+    @board.monsters_on_board[location] << monster
+
+    @board.save!
 
     redirect_to sauron_sauron_monsters_path(@actor)
   end

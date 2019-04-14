@@ -1,0 +1,11 @@
+.container
+
+  %h3
+    Monsters on board
+
+  %hr
+
+  %ul
+    - @monsters_list.each do |monster|
+      %li= monster.join( '-' )
+
