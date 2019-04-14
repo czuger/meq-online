@@ -27,7 +27,13 @@ module GameData
 
       board.update( monster_color_key => current_monsters_list )
 
-      { monster_pool_key: monster_color_key, monster: monster }
+      { 'monster_pool_key' => monster_color_key, 'monster' => monster }
+    end
+
+    def place_monster_back_to_monster_pool(board, monster)
+      current_monsters_list = board.send(monster['monster_pool_key'])
+      current_monsters_list << monster['monster']
+      board.update( monster['monster_pool_key'] => current_monsters_list )
     end
 
     private
