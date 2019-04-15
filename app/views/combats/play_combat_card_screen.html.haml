@@ -1,0 +1,13 @@
+.container
+
+  %h3
+    Play a combat card
+
+  .alert.alert-secondary
+    %ul.mt-3
+      %li Play a combat card and wait for your opponent to play it's.
+
+  - if @actor.is_a? Sauron
+    = render partial: 'sauron_fight'
+  - else
+    = render partial: 'hero_fight'

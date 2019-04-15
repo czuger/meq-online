@@ -2,7 +2,7 @@ class CombatsController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_combat
-  before_action :set_actor_ensure_actor, only: []
+  before_action :set_actor_ensure_actor, only: [:play_combat_card_screen]
 
   # GET /combats/new
 
@@ -16,12 +16,8 @@ class CombatsController < ApplicationController
   #   - each player mark the result (take damages, discard card, show next card to opponent)
   # - Next turn
 
-  def play_card_screen
-    if params[:selected_fighter] == @combat.monster
-      set_monsters
-    else
-      set_heroes
-    end
+  def play_combat_card_screen
+    @selectable_card_class = 'selectable-card-selection-unique'
   end
 
   def play_card
