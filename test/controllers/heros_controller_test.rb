@@ -76,6 +76,17 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_select 'a', 'Corruption'
   end
 
+  test 'should advance selected marker' do
+    @board.aasm_state = :rest_step
+    @board.save!
+
+    assert_difference '@board.reload.story_marker_conquest' do
+      get hero_after_rest_advance_story_marker_url( @hero, marker: 'Conquest' )
+    end
+
+    assert_redirected_to hero_movement_screen_url(@hero)
+  end
+
   test 'should patch take_damages' do
     patch hero_take_damages_url( @hero, damage_amount: 3 )
     assert_redirected_to hero_url(@hero)

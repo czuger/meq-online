@@ -59,8 +59,10 @@ class HerosController < ApplicationController
   end
 
   def after_rest_advance_story_marker
+    board_column = 'story_marker_' + params[:marker].downcase
+
     @board.transaction do
-      @board.update( params[:marker] => @board.send(params[:marker]) + 1 )
+      @board.update( board_column => @board.send(board_column) + 1 )
       @board.next_to_movement!
       redirect_to hero_movement_screen_path(@actor)
     end
