@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_14_165420) do
+ActiveRecord::Schema.define(version: 2019_04_15_102015) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -109,6 +109,23 @@ ActiveRecord::Schema.define(version: 2019_04_14_165420) do
     t.index ["user_id", "board_id"], name: "index_boards_users_on_user_id_and_board_id", unique: true
   end
 
+  create_table "combats", force: :cascade do |t|
+    t.bigint "board_id", null: false
+    t.bigint "actor_id", null: false
+    t.integer "temporary_hero_strength"
+    t.jsonb "hero_cards_played", default: [], null: false
+    t.integer "mob_fortitude", null: false
+    t.integer "mob_strength", null: false
+    t.integer "mob_life", null: false
+    t.string "mob_name", null: false
+    t.jsonb "mob_cards", default: [], null: false
+    t.jsonb "mob_cards_played", default: [], null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_combats_on_actor_id"
+    t.index ["board_id"], name: "index_combats_on_board_id"
+  end
+
   create_table "logs", force: :cascade do |t|
     t.bigint "board_id", null: false
     t.string "action", null: false
@@ -158,6 +175,8 @@ ActiveRecord::Schema.define(version: 2019_04_14_165420) do
   add_foreign_key "board_messages", "actors", column: "sender_id"
   add_foreign_key "board_plots", "boards"
   add_foreign_key "boards", "actors", column: "current_hero_id"
+  add_foreign_key "combats", "actors"
+  add_foreign_key "combats", "boards"
   add_foreign_key "logs", "actors"
   add_foreign_key "logs", "boards"
   add_foreign_key "mobs", "boards"

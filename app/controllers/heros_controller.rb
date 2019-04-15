@@ -48,6 +48,7 @@ class HerosController < ApplicationController
   end
 
   def after_rest_advance_story_marker_screen
+    # TODO : add logs
     @lowest_screens = []
 
     lowest_markers = [ @board.story_marker_ring, @board.story_marker_conquest, @board.story_marker_corruption ]
@@ -100,10 +101,21 @@ class HerosController < ApplicationController
         if tokens_at_location.empty?
           redirect_to hero_movement_screen_path(@actor)
         else
-          @board.next_to_exploration!
-          @board.save!
+          monsters = tokens_at_location.select{ |e| e.type == :monster }
 
-          redirect_to hero_exploration_screen_path(@actor)
+          if monsters.count >= 1
+            @board.combat.create( actor: @actor, mob: monsters)
+            @board.next_to_combat!
+            @board.save!
+
+            redirect_to hero_exploration_screen_path(@actor)
+
+          else
+            @board.next_to_exploration!
+            @board.save!
+
+            redirect_to hero_exploration_screen_path(@actor)
+          end
         end
       end
     end

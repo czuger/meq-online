@@ -5,72 +5,84 @@
     :fortitude: 9
     :strength: 8
     :wisdom: 1
+    :life: 11
     :attack_deck: :ravager
   :mouth_of_sauron:
     :name: The mouth of Sauron
     :fortitude: 6
     :strength: 6
     :wisdom: 2
+    :life: 9
     :attack_deck: :zealot
   :gothmog:
     :name: Gothmog of Gorgorth
     :fortitude: 7
     :strength: 7
     :wisdom: 2
+    :life: 10
     :attack_deck: :ravager
   :ringwraiths:
     :name: The ringwraiths
     :fortitude: 8
     :strength: 8
     :wisdom: 0
+    :life: 9
     :attack_deck: :ravager
   :witch_king:
     :name: The Witch-King
     :fortitude: 10
     :strength: 10
     :wisdom: 1
+    :life: 13
     :attack_deck: :behemoth
   :crebain:
     :name: Crebain
     :fortitude: 7
     :strength: 3
     :wisdom: 2
+    :life: 2
     :attack_deck: :zealot
   :agent:
     :name: Agent
     :fortitude: 5
     :strength: 3
     :wisdom: 3
+    :life: 3
     :attack_deck: :zealot
   :snaga:
     :name: Snaga
     :fortitude: 6
     :strength: 3
     :wisdom: 2
+    :life: 3
     :attack_deck: :zealot
   :orc:
     :name: Orc
     :fortitude: 5
     :strength: 4
     :wisdom: 2
+    :life: 3
     :attack_deck: :zealot
   :barrow_wight:
     :name: Barrow Wight
     :fortitude: 5
     :strength: 4
     :wisdom: 2
+    :life: 4
     :attack_deck: :ravager
   :southron:
     :name: Southron
     :fortitude: 6
     :strength: 3
     :wisdom: 2
+    :life: 4
     :attack_deck: :ravager
   :dunlending:
     :name: Dunlending
     :fortitude: 5
     :strength: 5
     :wisdom: 2
+    :life: 4
     :attack_deck: :ravager
   :uruk_hai:
     :name: Uruk-Hai
@@ -83,36 +95,42 @@
     :fortitude: 6
     :strength: 4
     :wisdom: 1
+    :life: 4
     :attack_deck: :ravager
   :giant_spider:
     :name: Giant Spider
     :fortitude: 7
     :strength: 5
     :wisdom: 1
+    :life: 6
     :attack_deck: :behemoth
   :huorn:
     :name: Huorn
     :fortitude: 6
     :strength: 7
     :wisdom: 1
+    :life: 7
     :attack_deck: :behemoth
   :cave_troll:
     :name: Cave Troll
     :fortitude: 8
     :strength: 8
     :wisdom: 0
+    :life: 8
     :attack_deck: :behemoth
   :oliphaunt:
     :name: Oliphaunt
     :fortitude: 7
     :strength: 10
     :wisdom: 1
+    :life: 9
     :attack_deck: :behemoth
   :balrog:
     :name: Balrog
     :fortitude: 9
     :strength: 12
     :wisdom: 0
+    :life: 10
     :attack_deck: :behemoth
 :cards:
   :behemoth:

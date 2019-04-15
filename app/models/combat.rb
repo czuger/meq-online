@@ -3,19 +3,20 @@ class Combat < ApplicationRecord
 
   belongs_to :board
   belongs_to :hero
+  belongs_to :mob
 
-  serialize :hero_cards_played
-  serialize :sauron_cards_played
-  serialize :sauron_hand
+  # serialize :hero_cards_played
+  # serialize :sauron_cards_played
+  # serialize :sauron_hand
 
-  aasm do
-    state :hero_choices, :initial => true
-    state :started
-
-    event :start do
-      transitions :from => :hero_choices, :to => :started
-    end
-  end
+  # aasm do
+  #   state :hero_choices, :initial => true
+  #   state :started
+  #
+  #   event :start do
+  #     transitions :from => :hero_choices, :to => :started
+  #   end
+  # end
 
   def play_card( board, sauron, player, card_to_play )
     transaction do

@@ -19,6 +19,19 @@ class Board < ApplicationRecord
   has_many :monsters
   has_many :minions
 
+  has_one :combat
+
+  #
+  # Create combat method
+  #
+  def create_combat( hero, mob_code )
+    game_data_monsters = GameData::Mob.new
+    mob_data = game_data_monsters.get(mob_code)
+
+    combat.create!( actor: hero, )
+  end
+
+
   #
   # Location methods
   #
