@@ -42,6 +42,8 @@ Rails.application.routes.draw do
     patch :take_damages
     patch :finish_turn
 
+    get :after_rest_advance_story_marker_screen
+    get :after_rest_advance_story_marker
 
     # Good example on how to have a route like : /foo/:foo_id/bar/foobar rather than /foo/:foo_id/bar/:id/foobar
     # resources :movement_preparation_steps, except: [ :show ] do

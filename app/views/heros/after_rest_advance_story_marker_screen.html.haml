@@ -1,0 +1,16 @@
+.container
+
+  %h3
+    Advance lowest story marker
+
+  .alert.alert-secondary
+    %ul.mt-3
+      %li At this step, you have to choose one of the Sauron's story marker and advance it.
+
+  %hr
+
+  .row
+    - @lowest_screens.each do |marker|
+      .col-3
+        = link_to hero_after_rest_advance_story_marker(@actor, marker: marker), role: :button, class: 'btn btn-primary btn-block' do
+          marker.humanize
