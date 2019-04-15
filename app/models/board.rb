@@ -28,9 +28,9 @@ class Board < ApplicationRecord
     game_data_monsters = GameData::Mob.new
     mob_data = game_data_monsters.get(mob_code)
 
-    combat.create!( actor: hero, )
+    create_combat!( hero: hero, mob_fortitude: mob_data.fortitude, mob_strength: mob_data.strength, mob_life: mob_data.life,
+                    mob_name: mob_data.name, mob_cards: mob_data.starting_deck )
   end
-
 
   #
   # Location methods

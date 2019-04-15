@@ -7,15 +7,6 @@ Rails.application.routes.draw do
   get 'map_coordinates/edit'
   post 'map_coordinates/update'
 
-  resources :combats, only: [ :show, :new, :create, :destroy ] do
-    get :hero_setup_new
-    post :hero_setup_draw_cards
-    post :hero_setup_increase_strength
-
-    get :play_card_screen
-    post :play_card
-  end
-
   resources :heros, only: [ :show ] do
     get :rest_screen
     get :rest_rest
@@ -123,6 +114,16 @@ Rails.application.routes.draw do
     resources :heros, only: [ :index ]
 
     get :story_screen
+
+
+    resource :combats, only: [ :show, :new, :create, :destroy ] do
+      get :hero_setup_new
+      post :hero_setup_draw_cards
+      post :hero_setup_increase_strength
+
+      get :play_card_screen
+      post :play_card
+    end
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 

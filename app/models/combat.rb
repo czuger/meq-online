@@ -2,8 +2,7 @@ class Combat < ApplicationRecord
   include AASM
 
   belongs_to :board
-  belongs_to :hero
-  belongs_to :mob
+  belongs_to :hero, class_name: 'Actor', foreign_key: :actor_id
 
   # serialize :hero_cards_played
   # serialize :sauron_cards_played

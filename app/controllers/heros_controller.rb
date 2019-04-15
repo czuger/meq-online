@@ -104,12 +104,11 @@ class HerosController < ApplicationController
           monsters = tokens_at_location.select{ |e| e.type == :monster }
 
           if monsters.count >= 1
-            @board.combat.create( actor: @actor, mob: monsters)
+            @board.create_combat( @actor, monsters.first.code )
             @board.next_to_combat!
             @board.save!
 
-            redirect_to hero_exploration_screen_path(@actor)
-
+            redirect_to board_combats_path(@board)
           else
             @board.next_to_exploration!
             @board.save!

@@ -120,6 +120,21 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_equal %w( old_forest ).sort, @board.reload.favors.sort
   end
 
+  test 'after movement, should create a combat' do
+    @board.aasm_state = :movement
+    @board.save!
+
+    @board.monsters.create!( pool_key: :monsters_pool_orange, location: :old_forest, code: :agent )
+
+    assert_difference 'Combat.count' do
+      post hero_move_url( @hero, params: { button: :old_forest, selected_cards: '1' } )
+    end
+
+    assert @board.combat
+
+    assert_redirected_to board_combats_url(@board)
+  end
+
   # test 'should POST draw_cards' do
   #   post hero_draw_cards_url( @hero )
   #   assert_redirected_to hero_url(@hero)
