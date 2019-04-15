@@ -31,7 +31,7 @@ class Board < ApplicationRecord
   #
   def monster_name( monster_code )
     if monster_code != 'nothing'
-      @game_data_monsters ||= GameData::Monsters.new
+      @game_data_monsters ||= GameData::Mob.new
       @game_data_monsters.get(monster_code).name
     else
       'Nothing'

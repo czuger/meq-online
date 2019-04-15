@@ -1,8 +1,7 @@
 FactoryBot.define do
   factory :monster do
-    board { nil }
-    pool_key { "MyString" }
-    code { "MyString" }
-    location { "MyString" }
+    pool_key { 'monsters_pool_orange' }
+    code { 'agent' }
+    location { 'the_shire' }
   end
 end

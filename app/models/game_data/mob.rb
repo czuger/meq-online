@@ -2,10 +2,13 @@ require 'yaml'
 require 'ostruct'
 
 module GameData
-  class Monsters < Base
+  class Mob < Base
 
     def get( name_code )
       monster = @data[:monsters][name_code.to_sym]
+
+      raise "#{name_code} does not existe" unless monster
+
       cards = @data[:cards][monster[:attack_deck]]
 
       starting_deck = cards[:deck]

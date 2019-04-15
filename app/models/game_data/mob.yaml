@@ -1,5 +1,35 @@
 ---
 :monsters:
+  :black_serpent:
+    :name: The black serpent
+    :fortitude: 9
+    :strength: 8
+    :wisdom: 1
+    :attack_deck: :ravager
+  :mouth_of_sauron:
+    :name: The mouth of Sauron
+    :fortitude: 6
+    :strength: 6
+    :wisdom: 2
+    :attack_deck: :zealot
+  :gothmog:
+    :name: Gothmog of Gorgorth
+    :fortitude: 7
+    :strength: 7
+    :wisdom: 2
+    :attack_deck: :ravager
+  :ringwraiths:
+    :name: The ringwraiths
+    :fortitude: 8
+    :strength: 8
+    :wisdom: 0
+    :attack_deck: :ravager
+  :witch_king:
+    :name: The Witch-King
+    :fortitude: 10
+    :strength: 10
+    :wisdom: 1
+    :attack_deck: :behemoth
   :crebain:
     :name: Crebain
     :fortitude: 7

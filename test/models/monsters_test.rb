@@ -4,7 +4,7 @@ require 'pp'
 class MonstersTest < ActiveSupport::TestCase
 
   def setup
-    @monsters = GameData::Monsters.new
+    @monsters = GameData::Mob.new
     @monster = @monsters.get( :crebain )
   end
 
