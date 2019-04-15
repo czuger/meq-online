@@ -118,8 +118,7 @@ Rails.application.routes.draw do
 
     resource :combats, only: [ :show, :new, :create, :destroy ] do
       get :hero_setup_new
-      post :hero_setup_draw_cards
-      post :hero_setup_increase_strength
+      post :hero_setup
 
       get :play_card_screen
       post :play_card

@@ -18,6 +18,13 @@ class Hero < Actor
   #
   # Cards methods
   #
+  def card_pic_path(card_number)
+    @game_data_heroes ||= GameData::Heroes.new
+    @game_data_hero ||= @game_data_heroes.get( name_code )
+
+    @game_data_hero.cards[card_number].pic_path
+  end
+
   def draw_cards( board, nb_cards_to_draw, before_combat= false )
     transaction do
       cards = life_pool.shift(nb_cards_to_draw)

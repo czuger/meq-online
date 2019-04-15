@@ -1,8 +1,7 @@
 class CombatsController < ApplicationController
 
-  before_action :set_board, only: [:create]
-  before_action :set_combat, only: [:show, :update, :destroy, :play_card, :play_card_screen]
-  before_action :set_hero, only: [:hero_setup_new, :hero_setup_draw_cards, :hero_setup_increase_strength]
+  before_action :require_logged_in
+  before_action :set_combat
 
   # GET /combats
   # GET /combats.json
@@ -107,7 +106,10 @@ class CombatsController < ApplicationController
   end
 
   def hero_setup_new
-    set_heroes
+  end
+
+  def hero_setup
+
   end
 
   def hero_setup_draw_cards
@@ -153,31 +155,12 @@ class CombatsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-
-    def set_board
-      @board ||= Board.find(params[:board_id])
-    end
-
     def set_combat
-      set_board
-      @combat ||= @board.combat
-    end
-
-    def set_hero
-      set_combat
-      @hero ||= @combat.hero
-    end
-
-    def set_heroes
-      set_hero
-      @heroes = GameData::Heroes.new
-      @heroes_hero = @heroes.get(@hero.name_code)
-    end
-
-    def set_monsters
-      set_combat
-      @monsters = GameData::Mobs.new
-      @monster = @monsters.get(@combat.monster.to_sym)
+      @board = Board.find(params[:board_id])
+      @combat = @board.combat
+      @hero = @combat.hero
+      @actor = @hero
+      @mob = @combat.mob
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

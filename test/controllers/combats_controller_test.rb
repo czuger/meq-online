@@ -7,12 +7,18 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     @user = create( :user )
     @board = create( :board )
     @hero = create( :hero, user: @user, board: @board )
-    @combat = create( :combat, board: @board, hero: @hero )
+    @mob = create( :monster, board: @board )
+    @board.create_combat( @hero, @mob )
 
     $google_auth_hash[:uid] = @user.uid
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
     get '/auth/google_oauth2'
     follow_redirect!
+  end
+
+  test 'should get hero_setup_new' do
+    get hero_setup_new_board_combats_url(@board)
+    assert_response :success
   end
 
   # test "should get index" do
