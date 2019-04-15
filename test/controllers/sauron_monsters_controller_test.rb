@@ -12,7 +12,8 @@ class SauronMonstersControllerTest < ActionDispatch::IntegrationTest
     @board_message = create( :board_message, sender: @sauron, reciever: @hero )
     @board.users << @user
 
-    create( :monster, board: @board )
+    @board.create_monster( :agent, :old_forest, :monsters_pool_orange )
+
     @black_serpent = create( :minion, board: @board )
 
     @board.aasm_state = 'sauron_actions'

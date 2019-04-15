@@ -2,7 +2,7 @@ require 'yaml'
 require 'ostruct'
 
 module GameData
-  class Mob < Base
+  class Mobs < Base
 
     def get( name_code )
       monster = @data[:monsters][name_code.to_sym]

@@ -81,8 +81,8 @@ class BoardsController < ApplicationController
 
           GameData::LocationsMonsters.new.fill_board(@board)
 
-          @board.minions.create!( code: :mouth_of_sauron, location: :dol_guldur )
-          @board.minions.create!( code: :black_serpent, location: :near_harad )
+          @board.create_monster( :mouth_of_sauron, :dol_guldur )
+          @board.create_monster( :black_serpent, :near_harad )
 
           @board.log( nil, 'setup.set_starting_plot', { plot_card: starting_plot_id } )
           @board.log( nil, 'setup.set_influence_in_shadow_pool', { count: starting_plot.influence.shadow_pool } )

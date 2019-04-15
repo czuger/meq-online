@@ -7,7 +7,7 @@ module GameEngine
 
     def initialize
       @characters = GameData::Characters.new
-      @monsters = GameData::Mob.new
+      @monsters = GameData::Mobs.new
       @tokens = {}
     end
 

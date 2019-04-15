@@ -1,3 +1,5 @@
+require 'ostruct'
+
 class Board < ApplicationRecord
 
   include GameEngine::BoardAasm
@@ -24,12 +26,8 @@ class Board < ApplicationRecord
   #
   # Create combat method
   #
-  def create_combat( hero, mob_code )
-    game_data_monsters = GameData::Mob.new
-    mob_data = game_data_monsters.get(mob_code)
-
-    create_combat!( hero: hero, mob_fortitude: mob_data.fortitude, mob_strength: mob_data.strength, mob_life: mob_data.life,
-                    mob_name: mob_data.name, mob_cards: mob_data.starting_deck )
+  def create_combat( hero, mob )
+    create_combat!( hero: hero, mob: mob )
   end
 
   #
@@ -45,11 +43,32 @@ class Board < ApplicationRecord
   #
   def monster_name( monster_code )
     if monster_code != 'nothing'
-      @game_data_monsters ||= GameData::Mob.new
+      @game_data_monsters ||= GameData::Mobs.new
       @game_data_monsters.get(monster_code).name
     else
       'Nothing'
     end
+  end
+
+  def create_monster( monster_code, location, pool_key= nil )
+    if monster_code.to_s == 'nothing'
+      monster_data = OpenStruct.new( fortitude: -1, strength: -1, life: -1, name: 'Nothing', starting_deck: [] )
+    else
+      game_data_monsters ||= GameData::Mobs.new
+      monster_data = game_data_monsters.get(monster_code)
+    end
+
+    monster_hash = { location: location, code: monster_code, fortitude: monster_data.fortitude,
+                     strength: monster_data.strength, life: monster_data.life, name: monster_data.name,
+    hand: monster_data.starting_deck }
+
+    if monster_data.type == :minion
+      minions.create!( monster_hash )
+    else
+      monster_hash[:pool_key] = pool_key
+      monsters.create!( monster_hash )
+    end
+
   end
 
   #

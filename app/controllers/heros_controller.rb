@@ -101,14 +101,26 @@ class HerosController < ApplicationController
         if tokens_at_location.empty?
           redirect_to hero_movement_screen_path(@actor)
         else
-          monsters = tokens_at_location.select{ |e| e.type == :monster }
+          monsters_at_location = @board.mobs.where( location: @actor.location )
 
-          if monsters.count >= 1
-            @board.create_combat( @actor, monsters.first.code )
-            @board.next_to_combat!
-            @board.save!
+          if monsters_at_location.count >= 1
+            first_monster = monsters_at_location.first
 
-            redirect_to board_combats_path(@board)
+            if first_monster.code == 'nothing'
+              @board.next_to_exploration!
+              @board.save!
+
+              @board.log( @actor, 'combat.encounter_nothing', location: @actor.location, hero: @actor.name )
+
+
+              redirect_to hero_exploration_screen_path(@actor)
+            else
+              @board.create_combat( @actor, first_monster )
+              @board.next_to_combat_setup!
+              @board.save!
+
+              redirect_to hero_setup_new_board_combats_path(@board)
+            end
           else
             @board.next_to_exploration!
             @board.save!

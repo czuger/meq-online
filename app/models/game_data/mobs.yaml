@@ -7,6 +7,7 @@
     :wisdom: 1
     :life: 11
     :attack_deck: :ravager
+    :type: :minion
   :mouth_of_sauron:
     :name: The mouth of Sauron
     :fortitude: 6
@@ -14,6 +15,7 @@
     :wisdom: 2
     :life: 9
     :attack_deck: :zealot
+    :type: :minion
   :gothmog:
     :name: Gothmog of Gorgorth
     :fortitude: 7
@@ -21,6 +23,7 @@
     :wisdom: 2
     :life: 10
     :attack_deck: :ravager
+    :type: :minion
   :ringwraiths:
     :name: The ringwraiths
     :fortitude: 8
@@ -28,6 +31,7 @@
     :wisdom: 0
     :life: 9
     :attack_deck: :ravager
+    :type: :minion
   :witch_king:
     :name: The Witch-King
     :fortitude: 10
@@ -35,6 +39,7 @@
     :wisdom: 1
     :life: 13
     :attack_deck: :behemoth
+    :type: :minion
   :crebain:
     :name: Crebain
     :fortitude: 7
@@ -42,6 +47,7 @@
     :wisdom: 2
     :life: 2
     :attack_deck: :zealot
+    :type: :monster
   :agent:
     :name: Agent
     :fortitude: 5
@@ -49,6 +55,7 @@
     :wisdom: 3
     :life: 3
     :attack_deck: :zealot
+    :type: :monster
   :snaga:
     :name: Snaga
     :fortitude: 6
@@ -56,6 +63,7 @@
     :wisdom: 2
     :life: 3
     :attack_deck: :zealot
+    :type: :monster
   :orc:
     :name: Orc
     :fortitude: 5
@@ -63,6 +71,7 @@
     :wisdom: 2
     :life: 3
     :attack_deck: :zealot
+    :type: :monster
   :barrow_wight:
     :name: Barrow Wight
     :fortitude: 5
@@ -70,6 +79,7 @@
     :wisdom: 2
     :life: 4
     :attack_deck: :ravager
+    :type: :monster
   :southron:
     :name: Southron
     :fortitude: 6
@@ -77,6 +87,7 @@
     :wisdom: 2
     :life: 4
     :attack_deck: :ravager
+    :type: :monster
   :dunlending:
     :name: Dunlending
     :fortitude: 5
@@ -84,12 +95,14 @@
     :wisdom: 2
     :life: 4
     :attack_deck: :ravager
+    :type: :monster
   :uruk_hai:
     :name: Uruk-Hai
     :fortitude: 6
     :strength: 6
     :wisdom: 2
     :attack_deck: :ravager
+    :type: :monster
   :warg_rider:
     :name: Warg Rider
     :fortitude: 6
@@ -97,6 +110,7 @@
     :wisdom: 1
     :life: 4
     :attack_deck: :ravager
+    :type: :monster
   :giant_spider:
     :name: Giant Spider
     :fortitude: 7
@@ -104,6 +118,7 @@
     :wisdom: 1
     :life: 6
     :attack_deck: :behemoth
+    :type: :monster
   :huorn:
     :name: Huorn
     :fortitude: 6
@@ -111,6 +126,7 @@
     :wisdom: 1
     :life: 7
     :attack_deck: :behemoth
+    :type: :monster
   :cave_troll:
     :name: Cave Troll
     :fortitude: 8
@@ -118,6 +134,7 @@
     :wisdom: 0
     :life: 8
     :attack_deck: :behemoth
+    :type: :monster
   :oliphaunt:
     :name: Oliphaunt
     :fortitude: 7
@@ -125,6 +142,7 @@
     :wisdom: 1
     :life: 9
     :attack_deck: :behemoth
+    :type: :monster
   :balrog:
     :name: Balrog
     :fortitude: 9
@@ -132,6 +150,7 @@
     :wisdom: 0
     :life: 10
     :attack_deck: :behemoth
+    :type: :monster
 :cards:
   :behemoth:
     :deck:

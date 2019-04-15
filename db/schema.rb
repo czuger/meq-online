@@ -112,18 +112,15 @@ ActiveRecord::Schema.define(version: 2019_04_15_102015) do
   create_table "combats", force: :cascade do |t|
     t.bigint "board_id", null: false
     t.bigint "actor_id", null: false
+    t.bigint "mob_id", null: false
     t.integer "temporary_hero_strength"
     t.jsonb "hero_cards_played", default: [], null: false
-    t.integer "mob_fortitude", null: false
-    t.integer "mob_strength", null: false
-    t.integer "mob_life", null: false
-    t.string "mob_name", null: false
-    t.jsonb "mob_cards", default: [], null: false
     t.jsonb "mob_cards_played", default: [], null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["actor_id"], name: "index_combats_on_actor_id"
     t.index ["board_id"], name: "index_combats_on_board_id"
+    t.index ["mob_id"], name: "index_combats_on_mob_id"
   end
 
   create_table "logs", force: :cascade do |t|
@@ -145,6 +142,11 @@ ActiveRecord::Schema.define(version: 2019_04_15_102015) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type", null: false
+    t.integer "fortitude", null: false
+    t.integer "strength", null: false
+    t.integer "life", null: false
+    t.string "name", null: false
+    t.jsonb "hand", default: [], null: false
     t.index ["board_id"], name: "index_mobs_on_board_id"
   end
 
@@ -177,6 +179,7 @@ ActiveRecord::Schema.define(version: 2019_04_15_102015) do
   add_foreign_key "boards", "actors", column: "current_hero_id"
   add_foreign_key "combats", "actors"
   add_foreign_key "combats", "boards"
+  add_foreign_key "combats", "mobs"
   add_foreign_key "logs", "actors"
   add_foreign_key "logs", "boards"
   add_foreign_key "mobs", "boards"

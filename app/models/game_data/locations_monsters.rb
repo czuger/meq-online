@@ -26,7 +26,7 @@ module GameData
       current_monsters_list.slice!( current_monsters_list.index( monster ) )
       board.update( monster_color_key => current_monsters_list )
 
-      board.monsters.create!( pool_key: monster_color_key, code: monster, location: location )
+      board.create_monster( monster, location, monster_color_key )
     end
 
     def place_monster_back_to_monster_pool(board, monster)

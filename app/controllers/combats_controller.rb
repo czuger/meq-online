@@ -84,7 +84,7 @@ class CombatsController < ApplicationController
   def create
     hero = Hero.find( params[:hero_id] )
     monster_code = params[:monster].to_sym
-    monsters = GameData::Mob.new
+    monsters = GameData::Mobs.new
     monster = monsters.get(monster_code)
 
     sauron = @board.sauron
@@ -176,7 +176,7 @@ class CombatsController < ApplicationController
 
     def set_monsters
       set_combat
-      @monsters = GameData::Mob.new
+      @monsters = GameData::Mobs.new
       @monster = @monsters.get(@combat.monster.to_sym)
     end
 
@@ -188,7 +188,7 @@ class CombatsController < ApplicationController
     def set_new_data
       @board = Board.find( params[:board_id] )
       @heroes = GameData::Heroes.new
-      @monsters = GameData::Mob.new
+      @monsters = GameData::Mobs.new
 
       @heroes_select_array = @board.heroes.map{ |h| [ @heroes.get( h.name_code ).name, h.id ] }
     end

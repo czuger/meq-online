@@ -9,7 +9,7 @@ module GameEngine
         state :waiting_for_players, :sauron_setup, :sauron_actions, :heroes_draw_cards
         state :rest_step, :single_hero_draw, :single_hero_rally
         state :movement, :exploration, :plot, :after_rest_advance_story_marker
-        state :combat
+        state :combat_setup
 
         event :wait_for_players do
           transitions :from => :created, :to => :waiting_for_players
@@ -43,8 +43,8 @@ module GameEngine
           transitions :from => [:after_rest_advance_story_marker, :exploration, :rest_step], :to => :movement
         end
 
-        event :next_to_combat do
-          transitions :from => :movement, :to => :combat
+        event :next_to_combat_setup do
+          transitions :from => :movement, :to => :combat_setup
         end
 
         event :next_to_exploration do

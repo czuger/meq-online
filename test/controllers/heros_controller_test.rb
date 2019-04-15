@@ -124,7 +124,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     @board.aasm_state = :movement
     @board.save!
 
-    @board.monsters.create!( pool_key: :monsters_pool_orange, location: :old_forest, code: :agent )
+    @board.create_monster( :agent, :old_forest, :monsters_pool_orange )
 
     assert_difference 'Combat.count' do
       post hero_move_url( @hero, params: { button: :old_forest, selected_cards: '1' } )
@@ -132,7 +132,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
 
     assert @board.combat
 
-    assert_redirected_to board_combats_url(@board)
+    assert_redirected_to hero_setup_new_board_combats_url(@board)
   end
 
   # test 'should POST draw_cards' do

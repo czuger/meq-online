@@ -8,7 +8,8 @@ module GameEngine
       play_shadow_card_at_start_of_hero_turn: :start_hero_turn_play_card_screen_sauron_shadow_cards,
       rest_step: :hero_rest_screen,
       movement_preparation_step: :hero_movement_preparation_steps,
-      plot: :plot_cards_play_screen
+      plot: :plot_cards_play_screen,
+
     }
 
     STATE_TO_PATH_PATTERNS = %w( sauron_%s_screen_path hero_%s_screen_path )
