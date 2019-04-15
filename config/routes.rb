@@ -116,12 +116,12 @@ Rails.application.routes.draw do
     get :story_screen
 
 
-    resource :combats, only: [ :show, :new, :create, :destroy ] do
+    resource :combats, only: [] do
       get :hero_setup_new
       post :hero_setup
 
-      get :play_card_screen
-      post :play_card
+      get ':actor_id/play_combat_card_screen', action: :play_combat_card_screen, as: :play_combat_card_screen
+      get ':actor_id/play_combat_card', action: :play_combat_card, as: :play_combat_card
     end
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

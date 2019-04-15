@@ -2,40 +2,7 @@ class CombatsController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_combat
-
-  # GET /combats
-  # GET /combats.json
-  def index
-    @combats = Combat.all
-  end
-
-  # GET /combats/1
-  # GET /combats/1.json
-  def show
-    current_user
-    if @combat&.hero_choices?
-    else
-      @fighter_select_data = []
-
-      if @combat&.sauron_user_id == current_user.id
-        set_monsters
-        @fighter_select_data << [ @monster.name, @combat.monster ]
-      end
-
-      if @combat&.hero_user_id == current_user.id
-        set_heroes
-        @fighter_select_data << [ @heroes_hero.name, @hero.name_code ]
-      end
-    end
-
-    @should_show_cards = @combat.sauron_card_to_play && @combat.hero_card_to_play
-
-    if @should_show_cards
-      set_heroes
-      set_monsters
-    end
-
-  end
+  before_action :set_actor_ensure_actor, only: []
 
   # GET /combats/new
 
@@ -48,15 +15,6 @@ class CombatsController < ApplicationController
   # - Card result
   #   - each player mark the result (take damages, discard card, show next card to opponent)
   # - Next turn
-
-  def new
-    set_new_data
-    @combat = Combat.new( board: @board )
-  end
-
-  # GET /combats/1/edit
-  def edit
-  end
 
   def play_card_screen
     if params[:selected_fighter] == @combat.monster
@@ -78,80 +36,46 @@ class CombatsController < ApplicationController
     redirect_to board_combats_path
   end
 
-  # POST /combats
-  # POST /combats.json
-  def create
-    hero = Hero.find( params[:hero_id] )
-    monster_code = params[:monster].to_sym
-    monsters = GameData::Mobs.new
-    monster = monsters.get(monster_code)
-
-    sauron = @board.sauron
-    sauron_hand = monster.starting_deck.shift( monster.fortitude )
-
-    cp = { board_id: params[:board_id], hero_id: params[:hero_id], sauron_cards_played:[], hero_cards_played:[],
-      monster: monster_code, temporary_strength: hero.strength, sauron_hand: sauron_hand,
-      sauron_user_id: sauron.user_id, hero_user_id: hero.user_id }
-
-    @combat = Combat.new(cp)
-
-    respond_to do |format|
-      if @combat.save
-        format.html { redirect_to board_combats_path( params[:board_id] ), notice: 'Combat was successfully created.' }
-      else
-        set_new_data
-        format.html { render :new }
-      end
-    end
+  def play_combat_card
   end
 
   def hero_setup_new
   end
 
   def hero_setup
+    temporary_strength = @hero.strength
 
-  end
-
-  def hero_setup_draw_cards
     @combat.transaction do
-      @hero.draw_cards( @board, params[:nb_cards_to_draw].to_i, true )
-      @combat.start!
-    end
-    redirect_to board_combats_path( @board )
-  end
+      if params[:button] == 'draw'
+        @hero.draw_cards( @board, @hero.agility, true )
+      else
+        temporary_strength += @hero.agility
 
-  def hero_setup_increase_strength
-    @combat.transaction do
-      @combat.update( temporary_strength: params[:increase_strength] )
-      @combat.log_increase_strength!( @board, @combat, @hero )
-      @combat.start!
+        @board.log( @hero, 'combat.inc_strength',name: @hero.name_code, str: @hero.strength,
+                    nstr: temporary_strength )
+      end
+
+      @combat.temporary_hero_strength = temporary_strength
+      @combat.save!
+      
+      @board.next_to_play_combat_card!
+      redirect_to play_combat_card_screen_board_combats_path( @board, @hero )
     end
-    redirect_to board_combats_path( @board )
   end
 
   # PATCH/PUT /combats/1
   # PATCH/PUT /combats/1.json
-  def update
-    respond_to do |format|
-      if @combat.update(combat_params)
-        format.html { redirect_to @combat, notice: 'Combat was successfully updated.' }
-        format.json { render :show, status: :ok, location: @combat }
-      else
-        format.html { render :edit }
-        format.json { render json: @combat.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /combats/1
-  # DELETE /combats/1.json
-  def destroy
-    @combat.destroy
-    respond_to do |format|
-      format.html { redirect_to boards_path, notice: 'Combat was successfully destroyed.' }
-      format.json { head :no_content }
-    end
-  end
+  # def update
+  #   respond_to do |format|
+  #     if @combat.update(combat_params)
+  #       format.html { redirect_to @combat, notice: 'Combat was successfully updated.' }
+  #       format.json { render :show, status: :ok, location: @combat }
+  #     else
+  #       format.html { render :edit }
+  #       format.json { render json: @combat.errors, status: :unprocessable_entity }
+  #     end
+  #   end
+  # end
 
   private
     # Use callbacks to share common setup or constraints between actions.

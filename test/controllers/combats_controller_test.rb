@@ -10,6 +10,9 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     @mob = create( :monster, board: @board )
     @board.create_combat( @hero, @mob )
 
+    @board.aasm_state = 'combat_setup'
+    @board.save!
+
     $google_auth_hash[:uid] = @user.uid
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
     get '/auth/google_oauth2'
@@ -19,6 +22,22 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
   test 'should get hero_setup_new' do
     get hero_setup_new_board_combats_url(@board)
     assert_response :success
+  end
+
+  test 'should start combat with strength increase' do
+    post hero_setup_board_combats_url(@board, button: :increase)
+
+    assert_equal 8, @board.combat.reload.temporary_hero_strength
+
+    assert_redirected_to play_combat_card_screen_board_combats_url(@board, @hero)
+  end
+
+  test 'should start combat with cards drawn' do
+    post hero_setup_board_combats_url(@board, button: :draw)
+
+    assert_equal 4, @hero.reload.hand.count
+
+    assert_redirected_to play_combat_card_screen_board_combats_url(@board, @hero)
   end
 
   # test "should get index" do
