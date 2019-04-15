@@ -47,6 +47,14 @@ module GameEngine
           sauron_name: board.monster_name(monster.code) )
       end
 
+      board.minions.each do |minion|
+        @tokens[minion.location] ||= []
+        @tokens[minion.location] << OpenStruct.new( type: :monster, code: minion.code,
+                                                     name: board.monster_name(minion.code), priority: 40,
+                                                     pic_path: "monsters/tokens/covers/#{minion.code}.png".freeze )
+      end
+
+
       self
     end
 

@@ -17,6 +17,7 @@ class Board < ApplicationRecord
 
   has_many :mobs, dependent: :destroy
   has_many :monsters
+  has_many :minions
 
   #
   # Location methods
