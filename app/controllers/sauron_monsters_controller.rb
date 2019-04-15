@@ -28,6 +28,11 @@ class SauronMonstersController < ApplicationController
 
   def edit
     @available_locations = GameData::LocationsPaths.new.get_connected_locations(@mob.location )
+
+    # Monsters can move only on places that have influence.
+    if @mob.is_a? Monster
+      @available_locations.reject! { |loc| !( @board.influence[loc] && @board.influence[loc] >= 1 ) }
+    end
   end
 
   def update
