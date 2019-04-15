@@ -2,7 +2,7 @@ class SauronMonstersController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_actor_ensure_actor
-  before_action :set_monster, only: [:edit, :update]
+  before_action :set_mob, only: [:edit, :update]
 
   def index
     @monsters = @board.mobs.order( 'type, location, code' )
@@ -27,19 +27,19 @@ class SauronMonstersController < ApplicationController
   end
 
   def edit
-    @available_locations = GameData::LocationsPaths.new.get_connected_locations(@monster.location )
+    @available_locations = GameData::LocationsPaths.new.get_connected_locations(@mob.location )
   end
 
   def update
-    @monster.update( location: params[:button] )
+    @mob.update( location: params[:button] )
 
     redirect_to sauron_sauron_monsters_path(@actor), notice: 'Monster moved'
   end
 
   private
 
-  def set_monster
-    @monster = Monster.find(params[:id].to_i)
+  def set_mob
+    @mob = Mob.find(params[:id].to_i)
   end
 
 end
