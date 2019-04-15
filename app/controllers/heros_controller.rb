@@ -50,9 +50,12 @@ class HerosController < ApplicationController
   def after_rest_advance_story_marker_screen
     @lowest_screens = []
 
-    @lowest_screens << :story_marker_ring if @board.story_marker_ring == @min_marker
-    @lowest_screens << :story_marker_conquest if @board.story_marker_conquest == @min_marker
-    @lowest_screens << :story_marker_corruption if @board.story_marker_corruption == @min_marker
+    lowest_markers = [ @board.story_marker_ring, @board.story_marker_conquest, @board.story_marker_corruption ]
+    min_marker = lowest_markers.min
+
+    @lowest_screens << 'Ring' if @board.story_marker_ring == min_marker
+    @lowest_screens << 'Conquest' if @board.story_marker_conquest == min_marker
+    @lowest_screens << 'Corruption' if @board.story_marker_corruption == min_marker
   end
 
   def after_rest_advance_story_marker
@@ -277,7 +280,7 @@ class HerosController < ApplicationController
     @lowest_markers = [ @board.story_marker_ring, @board.story_marker_conquest, @board.story_marker_corruption ]
     @min_marker = @lowest_markers.min
 
-    lowests_markers_count = @lowest_markers.map{ |e| e == min_marker }.count
+    lowests_markers_count = @lowest_markers.select{ |e| e == @min_marker }.count
 
     # If we have more than one lowest markers, we will have to ask to player
     return false if lowests_markers_count > 1

@@ -33,6 +33,49 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to boards_url
   end
 
+  test 'should show hero' do
+    get hero_url( @hero )
+    assert_response :success
+  end
+
+  test 'should rest and be redirected to advance story marker screen' do
+    @board.aasm_state = :rest_step
+    @board.save!
+
+    get hero_rest_rest_url( @hero )
+    assert_redirected_to hero_after_rest_advance_story_marker_screen_url(@hero)
+  end
+
+  test 'should heal and be redirected to movement' do
+    @board.aasm_state = :rest_step
+    @board.story_marker_corruption = 5
+    @board.story_marker_ring = 6
+    @board.save!
+
+    assert_difference '@board.reload.story_marker_conquest' do
+      assert_no_difference '@board.reload.story_marker_corruption' do
+        assert_no_difference '@board.reload.story_marker_ring' do
+          get hero_rest_heal_url( @hero )
+        end
+      end
+    end
+
+    assert_redirected_to hero_movement_screen_url(@hero)
+  end
+
+  test 'should get after_rest_advance_story_marker_screen' do
+    @board.story_marker_ring = 6
+    @board.save!
+
+    get hero_after_rest_advance_story_marker_screen_url( @hero )
+    assert_response :success
+
+    # puts @response.body
+
+    assert_select 'a', 'Conquest'
+    assert_select 'a', 'Corruption'
+  end
+
   test 'should patch take_damages' do
     patch hero_take_damages_url( @hero, damage_amount: 3 )
     assert_redirected_to hero_url(@hero)
