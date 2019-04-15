@@ -74,3 +74,5 @@ gem 'jquery-ui-rails'
 gem 'omniauth-google-oauth2'
 gem 'aasm'
 gem 'hazard'
+
+gem 'font-awesome-rails'

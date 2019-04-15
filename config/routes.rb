@@ -116,7 +116,7 @@ Rails.application.routes.draw do
     get :story_screen
 
 
-    resource :combats, only: [] do
+    resource :combats, only: [ :show ] do
       get :hero_setup_new
       post :hero_setup
 

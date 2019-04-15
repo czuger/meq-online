@@ -1,44 +1,48 @@
+.container
 
+  = image_tag "heroes/#{@hero.name_code}.jpg", class: 'actor-card'
+  = fa_icon "bolt", class: 'fa-big'
+  = image_tag "monsters/monsters/#{@mob.code}.jpg", class: 'actor-card'
 
-- if @combat
-  -if @combat.hero_choices?
-    .form-group
-      .row
-        .col-2
-          .col-form-label
-            Hero must use agility.
-        .col-2
-          = link_to( 'Use agility', hero_setup_new_board_combats_path( @board ), role: :button, class: 'btn btn-primary' ) if @combat.hero_user_id == current_user.id
-  - else
-
-    - if @should_show_cards
-      .row
-        .col-2
-          = "#{@heroes_hero.name}"
-        .col-2
-          = "#{@monster.name}"
-      .row
-        .col-2
-          = image_tag( 'hero_cards/' + @heroes_hero.cards[@combat.hero_card_to_play].pic_path, class: :card )
-        .col-2
-          = image_tag( 'monsters/' + @monster.cards[@combat.sauron_card_to_play].pic_path, class: :card )
-
-    .form-group
-      = form_tag play_card_screen_board_combats_path( @board ), method: :get do
-        .row
-          .col-10
-            = select_tag( :selected_fighter, options_for_select( @fighter_select_data ), class: 'form-control' )
-          .col-2
-            = button_tag 'Play card', role: :button, class: 'btn btn-primary'
-
-    .form-group
-      = form_tag play_card_screen_board_combats_path( @board ), method: :get do
-        .row
-          .col-10
-            = select_tag( :selected_fighter, options_for_select( @fighter_select_data ), class: 'form-control' )
-          .col-2
-            = button_tag 'Play card', role: :button, class: 'btn btn-primary'
-
-  = link_to 'Finish combat', board_combats_path( @board ), method: :delete, role: :button, class: 'btn btn-primary'
--else
-  = link_to 'New combat', new_board_combats_path( @board ), role: :button, class: 'btn btn-primary'
+-#- if @combat
+-#  -if @combat.hero_choices?
+-#    .form-group
+-#      .row
+-#        .col-2
+-#          .col-form-label
+-#            Hero must use agility.
+-#        .col-2
+-#          = link_to( 'Use agility', hero_setup_new_board_combats_path( @board ), role: :button, class: 'btn btn-primary' ) if @combat.hero_user_id == current_user.id
+-#  - else
+-#
+-#    - if @should_show_cards
+-#      .row
+-#        .col-2
+-#          = "#{@heroes_hero.name}"
+-#        .col-2
+-#          = "#{@monster.name}"
+-#      .row
+-#        .col-2
+-#          = image_tag( 'hero_cards/' + @heroes_hero.cards[@combat.hero_card_to_play].pic_path, class: :card )
+-#        .col-2
+-#          = image_tag( 'monsters/' + @monster.cards[@combat.sauron_card_to_play].pic_path, class: :card )
+-#
+-#    .form-group
+-#      = form_tag play_card_screen_board_combats_path( @board ), method: :get do
+-#        .row
+-#          .col-10
+-#            = select_tag( :selected_fighter, options_for_select( @fighter_select_data ), class: 'form-control' )
+-#          .col-2
+-#            = button_tag 'Play card', role: :button, class: 'btn btn-primary'
+-#
+-#    .form-group
+-#      = form_tag play_card_screen_board_combats_path( @board ), method: :get do
+-#        .row
+-#          .col-10
+-#            = select_tag( :selected_fighter, options_for_select( @fighter_select_data ), class: 'form-control' )
+-#          .col-2
+-#            = button_tag 'Play card', role: :button, class: 'btn btn-primary'
+-#
+-#  = link_to 'Finish combat', board_combats_path( @board ), method: :delete, role: :button, class: 'btn btn-primary'
+-#-else
+-#  = link_to 'New combat', new_board_combats_path( @board ), role: :button, class: 'btn btn-primary'

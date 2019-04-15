@@ -16,6 +16,10 @@ class CombatsController < ApplicationController
   #   - each player mark the result (take damages, discard card, show next card to opponent)
   # - Next turn
 
+  def show
+
+  end
+
   def play_combat_card_screen
     @selectable_card_class = 'selectable-card-selection-unique'
   end
