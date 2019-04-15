@@ -15,3 +15,7 @@
 
   - if GameData::Objectives.heroes_objective_card(@board)
     = image_tag GameData::Objectives.heroes_objective_card(@board), id: 'objectives-card'
+
+  %hr
+
+  = image_tag "heroes/#{@actor.name_code}.jpg"
