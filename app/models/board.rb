@@ -27,7 +27,12 @@ class Board < ApplicationRecord
   # Create combat method
   #
   def create_combat( hero, mob )
-    create_combat!( hero: hero, mob: mob )
+    mob.transaction do
+      cards = GameData::MobsCards.new.get_deck(mob.attack_deck)
+      mob.hand = cards.shift( mob.fortitude )
+      mob.save!
+      create_combat!( hero: hero, mob: mob )
+    end
   end
 
   #
@@ -48,13 +53,11 @@ class Board < ApplicationRecord
     else
       game_data_monsters ||= GameData::Mobs.new
       monster_data = game_data_monsters.get(monster_code)
-
-      starting_deck = GameData::MobsCards.new.get_deck(monster_data.attack_deck)
     end
 
     monster_hash = { location: location, code: monster_code, fortitude: monster_data.fortitude,
                      strength: monster_data.strength, life: monster_data.life, name: monster_data.name,
-                      hand: starting_deck, attack_deck: monster_data.attack_deck }
+                     attack_deck: monster_data.attack_deck }
 
     if monster_data.type == :minion
       minions.create!( monster_hash )

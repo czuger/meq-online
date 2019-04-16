@@ -4,7 +4,7 @@
     - group.each do |card_number|
       .col
         - if card_number
-          = image_tag "monsters/#{@mob.card_pic_path(card_number)}", class: :card, card_id: card_number
+          = image_tag "monsters/#{@mob.card_pic_path(card_number)}", class: small_cards_classes, card_id: card_number
 
 = form_tag play_combat_card_mob_board_combats_path( @board ) do
   .form-group
