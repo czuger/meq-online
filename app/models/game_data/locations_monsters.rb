@@ -10,7 +10,7 @@ module GameData
 
     def fill_board(board)
       @data.each do |key, values|
-        board.update( monster_pool_key(key) => values )
+        board.update( monster_pool_key(key) => values.shuffle )
       end
     end
 
@@ -22,10 +22,9 @@ module GameData
       monster_color_key = monster_pool_key(monster_location_color)
 
       current_monsters_list = board.send(monster_color_key)
-      monster = current_monsters_list.sample
-      current_monsters_list.slice!( current_monsters_list.index( monster ) )
-      board.update( monster_color_key => current_monsters_list )
+      monster = current_monsters_list.shift
 
+      board.update( monster_color_key => current_monsters_list )
       board.create_monster( monster, location, monster_color_key )
     end
 

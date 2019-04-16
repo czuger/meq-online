@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :minion do
     code { 'black_serpent' }
-    location { 'the_shire' }
+    location { 'near_harad' }
 
     fortitude { 8 }
     strength { 8 }

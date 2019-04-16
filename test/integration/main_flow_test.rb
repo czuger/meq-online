@@ -20,6 +20,8 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     @board.save!
 
     create( :board_plot, board: @board )
+    create( :monster, board: @board )
+    create( :minion, board: @board )
 
     $google_auth_hash[:uid] = @user.uid
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
