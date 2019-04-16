@@ -28,10 +28,10 @@ class CombatsController < ApplicationController
     redirect_to boards_path
   end
 
-  def hero_setup_new
+  def combat_setup_screen
   end
 
-  def hero_setup
+  def combat_setup
     temporary_strength = @hero.strength
 
     @combat.transaction do

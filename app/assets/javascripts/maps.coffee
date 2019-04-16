@@ -100,7 +100,7 @@ shadow_pool= () ->
 
 $(document).on('turbolinks:load'
   ->
-    if window.location.pathname.match( /maps\/\d+\/edit/ ) || window.location.pathname.match( /maps\/\d+\/show/ )
+    if window.location.pathname.match( /maps\/\d+\/edit/ ) || window.location.pathname.match( /maps\/\d+/ )
       set_zoom_map()
       zoom_plot_cards()
 

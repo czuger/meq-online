@@ -1,9 +1,12 @@
 .container
+
+  %h3 Choose how to use your agility
+
   = render partial: 'heros/hero_info'
   %hr
   = render partial: 'heros/cards_hand'
 
-  = form_tag hero_setup_board_combats_path(@board) do
+  = form_tag combat_setup_board_combats_path(@board) do
     .form-group
       .row
         .col-3

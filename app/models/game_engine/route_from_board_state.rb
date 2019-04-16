@@ -9,7 +9,7 @@ module GameEngine
       rest_step: :hero_rest_screen,
       movement_preparation_step: :hero_movement_preparation_steps,
       plot: :plot_cards_play_screen,
-      combat_setup: :hero_setup_new_board_combats
+      combat_setup: :combat_setup_screen_board_combats
     }
 
     STATE_TO_PATH_PATTERNS = %w( sauron_%s_screen_path hero_%s_screen_path )

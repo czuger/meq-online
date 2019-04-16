@@ -119,7 +119,7 @@ class HerosController < ApplicationController
               @board.next_to_combat_setup!
               @board.save!
 
-              redirect_to hero_setup_new_board_combats_path(@board)
+              redirect_to combat_setup_screen_board_combats_path(@board)
             end
           else
             @board.next_to_exploration!

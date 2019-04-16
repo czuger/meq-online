@@ -25,12 +25,12 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get hero_setup_new' do
-    get hero_setup_new_board_combats_url(@board)
+    get combat_setup_screen_board_combats_url(@board)
     assert_response :success
   end
 
   test 'should start combat with strength increase' do
-    post hero_setup_board_combats_url(@board, button: :increase)
+    post combat_setup_board_combats_url(@board, button: :increase)
 
     assert_equal 8, @hero.reload.combat_temporary_strength
 

@@ -117,8 +117,8 @@ Rails.application.routes.draw do
 
 
     resource :combats, only: [ :show ] do
-      get :hero_setup_new
-      post :hero_setup
+      get :combat_setup_screen
+      post :combat_setup
 
       get ':actor_id/play_combat_card_screen', action: :play_combat_card_screen, as: :play_combat_card_screen
       post :play_combat_card_hero

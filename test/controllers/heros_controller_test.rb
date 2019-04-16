@@ -132,7 +132,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
 
     assert @board.combat
 
-    assert_redirected_to hero_setup_new_board_combats_url(@board)
+    assert_redirected_to combat_setup_screen_board_combats_url(@board)
   end
 
   # test 'should POST draw_cards' do
