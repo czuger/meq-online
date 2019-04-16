@@ -18,17 +18,4 @@ class Combat < ApplicationRecord
   #   end
   # end
 
-  def play_card( board, sauron, player, card_to_play )
-    transaction do
-      if sauron
-        update( sauron_card_to_play: card_to_play )
-        # DONT LOG THIS IT IS SECRET
-        # board.logs.create!( action: 'combat.play_card', params: { name: 'sauron' }, card_pic_path: 'monsters/' + player.cards[card_to_play.to_i].pic_path )
-      else
-        update( hero_card_to_play: card_to_play )
-        # board.logs.create!( action: 'combat.play_card', params: { name: hero.code_name, card: card_to_play } )
-      end
-    end
-  end
-
 end

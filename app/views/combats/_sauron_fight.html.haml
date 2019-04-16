@@ -1,27 +1,17 @@
+= render partial: 'heros/cards_hand'
 
-
-.container
+%h3 Hand
+- @mob.hand.in_groups_of(6).each do |group|
   .row
-    .col-2
-    .col-2
-      = image_tag "monsters/monsters/#{@combat.monster}.jpg"
+    - group.each do |card_number|
+      .col
+        - if card_number
+          = image_tag "monsters/#{@monster.cards[card_number].pic_path}", class: :card, card_id: card_number
 
-  .row
-    %b Hand:
-
+= form_tag play_combat_card_mob_board_combats_path( @board ) do
   .form-group
-    - @combat.sauron_hand.sort.in_groups_of(6).each do |group|
-      .row
-        - group.each do |card_number|
-          .col
-            - if card_number
-              = image_tag "monsters/#{@monster.cards[card_number].pic_path}", class: :card, card_id: card_number
-
-  = form_tag play_card_board_combats_path( @board ) do
-    .form-group
-      .row
-        .col-4
-          = hidden_field_tag :selected_card, nil
-          = hidden_field_tag :player, :sauron
-        .col-2
-          = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block disabled', id: :play_card
+    .row
+      .col-5
+        = hidden_field_tag :selected_card, nil
+      .col-2
+        = button_tag 'Play card', role: :button, class: 'btn btn-secondary btn-block', id: :validate_unique, disabled: true
