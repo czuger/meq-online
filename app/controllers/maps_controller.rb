@@ -3,7 +3,7 @@ require 'ostruct'
 class MapsController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_actor_ensure_actor, only: [:edit]
+  before_action :set_actor_ensure_actor, only: [:edit, :set_influence]
   before_action :set_actor_ensure_board, only: [:show]
   before_action :set_map_data
 
@@ -13,7 +13,7 @@ class MapsController < ApplicationController
 
   def edit
   end
-
+  
   private
 
   def set_map_data

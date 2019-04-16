@@ -65,9 +65,9 @@ influence= () ->
     locations = {}
     locations[location]=val
 
-    $.ajax "/influences/#{actor_id}",
-      type: 'PATCH'
-      data: { locations: locations, redirect: false }
+    $.ajax "/sauron/#{actor_id}/sauron_actions/set_influence",
+      type: 'POST'
+      data: { locations: locations }
 
 zoom_plot_cards= () ->
   $('.plot-card-on-map').hover () ->

@@ -88,6 +88,7 @@ Rails.application.routes.draw do
 
     resource :sauron_actions, only: [:edit, :update] do
       get :terminate
+      post :set_influence
     end
 
     resources :sauron_monsters, except: [ :delete, :show ]
@@ -98,11 +99,9 @@ Rails.application.routes.draw do
 
   resources :shadow_pools, only: [ :edit, :update ]
 
-  resources :influences, only: [ :show, :edit, :update ]
-
   resources :maps, only: [:edit, :show]
+
   resources :characters, only: [:edit,:update]
-  resources :board_steps, only: [:edit,:update]
 
   resources :boards, only:[ :index, :new, :create ] do
     get :join, action: :join_new
@@ -114,7 +113,6 @@ Rails.application.routes.draw do
     resources :null, only: [:index ]
 
     get :story_screen
-
 
     resource :combats, only: [ :show ] do
       get :combat_setup_screen

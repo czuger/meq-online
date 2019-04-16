@@ -32,6 +32,26 @@ class SauronActionsController < ApplicationController
     # redirect_to edit_sauron_action_path(@actor)
   end
 
+  def set_influence
+    ActionController::Parameters.permit_all_parameters = true
+    @locations= GameData::Locations.new
+
+    tmp_hash = params[:locations].select{ |l, v| !v.empty? && @locations.exist?( l ) }.to_h
+    tmp_hash.transform_values!{ |v| v.to_i }
+    tmp_hash = tmp_hash
+
+    @board.transaction do
+      diff_hash = Hash[ tmp_hash.to_a.sort - @board.influence.to_a.sort ]
+      diff_hash.each do |k, v|
+        @board.log( @actor, :place_influence, place: @locations.get(k).name, value: v )
+      end
+
+      @board.influence.merge!( tmp_hash )
+      @board.save!
+    end
+  end
+
+
   # Called when Sauron terminate his turn
   def terminate
     # Hero cards are not drawn at the setup of the game, but at this step.
