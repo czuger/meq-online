@@ -4,10 +4,6 @@ module PlotCardsHelper
     "Choose numbers of #{controller_to_code} cards to draw"
   end
 
-  def keep_screen_path
-    Rails.application.routes.url_helpers.send( "#{controller_to_code}_cards_keep_path", @actor )
-  end
-
   def keep_screen_title_name
     "Select #{controller_to_code}(s) card(s) to keep"
   end

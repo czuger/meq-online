@@ -3,7 +3,7 @@ FactoryBot.define do
 
     plot_position { 1 }
     plot_card { 1 }
-    affected_location { 'dummy' }
+    affected_location { 'the_shire' }
     story_type { 'corruption' }
     story_advance { 3 }
     favor_to_discard { 3 }

@@ -47,6 +47,19 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     get "/sauron/#{@sauron.id}/setup_screen"
     assert_response :success
 
+    get "/maps/#{@sauron.id}/edit"
+    assert_response :success
+
+    get "/sauron/#{@sauron.id}/plot_cards/draw_screen"
+    assert_response :success
+
+    get "/sauron/#{@sauron.id}/plot_cards/keep_screen"
+    assert_response :success
+
+    post "/sauron/#{@sauron.id}/plot_cards/keep", params: { selected_cards: '1, 2' }
+    assert_response :redirect
+    follow_redirect!
+
     get "/sauron/#{@sauron.id}/setup_finished"
     assert_response :redirect
     follow_redirect!
