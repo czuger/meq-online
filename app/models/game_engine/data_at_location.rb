@@ -44,7 +44,7 @@ module GameEngine
           name: 'Monster', priority: 100,
           pic_path: "monsters/tokens/covers/#{monster.pool_key}.jpg".freeze,
           sauron_pic_path: "monsters/tokens/sauron_map/#{monster.code}.jpg".freeze,
-          sauron_name: board.monster_name(monster.code) )
+          sauron_name: monster.name )
       end
 
       board.minions.each do |minion|

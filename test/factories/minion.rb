@@ -8,5 +8,7 @@ FactoryBot.define do
     life { 8 }
 
     name { 'The black serpent' }
+
+    attack_deck { :ravager }
   end
 end

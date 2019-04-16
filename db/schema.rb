@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_16_053158) do
+ActiveRecord::Schema.define(version: 2019_04_16_153303) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 2019_04_16_053158) do
   end
 
   create_table "boards", force: :cascade do |t|
+    t.string "heroes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "max_heroes_count", default: 3, null: false
@@ -149,6 +150,7 @@ ActiveRecord::Schema.define(version: 2019_04_16_053158) do
     t.jsonb "hand", default: [], null: false
     t.jsonb "combat_cards_played", default: [], null: false
     t.integer "combat_card_played"
+    t.string "attack_deck", null: false
     t.index ["board_id"], name: "index_mobs_on_board_id"
   end
 

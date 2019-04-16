@@ -41,26 +41,20 @@ class Board < ApplicationRecord
   #
   # Monster methods
   #
-  def monster_name( monster_code )
-    if monster_code != 'nothing'
-      @game_data_monsters ||= GameData::Mobs.new
-      @game_data_monsters.get(monster_code).name
-    else
-      'Nothing'
-    end
-  end
-
   def create_monster( monster_code, location, pool_key= nil )
+    starting_deck = []
     if monster_code.to_s == 'nothing'
-      monster_data = OpenStruct.new( fortitude: -1, strength: -1, life: -1, name: 'Nothing', starting_deck: [] )
+      monster_data = OpenStruct.new( fortitude: -1, strength: -1, life: -1, name: 'Nothing', attack_deck: :none )
     else
       game_data_monsters ||= GameData::Mobs.new
       monster_data = game_data_monsters.get(monster_code)
+
+      starting_deck = GameData::MobsCards.new.get_deck(monster_data.attack_deck)
     end
 
     monster_hash = { location: location, code: monster_code, fortitude: monster_data.fortitude,
                      strength: monster_data.strength, life: monster_data.life, name: monster_data.name,
-    hand: monster_data.starting_deck }
+                      hand: starting_deck, attack_deck: monster_data.attack_deck }
 
     if monster_data.type == :minion
       minions.create!( monster_hash )

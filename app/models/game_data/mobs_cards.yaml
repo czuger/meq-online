@@ -1,0 +1,316 @@
+---
+behemoth:
+  :deck:
+  - 0
+  - 0
+  - 1
+  - 1
+  - 2
+  - 3
+  - 3
+  - 3
+  - 4
+  - 4
+  - 4
+  - 4
+  - 5
+  - 5
+  - 6
+  - 6
+  - 7
+  - 7
+  - 7
+  - 8
+  - 8
+  - 9
+  - 9
+  - 9
+  - 10
+  :data:
+    0:
+      :name: Precision
+      :type: :ranged
+      :attack: 2
+      :defense: 1
+      :strength_cost: 2
+      :pic_path: behemoth/precision.jpg
+    1:
+      :name: Aimed Shot
+      :type: :ranged
+      :attack: 3
+      :defense: 0
+      :strength_cost: 3
+      :pic_path: behemoth/aimed_shot.jpg
+    2:
+      :name: Earthquake
+      :type: :ranged
+      :attack: 4
+      :defense: 0
+      :strength_cost: 4
+      :pic_path: behemoth/earthquake.jpg
+    3:
+      :name: Block
+      :type: :melee
+      :attack: 0
+      :defense: 4
+      :strength_cost: 2
+      :pic_path: behemoth/block.jpg
+    4:
+      :name: Smash
+      :type: :melee
+      :attack: 2
+      :defense: 1
+      :strength_cost: 2
+      :pic_path: behemoth/smash.jpg
+    5:
+      :name: Sweep
+      :type: :melee
+      :attack: 3
+      :defense: 0
+      :strength_cost: 1
+      :pic_path: behemoth/sweep.jpg
+    6:
+      :name: Rush
+      :type: :melee
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :pic_path: behemoth/rush.jpg
+    7:
+      :name: Overpower
+      :type: :melee
+      :attack: 2
+      :defense: 2
+      :strength_cost: 2
+      :pic_path: behemoth/overpower.jpg
+    8:
+      :name: Crush
+      :type: :melee
+      :attack: 3
+      :defense: 3
+      :strength_cost: 4
+      :pic_path: behemoth/crush.jpg
+    9:
+      :name: Reckless
+      :type: :melee
+      :attack: 5
+      :defense: 0
+      :strength_cost: 3
+      :pic_path: behemoth/reckless.jpg
+    10:
+      :name: Enraged
+      :type: :melee
+      :attack: 4
+      :defense: 0
+      :strength_cost: 4
+      :pic_path: behemoth/enraged.jpg
+ravager:
+  :deck:
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 2
+  - 2
+  - 3
+  - 4
+  - 4
+  - 5
+  - 5
+  - 6
+  - 6
+  - 6
+  - 7
+  - 7
+  - 7
+  - 8
+  - 8
+  - 8
+  - 9
+  - 9
+  - 10
+  - 10
+  :data:
+    0:
+      :name: Concentrate
+      :type: :ranged
+      :attack: 0
+      :defense: 0
+      :strength_cost: 0
+      :pic_path: ravager/concentrate.jpg
+    1:
+      :name: Poison Arrow
+      :type: :ranged
+      :attack: 2
+      :defense: 0
+      :strength_cost: 2
+      :pic_path: ravager/poison_arrow.jpg
+    2:
+      :name: Aimed Shot
+      :type: :ranged
+      :attack: 3
+      :defense: 0
+      :strength_cost: 3
+      :pic_path: ravager/aimed_shot.jpg
+    3:
+      :name: Strategize
+      :type: :ranged
+      :attack: 1
+      :defense: 2
+      :strength_cost: 2
+      :pic_path: ravager/strategize.jpg
+    4:
+      :name: Fall Back
+      :type: :ranged
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :pic_path: ravager/fall_back.jpg
+    5:
+      :name: Parry
+      :type: :melee
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :pic_path: ravager/parry.jpg
+    6:
+      :name: Hack
+      :type: :melee
+      :attack: 1
+      :defense: 0
+      :strength_cost: 0
+      :pic_path: ravager/hack.jpg
+    7:
+      :name: Charge
+      :type: :melee
+      :attack: 2
+      :defense: 0
+      :strength_cost: 1
+      :pic_path: ravager/charge.jpg
+    8:
+      :name: Eviscerate
+      :type: :melee
+      :attack: 2
+      :defense: 0
+      :strength_cost: 2
+      :pic_path: ravager/eviscerate.jpg
+    9:
+      :name: Anticipate
+      :type: :melee
+      :attack: 1
+      :defense: 1
+      :strength_cost: 2
+      :pic_path: ravager/anticipate.jpg
+    10:
+      :name: Attack of Opportunity
+      :type: :melee
+      :attack: 2
+      :defense: 0
+      :strength_cost: 3
+      :pic_path: ravager/attack_of_opportunity.jpg
+zealot:
+  :deck:
+  - 0
+  - 0
+  - 0
+  - 1
+  - 1
+  - 1
+  - 1
+  - 2
+  - 3
+  - 4
+  - 4
+  - 4
+  - 5
+  - 5
+  - 5
+  - 6
+  - 6
+  - 7
+  - 7
+  - 7
+  - 8
+  - 8
+  - 9
+  - 9
+  - 10
+  :data:
+    0:
+      :name: Quick Shot
+      :type: :ranged
+      :attack: 1
+      :defense: 0
+      :strength_cost: 0
+      :pic_path: zealot/quick_shot.jpg
+    1:
+      :name: Ranged Strike
+      :type: :ranged
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :pic_path: zealot/ranged_strike.jpg
+    2:
+      :name: Strategize
+      :type: :ranged
+      :attack: 1
+      :defense: 2
+      :strength_cost: 2
+      :pic_path: zealot/strategize.jpg
+    3:
+      :name: Aimed Shot
+      :type: :ranged
+      :attack: 3
+      :defense: 0
+      :strength_cost: 3
+      :pic_path: zealot/aimed_shot.jpg
+    4:
+      :name: Fall Back
+      :type: :ranged
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :pic_path: zealot/fall_back.jpg
+    5:
+      :name: Poison Arrow
+      :type: :ranged
+      :attack: 2
+      :defense: 0
+      :strength_cost: 2
+      :pic_path: zealot/poison_arrow.jpg
+    6:
+      :name: Parry
+      :type: :melee
+      :attack: 1
+      :defense: 1
+      :strength_cost: 1
+      :pic_path: zealot/parry.jpg
+    7:
+      :name: Hack
+      :type: :melee
+      :attack: 1
+      :defense: 0
+      :strength_cost: 0
+      :pic_path: zealot/hack.jpg
+    8:
+      :name: Charge
+      :type: :melee
+      :attack: 2
+      :defense: 0
+      :strength_cost: 1
+      :pic_path: zealot/charge.jpg
+    9:
+      :name: Smash
+      :type: :melee
+      :attack: 2
+      :defense: 1
+      :strength_cost: 2
+      :pic_path: zealot/smash.jpg
+    10:
+      :name: Reckless
+      :type: :melee
+      :attack: 5
+      :defense: 0
+      :strength_cost: 3
+      :pic_path: zealot/reckless.jpg

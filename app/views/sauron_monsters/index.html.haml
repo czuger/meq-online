@@ -10,7 +10,7 @@
       .col-3
         = @board.location_name(monster.location)
       .col-3
-        = @board.monster_name(monster.code)
+        = monster.name
       .col-3
         = link_to 'Move', edit_sauron_sauron_monster_path(@actor, monster.id), role: :button, class: 'btn btn-secondary btn-block'
 

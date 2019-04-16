@@ -76,6 +76,9 @@ class CombatFlowTest < ActionDispatch::IntegrationTest
     assert_select 'a[href=?]', "/boards/#{@board.id}/combats/#{@sauron.id}/play_combat_card_screen"
     assert_select 'a[href=?]', "/boards/#{@board.id}/combats/#{@hero.id}/play_combat_card_screen"
 
+    # Sauron play
+    get "/boards/#{@board.id}/combats/#{@sauron.id}/play_combat_card_screen"
+
   end
 
   test 'When sauron and the player are not the same user, only current user can select its options' do
