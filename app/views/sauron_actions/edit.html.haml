@@ -9,7 +9,7 @@
       %li Remember : Sauron has 2 actions with 1 or 2 heroes and 3 actions with 3 heroes.
       %li Remember : When you place your fourth token, you must remove the three others.
 
-  = form_tag sauron_action_path(@actor), method: :patch do
+  = form_tag sauron_sauron_actions_path(@actor), method: :patch do
 
     .row
       .col
@@ -100,7 +100,7 @@
       .col-4
 
       .col-4
-        = link_to sauron_actions_terminate_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
+        = link_to terminate_sauron_sauron_actions_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
           Terminate
 
       .col-4

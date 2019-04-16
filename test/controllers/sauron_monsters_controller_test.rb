@@ -16,7 +16,7 @@ class SauronMonstersControllerTest < ActionDispatch::IntegrationTest
 
     @black_serpent = create( :minion, board: @board )
 
-    @board.aasm_state = 'edit_sauron_action'
+    @board.aasm_state = 'edit_sauron_sauron_actions'
     @board.save!
 
     GameData::LocationsMonsters.new.fill_board(@board)

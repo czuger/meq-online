@@ -86,12 +86,13 @@ Rails.application.routes.draw do
       post :keep
     end
 
+    resource :sauron_actions, only: [:edit, :update] do
+      get :terminate
+    end
+
     resources :sauron_monsters, except: [ :delete, :show ]
 
   end
-
-  get 'sauron_actions/:actor_id/terminate', to: 'sauron_actions#terminate', as: 'sauron_actions_terminate'
-  resources :sauron_actions, only: [:edit, :update]
 
   patch 'shadow_pools/:actor_id/update_from_map', to: 'shadow_pools#update_from_map', as: 'shadow_pools_update_from_map'
 

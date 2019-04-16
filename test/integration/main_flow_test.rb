@@ -58,7 +58,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     # We should be at sauron actions
     assert_select 'li', 'Select an action and validate it (this only place a marker on the map).'
 
-    get "/sauron_actions/#{@sauron.id}/terminate"
+    get "/sauron/#{@sauron.id}/sauron_actions/terminate"
     assert_response :redirect
     follow_redirect!
     assert_response :success

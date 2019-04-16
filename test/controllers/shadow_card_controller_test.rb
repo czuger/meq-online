@@ -10,7 +10,7 @@ class ShadowCardControllerTest < ActionDispatch::IntegrationTest
     @board.users << @user
     @sauron = create( :sauron, board: @board, user: @user )
 
-    @board.aasm_state = 'edit_sauron_action'
+    @board.aasm_state = 'edit_sauron_sauron_actions'
     @board.save!
 
     $google_auth_hash[:uid] = @user.uid
@@ -72,7 +72,7 @@ class ShadowCardControllerTest < ActionDispatch::IntegrationTest
     @sauron.drawn_shadow_cards = [ 7, 8, 9 ]
     @sauron.save!
     post keep_sauron_shadow_cards_url @sauron, params: { selected_cards: [ 8, 9 ].join(',' ) }
-    assert_redirected_to edit_sauron_action_url(@sauron)
+    assert_redirected_to edit_sauron_sauron_actions_url(@sauron)
     assert_empty  @sauron.reload.drawn_shadow_cards
     assert_equal [ 8, 9 ], @sauron.reload.shadow_cards
   end

@@ -12,7 +12,7 @@ class BoardMessagesControllerTest < ActionDispatch::IntegrationTest
     @board_message = create( :board_message, sender: @sauron, reciever: @hero )
     @board.users << @user
 
-    @board.aasm_state = 'edit_sauron_action'
+    @board.aasm_state = 'edit_sauron_sauron_actions'
     @board.save!
 
     $google_auth_hash[:uid] = @user.uid

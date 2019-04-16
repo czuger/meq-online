@@ -15,12 +15,12 @@ class SauronController < ApplicationController
 
       GameData::Events.new.draw_next_event_card(@board)
 
-      @board.next_to_edit_sauron_action!
+      @board.next_to_edit_sauron_sauron_actions!
 
       @board.set_sauron_activation_state( true )
     end
 
-    redirect_to edit_sauron_action_path(@actor)
+    redirect_to edit_sauron_sauron_actions_path(@actor)
   end
 
   #
