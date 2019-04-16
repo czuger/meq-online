@@ -40,7 +40,7 @@ class SauronActionsController < ApplicationController
       @board.set_heroes_activation_state( true )
       @board.set_sauron_activation_state( false )
 
-      @board.next_to_hero_draw_cards!
+      @board.next_to_hero_draw_cards_screen!
 
       redirect_to boards_path
     end

@@ -58,7 +58,7 @@ module GameEngine
       # - Call the automated rally step
       advance_stories_markers
 
-      self.next_to_plot_card_play!
+      self.next_to_play_screen_sauron_plot_cards!
       self.switch_to_sauron
       self.turn += 1
 

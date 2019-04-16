@@ -6,7 +6,7 @@ module GameEngine
 
       base.send(:aasm) do
         state :created, :initial => true
-        state :waiting_for_players, :sauron_setup_screen, :sauron_actions, :hero_draw_cards
+        state :waiting_for_players, :sauron_setup_screen, :sauron_actions, :hero_draw_cards_screen
         state :rest_step, :single_hero_draw, :single_hero_rally
         state :movement, :exploration, :play_screen_sauron_plot_cards, :after_rest_advance_story_marker
         state :combat_setup, :play_combat_card
@@ -27,12 +27,12 @@ module GameEngine
           transitions :from => :exploration, :to => :single_hero_draw
         end
 
-        event :next_to_hero_draw_cards do
-          transitions :from => :sauron_actions, :to => :hero_draw_cards
+        event :next_to_hero_draw_cards_screen do
+          transitions :from => :sauron_actions, :to => :hero_draw_cards_screen
         end
 
         event :next_to_rest_step do
-          transitions :from => [:hero_draw_cards, :exploration, :single_hero_draw], :to => :rest_step
+          transitions :from => [:hero_draw_cards_screen, :exploration, :single_hero_draw], :to => :rest_step
         end
 
         event :next_to_after_rest_advance_story_marker do

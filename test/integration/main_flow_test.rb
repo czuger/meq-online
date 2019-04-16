@@ -65,6 +65,8 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     # We shoudl be back at board screen
     assert_select 'h1', 'Listing boards'
 
+    # puts @response.body
+
     assert_select 'td', 'Sauron'
     assert_select "a[href=?]", "/heroes/#{@hero.id}/draw_cards_screen"
 
@@ -148,7 +150,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_select 'h1', 'Listing boards'
 
     assert_select 'td', 'Argalad'
-    assert_select "a[href=?]", "/plot_cards/#{@sauron.id}/play_screen"
+    assert_select "a[href=?]", "/sauron/#{@sauron.id}/plot_cards/play_screen"
 
     refute @hero.reload.active
     assert @sauron.reload.active

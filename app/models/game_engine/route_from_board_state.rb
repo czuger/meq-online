@@ -2,14 +2,15 @@ module GameEngine
   class RouteFromBoardState
 
     def initialize
-      @computed_routes = Hash[Rails.application.routes.routes.map { |r| [r.name, r.path.spec.to_s] }]
+      # We only work on get routes
+      @computed_routes = Hash[Rails.application.routes.routes.select{ |r| r.verb == 'GET' }.map{ |r| [ r.name, r.path.spec.to_s ] } ]
     end
 
     def get_route( board, actor )
+      raise "Unable to find route for #{board.aasm_state}" unless @computed_routes[board.aasm_state]
 
       route = board.aasm_state
-      return create_route(route, board, actor)
-
+      create_route(route, board, actor)
     end
 
     private
