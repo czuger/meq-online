@@ -15,7 +15,7 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
 
     @board.users << @user
 
-    @board.aasm_state = 'combat_setup'
+    @board.aasm_state = 'combat_setup_screen_board_combats'
     @board.save!
 
     $google_auth_hash[:uid] = @user.uid

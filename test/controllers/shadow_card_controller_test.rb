@@ -10,7 +10,7 @@ class ShadowCardControllerTest < ActionDispatch::IntegrationTest
     @board.users << @user
     @sauron = create( :sauron, board: @board, user: @user )
 
-    @board.aasm_state = 'sauron_actions'
+    @board.aasm_state = 'edit_sauron_action'
     @board.save!
 
     $google_auth_hash[:uid] = @user.uid
@@ -20,7 +20,7 @@ class ShadowCardControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get discard_screen' do
-    get plot_cards_discard_screen_url @sauron
+    get discard_screen_sauron_plot_cards_url @sauron
     assert_response :success
   end
 

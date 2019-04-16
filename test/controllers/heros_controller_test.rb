@@ -18,11 +18,6 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     # pp User.all
   end
 
-  test 'should get index' do
-    get board_heros_url( @board )
-    assert_response :success
-  end
-
   test 'should get join_new' do
     get board_join_url( @board )
     assert_response :success
@@ -39,7 +34,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should rest and be redirected to advance story marker screen' do
-    @board.aasm_state = :rest_step
+    @board.aasm_state = :hero_rest_screen
     @board.save!
 
     get hero_rest_rest_url( @hero )
@@ -47,7 +42,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should heal and be redirected to movement' do
-    @board.aasm_state = :rest_step
+    @board.aasm_state = :hero_rest_screen
     @board.story_marker_corruption = 5
     @board.story_marker_ring = 6
     @board.save!
@@ -77,7 +72,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should advance selected marker' do
-    @board.aasm_state = :rest_step
+    @board.aasm_state = :hero_rest_screen
     @board.save!
 
     assert_difference '@board.reload.story_marker_conquest' do

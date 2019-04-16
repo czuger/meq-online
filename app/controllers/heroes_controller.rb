@@ -116,7 +116,7 @@ class HeroesController < ApplicationController
               redirect_to hero_exploration_screen_path(@actor)
             else
               @board.create_combat( @actor, first_monster )
-              @board.next_to_combat_setup!
+              @board.next_to_combat_setup_screen_board_combats!
               @board.save!
 
               redirect_to combat_setup_screen_board_combats_path(@board)
@@ -281,7 +281,7 @@ class HeroesController < ApplicationController
       # We switch to the first hero to play an switch to sauron shadow card play turn
       @board.transaction do
         @board.set_first_hero_to_play
-        @board.next_to_rest_step!
+        @board.next_to_hero_rest_screen!
       end
     end
 

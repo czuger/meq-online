@@ -12,7 +12,7 @@ class SauronsControllerTest < ActionDispatch::IntegrationTest
 
     create( :board_plot, board: @board )
 
-    @board.aasm_state = 'sauron_actions'
+    @board.aasm_state = 'edit_sauron_action'
     @board.save!
 
     $google_auth_hash[:uid] = @user.uid
@@ -26,7 +26,7 @@ class SauronsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get sauron setup screen' do
-    get sauron_setup_url(@sauron)
+    get sauron_setup_screen_url(@sauron)
     assert_response :success
   end
 

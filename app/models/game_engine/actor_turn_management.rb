@@ -44,7 +44,7 @@ module GameEngine
           actions_before_switch_to_sauron
         else
           # Otherwise, we start the next hero turn
-          self.next_to_rest_step!
+          self.next_to_hero_rest_screen!
         end
 
         self.save!

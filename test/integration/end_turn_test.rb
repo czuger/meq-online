@@ -18,7 +18,7 @@ class EndTurnTest < ActionDispatch::IntegrationTest
 
     @board.current_hero = @hero
 
-    @board.aasm_state = 'sauron_setup'
+    @board.aasm_state = 'sauron_setup_screen'
     @board.save!
 
     create( :board_plot, board: @board )
@@ -33,7 +33,7 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     @board.aasm_state = 'exploration'
     @board.save!
 
-    get "/heros/#{@hero.id}/exploration_finished"
+    get "/heroes/#{@hero.id}/exploration_finished"
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -50,7 +50,7 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     @hero.turn = 2
     @hero.save!
 
-    get "/heros/#{@hero.id}/exploration_finished"
+    get "/heroes/#{@hero.id}/exploration_finished"
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -62,7 +62,7 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     # puts @response.body
 
     assert_select 'td', 'Argalad'
-    assert_select "a[href=?]", "/plot_cards/#{@sauron.id}/play_screen"
+    assert_select "a[href=?]", "/sauron/#{@sauron.id}/plot_cards/play_screen"
   end
 
   test 'Test 2 player switch to next player.' do
@@ -81,7 +81,7 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     @board.aasm_state = 'exploration'
     @board.save!
 
-    get "/heros/#{@hero.id}/exploration_finished"
+    get "/heroes/#{@hero.id}/exploration_finished"
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -91,7 +91,7 @@ class EndTurnTest < ActionDispatch::IntegrationTest
 
     assert_select 'td', 'Argalad'
     assert_select 'td', 'Sauron'
-    assert_select "a[href=?]", "/heros/#{@thalin.id}/rest_screen"
+    assert_select "a[href=?]", "/heroes/#{@thalin.id}/rest_screen"
   end
 
   test 'Test 2 player switch to sauron (after everybody has played).' do
@@ -112,7 +112,7 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     @board.aasm_state = 'exploration'
     @board.save!
 
-    get "/heros/#{@hero.id}/exploration_finished"
+    get "/heroes/#{@hero.id}/exploration_finished"
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -122,7 +122,7 @@ class EndTurnTest < ActionDispatch::IntegrationTest
 
     assert_select 'td', 'Argalad'
     assert_select 'td', 'Thalin'
-    assert_select "a[href=?]", "/plot_cards/#{@sauron.id}/play_screen"
+    assert_select "a[href=?]", "/sauron/#{@sauron.id}/plot_cards/play_screen"
   end
 
 end
