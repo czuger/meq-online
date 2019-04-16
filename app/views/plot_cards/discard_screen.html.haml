@@ -15,7 +15,7 @@
         -# selectable-card-selection-unique or selectable-card-selection-multiple
         = image_tag "sauron/plots/#{p.plot_card}.png", class: "big-card #{@selection}", card_id: p.plot_position
 
-  = form_tag plot_card_discard_path(@actor), class: 'my-3 ml-3' do
+  = form_tag discard_sauron_plot_cards_path(@actor), class: 'my-3 ml-3' do
     .row
 
       .col-2
@@ -23,9 +23,9 @@
         = button_tag 'Discard card', role: :button, class: 'btn btn-secondary btn-block', id: :validate_unique, disabled: true
 
       .col-2
-        = link_to plot_card_play_screen_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
+        = link_to play_screen_sauron_plot_cards_path(@actor), role: :button, class: 'btn btn-secondary btn-block' do
           Play card
 
       .col-2
-        = link_to plot_card_play_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
+        = link_to play_finished_sauron_plot_cards_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
           Finished

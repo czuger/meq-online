@@ -14,7 +14,7 @@ class PlotCardsController < ApplicationController
     ge = GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME, discard_card_action: :back_to_bottom )
     ge.draw_cards(params[:nb_cards])
 
-    redirect_to plot_cards_keep_screen_path(@actor)
+    redirect_to keep_screen_sauron_plot_cards_path(@actor)
   end
 
   def keep_screen
@@ -56,7 +56,7 @@ class PlotCardsController < ApplicationController
       @board.log( @board.sauron, 'plot_cards.play', { plot_card: selected_card } )
     end
 
-    redirect_to plot_cards_play_screen_path(@actor), notice: 'Card successfuly played'
+    redirect_to play_screen_sauron_plot_cards_path(@actor), notice: 'Card successfuly played'
   end
 
   def play_finished
@@ -90,7 +90,7 @@ class PlotCardsController < ApplicationController
       @board.log( @board.sauron, 'plot_cards.discard', { plot_card: discarded_card } )
     end
 
-    redirect_to plot_cards_discard_screen_path(@actor)
+    redirect_to play_screen_sauron_plot_cards_path(@actor)
   end
 
 end
