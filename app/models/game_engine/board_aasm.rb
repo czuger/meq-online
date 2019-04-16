@@ -6,33 +6,33 @@ module GameEngine
 
       base.send(:aasm) do
         state :created, :initial => true
-        state :waiting_for_players, :sauron_setup, :sauron_actions, :heroes_draw_cards
+        state :waiting_for_players, :sauron_setup_screen, :sauron_actions, :hero_draw_cards
         state :rest_step, :single_hero_draw, :single_hero_rally
-        state :movement, :exploration, :plot, :after_rest_advance_story_marker
+        state :movement, :exploration, :play_screen_sauron_plot_cards, :after_rest_advance_story_marker
         state :combat_setup, :play_combat_card
 
         event :wait_for_players do
           transitions :from => :created, :to => :waiting_for_players
         end
 
-        event :next_to_sauron_setup do
-          transitions :from => [ :created, :waiting_for_players ], :to => :sauron_setup
+        event :next_to_sauron_setup_screen do
+          transitions :from => [ :created, :waiting_for_players ], :to => :sauron_setup_screen
         end
 
         event :next_to_sauron_actions do
-          transitions :from => [:sauron_setup, :plot], :to => :sauron_actions
+          transitions :from => [:sauron_setup_screen, :play_screen_sauron_plot_cards], :to => :sauron_actions
         end
 
         event :next_to_single_hero_draw do
           transitions :from => :exploration, :to => :single_hero_draw
         end
 
-        event :next_to_heroes_draw_cards do
-          transitions :from => :sauron_actions, :to => :heroes_draw_cards
+        event :next_to_hero_draw_cards do
+          transitions :from => :sauron_actions, :to => :hero_draw_cards
         end
 
         event :next_to_rest_step do
-          transitions :from => [:heroes_draw_cards, :exploration, :single_hero_draw], :to => :rest_step
+          transitions :from => [:hero_draw_cards, :exploration, :single_hero_draw], :to => :rest_step
         end
 
         event :next_to_after_rest_advance_story_marker do
@@ -55,8 +55,8 @@ module GameEngine
           transitions :from => :movement, :to => :exploration
         end
 
-        event :next_to_plot do
-          transitions :from => :exploration, :to => :plot
+        event :next_to_play_screen_sauron_plot_cards do
+          transitions :from => :exploration, :to => :play_screen_sauron_plot_cards
         end
       end
     end

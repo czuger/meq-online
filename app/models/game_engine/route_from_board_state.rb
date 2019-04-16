@@ -6,18 +6,15 @@ module GameEngine
     end
 
     def get_route( board, actor )
-      found_route = get_screen_route(board)
-      if found_route
-        return create_route(found_route, board, actor)
-      end
 
-      raise "Unable to fin route for #{board.aasm_state}"
+      route = board.aasm_state
+      return create_route(route, board, actor)
+
     end
 
     private
 
     def create_route(route, board, actor)
-
       params = get_route_params_hash(route, board, actor)
       route += '_path'
 
@@ -28,8 +25,9 @@ module GameEngine
       end
     end
 
-    def sauron_screen_path(board)
-      'sauron_' + board.aasm_state + 'screen_path'
+    def get_raw_route(board)
+      return @computed_routes[board.aasm_state] if @computed_routes[board.aasm_state]
+      nil
     end
 
     def get_screen_route(board)
@@ -41,9 +39,9 @@ module GameEngine
 
     def get_route_params_hash(route, board, actor)
       params_to_check = %w( board_id actor_id sauron_id hero_id )
-      params = params_to_check.select{ |p| @computed_routes[route] =~ /#{p}/ }
+      params = params_to_check.select{ |p| @computed_routes[board.aasm_state] =~ /#{p}/ }
 
-      Hash[params.map{ |p| [ convert_param(p), param_to_variable(p, board, actor) ] }]
+      Hash[params.map{ |p| [ p, param_to_variable(p, board, actor) ] }]
     end
 
     def convert_param(param)

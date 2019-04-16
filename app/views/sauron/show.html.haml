@@ -9,10 +9,10 @@
 
   %hr
   %h3 Plot cards in hand
-  - @actor.plot_cards.each do |card_number|
+  - @actor.plot_card.each do |card_number|
     = image_tag "sauron/plots/#{card_number}.png", class: 'medium-card'
 
-  = render partial: 'plot_cards/used_plot_cards_slots'
+  = render partial: 'plot_card/used_plot_card_slots'
 
   - if GameData::Objectives.heroes_objective_card(@board)
     %hr

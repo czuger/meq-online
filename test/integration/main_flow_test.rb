@@ -16,7 +16,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     @board.max_heroes_count = 1
     @board.users << @user
 
-    @board.aasm_state = 'sauron_setup'
+    @board.aasm_state = 'sauron_setup_screen'
     @board.save!
 
     create( :board_plot, board: @board )
@@ -39,12 +39,12 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     # puts @response.body
 
     assert_select 'td', 'Argalad'
-    assert_select "a[href=?]", "/sauron/#{@sauron.id}/setup"
+    assert_select "a[href=?]", "/sauron/#{@sauron.id}/setup_screen"
 
     refute @hero.reload.active
     assert @sauron.reload.active
 
-    get "/sauron/#{@sauron.id}/setup"
+    get "/sauron/#{@sauron.id}/setup_screen"
     assert_response :success
 
     get "/sauron/#{@sauron.id}/setup_finished"
@@ -66,18 +66,18 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_select 'h1', 'Listing boards'
 
     assert_select 'td', 'Sauron'
-    assert_select "a[href=?]", "/heros/#{@hero.id}/draw_cards_screen"
+    assert_select "a[href=?]", "/heroes/#{@hero.id}/draw_cards_screen"
 
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    get "/heros/#{@hero.id}/draw_cards_screen"
+    get "/heroes/#{@hero.id}/draw_cards_screen"
     assert_response :success
 
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    get "/heros/#{@hero.id}/draw_cards_finished"
+    get "/heroes/#{@hero.id}/draw_cards_finished"
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -86,7 +86,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    get "/heros/#{@hero.id}/rest_skip"
+    get "/heroes/#{@hero.id}/rest_skip"
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -95,7 +95,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    post "/heros/#{@hero.id}/move", params: { selected_cards: '1', button: :the_grey_havens }
+    post "/heroes/#{@hero.id}/move", params: { selected_cards: '1', button: :the_grey_havens }
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -104,7 +104,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    get "/heros/#{@hero.id}/exploration_finished"
+    get "/heroes/#{@hero.id}/exploration_finished"
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -113,7 +113,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    get "/heros/#{@hero.id}/draw_cards_finished"
+    get "/heroes/#{@hero.id}/draw_cards_finished"
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -122,7 +122,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    get "/heros/#{@hero.id}/rest_skip"
+    get "/heroes/#{@hero.id}/rest_skip"
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -131,7 +131,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    post "/heros/#{@hero.id}/move", params: { selected_cards: '2', button: :the_shire }
+    post "/heroes/#{@hero.id}/move", params: { selected_cards: '2', button: :the_shire }
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -140,7 +140,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    get "/heros/#{@hero.id}/exploration_finished"
+    get "/heroes/#{@hero.id}/exploration_finished"
     assert_response :redirect
     follow_redirect!
     assert_response :success

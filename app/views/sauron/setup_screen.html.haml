@@ -19,7 +19,7 @@
       -#    2 - Draw shadow card
 
       .col-3
-        = link_to plot_cards_draw_screen_path(@actor, nb_cards: @plot_card.plot_cards.draw), role: :button, class: 'btn btn-secondary btn-block' do
+        = link_to draw_screen_sauron_plot_cards_path(@actor, nb_cards: @plot_card.plot_cards.draw), role: :button, class: 'btn btn-secondary btn-block' do
           3 - Draw plot card
 
       .col-3

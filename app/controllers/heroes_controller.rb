@@ -1,4 +1,4 @@
-class HerosController < ApplicationController
+class HeroesController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_actor_ensure_actor, except: [:index, :new]

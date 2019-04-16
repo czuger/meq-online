@@ -1,4 +1,4 @@
-module HerosHelper
+module HeroesHelper
 
   def small_cards_classes
     card_class = ['small-card']

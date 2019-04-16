@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   get 'map_coordinates/edit'
   post 'map_coordinates/update'
 
-  resources :heros, only: [ :show ] do
+  resources :heroes, only: [:show ] do
     get :rest_screen
     get :rest_rest
     get :rest_heal
@@ -49,7 +49,7 @@ Rails.application.routes.draw do
   #
   resources :sauron, only: [:show] do
 
-    get :setup
+    get :setup_screen
     get :setup_finished
 
     get :movement_break_schedule_screen
@@ -71,28 +71,27 @@ Rails.application.routes.draw do
       post :keep
     end
 
+    resource :plot_cards, only: [] do
+      get :play_screen
+      post :play
+      get :play_finished
+
+      get :discard_screen
+      post :discard
+
+      get :draw_screen
+      post :draw
+
+      get :keep_screen
+      post :keep
+    end
+
     resources :sauron_monsters, except: [ :delete, :show ]
 
   end
 
   get 'sauron_actions/:actor_id/terminate', to: 'sauron_actions#terminate', as: 'sauron_actions_terminate'
   resources :sauron_actions, only: [:edit, :update]
-
-  #
-  # Plot cards actions
-  #
-  get 'plot_cards/:actor_id/play_screen', to: 'plot_cards#play_screen', as: 'plot_cards_play_screen'
-  post 'plot_cards/:actor_id/play', to: 'plot_cards#play', as: 'plot_cards_play'
-  get 'plot_cards/:actor_id/play_finished', to: 'plot_cards#play_finished', as: 'plot_cards_play_finished'
-
-  get 'plot_cards/:actor_id/discard_screen', to: 'plot_cards#discard_screen', as: 'plot_cards_discard_screen'
-  post 'plot_cards/:actor_id/discard', to: 'plot_cards#discard', as: 'plot_cards_discard'
-
-  get 'plot_cards/:actor_id/draw_screen', to: 'plot_cards#draw_screen', as: 'plot_cards_draw_screen'
-  post 'plot_cards/:actor_id/draw', to: 'plot_cards#draw', as: 'plot_cards_draw'
-
-  get 'plot_cards/:actor_id/keep_screen', to: 'plot_cards#keep_screen', as: 'plot_cards_keep_screen'
-  post 'plot_cards/:actor_id/keep', to: 'plot_cards#keep', as: 'plot_cards_keep'
 
   patch 'shadow_pools/:actor_id/update_from_map', to: 'shadow_pools#update_from_map', as: 'shadow_pools_update_from_map'
 
@@ -111,7 +110,7 @@ Rails.application.routes.draw do
     get :inactive_actor
 
     resource :logs, only: [:show ]
-    resources :heros, only: [ :index ]
+    resources :null, only: [:index ]
 
     get :story_screen
 
