@@ -1,5 +1,58 @@
 .container
 
+  .row
+    .col-4
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+        = @hero.name
+
+    .col-4
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+        Used strength
+        %span.badge.badge-light
+          = @hero_used_strength
+        \/
+        %span.badge.badge-light
+          = @combat.temporary_hero_strength
+
+    .col-4
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+        Remaining life
+        %span.badge.badge-light
+          = @hero.hand.count + @hero.life_pool.count
+
+  .row.mt-2
+    .col-4
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+        = @mob.name
+
+    .col-4
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+        Used strength
+        %span.badge.badge-light
+          = @mob_used_strength
+        \/
+        %span.badge.badge-light
+          = @mob.strength
+
+    .col-4
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+        Remaining life
+        %span.badge.badge-light
+          = @mob.life
+
+  .row.mt-2
+    .col-4
+
+    .col-4
+      = link_to 'Play card', play_combat_card_screen_board_combats_path( @board, @actor ), role: :button, class: 'btn btn-primary btn-block'
+    .col-4
+
+
+  %hr
+
+
+  %hr
+
   = image_tag "heroes/#{@hero.name_code}.jpg", class: 'actor-card'
   = fa_icon "bolt", class: 'fa-big'
   = image_tag "monsters/monsters/#{@mob.code}.jpg", class: 'actor-card'

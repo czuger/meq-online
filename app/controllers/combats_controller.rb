@@ -17,7 +17,8 @@ class CombatsController < ApplicationController
   # - Next turn
 
   def show
-
+    @hero_used_strength = 0
+    @mob_used_strength = 0
   end
 
   def play_combat_card_screen
@@ -55,10 +56,13 @@ class CombatsController < ApplicationController
                     nstr: temporary_strength )
       end
 
-      @combat.temporary_hero_strength = temporary_strength
-      @combat.save!
+      @hero.combat_temporary_strength = temporary_strength
+      @hero.save!
       
       @board.next_to_play_combat_card!
+
+      @board.set_hero_activation_state( @hero, true )
+      @board.set_sauron_activation_state( true )
       redirect_to play_combat_card_screen_board_combats_path( @board, @hero )
     end
   end

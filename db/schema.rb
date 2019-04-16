@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_15_102015) do
+ActiveRecord::Schema.define(version: 2019_04_16_053158) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -43,6 +43,9 @@ ActiveRecord::Schema.define(version: 2019_04_15_102015) do
     t.integer "playing_order", limit: 2
     t.integer "turn", limit: 2, default: 1, null: false
     t.integer "favor", limit: 2, default: 0
+    t.jsonb "combat_cards_played", default: [], null: false
+    t.integer "combat_card_played"
+    t.integer "combat_temporary_strength"
     t.index ["board_id"], name: "index_actors_on_board_id"
   end
 
@@ -113,9 +116,6 @@ ActiveRecord::Schema.define(version: 2019_04_15_102015) do
     t.bigint "board_id", null: false
     t.bigint "actor_id", null: false
     t.bigint "mob_id", null: false
-    t.integer "temporary_hero_strength"
-    t.jsonb "hero_cards_played", default: [], null: false
-    t.jsonb "mob_cards_played", default: [], null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["actor_id"], name: "index_combats_on_actor_id"
@@ -147,6 +147,8 @@ ActiveRecord::Schema.define(version: 2019_04_15_102015) do
     t.integer "life", null: false
     t.string "name", null: false
     t.jsonb "hand", default: [], null: false
+    t.jsonb "combat_cards_played", default: [], null: false
+    t.integer "combat_card_played"
     t.index ["board_id"], name: "index_mobs_on_board_id"
   end
 

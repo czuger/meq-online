@@ -28,8 +28,12 @@ module GameEngine
     end
 
     def set_hero_activation_state( hero, active= false )
-      hero.active = active
-      hero.save!
+      set_actor_activation_state( hero, active )
+    end
+
+    def set_actor_activation_state( actor, active= false )
+      actor.active = active
+      actor.save!
     end
 
     def set_heroes_activation_state( active= false )
