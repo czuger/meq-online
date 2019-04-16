@@ -9,7 +9,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     @board = create( :board, favors: [ :the_shire, :the_grey_havens ] )
 
     @sauron = create( :sauron, user: @user, board: @board, active: true )
-    @hero = create( :hero, user: @user, board: @board, active: false, hand: [ 1, 2 ] )
+    @hero = create( :hero, user: @user, board: @board, active: false )
 
     @board.sauron_created = true
     @board.current_heroes_count = 1
@@ -92,6 +92,14 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
+    post "/heroes/#{@hero.id}/draw_cards", params: { nb_cards: 5 }
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    assert_select 'h3', 'Draw cards screen'
+
+    assert_equal 6, @hero.reload.hand.count
+
     get "/heroes/#{@hero.id}/draw_cards_finished"
     assert_response :redirect
     follow_redirect!
@@ -111,6 +119,21 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     refute @sauron.reload.active
 
     post "/heroes/#{@hero.id}/move", params: { selected_cards: '1', button: :the_grey_havens }
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    assert_select 'h3', 'Exploration screen'
+
+    assert @hero.reload.active
+    refute @sauron.reload.active
+
+    get "/heroes/#{@hero.id}/exploration_back_to_movement"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    assert_select 'h3', 'Movement screen'
+
+    post "/heroes/#{@hero.id}/move", params: { selected_cards: '2', button: :the_shire }
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -146,7 +169,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    post "/heroes/#{@hero.id}/move", params: { selected_cards: '2', button: :the_shire }
+    post "/heroes/#{@hero.id}/move", params: { selected_cards: '3', button: :the_grey_havens }
     assert_response :redirect
     follow_redirect!
     assert_response :success

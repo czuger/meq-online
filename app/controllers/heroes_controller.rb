@@ -193,7 +193,7 @@ class HeroesController < ApplicationController
   end
 
   def exploration_back_to_movement
-    @board.next_to_movement!
+    @board.next_to_hero_movement_screen!
     @board.save!
 
     redirect_to hero_movement_screen_path(@actor)
