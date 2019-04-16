@@ -116,7 +116,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'after movement, should create a combat' do
-    @board.aasm_state = :movement
+    @board.aasm_state = :hero_movement_screen
     @board.save!
 
     @board.create_monster( :agent, :old_forest, :monsters_pool_orange )

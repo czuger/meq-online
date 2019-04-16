@@ -43,7 +43,7 @@ class HeroesController < ApplicationController
   end
 
   def rest_skip
-    @board.next_to_movement!
+    @board.next_to_hero_movement_screen!
     redirect_to hero_movement_screen_path(@actor)
   end
 
@@ -64,7 +64,7 @@ class HeroesController < ApplicationController
 
     @board.transaction do
       @board.update( board_column => @board.send(board_column) + 1 )
-      @board.next_to_movement!
+      @board.next_to_hero_movement_screen!
       redirect_to hero_movement_screen_path(@actor)
     end
   end
@@ -292,7 +292,7 @@ class HeroesController < ApplicationController
 
   def after_rest_or_heal
     if advance_lowest_story_marker
-      @board.next_to_movement!
+      @board.next_to_hero_movement_screen!
       redirect_to hero_movement_screen_path(@actor)
     else
       @board.next_to_after_rest_advance_story_marker!

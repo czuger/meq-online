@@ -20,7 +20,7 @@ class CombatFlowTest < ActionDispatch::IntegrationTest
 
     @board.current_hero = @hero
 
-    @board.aasm_state = 'movement'
+    @board.aasm_state = 'hero_movement_screen'
     @board.save!
 
     create( :board_plot, board: @board )
@@ -75,6 +75,36 @@ class CombatFlowTest < ActionDispatch::IntegrationTest
 
     assert_select 'a[href=?]', "/boards/#{@board.id}/combats/#{@sauron.id}/play_combat_card_screen"
     assert_select 'a[href=?]', "/boards/#{@board.id}/combats/#{@hero.id}/play_combat_card_screen"
+
+  end
+
+  test 'When sauron and the player are not the same user, only current user can select its options' do
+    @user2 = create( :user, uid: 2 )
+    @board2 = create( :board )
+
+    @sauron = create( :sauron, user: @user2, board: @board2, active: true )
+    @hero = create( :hero, user: @user, board: @board2, active: true, location: :the_shire )
+
+    @mob = create( :monster, board: @board2, location: :the_grey_havens )
+
+    @board2.sauron_created = true
+    @board2.current_heroes_count = 2
+    @board2.max_heroes_count = 2
+    @board2.users << @user
+    @board2.users << @user2
+
+    @board2.current_hero = @hero
+
+    @board2.aasm_state = 'play_combat_card_screen_board_combats'
+    @board2.save!
+
+    get '/boards'
+    assert_response :success
+
+    # puts @response.body
+
+    assert_select 'td', 'Sauron'
+    assert_select 'a[href=?]', "/boards/#{@board2.id}/combats/#{@hero.id}/play_combat_card_screen"
 
   end
 
