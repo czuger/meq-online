@@ -51,11 +51,31 @@ class CombatFlowTest < ActionDispatch::IntegrationTest
     # puts @response.body
 
     assert_select 'td', 'Sauron'
-    assert_select "a[href=?]", "/boards/#{@board.id}/combats/combat_setup_screen"
+    assert_select 'a[href=?]', "/boards/#{@board.id}/combats/combat_setup_screen"
 
     get "/boards/#{@board.id}/combats/combat_setup_screen"
     assert_response :success
     assert_select 'h3', 'Choose how to use your agility'
+
+    post "/boards/#{@board.id}/combats/combat_setup", params: { button: :draw }
+    assert_response :redirect
+    follow_redirect!
+
+    assert_select 'h3', 'Play a combat card'
+
+    assert @hero.reload.active
+    assert @sauron.reload.active
+
+    # # Simulate player disconection
+    # We first have to find a better way to handle routing from status
+    get '/boards'
+    assert_response :success
+
+    # puts @response.body
+
+    assert_select 'a[href=?]', "/boards/#{@board.id}/combats/#{@sauron.id}/play_combat_card_screen"
+    assert_select 'a[href=?]', "/boards/#{@board.id}/combats/#{@hero.id}/play_combat_card_screen"
+
   end
 
 end

@@ -20,7 +20,7 @@ module GameEngine
       route += '_path'
 
       if Rails.application.routes.url_helpers.respond_to?( route, params )
-        return Rails.application.routes.url_helpers.send( route, params.values )
+        return Rails.application.routes.url_helpers.send( route, params )
       else
         raise "Route #{route} does not match with params : #{params.keys}"
       end
@@ -42,7 +42,7 @@ module GameEngine
       params_to_check = %w( board_id actor_id sauron_id hero_id )
       params = params_to_check.select{ |p| @computed_routes[board.aasm_state] =~ /#{p}/ }
 
-      Hash[params.map{ |p| [ p, param_to_variable(p, board, actor) ] }]
+      Hash[params.map{ |p| [ p.to_sym, param_to_variable(p, board, actor) ] }]
     end
 
     def convert_param(param)

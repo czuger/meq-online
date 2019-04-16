@@ -47,7 +47,7 @@ class CombatsController < ApplicationController
       @hero.combat_temporary_strength = temporary_strength
       @hero.save!
       
-      @board.next_to_play_combat_card!
+      @board.next_to_play_combat_card_screen_board_combats!
 
       @board.set_hero_activation_state( @hero, true )
       @board.set_sauron_activation_state( true )

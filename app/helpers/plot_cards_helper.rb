@@ -1,9 +1,5 @@
 module PlotCardsHelper
 
-  def draw_screen_path
-    Rails.application.routes.url_helpers.send( 'draw_screen_sauron_plot_cards_path', @actor )
-  end
-
   def draw_screen_title_name
     "Choose numbers of #{controller_to_code} cards to draw"
   end

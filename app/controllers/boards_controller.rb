@@ -190,7 +190,7 @@ class BoardsController < ApplicationController
           # unless @board.sauron_turn?
 
             @board.set_sauron_activation_state( true )
-            @board.next_to_sauron_setup!
+            @board.next_to_sauron_setup_screen!
           # end
         end
 

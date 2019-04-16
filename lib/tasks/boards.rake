@@ -14,7 +14,7 @@ namespace :board do
 
       board.heroes.each{ |e| MovementPreparationStep.where( actor_id: e.id ).delete_all }
 
-      # board.combat.destroy if board.combat
+      board.combat.destroy if board.combat
 
       board.heroes.destroy_all
       board.destroy

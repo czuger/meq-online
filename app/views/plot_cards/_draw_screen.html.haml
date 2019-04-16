@@ -3,7 +3,7 @@
 
   %h3= draw_screen_title_name
 
-  = form_tag draw_screen_path do
+  = form_tag draw_sauron_plot_cards_path(@actor) do
     .row
       .col-3
         = label_tag :nb_cards, 'Cards count', class: 'col-form-label'

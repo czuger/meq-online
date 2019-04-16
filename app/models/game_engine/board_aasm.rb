@@ -9,7 +9,7 @@ module GameEngine
         state :waiting_for_players, :sauron_setup_screen, :edit_sauron_sauron_actions, :hero_draw_cards_screen
         state :hero_rest_screen, :single_hero_draw, :single_hero_rally
         state :movement, :exploration, :play_screen_sauron_plot_cards, :after_rest_advance_story_marker
-        state :combat_setup_screen_board_combats, :play_combat_card
+        state :combat_setup_screen_board_combats, :play_combat_card_screen_board_combats
 
         event :wait_for_players do
           transitions :from => :created, :to => :waiting_for_players
@@ -47,8 +47,8 @@ module GameEngine
           transitions :from => :movement, :to => :combat_setup_screen_board_combats
         end
 
-        event :next_to_play_combat_card do
-          transitions :from => :combat_setup_screen_board_combats, :to => :play_combat_card
+        event :next_to_play_combat_card_screen_board_combats do
+          transitions :from => :combat_setup_screen_board_combats, :to => :play_combat_card_screen_board_combats
         end
 
         event :next_to_exploration do
