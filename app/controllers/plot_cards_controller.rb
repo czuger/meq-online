@@ -27,7 +27,7 @@ class PlotCardsController < ApplicationController
     ge = GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME, discard_card_action: :back_to_bottom )
     ge.keep_cards(cards)
 
-    redirect_to GameEngine::RouteFromBoardState.get_route(@board,@actor), notice: I18n.t( 'notices.plot_cards_keep_success', count: cards.count )
+    redirect_to GameEngine::RouteFromBoardState.new.get_route(@board,@actor), notice: I18n.t( 'notices.plot_cards_keep_success', count: cards.count )
   end
 
   #

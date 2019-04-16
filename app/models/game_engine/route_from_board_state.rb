@@ -1,59 +1,59 @@
 module GameEngine
   class RouteFromBoardState
 
-    STATE_TO_PATH = {
-      sauron_actions: :edit_sauron_action,
-      event_step: :edit_sauron_event,
-      heroes_draw_cards: :hero_draw_cards_screen,
-      play_shadow_card_at_start_of_hero_turn: :start_hero_turn_play_card_screen_sauron_shadow_cards,
-      rest_step: :hero_rest_screen,
-      movement_preparation_step: :hero_movement_preparation_steps,
-      plot: :plot_cards_play_screen,
-      combat_setup: :combat_setup_screen_board_combats
-    }
+    def initialize
+      @computed_routes = Hash[Rails.application.routes.routes.map { |r| [r.name, r.path.spec.to_s] }]
+    end
 
-    STATE_TO_PATH_PATTERNS = %w( sauron_%s_screen_path hero_%s_screen_path )
-
-    def self.get_route( board, actor )
-
-      if actor.active
-        path = board.aasm_state + '_path'
-
-        # If we have a method for that state (this is useful when heroes and Sauron are active)
-        if self.respond_to?( board.aasm_state )
-          self.send( board.aasm_state, board, actor )
-
-        # Otherwise, if we have a route that correspond to the current board state, then we use it
-        elsif Rails.application.routes.url_helpers.respond_to?( path, actor )
-          Rails.application.routes.url_helpers.send( path, actor )
-
-        # Otherwise, if we have recorded a match, we use it
-        elsif (path = STATE_TO_PATH[board.aasm_state.to_sym])
-          Rails.application.routes.url_helpers.send( path.to_s + '_path', actor  )
-
-        else
-          # We also check for corresponding patterns
-          STATE_TO_PATH_PATTERNS.each do |pattern|
-            path = pattern % board.aasm_state
-
-            if Rails.application.routes.url_helpers.respond_to?( path, actor )
-              return Rails.application.routes.url_helpers.send( path, actor )
-            end
-          end
-
-          raise "Route not found for state << #{board.aasm_state} >>"
-        end
-
-      else
-        Rails.application.routes.url_helpers.send( 'board_inactive_actor_path', board )
+    def get_route( board, actor )
+      found_route = get_screen_route(board)
+      if found_route
+        return create_route(found_route, board, actor)
       end
+
+      raise "Unable to fin route for #{board.aasm_state}"
     end
 
     private
+
+    def create_route(route, board, actor)
+
+      params = get_route_params_hash(route, board, actor)
+      route += '_path'
+
+      if Rails.application.routes.url_helpers.respond_to?( route, params )
+        return Rails.application.routes.url_helpers.send( route, params.values )
+      else
+        raise "Route #{route} does not match with params : #{params.keys}"
+      end
+    end
 
     def sauron_screen_path(board)
       'sauron_' + board.aasm_state + 'screen_path'
     end
 
+    def get_screen_route(board)
+      @computed_routes.keys.each do |route_key|
+        return route_key if route_key =~ /#{board.aasm_state + '_screen'}/
+      end
+      nil
+    end
+
+    def get_route_params_hash(route, board, actor)
+      params_to_check = %w( board_id actor_id sauron_id hero_id )
+      params = params_to_check.select{ |p| @computed_routes[route] =~ /#{p}/ }
+
+      Hash[params.map{ |p| [ convert_param(p), param_to_variable(p, board, actor) ] }]
+    end
+
+    def convert_param(param)
+      param = 'actor_id' if param == 'sauron_id' || param == 'hero_id'
+      param
+    end
+
+    # This transform the param name (actor_id to a bind to the local actor variable)
+    def param_to_variable(param_name, board, actor)
+      binding.local_variable_get( convert_param(param_name).gsub( '_id', '' ) )
+    end
   end
 end

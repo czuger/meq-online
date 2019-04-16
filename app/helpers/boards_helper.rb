@@ -12,7 +12,7 @@ module BoardsHelper
     hero = heroes_hash[ hero_name_code ]
     if hero
       if hero.active
-        link_to hero_name_code.capitalize, GameEngine::RouteFromBoardState.get_route( board,hero )
+        link_to hero_name_code.capitalize, GameEngine::RouteFromBoardState.new.get_route( board,hero )
       else
         hero_name_code.capitalize
       end
@@ -22,7 +22,7 @@ module BoardsHelper
   def sauron_link( board, role: nil, klass: nil )
     if board.sauron&.user_id == current_user.id
       if board.sauron.active
-        link_to 'Sauron', GameEngine::RouteFromBoardState.get_route( board,board.sauron ), role: role, class: klass
+        link_to 'Sauron', GameEngine::RouteFromBoardState.new.get_route( board,board.sauron ), role: role, class: klass
       else
         'Sauron'
       end

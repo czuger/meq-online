@@ -45,11 +45,13 @@ class CombatFlowTest < ActionDispatch::IntegrationTest
 
     # # Simulate player disconection
     # We first have to find a better way to handle routing from status
-    # get '/boards'
-    # assert_response :success
+    get '/boards'
+    assert_response :success
 
-    # assert_select 'td', 'Sauron'
-    # assert_select "a[href=?]", "/boards/#{@board.id}/combats/combat_setup_screen"
+    # puts @response.body
+
+    assert_select 'td', 'Sauron'
+    assert_select "a[href=?]", "/boards/#{@board.id}/combats/combat_setup_screen"
 
     get "/boards/#{@board.id}/combats/combat_setup_screen"
     assert_response :success
