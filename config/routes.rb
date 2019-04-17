@@ -121,6 +121,8 @@ Rails.application.routes.draw do
       get ':actor_id/play_combat_card_screen', action: :play_combat_card_screen, as: :play_combat_card_screen
       post :play_combat_card_hero
       post :play_combat_card_mob
+
+      get ':actor_id/apply_damages', action: :apply_damages, as: :apply_damages
     end
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

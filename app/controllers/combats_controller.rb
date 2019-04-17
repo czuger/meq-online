@@ -2,7 +2,7 @@ class CombatsController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_combat
-  before_action :set_actor_ensure_actor, only: [:play_combat_card_screen, :play_combat_card]
+  before_action :set_actor_ensure_actor, only: [:play_combat_card_screen, :play_combat_card_hero, :play_combat_card_mob]
 
   def show
     @hero_used_strength = 0
@@ -18,14 +18,17 @@ class CombatsController < ApplicationController
     @actor.combat_card_played = params[:selected_card].to_i
     @actor.save!
     @board.set_hero_activation_state(@actor, false)
-    redirect_to boards_path
+    resolve_combat
   end
 
   def play_combat_card_mob
     @mob.combat_card_played = params[:selected_card].to_i
     @mob.save!
     @board.set_sauron_activation_state(false)
-    redirect_to boards_path
+    resolve_combat
+  end
+
+  def apply_damages
   end
 
   def combat_setup_screen
@@ -65,4 +68,19 @@ class CombatsController < ApplicationController
       @mob = @combat.mob
     end
 
+    def resolve_combat
+      if @hero.active == false && @board.sauron.active == false
+        @hero.combat_cards_played << @hero.combat_card_played
+        @mob.combat_cards_played << @mob.combat_card_played
+
+        @board.next_to_apply_damages_board_combats!
+
+        @board.set_hero_activation_state( @hero, true )
+        @board.set_sauron_activation_state( true )
+
+        redirect_to apply_damages_board_combats_path(@board, @actor)
+      else
+        redirect_to boards_path
+      end
+    end
 end
