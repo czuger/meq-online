@@ -1,54 +1,54 @@
 ---
 :orange:
-  - :dunlending
-  - :dunlending
-  - :crebain
-  - :barrow_wight
-  - :agent
-  - :agent
+  - :orc
+  - :orc
+  - :orc
+  - :orc
+  - :orc
+  - :orc
   - :nothing
   - :nothing
   - :nothing
   - :nothing
 :purple:
-  - :agent
-  - :snaga
-  - :crebain
   - :orc
-  - :cave_troll
-  - :barrow_wight
+  - :orc
+  - :orc
+  - :orc
+  - :orc
+  - :orc
   - :nothing
   - :nothing
   - :nothing
   - :nothing
 :dark_green:
-  - :snaga
-  - :snaga
-  - :huorn
-  - :huorn
-  - :giant_spider
+  - :orc
+  - :orc
+  - :orc
+  - :orc
+  - :orc
   - :orc
   - :nothing
   - :nothing
   - :nothing
   - :nothing
 :dark_blue:
-  - :warg_rider
-  - :warg_rider
-  - :southron
-  - :southron
-  - :oliphaunt
+  - :orc
+  - :orc
+  - :orc
+  - :orc
+  - :orc
   - :orc
   - :nothing
   - :nothing
   - :nothing
   - :nothing
 :brown:
-  - :cave_troll
-  - :cave_troll
-  - :giant_spider
-  - :giant_spider
-  - :barrow_wight
+  - :orc
+  - :orc
+  - :orc
+  - :orc
+  - :orc
   - :orc
   - :nothing
   - :nothing
