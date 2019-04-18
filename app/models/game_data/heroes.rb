@@ -15,6 +15,11 @@ module GameData
       hero
     end
 
+    def get_card_data( name_code, card_number )
+      return nil unless card_number
+      OpenStruct.new( @data[name_code.to_sym][:cards][card_number.to_i] )
+    end
+
     def delete_heroes!( heroes_codes_names_list )
       @data.reject!{ |k, _| heroes_codes_names_list.include?( k ) }
     end

@@ -1,0 +1,2 @@
+class CombatCardPlayedHero < CombatCardPlayed
+end

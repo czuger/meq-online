@@ -1,0 +1,2 @@
+class CombatCardPlayedMob < CombatCardPlayed
+end

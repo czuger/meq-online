@@ -12,6 +12,7 @@ module GameData
     end
 
     def get_card_data( attack_deck, card_number )
+      return nil unless card_number
       check_attack_deck(attack_deck)
       OpenStruct.new( @data[attack_deck][:data][card_number.to_i])
     end

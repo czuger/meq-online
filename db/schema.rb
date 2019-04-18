@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_16_153303) do
+ActiveRecord::Schema.define(version: 2019_04_18_095813) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -43,9 +43,6 @@ ActiveRecord::Schema.define(version: 2019_04_16_153303) do
     t.integer "playing_order", limit: 2
     t.integer "turn", limit: 2, default: 1, null: false
     t.integer "favor", limit: 2, default: 0
-    t.jsonb "combat_cards_played", default: [], null: false
-    t.integer "combat_card_played"
-    t.integer "combat_temporary_strength"
     t.index ["board_id"], name: "index_actors_on_board_id"
   end
 
@@ -72,7 +69,6 @@ ActiveRecord::Schema.define(version: 2019_04_16_153303) do
   end
 
   create_table "boards", force: :cascade do |t|
-    t.string "heroes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "max_heroes_count", default: 3, null: false
@@ -113,12 +109,33 @@ ActiveRecord::Schema.define(version: 2019_04_16_153303) do
     t.index ["user_id", "board_id"], name: "index_boards_users_on_user_id_and_board_id", unique: true
   end
 
+  create_table "combat_card_playeds", force: :cascade do |t|
+    t.bigint "combat_id"
+    t.string "type", null: false
+    t.integer "card", null: false
+    t.string "pic_path", null: false
+    t.string "name", null: false
+    t.string "power", null: false
+    t.integer "strength_cost", null: false
+    t.integer "printed_attack", null: false
+    t.integer "final_attack", null: false
+    t.integer "printed_defense", null: false
+    t.integer "final_defense", null: false
+    t.boolean "cancelled", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["combat_id"], name: "index_combat_card_playeds_on_combat_id"
+  end
+
   create_table "combats", force: :cascade do |t|
     t.bigint "board_id", null: false
     t.bigint "actor_id", null: false
     t.bigint "mob_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "temporary_hero_strength"
+    t.jsonb "hero_cards_played", default: [], null: false
+    t.jsonb "mob_cards_played", default: [], null: false
     t.index ["actor_id"], name: "index_combats_on_actor_id"
     t.index ["board_id"], name: "index_combats_on_board_id"
     t.index ["mob_id"], name: "index_combats_on_mob_id"
@@ -148,8 +165,6 @@ ActiveRecord::Schema.define(version: 2019_04_16_153303) do
     t.integer "life", null: false
     t.string "name", null: false
     t.jsonb "hand", default: [], null: false
-    t.jsonb "combat_cards_played", default: [], null: false
-    t.integer "combat_card_played"
     t.string "attack_deck", null: false
     t.index ["board_id"], name: "index_mobs_on_board_id"
   end
@@ -181,6 +196,7 @@ ActiveRecord::Schema.define(version: 2019_04_16_153303) do
   add_foreign_key "board_messages", "actors", column: "sender_id"
   add_foreign_key "board_plots", "boards"
   add_foreign_key "boards", "actors", column: "current_hero_id"
+  add_foreign_key "combat_card_playeds", "combats"
   add_foreign_key "combats", "actors"
   add_foreign_key "combats", "boards"
   add_foreign_key "combats", "mobs"
