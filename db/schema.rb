@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(version: 2019_04_18_095813) do
   end
 
   create_table "boards", force: :cascade do |t|
+    t.string "heroes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "max_heroes_count", default: 3, null: false
@@ -112,15 +113,16 @@ ActiveRecord::Schema.define(version: 2019_04_18_095813) do
   create_table "combat_card_playeds", force: :cascade do |t|
     t.bigint "combat_id"
     t.string "type", null: false
-    t.integer "card", null: false
+    t.integer "card", limit: 2, null: false
     t.string "pic_path", null: false
     t.string "name", null: false
     t.string "power", null: false
-    t.integer "strength_cost", null: false
-    t.integer "printed_attack", null: false
-    t.integer "final_attack", null: false
-    t.integer "printed_defense", null: false
-    t.integer "final_defense", null: false
+    t.integer "strength_cost", limit: 2, null: false
+    t.integer "printed_attack", limit: 2, null: false
+    t.integer "final_attack", limit: 2, null: false
+    t.integer "printed_defense", limit: 2, null: false
+    t.integer "final_defense", limit: 2, null: false
+    t.string "card_type", null: false
     t.boolean "cancelled", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -131,7 +133,9 @@ ActiveRecord::Schema.define(version: 2019_04_18_095813) do
     t.bigint "board_id", null: false
     t.bigint "actor_id", null: false
     t.bigint "mob_id", null: false
-    t.integer "temporary_hero_strength", null: false
+    t.integer "temporary_hero_strength", limit: 2
+    t.integer "hero_secret_played_card", limit: 2
+    t.integer "mob_secret_played_card", limit: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["board_id"], name: "index_combats_on_board_id", unique: true
@@ -156,9 +160,9 @@ ActiveRecord::Schema.define(version: 2019_04_18_095813) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type", null: false
-    t.integer "fortitude", null: false
-    t.integer "strength", null: false
-    t.integer "life", null: false
+    t.integer "fortitude", limit: 2, null: false
+    t.integer "strength", limit: 2, null: false
+    t.integer "life", limit: 2, null: false
     t.string "name", null: false
     t.jsonb "hand", default: [], null: false
     t.string "attack_deck", null: false

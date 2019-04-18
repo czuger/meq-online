@@ -32,7 +32,7 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
   test 'should start combat with strength increase' do
     post combat_setup_board_combats_url(@board, button: :increase)
 
-    assert_equal 8, @hero.reload.combat_temporary_strength
+    assert_equal 8, @board.combat.reload.temporary_hero_strength
 
     assert_redirected_to play_combat_card_screen_board_combats_url(@board, @hero)
   end

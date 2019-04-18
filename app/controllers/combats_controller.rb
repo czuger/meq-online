@@ -2,7 +2,7 @@ class CombatsController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_combat
-  before_action :set_actor_ensure_actor, only: [:play_combat_card_screen, :play_combat_card_hero, :play_combat_card_mob]
+  before_action :set_actor_ensure_actor, only: [:play_combat_card_screen]
 
   def show
     @hero_used_strength = 0
@@ -14,16 +14,15 @@ class CombatsController < ApplicationController
   end
 
   def play_combat_card_hero
-    @actor = @combat.hero
-    @actor.combat_card_played = params[:selected_card].to_i
-    @actor.save!
-    @board.set_hero_activation_state(@actor, false)
+    @combat.hero_secret_played_card = params[:selected_card].to_i
+    @combat.save!
+    @board.set_hero_activation_state(@hero, false)
     resolve_combat
   end
 
   def play_combat_card_mob
-    @mob.combat_card_played = params[:selected_card].to_i
-    @mob.save!
+    @combat.mob_secret_played_card = params[:selected_card].to_i
+    @combat.save!
     @board.set_sauron_activation_state(false)
     resolve_combat
   end
@@ -47,8 +46,8 @@ class CombatsController < ApplicationController
                     nstr: temporary_strength )
       end
 
-      @hero.combat_temporary_strength = temporary_strength
-      @hero.save!
+      @combat.temporary_hero_strength = temporary_strength
+      @combat.save!
       
       @board.next_to_play_combat_card_screen_board_combats!
 
@@ -70,10 +69,8 @@ class CombatsController < ApplicationController
 
     def resolve_combat
       if @hero.active == false && @board.sauron.active == false
-        @hero.combat_cards_played << @hero.combat_card_played
-        @mob.combat_cards_played << @mob.combat_card_played
 
-        @board.next_to_apply_damages_board_combats!
+        reveal_secretly_played_cards
 
         @board.set_hero_activation_state( @hero, true )
         @board.set_sauron_activation_state( true )
