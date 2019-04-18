@@ -8,22 +8,6 @@ class Combat < ApplicationRecord
   has_many :combat_card_played_mobs
   has_many :combat_card_played_heroes
 
-  def resolve_combat_effects( hero, mob )
-    @game_data_heroes = GameData::Heroes.new
-    @game_data_mobs_cards = GameData::MobsCards.new
-
-    current_hero_card_data = @game_data_heroes.get_card_data( hero.name_code, hero.combat_card_played )
-    current_mob_card_data = @game_data_mobs_cards.get_card_data( mob.attack_deck, mob.combat_card_played )
-
-    previous_hero_card_data = @game_data_heroes.get_card_data( hero.name_code, hero.combat_cards_played.last )
-    previous_mob_card_data = @game_data_mobs_cards.get_card_data( mob.attack_deck, mob.combat_cards_played.last )
-
-    cards_params = OpenStruct.new( ch: current_hero_card_data, cm: current_mob_card_data,
-                                   ph: previous_hero_card_data, pm: previous_mob_card_data )
-
-    # call_function( previous_hero_card_data, :previous, )
-  end
-
   def reveal_secretly_played_cards
     @game_data_heroes ||= GameData::Heroes.new
     @game_data_mobs_cards ||= GameData::MobsCards.new
@@ -34,20 +18,31 @@ class Combat < ApplicationRecord
                                        printed_defense: ch_cd.defense, final_defense: ch_cd.defense, card_type: ch_cd.type )
 
     cm_cd = @game_data_mobs_cards.get_card_data( mob.attack_deck, mob_secret_played_card )
-    combat_card_played_heroes.create!( card: mob_secret_played_card, pic_path: cm_cd.pic_path, name: cm_cd.name, power: cm_cd.power,
+    combat_card_played_mobs.create!( card: mob_secret_played_card, pic_path: cm_cd.pic_path, name: cm_cd.name, power: cm_cd.power,
                                        strength_cost: cm_cd.strength_cost, printed_attack: cm_cd.attack, final_attack: cm_cd.attack,
                                        printed_defense: cm_cd.defense, final_defense: cm_cd.defense, card_type: cm_cd.type )
 
-  end
+    #
+    # Card cost and eventually exhaustion at this place
+    #
+    current_hero_card = combat_card_played_heroes.last
+    current_mob_card = combat_card_played_mobs.last
 
-  private
+    previous_hero_card = combat_card_played_heroes.where( 'id < ?', current_hero_card.id ).last
+    previous_mob_card = combat_card_played_mobs.where( 'id < ?', current_mob_card.id ).last
 
-  def aimed_shot( )
-  end
+    previous_hero_card.call_power( :previous, nil, previous_mob_card, current_mob_card ) if previous_hero_card
+    previous_mob_card.call_power( :previous, nil, previous_hero_card, current_hero_card ) if previous_mob_card
 
-  def call_function( moment, my_previous_card, opponent_previous_card )
-    function_name = card.name.downcas.gsub( ' ', '_' )
-    send( function_name, moment, params_struct )
+    current_hero_card.call_power( :before, previous_hero_card, previous_mob_card, current_mob_card )
+    current_mob_card.call_power( :before, previous_mob_card, previous_hero_card, current_hero_card )
+
+    #
+    # Compute combat here
+    #
+
+    current_hero_card.call_power( :after, previous_hero_card, previous_mob_card, current_mob_card )
+    current_mob_card.call_power( :after, previous_mob_card, previous_hero_card, current_hero_card )
   end
 
 end
