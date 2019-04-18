@@ -34,6 +34,7 @@ behemoth:
       :defense: 1
       :strength_cost: 2
       :pic_path: behemoth/precision.jpg
+      :power: precision
     1:
       :name: Aimed Shot
       :type: :ranged
@@ -41,6 +42,7 @@ behemoth:
       :defense: 0
       :strength_cost: 3
       :pic_path: behemoth/aimed_shot.jpg
+      :power: aimed_shot
     2:
       :name: Earthquake
       :type: :ranged
@@ -48,6 +50,7 @@ behemoth:
       :defense: 0
       :strength_cost: 4
       :pic_path: behemoth/earthquake.jpg
+      :power: earthquake
     3:
       :name: Block
       :type: :melee
@@ -55,6 +58,7 @@ behemoth:
       :defense: 4
       :strength_cost: 2
       :pic_path: behemoth/block.jpg
+      :power: block
     4:
       :name: Smash
       :type: :melee
@@ -62,6 +66,7 @@ behemoth:
       :defense: 1
       :strength_cost: 2
       :pic_path: behemoth/smash.jpg
+      :power: smash
     5:
       :name: Sweep
       :type: :melee
@@ -69,6 +74,7 @@ behemoth:
       :defense: 0
       :strength_cost: 1
       :pic_path: behemoth/sweep.jpg
+      :power: sweep
     6:
       :name: Rush
       :type: :melee
@@ -76,6 +82,7 @@ behemoth:
       :defense: 1
       :strength_cost: 1
       :pic_path: behemoth/rush.jpg
+      :power: rush
     7:
       :name: Overpower
       :type: :melee
@@ -83,6 +90,7 @@ behemoth:
       :defense: 2
       :strength_cost: 2
       :pic_path: behemoth/overpower.jpg
+      :power: overpower
     8:
       :name: Crush
       :type: :melee
@@ -90,6 +98,7 @@ behemoth:
       :defense: 3
       :strength_cost: 4
       :pic_path: behemoth/crush.jpg
+      :power: crush
     9:
       :name: Reckless
       :type: :melee
@@ -97,6 +106,7 @@ behemoth:
       :defense: 0
       :strength_cost: 3
       :pic_path: behemoth/reckless.jpg
+      :power: reckless
     10:
       :name: Enraged
       :type: :melee
@@ -104,6 +114,7 @@ behemoth:
       :defense: 0
       :strength_cost: 4
       :pic_path: behemoth/enraged.jpg
+      :power: enraged
 ravager:
   :deck:
   - 2
@@ -139,6 +150,7 @@ ravager:
       :defense: 0
       :strength_cost: 0
       :pic_path: ravager/concentrate.jpg
+      :power: concentrate
     1:
       :name: Poison Arrow
       :type: :ranged
@@ -154,6 +166,7 @@ ravager:
       :defense: 0
       :strength_cost: 3
       :pic_path: ravager/aimed_shot.jpg
+      :power: aimed_shot
     3:
       :name: Strategize
       :type: :ranged
@@ -161,6 +174,7 @@ ravager:
       :defense: 2
       :strength_cost: 2
       :pic_path: ravager/strategize.jpg
+      :power: strategize
     4:
       :name: Fall Back
       :type: :ranged
@@ -168,6 +182,7 @@ ravager:
       :defense: 1
       :strength_cost: 1
       :pic_path: ravager/fall_back.jpg
+      :power: fall_back
     5:
       :name: Parry
       :type: :melee
@@ -175,6 +190,7 @@ ravager:
       :defense: 1
       :strength_cost: 1
       :pic_path: ravager/parry.jpg
+      :power: parry
     6:
       :name: Hack
       :type: :melee
@@ -190,6 +206,7 @@ ravager:
       :defense: 0
       :strength_cost: 1
       :pic_path: ravager/charge.jpg
+      :power: charge
     8:
       :name: Eviscerate
       :type: :melee
@@ -197,6 +214,7 @@ ravager:
       :defense: 0
       :strength_cost: 2
       :pic_path: ravager/eviscerate.jpg
+      :power: eviscerate
     9:
       :name: Anticipate
       :type: :melee
@@ -204,6 +222,7 @@ ravager:
       :defense: 1
       :strength_cost: 2
       :pic_path: ravager/anticipate.jpg
+      :power: anticipate
     10:
       :name: Attack of Opportunity
       :type: :melee
@@ -211,6 +230,7 @@ ravager:
       :defense: 0
       :strength_cost: 3
       :pic_path: ravager/attack_of_opportunity.jpg
+      :power: attack_of_opportunity
 zealot:
   :deck:
   - 1
@@ -246,6 +266,7 @@ zealot:
       :defense: 0
       :strength_cost: 0
       :pic_path: zealot/quick_shot.jpg
+      :power: quick_shot
     1:
       :name: Ranged Strike
       :type: :ranged
@@ -253,6 +274,7 @@ zealot:
       :defense: 1
       :strength_cost: 1
       :pic_path: zealot/ranged_strike.jpg
+      :power: ranged_strike
     2:
       :name: Strategize
       :type: :ranged
@@ -260,6 +282,7 @@ zealot:
       :defense: 2
       :strength_cost: 2
       :pic_path: zealot/strategize.jpg
+      :power: strategize
     3:
       :name: Aimed Shot
       :type: :ranged
@@ -267,6 +290,7 @@ zealot:
       :defense: 0
       :strength_cost: 3
       :pic_path: zealot/aimed_shot.jpg
+      :power: aimed_shot
     4:
       :name: Fall Back
       :type: :ranged
@@ -274,6 +298,7 @@ zealot:
       :defense: 1
       :strength_cost: 1
       :pic_path: zealot/fall_back.jpg
+      :power: fall_back
     5:
       :name: Poison Arrow
       :type: :ranged
@@ -281,6 +306,7 @@ zealot:
       :defense: 0
       :strength_cost: 2
       :pic_path: zealot/poison_arrow.jpg
+      :power: poison_arrow
     6:
       :name: Parry
       :type: :melee
@@ -288,6 +314,7 @@ zealot:
       :defense: 1
       :strength_cost: 1
       :pic_path: zealot/parry.jpg
+      :power: parry
     7:
       :name: Hack
       :type: :melee
@@ -295,6 +322,7 @@ zealot:
       :defense: 0
       :strength_cost: 0
       :pic_path: zealot/hack.jpg
+      :power: hack
     8:
       :name: Charge
       :type: :melee
@@ -302,6 +330,7 @@ zealot:
       :defense: 0
       :strength_cost: 1
       :pic_path: zealot/charge.jpg
+      :power: charge
     9:
       :name: Smash
       :type: :melee
@@ -309,6 +338,7 @@ zealot:
       :defense: 1
       :strength_cost: 2
       :pic_path: zealot/smash.jpg
+      :power: smash
     10:
       :name: Reckless
       :type: :melee
@@ -316,3 +346,4 @@ zealot:
       :defense: 0
       :strength_cost: 3
       :pic_path: zealot/reckless.jpg
+      :power: reckless

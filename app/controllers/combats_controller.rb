@@ -95,7 +95,7 @@ class CombatsController < ApplicationController
         @board.set_hero_activation_state( @hero, true )
         @board.set_sauron_activation_state( true )
 
-        redirect_to apply_damages_board_combats_path(@board, @actor)
+        redirect_to play_combat_card_screen_board_combats_path(@board, @actor)
       else
         redirect_to boards_path
       end

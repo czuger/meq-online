@@ -41,6 +41,7 @@
       :strength_cost: 0
       :movement_type: :forest
       :pic_path: argalad/quick_shot.jpg
+      :power: quick_shot
     1:
       :name: :Overdraw
       :type: :ranged
@@ -58,6 +59,7 @@
       :strength_cost: 2
       :movement_type: :desolation
       :pic_path: argalad/precision.jpg
+      :power: precision
     3:
       :name: :Aimed Shot
       :type: :ranged
@@ -66,6 +68,7 @@
       :strength_cost: 3
       :movement_type: :mountains
       :pic_path: argalad/aimed_shot.jpg
+      :power: aimed_shot
     4:
       :name: :Fall Back
       :type: :ranged
@@ -74,6 +77,7 @@
       :strength_cost: 1
       :movement_type: :sun
       :pic_path: argalad/fall_back.jpg
+      :power: fall_back
     5:
       :name: :Volley
       :type: :ranged
@@ -82,6 +86,7 @@
       :strength_cost: 2
       :movement_type: :sun
       :pic_path: argalad/volley.jpg
+      :power: volley
     6:
       :name: :Parry
       :type: :melee
@@ -90,6 +95,7 @@
       :strength_cost: 1
       :movement_type: :hills
       :pic_path: argalad/parry.jpg
+      :power: parry
     7:
       :name: :Anticipate
       :type: :melee
@@ -98,6 +104,7 @@
       :strength_cost: 2
       :movement_type: :hills
       :pic_path: argalad/anticipate.jpg
+      :power: anticipate
     8:
       :name: :Attack of Opportunity
       :type: :melee
@@ -106,6 +113,7 @@
       :strength_cost: 3
       :movement_type: :hills
       :pic_path: argalad/attack_of_opportunity.jpg
+      :power: attack_of_opportunity
 :beravor:
   :name: Beravor
   :fortitude: 6
@@ -148,6 +156,7 @@
       :strength_cost: 1
       :movement_type: :hills
       :pic_path: beravor/ranged_strike.jpg
+      :power: ranged_strike
     1:
       :name: :Evade
       :type: :ranged
@@ -156,6 +165,7 @@
       :strength_cost: 1
       :movement_type: :sun
       :pic_path: beravor/evade.jpg
+      :power: evade
     2:
       :name: :Strategize
       :type: :ranged
@@ -164,6 +174,7 @@
       :strength_cost: 2
       :movement_type: :sun
       :pic_path: beravor/strategize.jpg
+      :power: strategize
     3:
       :name: :Sneak Attack
       :type: :ranged
@@ -172,6 +183,7 @@
       :strength_cost: 2
       :movement_type: :desolation
       :pic_path: beravor/sneak_attack.jpg
+      :power: sneak_attack
     4:
       :name: :Aimed Shot
       :type: :ranged
@@ -180,6 +192,7 @@
       :strength_cost: 3
       :movement_type: :desolation
       :pic_path: beravor/aimed_shot.jpg
+      :power: aimed_shot
     5:
       :name: :Parry
       :type: :melee
@@ -188,6 +201,7 @@
       :strength_cost: 1
       :movement_type: :forest
       :pic_path: beravor/parry.jpg
+      :power: parry
     6:
       :name: :Charge
       :type: :melee
@@ -196,6 +210,7 @@
       :strength_cost: 1
       :movement_type: :forest
       :pic_path: beravor/charge.jpg
+      :power: charge
     7:
       :name: :Anticipate
       :type: :melee
@@ -204,6 +219,7 @@
       :strength_cost: 2
       :movement_type: :mountains
       :pic_path: beravor/anticipate.jpg
+      :power: anticipate
     8:
       :name: :Deadly Finesse
       :type: :melee
@@ -212,6 +228,7 @@
       :strength_cost: 3
       :movement_type: :mountains
       :pic_path: beravor/deadly_finesse.jpg
+      :power: deadly_finesse
 :eleanor:
   :name: Eleanor
   :fortitude: 6
@@ -254,6 +271,7 @@
       :strength_cost: 1
       :movement_type: :hills
       :pic_path: eleanor/ranged_strike.jpg
+      :power: ranged_strike
     1:
       :name: :Concentrate
       :type: :ranged
@@ -262,6 +280,7 @@
       :strength_cost: 0
       :movement_type: :forest
       :pic_path: eleanor/concentrate.jpg
+      :power: concentrate
     2:
       :name: :Hide
       :type: :ranged
@@ -270,6 +289,7 @@
       :strength_cost: 1
       :movement_type: :forest
       :pic_path: eleanor/hide.jpg
+      :power: hide
     3:
       :name: :Retreat
       :type: :ranged
@@ -278,6 +298,7 @@
       :strength_cost: 2
       :movement_type: :mountains
       :pic_path: eleanor/retreat.jpg
+      :power: retreat
     4:
       :name: :Volley
       :type: :ranged
@@ -286,6 +307,7 @@
       :strength_cost: 2
       :movement_type: :hills
       :pic_path: eleanor/volley.jpg
+      :power: volley
     5:
       :name: :Dodge
       :type: :ranged
@@ -294,6 +316,7 @@
       :strength_cost: 3
       :movement_type: :mountains
       :pic_path: eleanor/dodge.jpg
+      :power: dodge
     6:
       :name: :Parry
       :type: :melee
@@ -302,6 +325,7 @@
       :strength_cost: 1
       :movement_type: :sun
       :pic_path: eleanor/parry.jpg
+      :power: parry
     7:
       :name: :Charge
       :type: :melee
@@ -310,6 +334,7 @@
       :strength_cost: 1
       :movement_type: :sun
       :pic_path: eleanor/charge.jpg
+      :power: charge
     8:
       :name: :Anticipate
       :type: :melee
@@ -318,6 +343,7 @@
       :strength_cost: 2
       :movement_type: :desolation
       :pic_path: eleanor/anticipate.jpg
+      :power: anticipate
     9:
       :name: :Rest
       :type: :melee
@@ -326,6 +352,7 @@
       :strength_cost: 0
       :movement_type: :sun
       :pic_path: eleanor/rest.jpg
+      :power: rest
     10:
       :name: :Attack of Opportunity
       :type: :melee
@@ -334,6 +361,7 @@
       :strength_cost: 3
       :movement_type: :desolation
       :pic_path: eleanor/attack_of_opportunity.jpg
+      :power: attack_of_opportunity
 :eometh:
   :name: Eometh
   :fortitude: 6
@@ -376,6 +404,7 @@
       :strength_cost: 1
       :movement_type: :hills
       :pic_path: eometh/ranged_strike.jpg
+      :power: ranged_strike
     1:
       :name: :Evade
       :type: :ranged
@@ -384,6 +413,7 @@
       :strength_cost: 1
       :movement_type: :forest
       :pic_path: eometh/evade.jpg
+      :power: evade
     2:
       :name: :Aimed Shot
       :type: :ranged
@@ -392,6 +422,7 @@
       :strength_cost: 3
       :movement_type: :forest
       :pic_path: eometh/aimed_shot.jpg
+      :power: aimed_shot
     3:
       :name: :Fall Back
       :type: :ranged
@@ -400,6 +431,7 @@
       :strength_cost: 1
       :movement_type: :hills
       :pic_path: eometh/fall_back.jpg
+      :power: fall_back
     4:
       :name: :Parry
       :type: :melee
@@ -408,6 +440,7 @@
       :strength_cost: 1
       :movement_type: :sun
       :pic_path: eometh/parry.jpg
+      :power: parry
     5:
       :name: :Hack
       :type: :melee
@@ -416,6 +449,7 @@
       :strength_cost: 0
       :movement_type: :sun
       :pic_path: eometh/hack.jpg
+      :power: hack
     6:
       :name: :Trample
       :type: :melee
@@ -424,6 +458,7 @@
       :strength_cost: 1
       :movement_type: :sun
       :pic_path: eometh/trample.jpg
+      :power: trample
     7:
       :name: :Eviscerate
       :type: :melee
@@ -432,6 +467,7 @@
       :strength_cost: 2
       :movement_type: :sun
       :pic_path: eometh/eviscerate.jpg
+      :power: eviscerate
     8:
       :name: :Smash
       :type: :melee
@@ -440,6 +476,7 @@
       :strength_cost: 2
       :movement_type: :mountains
       :pic_path: eometh/smash.jpg
+      :power: smash
     9:
       :name: :Reckless
       :type: :melee
@@ -448,6 +485,7 @@
       :strength_cost: 3
       :movement_type: :desolation
       :pic_path: eometh/reckless.jpg
+      :power: reckless
 :thalin:
   :name: Thàlin
   :fortitude: 5
@@ -490,6 +528,7 @@
       :strength_cost: 1
       :movement_type: :sun
       :pic_path: thalin/evade.jpg
+      :power: evade
     1:
       :name: :Strategize
       :type: :ranged
@@ -498,6 +537,7 @@
       :strength_cost: 2
       :movement_type: :desolation
       :pic_path: thalin/strategize.jpg
+      :power: strategize
     2:
       :name: :Dodge
       :type: :ranged
@@ -506,6 +546,7 @@
       :strength_cost: 3
       :movement_type: :sun
       :pic_path: thalin/dodge.jpg
+      :power: dodge
     3:
       :name: :Block
       :type: :melee
@@ -514,6 +555,7 @@
       :strength_cost: 2
       :movement_type: :forest
       :pic_path: thalin/block.jpg
+      :power: block
     4:
       :name: :Parry
       :type: :melee
@@ -522,6 +564,7 @@
       :strength_cost: 1
       :movement_type: :hills
       :pic_path: thalin/parry.jpg
+      :power: parry
     5:
       :name: :Sweep
       :type: :melee
@@ -530,6 +573,7 @@
       :strength_cost: 1
       :movement_type: :mountains
       :pic_path: thalin/sweep.jpg
+      :power: sweep
     6:
       :name: :Rush
       :type: :melee
@@ -538,6 +582,7 @@
       :strength_cost: 1
       :movement_type: :mountains
       :pic_path: thalin/rush.jpg
+      :power: rush
     7:
       :name: :Overpower
       :type: :melee
@@ -546,6 +591,7 @@
       :strength_cost: 2
       :movement_type: :hills
       :pic_path: thalin/overpower.jpg
+      :power: overpower
     8:
       :name: :Crush
       :type: :melee
@@ -554,6 +600,7 @@
       :strength_cost: 4
       :movement_type: :desolation
       :pic_path: thalin/crush.jpg
+      :power: crush
     9:
       :name: :Reckless
       :type: :melee
@@ -562,3 +609,4 @@
       :strength_cost: 3
       :movement_type: :desolation
       :pic_path: thalin/reckless.jpg
+      :power: reckless
