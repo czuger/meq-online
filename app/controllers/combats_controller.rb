@@ -15,33 +15,21 @@ class CombatsController < ApplicationController
 
   def play_combat_card_hero
     @combat.transaction do
-      @combat.hero_secret_played_card = params[:selected_card].to_i
-      @combat.save!
-
-      # Remove player card from hero hand
-      hand = @hero.hand
-      hand.slice!(@hero.hand.index(@combat.hero_secret_played_card))
-      @hero.hand = hand
-      @hero.save!
-
+      secret_played_card = params[:selected_card].to_i
+      @combat.hero_secret_played_card = secret_played_card
       @board.set_hero_activation_state(@hero, false)
-      resolve_combat
+
+      play_combat_card( @hero, secret_played_card )
     end
   end
 
   def play_combat_card_mob
     @combat.transaction do
-      @combat.mob_secret_played_card = params[:selected_card].to_i
-      @combat.save!
-
-      # Remove player card from hero hand
-      hand = @mob.hand
-      hand.slice!(@mob.hand.index(@combat.mob_secret_played_card))
-      @mob.hand = hand
-      @mob.save!
-
+      secret_played_card = params[:selected_card].to_i
+      @combat.mob_secret_played_card = secret_played_card
       @board.set_sauron_activation_state(false)
-      resolve_combat
+
+      play_combat_card( @mob, secret_played_card )
     end
   end
 
@@ -76,6 +64,20 @@ class CombatsController < ApplicationController
   end
 
   private
+
+  def play_combat_card( opponent, secret_played_card )
+    @combat.transaction do
+      # Remove player card from hero hand
+      hand = opponent.hand
+      hand.slice!(hand.index(secret_played_card))
+      opponent.hand = hand
+      opponent.save!
+      @combat.save!
+
+      resolve_combat
+    end
+  end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_combat
       @board = Board.find(params[:board_id])

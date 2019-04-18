@@ -22,5 +22,12 @@ class CombatCardPlayed < ApplicationRecord
     end
   end
 
+  def attack_of_opportunity( phase, _, _, opponent_current_card )
+    if phase == :current && (opponent_current_card.canceled || opponent_current_card.printed_attack == 0)
+      self.final_attack += 5
+      self.save!
+    end
+  end
+
 
 end
