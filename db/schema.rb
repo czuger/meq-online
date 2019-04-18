@@ -131,14 +131,10 @@ ActiveRecord::Schema.define(version: 2019_04_18_095813) do
     t.bigint "board_id", null: false
     t.bigint "actor_id", null: false
     t.bigint "mob_id", null: false
+    t.integer "temporary_hero_strength", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "temporary_hero_strength"
-    t.jsonb "hero_cards_played", default: [], null: false
-    t.jsonb "mob_cards_played", default: [], null: false
-    t.index ["actor_id"], name: "index_combats_on_actor_id"
-    t.index ["board_id"], name: "index_combats_on_board_id"
-    t.index ["mob_id"], name: "index_combats_on_mob_id"
+    t.index ["board_id"], name: "index_combats_on_board_id", unique: true
   end
 
   create_table "logs", force: :cascade do |t|
