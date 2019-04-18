@@ -146,6 +146,7 @@ ravager:
       :defense: 0
       :strength_cost: 2
       :pic_path: ravager/poison_arrow.jpg
+      :power: poison_arrow
     2:
       :name: Aimed Shot
       :type: :ranged
@@ -181,6 +182,7 @@ ravager:
       :defense: 0
       :strength_cost: 0
       :pic_path: ravager/hack.jpg
+      :power: hack
     7:
       :name: Charge
       :type: :melee

@@ -55,8 +55,18 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'mob should play card' do
-    post play_combat_card_mob_board_combats_url(@board, selected_card: 1)
+    post play_combat_card_mob_board_combats_url(@board, selected_card: 6)
     assert_redirected_to boards_url
+  end
+
+  test 'if hero and mob play, should resolve combat' do
+    post play_combat_card_hero_board_combats_url(@board, selected_card: 1)
+    assert_redirected_to boards_url
+
+    post play_combat_card_mob_board_combats_url(@board, selected_card: 6)
+    assert_redirected_to apply_damages_board_combats_url(@board, @mob)
+
+    follow_redirect!
   end
 
 end

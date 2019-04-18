@@ -14,17 +14,35 @@ class CombatsController < ApplicationController
   end
 
   def play_combat_card_hero
-    @combat.hero_secret_played_card = params[:selected_card].to_i
-    @combat.save!
-    @board.set_hero_activation_state(@hero, false)
-    resolve_combat
+    @combat.transaction do
+      @combat.hero_secret_played_card = params[:selected_card].to_i
+      @combat.save!
+
+      # Remove player card from hero hand
+      hand = @hero.hand
+      hand.slice!(@hero.hand.index(@combat.hero_secret_played_card))
+      @hero.hand = hand
+      @hero.save!
+
+      @board.set_hero_activation_state(@hero, false)
+      resolve_combat
+    end
   end
 
   def play_combat_card_mob
-    @combat.mob_secret_played_card = params[:selected_card].to_i
-    @combat.save!
-    @board.set_sauron_activation_state(false)
-    resolve_combat
+    @combat.transaction do
+      @combat.mob_secret_played_card = params[:selected_card].to_i
+      @combat.save!
+
+      # Remove player card from hero hand
+      hand = @mob.hand
+      hand.slice!(@mob.hand.index(@combat.mob_secret_played_card))
+      @mob.hand = hand
+      @mob.save!
+
+      @board.set_sauron_activation_state(false)
+      resolve_combat
+    end
   end
 
   def apply_damages
@@ -70,7 +88,7 @@ class CombatsController < ApplicationController
     def resolve_combat
       if @hero.active == false && @board.sauron.active == false
 
-        reveal_secretly_played_cards
+        @combat.reveal_secretly_played_cards
 
         @board.set_hero_activation_state( @hero, true )
         @board.set_sauron_activation_state( true )

@@ -49,6 +49,7 @@
       :strength_cost: 1
       :movement_type: :forest
       :pic_path: argalad/overdraw.jpg
+      :power: overdraw
     2:
       :name: :Precision
       :type: :ranged
