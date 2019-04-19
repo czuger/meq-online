@@ -32,11 +32,11 @@ class Combat < ApplicationRecord
     previous_mob_card = combat_card_played_mobs.where( 'id < ?', current_mob_card.id ).last
 
     call_power_params_hero =
-        OpenStruct( me_previous: previous_hero_card, op_previous: previous_mob_card,
+        OpenStruct.new( me_previous: previous_hero_card, op_previous: previous_mob_card,
                     op_current: current_mob_card, me: hero, op: mob, current_combat: self )
 
     call_power_params_mob =
-        OpenStruct( me_previous: previous_mob_card, op_previous: previous_hero_card,
+        OpenStruct.new( me_previous: previous_mob_card, op_previous: previous_hero_card,
                     op_current: current_hero_card, me: mob, op: hero, current_combat: self )
 
 

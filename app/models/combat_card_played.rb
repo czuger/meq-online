@@ -12,6 +12,19 @@ class CombatCardPlayed < ApplicationRecord
   #
   # Cards power
   #
+  def ranged_strike
+
+  end
+
+  def smash
+    if current? && cancellation_dont_break()
+      @combat_params.op_current.final_defense -= @combat_params.op_current.printed_defense
+      @combat_params.op_current.printed_defense = 0
+
+      @combat_params.op_current.save!
+    end
+  end
+
   def reckless 
     if after? && cancellation_dont_break
       if @combat_params.me.damages_taken_this_turn >= 1
@@ -47,7 +60,7 @@ class CombatCardPlayed < ApplicationRecord
     end
   end
 
-  def overdraw 
+  def ranged_strike
     if current? && cancellation_dont_break( :op_current ) && op_current_ranged?
       self.final_attack += 2
       self.save!
