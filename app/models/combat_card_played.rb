@@ -30,7 +30,7 @@ class CombatCardPlayed < ApplicationRecord
   end
 
   def charge 
-    if current? && cancellation_dont_break( :op_current ) && op_current_ranged?
+    if current_cancel? && cancellation_dont_break( :op_current ) && op_current_ranged?
       op_current_cancel!
     end
   end
@@ -43,7 +43,7 @@ class CombatCardPlayed < ApplicationRecord
   end
 
   def evade
-    if current? && cancellation_dont_break( :op_current ) && op_current_melee?
+    if current_cancel? && cancellation_dont_break( :op_current ) && op_current_melee?
       op_current_cancel!
     end
   end
@@ -55,8 +55,8 @@ class CombatCardPlayed < ApplicationRecord
   end
 
   def aimed_shot 
-    if current? && cancellation_dont_break( :op_current, op_previous ) &&
-        opponent_current_card.card_type == opponent_previous_card.card_type
+    if current? && cancellation_dont_break( :op_current, :op_previous ) &&
+        @combat_params.op_current.card_type == @combat_params.op_previous&.card_type
       self.final_attack += 3
       self.save!
     end
@@ -77,7 +77,7 @@ class CombatCardPlayed < ApplicationRecord
   end
 
   def attack_of_opportunity 
-    if current? && cancellation_dont_break && (op_current_canceled? || opponent_current_card.printed_attack == 0)
+    if current? && cancellation_dont_break && (op_current_cancelled? || @combat_params.op_current.printed_attack == 0)
       self.final_attack += 5
       self.save!
     end
@@ -87,6 +87,10 @@ class CombatCardPlayed < ApplicationRecord
   # Phases methods
   #
   def current?
+    @phase == :current
+  end
+
+  def current_cancel?
     @phase == :current
   end
 
@@ -102,11 +106,11 @@ class CombatCardPlayed < ApplicationRecord
   # Cards status methods
   #
   def op_current_melee?
-    @combat_params.op_current.card_type == :melee
+    @combat_params.op_current.card_type == 'melee'.freeze
   end
 
   def op_current_ranged?
-    @combat_params.op_current.card_type == :ranged
+    @combat_params.op_current.card_type == 'ranged'.freeze
   end
 
   #
@@ -117,21 +121,17 @@ class CombatCardPlayed < ApplicationRecord
   end
 
   def op_current_cancel!
-    @combat_params.op_current.cancel!
-  end
-
-  def cancel!
-    self.final_attack = 0
-    self.final_defense = 0
-    self.cancelled = true
-    self.save!
+    @combat_params.op_current.final_attack = 0
+    @combat_params.op_current.final_defense = 0
+    @combat_params.op_current.cancelled = true
+    @combat_params.op_current.save!
   end
 
   def cancellation_dont_break( *args )
-    return true if cancelled
+    return false if cancelled
     args.each do |a|
-      return true if @combat_params.send(a).cancelled
+      return false if @combat_params.send(a)&.cancelled
     end
-    false
+    true
   end
 end

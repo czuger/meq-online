@@ -43,8 +43,11 @@ class Combat < ApplicationRecord
     previous_hero_card.call_power( :previous, call_power_params_hero ) if previous_hero_card
     previous_mob_card.call_power( :previous, call_power_params_mob ) if previous_mob_card
 
-    current_hero_card.call_power( :before, call_power_params_hero )
-    current_mob_card.call_power( :before, call_power_params_mob )
+    current_hero_card.call_power( :current_cancel, call_power_params_hero )
+    current_mob_card.call_power( :current_cancel, call_power_params_mob )
+
+    current_hero_card.call_power( :current, call_power_params_hero )
+    current_mob_card.call_power( :current, call_power_params_mob )
 
     hero.deal_damages( current_mob_card.final_attack - current_hero_card.final_defense )
     mob.deal_damages( current_hero_card.final_attack - current_mob_card.final_defense )
