@@ -46,6 +46,12 @@ class CombatCardPlayed < ApplicationRecord
     end
   end
 
+  def evade
+    if current? && cancellation_dont_break( :op_current ) && op_current_melee?
+      op_current_cancel!
+    end
+  end
+
   def fall_back 
     if previous? && cancellation_dont_break( :op_current ) && op_current_melee?
       op_current_cancel!
