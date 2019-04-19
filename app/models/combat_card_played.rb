@@ -12,10 +12,6 @@ class CombatCardPlayed < ApplicationRecord
   #
   # Cards power
   #
-  def ranged_strike
-
-  end
-
   def smash
     if current? && cancellation_dont_break()
       @combat_params.op_current.final_defense -= @combat_params.op_current.printed_defense
@@ -121,8 +117,14 @@ class CombatCardPlayed < ApplicationRecord
   end
 
   def op_current_cancel!
-    @combat_params.op_current.cancelled = true
-    @combat_params.op_current.save!
+    @combat_params.op_current.cancel!
+  end
+
+  def cancel!
+    self.final_attack = 0
+    self.final_defense = 0
+    self.cancelled = true
+    self.save!
   end
 
   def cancellation_dont_break( *args )

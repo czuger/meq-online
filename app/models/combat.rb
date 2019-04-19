@@ -46,9 +46,8 @@ class Combat < ApplicationRecord
     current_hero_card.call_power( :before, call_power_params_hero )
     current_mob_card.call_power( :before, call_power_params_mob )
 
-    #
-    # Compute combat here
-    #
+    hero.deal_damages( current_mob_card.final_attack - current_hero_card.final_defense )
+    mob.deal_damages( current_hero_card.final_attack - current_mob_card.final_defense )
 
     current_hero_card.call_power( :after, call_power_params_hero )
     current_mob_card.call_power( :after, call_power_params_mob )

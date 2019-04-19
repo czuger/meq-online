@@ -7,6 +7,13 @@ class Hero < Actor
 
   has_many :movement_preparation_steps, foreign_key: :actor_id
 
+  def deal_damages( damages_amount )
+    damages_amount = [ damages_amount, 0 ].max
+    life_cards_lost = self.life_pool.shift( damages_amount )
+    self.damage_pool += life_cards_lost
+    self.save!
+  end
+
   #
   # Location methods
   #
