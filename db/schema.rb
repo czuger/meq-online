@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 2019_04_18_095813) do
     t.integer "playing_order", limit: 2
     t.integer "turn", limit: 2, default: 1, null: false
     t.integer "favor", limit: 2, default: 0
+    t.integer "damages_taken_this_turn", limit: 2, default: 0, null: false
     t.index ["board_id"], name: "index_actors_on_board_id"
   end
 
@@ -69,7 +70,6 @@ ActiveRecord::Schema.define(version: 2019_04_18_095813) do
   end
 
   create_table "boards", force: :cascade do |t|
-    t.string "heroes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "max_heroes_count", default: 3, null: false
@@ -136,6 +136,8 @@ ActiveRecord::Schema.define(version: 2019_04_18_095813) do
     t.integer "temporary_hero_strength", limit: 2
     t.integer "hero_secret_played_card", limit: 2
     t.integer "mob_secret_played_card", limit: 2
+    t.integer "hero_strength_used", limit: 2, default: 0, null: false
+    t.integer "mob_strength_used", limit: 2, default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["board_id"], name: "index_combats_on_board_id", unique: true
@@ -160,12 +162,13 @@ ActiveRecord::Schema.define(version: 2019_04_18_095813) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "type", null: false
+    t.string "attack_deck", null: false
     t.integer "fortitude", limit: 2, null: false
     t.integer "strength", limit: 2, null: false
     t.integer "life", limit: 2, null: false
     t.string "name", null: false
     t.jsonb "hand", default: [], null: false
-    t.string "attack_deck", null: false
+    t.integer "damages_taken_this_turn", limit: 2, default: 0, null: false
     t.index ["board_id"], name: "index_mobs_on_board_id"
   end
 

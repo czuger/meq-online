@@ -31,18 +31,27 @@ class Combat < ApplicationRecord
     previous_hero_card = combat_card_played_heroes.where( 'id < ?', current_hero_card.id ).last
     previous_mob_card = combat_card_played_mobs.where( 'id < ?', current_mob_card.id ).last
 
-    previous_hero_card.call_power( :previous, nil, previous_mob_card, current_mob_card ) if previous_hero_card
-    previous_mob_card.call_power( :previous, nil, previous_hero_card, current_hero_card ) if previous_mob_card
+    call_power_params_hero =
+        OpenStruct( me_previous: previous_hero_card, op_previous: previous_mob_card,
+                    op_current: current_mob_card, me: hero, op: mob, current_combat: self )
 
-    current_hero_card.call_power( :before, previous_hero_card, previous_mob_card, current_mob_card )
-    current_mob_card.call_power( :before, previous_mob_card, previous_hero_card, current_hero_card )
+    call_power_params_mob =
+        OpenStruct( me_previous: previous_mob_card, op_previous: previous_hero_card,
+                    op_current: current_hero_card, me: mob, op: hero, current_combat: self )
+
+
+    previous_hero_card.call_power( :previous, call_power_params_hero ) if previous_hero_card
+    previous_mob_card.call_power( :previous, call_power_params_mob ) if previous_mob_card
+
+    current_hero_card.call_power( :before, call_power_params_hero )
+    current_mob_card.call_power( :before, call_power_params_mob )
 
     #
     # Compute combat here
     #
 
-    current_hero_card.call_power( :after, previous_hero_card, previous_mob_card, current_mob_card )
-    current_mob_card.call_power( :after, previous_mob_card, previous_hero_card, current_hero_card )
+    current_hero_card.call_power( :after, call_power_params_hero )
+    current_mob_card.call_power( :after, call_power_params_mob )
   end
 
 end

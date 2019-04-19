@@ -4,13 +4,16 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
   setup do
     OmniAuth.config.test_mode = true
 
+    @game_data_heroes ||= GameData::Heroes.new
+    @game_data_mobs_cards ||= GameData::MobsCards.new
+
     @user = create( :user )
     @board = create( :board )
 
-    @hero = create( :hero, user: @user, board: @board )
+    @hero = create( :hero, user: @user, board: @board, hand: @game_data_heroes.get_deck(:argalad ) )
     @sauron = create( :sauron, user: @user, board: @board )
 
-    @mob = create( :monster, board: @board )
+    @mob = create( :monster, board: @board, hand: @game_data_mobs_cards.get_deck( 'ravager' ) )
     @board.create_combat( @hero, @mob )
 
     @board.users << @user
@@ -48,14 +51,14 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'hero should play card' do
-    post play_combat_card_hero_board_combats_url(@board, selected_card: 1)
+    post play_combat_card_hero_board_combats_url(@board, selected_card: @hero.hand.sample)
     assert_redirected_to boards_url
 
     follow_redirect!
   end
 
   test 'mob should play card' do
-    post play_combat_card_mob_board_combats_url(@board, selected_card: 6)
+    post play_combat_card_mob_board_combats_url(@board, selected_card: @mob.hand.sample)
     assert_redirected_to boards_url
   end
 
@@ -67,7 +70,7 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     assert_difference 'CombatCardPlayed.count', 2 do
       post play_combat_card_mob_board_combats_url(@board, selected_card: @mob.hand.sample)
     end
-    assert_redirected_to apply_damages_board_combats_url(@board, @mob)
+    assert_redirected_to play_combat_card_screen_board_combats_url(@board, @mob)
 
     follow_redirect!
   end

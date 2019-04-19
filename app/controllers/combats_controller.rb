@@ -69,6 +69,7 @@ class CombatsController < ApplicationController
     @combat.transaction do
       # Remove player card from hero hand
       hand = opponent.hand
+      raise "Card #{secret_played_card} not in #{hand}" unless hand.include?(secret_played_card)
       hand.slice!(hand.index(secret_played_card))
       opponent.hand = hand
       opponent.save!

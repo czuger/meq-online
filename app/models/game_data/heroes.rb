@@ -20,6 +20,15 @@ module GameData
       OpenStruct.new( @data[name_code.to_sym][:cards][card_number.to_i] )
     end
 
+    def get_starting_hand( name_code )
+      return nil unless card_number
+      @data[name_code.to_sym][:cards]
+    end
+
+    def get_deck( name_code )
+      @data[name_code][:starting_deck].shuffle
+    end
+
     def delete_heroes!( heroes_codes_names_list )
       @data.reject!{ |k, _| heroes_codes_names_list.include?( k ) }
     end
