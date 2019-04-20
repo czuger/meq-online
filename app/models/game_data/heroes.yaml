@@ -7,31 +7,31 @@
   :wisdom: 2
   :start_location_code_name: :woodland_realm
   :starting_deck:
+  - 1
+  - 2
   - 3
   - 4
   - 6
   - 8
+  - 1
+  - 2
   - 3
   - 4
   - 6
   - 8
+  - 1
+  - 2
   - 3
   - 4
   - 6
   - 8
+  - 1
+  - 2
   - 3
   - 4
   - 6
   - 8
-  - 3
-  - 4
-  - 6
-  - 8
-  - 3
-  - 4
-  - 6
-  - 8
-  - 3
+  - 1
   :cards:
     0:
       :name: :Quick Shot
@@ -127,26 +127,26 @@
   - 4
   - 5
   - 6
+  - 8
   - 0
   - 1
   - 4
   - 5
   - 6
+  - 8
   - 0
   - 1
   - 4
   - 5
   - 6
+  - 8
   - 0
   - 1
   - 4
   - 5
   - 6
+  - 8
   - 0
-  - 1
-  - 4
-  - 5
-  - 6
   :cards:
     0:
       :name: :Ranged Strike
@@ -238,30 +238,30 @@
   :start_location_code_name: :minas_tirith
   :starting_deck:
   - 0
+  - 1
   - 6
   - 7
   - 10
   - 0
+  - 1
   - 6
   - 7
   - 10
   - 0
+  - 1
   - 6
   - 7
   - 10
   - 0
+  - 1
   - 6
   - 7
   - 10
   - 0
+  - 1
   - 6
   - 7
   - 10
-  - 0
-  - 6
-  - 7
-  - 10
-  - 0
   :cards:
     0:
       :name: :Ranged Strike
