@@ -4,8 +4,6 @@ require 'ostruct'
 module GameData
   class MobsCards < Base
 
-    KEPT_CARDS = ["Aimed Shot", "Attack of Opportunity", "Charge", "Evade", "Fall Back", "Hack", "Parry", "Ranged Strike", "Reckless", "Smash"]
-
     def get_deck( attack_deck )
       check_attack_deck(attack_deck)
       @data[attack_deck][:deck].shuffle
@@ -30,7 +28,7 @@ module GameData
       mob_hash = Hash[@data.keys.map{ |k| [ k, [] ] }]
       mob_hash.keys.each do |hk|
         @data[hk][:data_and_rules].each do |ck, cv|
-          mob_hash[hk] << ck if KEPT_CARDS.include?( cv[:name].to_s )
+          mob_hash[hk] << ck if GameData::Heroes::KEPT_CARDS.include?( cv[:name].to_s )
         end
         cards_backup = mob_hash[hk]
         cards = cards_backup.clone

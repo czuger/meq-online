@@ -6,7 +6,7 @@ module GameData
 
     # given by :
     # ( GameData::Heroes.new.common_cards_names + GameData::MobsCards.new.common_cards_names ).inject(Hash.new(0)) { |total, e| total[e] += 1 ;total}.select{ |e, i| i >= 3 }.map{ |e| e.first }.sort
-    KEPT_CARDS = ["Aimed Shot", "Attack of Opportunity", "Charge", "Evade", "Fall Back", "Hack", "Parry", "Ranged Strike", "Reckless", "Smash"]
+    KEPT_CARDS = [ 'Concentrate', 'Deadly Finesse', 'Overdraw', 'Precision', 'Aimed Shot', 'Attack of Opportunity', 'Charge', 'Evade', 'Fall Back', 'Hack', 'Parry', 'Ranged Strike', 'Reckless', 'Smash']
 
     def get( name_code )
       raise "#{name_code} not found in #{@data.keys}" unless @data.keys.include?(name_code.to_sym)
