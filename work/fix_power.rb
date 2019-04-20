@@ -17,7 +17,7 @@ File.open( '../app/models/game_data/heroes.yaml', 'w' ) { |f| f.write heroes.to_
 mobs_cards = YAML.load_file( '../app/models/game_data/mobs_cards.yaml' )
 
 mobs_cards.each do |k, v|
-  v[:data].each do |kk, vv|
+  v[:data_and_rules].each do |kk, vv|
     vv[:power] = vv[:pic_path][0..-5].split('/').last
   end
 end

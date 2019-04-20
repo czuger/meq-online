@@ -33,6 +33,10 @@ module GameData
       @data.reject!{ |k, _| heroes_codes_names_list.include?( k ) }
     end
 
+    def heroes
+      @data.keys
+    end
+
     def select_heroes_from_board!( board )
       heroes_codes_names_list = board.heroes.map{ |h| h.name_code.to_sym }
       @data.select!{ |k, _| heroes_codes_names_list.include?( k ) }
