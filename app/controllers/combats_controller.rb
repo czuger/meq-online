@@ -37,6 +37,7 @@ class CombatsController < ApplicationController
   end
 
   def combat_setup_screen
+    @actor = @hero
   end
 
   def combat_setup
@@ -65,14 +66,16 @@ class CombatsController < ApplicationController
 
   private
 
-  def play_combat_card( opponent, secret_played_card )
+  def play_combat_card( me, secret_played_card )
     @combat.transaction do
+      @actor = me.kind_of?(Mob) ? @board.sauron : me
+
       # Remove player card from hero hand
-      hand = opponent.hand
+      hand = me.hand
       raise "Card #{secret_played_card} not in #{hand}" unless hand.include?(secret_played_card)
       hand.slice!(hand.index(secret_played_card))
-      opponent.hand = hand
-      opponent.save!
+      me.hand = hand
+      me.save!
       @combat.save!
 
       resolve_combat
@@ -84,7 +87,6 @@ class CombatsController < ApplicationController
       @board = Board.find(params[:board_id])
       @combat = @board.combat
       @hero = @combat.hero
-      @actor = @hero
       @mob = @combat.mob
     end
 
