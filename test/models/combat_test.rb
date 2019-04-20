@@ -36,6 +36,33 @@ class CombatTest < ActiveSupport::TestCase
     end
   end
 
+  test 'fall_back vs attack of_opportunity, then parry vs attack of_opportunity' do
+    @board.combat.hero_secret_played_card = 4
+    @board.combat.mob_secret_played_card = 10
+    @board.combat.save!
+
+    assert_difference '@hero.reload.life_pool.count', -1 do
+      assert_difference '@hero.damage_pool.count', 1 do
+        assert_difference '@mob.reload.life', -1 do
+          @board.combat.reveal_secretly_played_cards
+        end
+      end
+    end
+
+    @board.combat.hero_secret_played_card = 6
+    @board.combat.mob_secret_played_card = 10
+    @board.combat.save!
+
+    assert_no_difference '@hero.reload.life_pool.count' do
+      assert_no_difference '@hero.damage_pool.count' do
+        assert_difference '@mob.reload.life', -1 do
+          @board.combat.reveal_secretly_played_cards
+        end
+      end
+    end
+
+  end
+
   test 'Call all cards for ravager' do
     @mob.hand.each do |card|
       @board.combat.mob_secret_played_card = card
