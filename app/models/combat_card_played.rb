@@ -12,10 +12,25 @@ class CombatCardPlayed < ApplicationRecord
   #
   # Cards power
   #
+  def precision
+    smash
+  end
+
   def smash
     if current? && cancellation_dont_break()
       @combat_params.op_current.final_defense -= @combat_params.op_current.printed_defense
       @combat_params.op_current.printed_defense = 0
+
+      @combat_params.op_current.save!
+    end
+  end
+
+  def deadly_finesse
+    if current? && cancellation_dont_break()
+      @combat_params.op_current.final_defense -= (@combat_params.op_current.printed_defense - 1)
+      @combat_params.op_current.final_attack -= (@combat_params.op_current.printed_attack - 1)
+      @combat_params.op_current.printed_defense = 1
+      @combat_params.op_current.printed_attack = 1
 
       @combat_params.op_current.save!
     end
@@ -48,8 +63,16 @@ class CombatCardPlayed < ApplicationRecord
     end
   end
 
-  def fall_back 
-    if previous? && cancellation_dont_break( :op_current ) && op_current_melee?
+  def concentrate
+    if previous? && cancellation_dont_break( :me_previous )
+      self.final_attack += 2
+      self.final_defense += 2
+      self.save!
+    end
+  end
+
+  def fall_back
+    if previous? && cancellation_dont_break( :me_previous, :op_current ) && op_current_melee?
       op_current_cancel!
     end
   end
@@ -60,6 +83,10 @@ class CombatCardPlayed < ApplicationRecord
       self.final_attack += 3
       self.save!
     end
+  end
+
+  def overdraw
+    ranged_strike
   end
 
   def ranged_strike
