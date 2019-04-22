@@ -26,6 +26,14 @@ class HeroesController < ApplicationController
   # Rest methods
   #
   def rest_screen
+    location_encounters = @board.check_location_encounters(@actor)
+
+    if location_encounters == :monster
+      @board.next_to_combat_setup_screen_board_combats!
+      @board.save!
+
+      redirect_to combat_setup_screen_board_combats_path(@board)
+    end
   end
 
   def rest_rest
@@ -234,6 +242,10 @@ class HeroesController < ApplicationController
       @board.log( @actor, :finish_turn )
     end
     redirect_to @actor
+  end
+
+  def single_hero_draw
+    redirect_to hero_draw_cards_screen_path(@actor)
   end
 
   def draw_cards_screen

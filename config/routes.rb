@@ -26,6 +26,7 @@ Rails.application.routes.draw do
     post :encounter
     get :encounter_finished
 
+    get :single_hero_draw
     get :draw_cards_screen
     post :draw_cards
     get :draw_cards_finished

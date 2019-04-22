@@ -39,8 +39,26 @@ class EndTurnTest < ActionDispatch::IntegrationTest
     assert_response :success
 
     assert_equal 2, @hero.reload.turn
-
     assert_select 'b', 'Hand:'
+
+    get '/boards'
+    assert_select 'td', 'Sauron'
+    assert_select 'a[href=?]', "/heroes/#{@hero.id}/single_hero_draw"
+
+    get "/heroes/#{@hero.id}/single_hero_draw"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    # puts @response.body
+    assert_select 'h3', 'Draw cards screen'
+    assert_select 'a[href=?]', "/heroes/#{@hero.id}/draw_cards_finished"
+
+    get "/heroes/#{@hero.id}/draw_cards_finished"
+    assert_response :redirect
+    follow_redirect!
+    assert_response :success
+    # puts @response.body
+    assert_select 'h3', 'Rest screen'
   end
 
   test 'Test 1 player switch to sauron after finishing his second turn.' do

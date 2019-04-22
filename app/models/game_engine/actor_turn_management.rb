@@ -32,7 +32,9 @@ module GameEngine
         hero.turn = 2
         hero.save!
 
-        self.next_to_single_hero_draw!
+        activate_current_hero
+
+        self.next_to_hero_single_hero_draw!
       end
     end
 
