@@ -78,29 +78,58 @@ class CombatsController < ApplicationController
       me.save!
       @combat.save!
 
-      resolve_combat
+      resolve_played_combats_cards
     end
   end
 
-    # Use callbacks to share common setup or constraints between actions.
-    def set_combat
-      @board = Board.find(params[:board_id])
-      @combat = @board.combat
-      @hero = @combat.hero
-      @mob = @combat.mob
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_combat
+    @board = Board.find(params[:board_id])
+    @combat = @board.combat
+    @hero = @combat.hero
+    @mob = @combat.mob
+  end
 
-    def resolve_combat
-      if @hero.active == false && @board.sauron.active == false
+  def resolve_played_combats_cards
+    if @hero.active == false && @board.sauron.active == false
 
-        @combat.reveal_secretly_played_cards
+      result = @combat.reveal_secretly_played_cards
 
+      if result.mob_defeated || result.hero_defeated || (result.mob_exhausted && result.hero_exhausted)
+        resolve_combat(result)
+      else
         @board.set_hero_activation_state( @hero, true )
         @board.set_sauron_activation_state( true )
 
         redirect_to play_combat_card_screen_board_combats_path(@board, @actor)
-      else
-        redirect_to boards_path
       end
+    else
+      redirect_to boards_path
     end
+  end
+
+  # Monster defeated -> Remove monster, Continue movement
+  # Hero defeated -> Remove monster, Place influence, Stop movement, Heal
+  # Both defeated -> Remove monster, Stop movement, Heal
+  # Monster exauhsted -> Continue combat
+  # Hero exauhsted -> Continue combat
+  # Both exauhsted -> Remove monster, Place influence, Stop movement
+  # Else -> Continue combat
+  def resolve_combat(result)
+    discard_cards
+
+    # This will be a step for Sauron
+    place_influence_amount unless result.mob_defeated
+
+    # This will be a step for Sauron
+    defeate_hero if result.hero_defeated
+
+    @mob.destroy! if @mob.is_a?( Monster )
+    @combat.destroy!
+  end
+
+  def discard_cards
+    @hero.rest_pool += @combat.combat_card_played_heroes.map{ |c| c.card }
+    @hero.save!
+  end
 end

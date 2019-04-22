@@ -16,7 +16,7 @@ influence= () ->
     actor_id = $('#actor_id').val();
     console.log(actor_id)
 
-    $.ajax "/sauron_actions/#{actor_id}",
+    $.ajax "/sauron/#{actor_id}/sauron_actions",
       type: 'PATCH'
       data: { actions: jQuery.makeArray( $("input:checked") ).map (e) -> e.id }
 
@@ -28,6 +28,6 @@ influence= () ->
 $(document).on('turbolinks:load'
   ->
 #    console.log('toto1')
-    if window.location.pathname.match( /sauron_actions\/\d+\/edit/ )
+    if window.location.pathname.match( /sauron\/\d+\/sauron_actions\/edit/ )
       influence()
 )

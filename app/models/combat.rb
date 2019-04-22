@@ -22,11 +22,12 @@ class Combat < ApplicationRecord
                                        strength_cost: cm_cd.strength_cost, printed_attack: cm_cd.attack, final_attack: cm_cd.attack,
                                        printed_defense: cm_cd.defense, final_defense: cm_cd.defense, card_type: cm_cd.type )
 
+    current_hero_card = combat_card_played_heroes.last
+    current_mob_card = combat_card_played_mobs.last
+
     #
     # Card cost and eventually exhaustion at this place
     #
-    current_hero_card = combat_card_played_heroes.last
-    current_mob_card = combat_card_played_mobs.last
 
     previous_hero_card = combat_card_played_heroes.where( 'id < ?', current_hero_card.id ).last
     previous_mob_card = combat_card_played_mobs.where( 'id < ?', current_mob_card.id ).last
@@ -54,6 +55,8 @@ class Combat < ApplicationRecord
 
     current_hero_card.call_power( :after, call_power_params_hero )
     current_mob_card.call_power( :after, call_power_params_mob )
+
+    OpenStruct.new( mob_defeated: mob.life <= 0, hero_defeated: hero.life_pool.count + hero.hand.count <= 0 )
   end
 
 end
