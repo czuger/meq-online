@@ -4,4 +4,6 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/cce3ee8d02c6640c972c/maintainability)](https://codeclimate.com/github/czuger/meq-online/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/cce3ee8d02c6640c972c/test_coverage)](https://codeclimate.com/github/czuger/meq-online/test_coverage)
 
-An online version of the game middle earth quest
+An online version of the game middle earth quest. Currently under development
+
+Pre-alpha is about to come.
