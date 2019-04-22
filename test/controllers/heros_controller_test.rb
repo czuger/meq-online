@@ -82,10 +82,10 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to hero_movement_screen_url(@hero)
   end
 
-  test 'should patch take_damages' do
-    patch hero_take_damages_url( @hero, damage_amount: 3 )
-    assert_redirected_to hero_url(@hero)
-  end
+  # test 'should patch take_damages' do
+  #   patch hero_take_damages_url( @hero, damage_amount: 3 )
+  #   assert_redirected_to hero_url(@hero)
+  # end
 
   test 'should get a favor' do
     post hero_explore_url( @hero, tokens: { favor: [ :favor ] } )

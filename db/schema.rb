@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_18_095813) do
+ActiveRecord::Schema.define(version: 2019_04_22_120842) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(version: 2019_04_18_095813) do
   end
 
   create_table "boards", force: :cascade do |t|
+    t.string "heroes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "max_heroes_count", default: 3, null: false
@@ -140,6 +141,8 @@ ActiveRecord::Schema.define(version: 2019_04_18_095813) do
     t.integer "mob_strength_used", limit: 2, default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "hero_exhausted", default: false, null: false
+    t.boolean "mob_exhausted", default: false, null: false
     t.index ["board_id"], name: "index_combats_on_board_id", unique: true
   end
 

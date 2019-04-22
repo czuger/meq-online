@@ -1,6 +1,4 @@
 class Combat < ApplicationRecord
-  include AASM
-
   belongs_to :board
   belongs_to :hero, class_name: 'Actor', foreign_key: :actor_id
   belongs_to :mob
@@ -23,46 +21,59 @@ class Combat < ApplicationRecord
                                        strength_cost: cm_cd.strength_cost, printed_attack: cm_cd.attack, final_attack: cm_cd.attack,
                                        printed_defense: cm_cd.defense, final_defense: cm_cd.defense, card_type: cm_cd.type )
 
-    current_hero_card = combat_card_played_heroes.last
-    current_mob_card = combat_card_played_mobs.last
+    @current_hero_card = combat_card_played_heroes.last
+    @current_mob_card = combat_card_played_mobs.last
 
     mob.damages_taken_this_turn = 0
     hero.damages_taken_this_turn = 0
 
-    #
-    # Card cost and eventually exhaustion at this place
-    #
+    exhaustion_check
 
-    self.hero_strength_used += current_hero_card.strength_cost
-    self.mob_strength_used += current_mob_card.strength_cost
-    self.save!
-
-    previous_hero_card = combat_card_played_heroes.where( 'id < ?', current_hero_card.id ).last
-    previous_mob_card = combat_card_played_mobs.where( 'id < ?', current_mob_card.id ).last
+    previous_hero_card = combat_card_played_heroes.where( 'id < ?', @current_hero_card.id ).last
+    previous_mob_card = combat_card_played_mobs.where( 'id < ?', @current_mob_card.id ).last
 
     call_power_params_hero =
         OpenStruct.new( me_previous: previous_hero_card, op_previous: previous_mob_card,
-                    op_current: current_mob_card, me: hero, op: mob, current_combat: self )
+                    op_current: @current_mob_card, me: hero, op: mob, current_combat: self )
 
     call_power_params_mob =
         OpenStruct.new( me_previous: previous_mob_card, op_previous: previous_hero_card,
-                    op_current: current_hero_card, me: mob, op: hero, current_combat: self )
-
+                    op_current: @current_hero_card, me: mob, op: hero, current_combat: self )
 
     previous_hero_card.call_power( :previous, call_power_params_hero ) if previous_hero_card
     previous_mob_card.call_power( :previous, call_power_params_mob ) if previous_mob_card
 
-    current_hero_card.call_power( :current_cancel, call_power_params_hero )
-    current_mob_card.call_power( :current_cancel, call_power_params_mob )
+    @current_hero_card.call_power( :current_cancel, call_power_params_hero )
+    @current_mob_card.call_power( :current_cancel, call_power_params_mob )
 
-    current_hero_card.call_power( :current, call_power_params_hero )
-    current_mob_card.call_power( :current, call_power_params_mob )
+    @current_hero_card.call_power( :current, call_power_params_hero )
+    @current_mob_card.call_power( :current, call_power_params_mob )
 
-    hero.deal_damages( current_mob_card.final_attack - current_hero_card.final_defense )
-    mob.deal_damages( current_hero_card.final_attack - current_mob_card.final_defense )
+    hero.deal_damages( @current_mob_card.final_attack - @current_hero_card.final_defense ) unless @current_mob_card.cancelled
+    mob.deal_damages( @current_hero_card.final_attack - @current_mob_card.final_defense ) unless @current_hero_card.cancelled
 
-    current_hero_card.call_power( :after, call_power_params_hero )
-    current_mob_card.call_power( :after, call_power_params_mob )
+    @current_hero_card.call_power( :after, call_power_params_hero )
+    @current_mob_card.call_power( :after, call_power_params_mob )
+  end
+  
+  def exhaustion_check
+    self.hero_strength_used += @current_hero_card.strength_cost
+    if hero_strength_used >= temporary_hero_strength
+      @current_hero_card.cancelled = true
+      @current_hero_card.save!
+
+      self.hero_exhausted= true
+    end
+
+    self.mob_strength_used += @current_mob_card.strength_cost
+    if mob_strength_used >= mob.strength
+      @current_mob_card.cancelled = true
+      @current_mob_card.save!
+
+      self.mob_exhausted= true
+    end
+
+    self.save!
   end
 
 end

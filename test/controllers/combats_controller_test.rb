@@ -16,6 +16,9 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     @mob = create( :monster, board: @board, hand: @game_data_mobs_cards.get_deck( 'ravager' ) )
     @board.create_combat( @hero, @mob )
 
+    @board.combat.temporary_hero_strength = 5
+    @board.combat.save!
+
     @board.users << @user
 
     @board.aasm_state = 'combat_setup_screen_board_combats'
@@ -70,7 +73,7 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     assert_difference 'CombatCardPlayed.count', 2 do
       post play_combat_card_mob_board_combats_url(@board, selected_card: @mob.hand.sample)
     end
-    assert_redirected_to play_combat_card_screen_board_combats_url(@board, @sauron)
+    assert_redirected_to board_combats_url(@board)
 
     follow_redirect!
   end
