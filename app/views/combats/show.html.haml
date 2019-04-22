@@ -68,12 +68,12 @@
 
   .row.mb-3
     - @last_hero_cards_used.each do |card|
-      .col
+      .col-2
         = image_tag "hero_cards/actions/#{card.pic_path}", class: 'small-card'
 
   .row.mb-3
     - @last_mob_cards_used.each do |card|
-      .col
+      .col-2
         = image_tag "monsters/#{card.pic_path}", class: 'small-card'
 
   %hr

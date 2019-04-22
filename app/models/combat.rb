@@ -5,6 +5,7 @@ class Combat < ApplicationRecord
   belongs_to :hero, class_name: 'Actor', foreign_key: :actor_id
   belongs_to :mob
 
+  has_many :combat_card_playeds, dependent: :destroy
   has_many :combat_card_played_mobs
   has_many :combat_card_played_heroes
 
@@ -31,6 +32,10 @@ class Combat < ApplicationRecord
     #
     # Card cost and eventually exhaustion at this place
     #
+
+    self.hero_strength_used += current_hero_card.strength_cost
+    self.mob_strength_used += current_mob_card.strength_cost
+    self.save!
 
     previous_hero_card = combat_card_played_heroes.where( 'id < ?', current_hero_card.id ).last
     previous_mob_card = combat_card_played_mobs.where( 'id < ?', current_mob_card.id ).last

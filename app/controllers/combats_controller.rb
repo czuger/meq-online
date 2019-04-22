@@ -5,8 +5,8 @@ class CombatsController < ApplicationController
   before_action :set_actor_ensure_actor, only: [:play_combat_card_screen]
 
   def show
-    @hero_used_strength = 0
-    @mob_used_strength = 0
+    @hero_used_strength = @combat.hero_strength_used
+    @mob_used_strength = @combat.mob_strength_used
 
     @last_hero_cards_used = @combat.combat_card_played_heroes.last(6)
     @last_mob_cards_used = @combat.combat_card_played_mobs.last(6)
@@ -101,14 +101,14 @@ class CombatsController < ApplicationController
 
       result = @combat.reveal_secretly_played_cards
 
-      if result.mob_defeated || result.hero_defeated || (result.mob_exhausted && result.hero_exhausted)
-        resolve_combat(result)
-      else
+      # if result.mob_defeated || result.hero_defeated || (result.mob_exhausted && result.hero_exhausted)
+      #   resolve_combat(result)
+      # else
         @board.set_hero_activation_state( @hero, true )
         @board.set_sauron_activation_state( true )
 
         redirect_to board_combats_path(@board)
-      end
+      # end
     else
       redirect_to boards_path
     end
@@ -130,8 +130,8 @@ class CombatsController < ApplicationController
     # This will be a step for Sauron
     defeate_hero if result.hero_defeated
 
-    @mob.destroy! if @mob.is_a?( Monster )
     @combat.destroy!
+    @mob.destroy! if @mob.is_a?( Monster )
   end
 
   def discard_cards
