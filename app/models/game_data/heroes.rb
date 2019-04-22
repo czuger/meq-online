@@ -25,6 +25,10 @@ module GameData
       @data[name_code][:starting_deck].shuffle
     end
 
+    def get_deck_with_card_name( name_code )
+      @data[name_code][:starting_deck].uniq.map{ |c| Hash[ get_card_data( name_code, c ).name.to_s, c ] }.sort_by{ |e| e.first }
+    end
+
     def delete_heroes!( heroes_codes_names_list )
       @data.reject!{ |k, _| heroes_codes_names_list.include?( k ) }
     end

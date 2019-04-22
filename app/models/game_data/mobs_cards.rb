@@ -15,13 +15,17 @@ module GameData
       OpenStruct.new( @data[attack_deck][:data][card_number.to_i])
     end
 
+    def get_deck_with_card_name( name_code )
+      @data[name_code][:deck].uniq.map{ |c| Hash[ get_card_data( name_code, c ).name.to_s, c ] }.sort_by{ |e| e.first }
+    end
+
     def get_card_pic_path( attack_deck, card_number )
       check_attack_deck(attack_deck)
       @data[attack_deck][:data][card_number.to_i][:pic_path]
     end
 
     def common_cards_names
-      @data.values.map{ |h| h[:'data and rules'].values.map{ |c| c[:name].to_s } }.flatten
+      @data.values.map{ |h| h[:data].values.map{ |c| c[:name].to_s } }.flatten
     end
 
     private

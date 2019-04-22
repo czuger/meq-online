@@ -22,7 +22,10 @@ class Combat < ApplicationRecord
                                        printed_defense: cm_cd.defense, final_defense: cm_cd.defense, card_type: cm_cd.type )
 
     @current_hero_card = combat_card_played_heroes.last
+    # p "Hero play : #{@current_hero_card.name}"
+
     @current_mob_card = combat_card_played_mobs.last
+    # p "Mob play : #{@current_mob_card.name}"
 
     mob.damages_taken_this_turn = 0
     hero.damages_taken_this_turn = 0
