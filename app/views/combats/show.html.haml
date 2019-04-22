@@ -27,7 +27,7 @@
       %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Remaining life
         %span.badge.badge-light
-          = @hero.hand.count + @hero.life_pool.count
+          = @hero_life
 
   .row.mt-2
     .col-3
@@ -55,14 +55,7 @@
         %span.badge.badge-light
           = @mob.life
 
-  .row.mt-2
-    .col-3
-    .col-3
-      - if @print_hero_play_link
-        = link_to 'Play hero card', play_combat_card_screen_board_combats_path( @board, @hero ), role: :button, class: 'btn btn-primary btn-block'
-    .col-3
-      - if @print_sauron_play_link
-        = link_to 'Play mob card', play_combat_card_screen_board_combats_path( @board, @mob ), role: :button, class: 'btn btn-primary btn-block'
+  = render partial: 'combat_status'
 
   %hr
 

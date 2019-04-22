@@ -104,7 +104,7 @@ class CombatCardPlayed < ApplicationRecord
   end
 
   def attack_of_opportunity 
-    if current? && cancellation_dont_break && (op_current_cancelled? || @combat_params.op_current.printed_attack == 0)
+    if current? && cancellation_dont_break && (op_current_cancelled? || @combat_params.op_current.final_defense == 0)
       self.final_attack += 5
       self.save!
     end

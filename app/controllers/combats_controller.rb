@@ -3,6 +3,7 @@ class CombatsController < ApplicationController
   before_action :require_logged_in
   before_action :set_combat
   before_action :set_actor_ensure_actor, only: [:play_combat_card_screen]
+  before_action :set_combat_result, only: [:show]
 
   def show
     @hero_used_strength = @combat.hero_strength_used
@@ -70,6 +71,18 @@ class CombatsController < ApplicationController
     end
   end
 
+  def finish_combat_and_continue_movement
+    @board.transaction do
+      discard_cards
+      destroy_combat
+
+      @board.next_to_hero_movement_screen!
+      @board.activate_current_hero
+
+      redirect_to hero_movement_screen_path( @hero )
+    end
+  end
+
   private
 
   def play_combat_card( me, secret_played_card )
@@ -96,10 +109,16 @@ class CombatsController < ApplicationController
     @mob = @combat.mob
   end
 
+  def set_combat_result
+    @hero_life = @hero.life_pool.count + @hero.hand.count
+    @combat_result = OpenStruct.new( mob_defeated: @mob.life <= 0,
+                                     hero_defeated: @hero_life <= 0 )
+  end
+
   def resolve_played_combats_cards
     if @hero.active == false && @board.sauron.active == false
 
-      result = @combat.reveal_secretly_played_cards
+      @combat.reveal_secretly_played_cards
 
       # if result.mob_defeated || result.hero_defeated || (result.mob_exhausted && result.hero_exhausted)
       #   resolve_combat(result)
@@ -130,6 +149,9 @@ class CombatsController < ApplicationController
     # This will be a step for Sauron
     defeate_hero if result.hero_defeated
 
+  end
+
+  def destroy_combat
     @combat.destroy!
     @mob.destroy! if @mob.is_a?( Monster )
   end

@@ -1,0 +1,18 @@
+- unless @combat_result.hero_defeated
+  - if @combat_result.mob_defeated
+    .row.mt-2
+      .col-3
+      .col-3
+        %h3
+          Hero win the fight !!!
+      .col-3
+        = link_to 'Continue movement', finish_combat_and_continue_movement_board_combats_path( @board ), role: :button, class: 'btn btn-primary btn-block'
+  - else
+    .row.mt-2
+      .col-3
+      .col-3
+        - if @print_hero_play_link
+          = link_to 'Play hero card', play_combat_card_screen_board_combats_path( @board, @hero ), role: :button, class: 'btn btn-primary btn-block'
+      .col-3
+        - if @print_sauron_play_link
+          = link_to 'Play mob card', play_combat_card_screen_board_combats_path( @board, @board.sauron ), role: :button, class: 'btn btn-primary btn-block'

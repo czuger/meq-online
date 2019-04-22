@@ -61,7 +61,7 @@ class PlotCardsController < ApplicationController
 
   def play_finished
     @board.transaction do
-      @board.next_to_sauron_actions!
+      @board.next_to_sauron_setup_screen!
 
       GameData::Events.new.draw_next_event_card(@board)
 
