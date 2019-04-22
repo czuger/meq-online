@@ -25,6 +25,9 @@ class Combat < ApplicationRecord
     current_hero_card = combat_card_played_heroes.last
     current_mob_card = combat_card_played_mobs.last
 
+    mob.damages_taken_this_turn = 0
+    hero.damages_taken_this_turn = 0
+
     #
     # Card cost and eventually exhaustion at this place
     #

@@ -4,11 +4,11 @@
     Current fight
 
   .row
-    .col-4
+    .col-3
       %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         = @hero.name
 
-    .col-4
+    .col-3
       %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Used strength
         %span.badge.badge-light
@@ -17,18 +17,24 @@
         %span.badge.badge-light
           = @combat.temporary_hero_strength
 
-    .col-4
+    .col-3
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+        Damages taken
+        %span.badge.badge-light
+          = @hero.damages_taken_this_turn
+
+    .col-3
       %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Remaining life
         %span.badge.badge-light
           = @hero.hand.count + @hero.life_pool.count
 
   .row.mt-2
-    .col-4
+    .col-3
       %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         = @mob.name
 
-    .col-4
+    .col-3
       %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Used strength
         %span.badge.badge-light
@@ -37,22 +43,38 @@
         %span.badge.badge-light
           = @mob.strength
 
-    .col-4
+    .col-3
+      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+        Damages taken
+        %span.badge.badge-light
+          = @mob.damages_taken_this_turn
+
+    .col-3
       %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
         Remaining life
         %span.badge.badge-light
           = @mob.life
 
   .row.mt-2
-    .col-4
-
-    .col-4
-      = link_to 'Play card', play_combat_card_screen_board_combats_path( @board, @actor ), role: :button, class: 'btn btn-primary btn-block'
-    .col-4
-
+    .col-3
+    .col-3
+      - if @print_hero_play_link
+        = link_to 'Play hero card', play_combat_card_screen_board_combats_path( @board, @hero ), role: :button, class: 'btn btn-primary btn-block'
+    .col-3
+      - if @print_sauron_play_link
+        = link_to 'Play mob card', play_combat_card_screen_board_combats_path( @board, @mob ), role: :button, class: 'btn btn-primary btn-block'
 
   %hr
 
+  .row.mb-3
+    - @last_hero_cards_used.each do |card|
+      .col
+        = image_tag "hero_cards/actions/#{card.pic_path}", class: 'small-card'
+
+  .row.mb-3
+    - @last_mob_cards_used.each do |card|
+      .col
+        = image_tag "monsters/#{card.pic_path}", class: 'small-card'
 
   %hr
 

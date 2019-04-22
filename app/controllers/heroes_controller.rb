@@ -235,15 +235,15 @@ class HeroesController < ApplicationController
 
   ###
 
-  def take_damages
-    damage_amount = params[:damage_amount].to_i
-    damages_taken_from_life_pool = @actor.life_pool.shift(damage_amount)
-    @actor.damage_pool += damages_taken_from_life_pool
-    rest_damages = damage_amount - damages_taken_from_life_pool.count
-    @actor.damage_pool += @actor.hand.shift(rest_damages)
-    @actor.save!
-    redirect_to @actor
-  end
+  # def take_damages
+  #   damage_amount = params[:damage_amount].to_i
+  #   damages_taken_from_life_pool = @actor.life_pool.shift(damage_amount)
+  #   @actor.damage_pool += damages_taken_from_life_pool
+  #   rest_damages = damage_amount - damages_taken_from_life_pool.count
+  #   @actor.damage_pool += @actor.hand.shift(rest_damages)
+  #   @actor.save!
+  #   redirect_to @actor
+  # end
 
   def finish_turn
     @actor.transaction do

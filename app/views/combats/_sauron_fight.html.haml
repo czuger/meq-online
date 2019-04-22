@@ -2,7 +2,7 @@
 - @mob.hand.in_groups_of(6).each do |group|
   .row
     - group.each do |card_number|
-      .col
+      .col.mb-3
         - if card_number
           = image_tag "monsters/#{@mob.card_pic_path(card_number)}", class: small_cards_classes, card_id: card_number
 

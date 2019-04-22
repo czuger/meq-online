@@ -11,6 +11,7 @@ class Hero < Actor
     damages_amount = [ damages_amount, 0 ].max
     life_cards_lost = self.life_pool.shift( damages_amount )
     self.damage_pool += life_cards_lost
+    self.damages_taken_this_turn += damages_amount
     self.save!
   end
 

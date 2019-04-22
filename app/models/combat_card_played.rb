@@ -39,7 +39,7 @@ class CombatCardPlayed < ApplicationRecord
   def reckless 
     if after? && cancellation_dont_break
       if @combat_params.me.damages_taken_this_turn >= 1
-        @combat_params.me.take_damages(2)
+        @combat_params.me.deal_damages(2)
       end
     end
   end

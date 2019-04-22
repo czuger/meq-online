@@ -7,6 +7,12 @@ class CombatsController < ApplicationController
   def show
     @hero_used_strength = 0
     @mob_used_strength = 0
+
+    @last_hero_cards_used = @combat.combat_card_played_heroes.last(6)
+    @last_mob_cards_used = @combat.combat_card_played_mobs.last(6)
+
+    @print_hero_play_link = current_user?( @hero )
+    @print_sauron_play_link = current_user?( @board.sauron )
   end
 
   def play_combat_card_screen
@@ -101,7 +107,7 @@ class CombatsController < ApplicationController
         @board.set_hero_activation_state( @hero, true )
         @board.set_sauron_activation_state( true )
 
-        redirect_to play_combat_card_screen_board_combats_path(@board, @actor)
+        redirect_to board_combats_path(@board)
       end
     else
       redirect_to boards_path

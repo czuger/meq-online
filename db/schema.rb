@@ -70,7 +70,6 @@ ActiveRecord::Schema.define(version: 2019_04_18_095813) do
   end
 
   create_table "boards", force: :cascade do |t|
-    t.string "heroes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "max_heroes_count", default: 3, null: false
