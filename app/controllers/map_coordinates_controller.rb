@@ -2,11 +2,11 @@ class MapCoordinatesController < ApplicationController
 
   def edit
     recorded_locations = nil
-    File.open( 'work/data/places.txt', 'r' ) do |file|
+    File.open( 'work/data_and_rules/locations_positions.txt', 'r' ) do |file|
       recorded_locations = file.readlines.map{ |l| l.split(':').first }
     end
 
-    last_recorded_location =
+    # last_recorded_location =
 
     @locations = GameData::Locations.new
     recorded_locations.each do |loc|

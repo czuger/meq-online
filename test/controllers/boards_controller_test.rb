@@ -23,6 +23,11 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test 'should get story screen' do
+    get board_story_screen_url( @board )
+    assert_response :success
+  end
+
   test 'should get new' do
     get new_board_url
     assert_response :success

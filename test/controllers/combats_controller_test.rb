@@ -22,6 +22,7 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     @board.users << @user
 
     @board.aasm_state = 'combat_setup_screen_board_combats'
+    @board.current_hero = @hero
     @board.save!
 
     $google_auth_hash[:uid] = @user.uid
@@ -58,6 +59,17 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to boards_url
 
     follow_redirect!
+  end
+
+  test 'combat_should be terminated' do
+    @mob.life = 0
+    @mob.save!
+
+    @board.aasm_state = 'play_combat_card_screen_board_combats'
+    @board.save!
+
+    get terminate_board_combats_url(@board)
+    assert_redirected_to hero_movement_screen_path(@hero)
   end
 
   test 'mob should play card' do

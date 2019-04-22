@@ -3,10 +3,6 @@ class HeroesController < ApplicationController
   before_action :require_logged_in
   before_action :set_actor_ensure_actor, except: [:index, :new]
 
-  def index
-    @board = Board.find(params[:board_id])
-    @heros = @board.heroes.select{ |h| h.user_id == current_user.id }
-  end
 
   def show
     if @actor.active

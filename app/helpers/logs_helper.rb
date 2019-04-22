@@ -28,14 +28,6 @@ module LogsHelper
     )
   end
 
-  def card_used( log )
-    data = log.params
-    hero_name_code = data[:name]
-    card_used = data[:card]
-    card_name = @heroes_cards[hero_name_code][card_used][:name]
-    image_tag "hero_cards/#{hero_name_code}/#{card_name}.jpg", class: 'log-card'
-  end
-
   def default_log( log )
     data = log.params.symbolize_keys
 
