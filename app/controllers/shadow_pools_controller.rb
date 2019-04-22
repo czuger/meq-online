@@ -3,18 +3,6 @@ class ShadowPoolsController < ApplicationController
   before_action :require_logged_in
   before_action :set_actor_ensure_board
 
-  def edit
-  end
-
-  def update
-    old_value = @board.shadow_pool
-    new_value = params[:new_shadow_pool].to_i
-
-    update_shadow_pool old_value, new_value
-
-    redirect_to @actor
-  end
-
   def update_from_map
     val = params['current_val'].to_i
     old_value = @board.shadow_pool

@@ -13,5 +13,7 @@ FactoryBot.define do
     characters { {} }
 
     max_heroes_count { 2 }
+
+    sauron_actions { [ 'command_1' ] }
   end
 end

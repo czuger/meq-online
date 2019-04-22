@@ -24,15 +24,11 @@ Rails.application.routes.draw do
 
     get :encounter_screen
     post :encounter
-    get :encounter_finished
 
     get :single_hero_draw
     get :draw_cards_screen
     post :draw_cards
     get :draw_cards_finished
-
-    patch :take_damages
-    patch :finish_turn
 
     get :after_rest_advance_story_marker_screen
     get :after_rest_advance_story_marker
@@ -97,8 +93,6 @@ Rails.application.routes.draw do
   end
 
   patch 'shadow_pools/:actor_id/update_from_map', to: 'shadow_pools#update_from_map', as: 'shadow_pools_update_from_map'
-
-  resources :shadow_pools, only: [ :edit, :update ]
 
   resources :maps, only: [:edit, :show]
 

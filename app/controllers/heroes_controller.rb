@@ -213,13 +213,6 @@ class HeroesController < ApplicationController
   def encounter
   end
 
-  def encounter_finished
-    @board.transaction do
-      @board.finish_hero_turn!
-      redirect_to boards_path
-    end
-  end
-
   ###
 
   # def take_damages
@@ -231,14 +224,6 @@ class HeroesController < ApplicationController
   #   @actor.save!
   #   redirect_to @actor
   # end
-
-  def finish_turn
-    @actor.transaction do
-      @actor.update( turn_finished: true )
-      @board.log( @actor, :finish_turn )
-    end
-    redirect_to @actor
-  end
 
   def single_hero_draw
     redirect_to hero_draw_cards_screen_path(@actor)

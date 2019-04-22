@@ -33,6 +33,14 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test 'should finish movement' do
+    @board.aasm_state = 'hero_movement_screen'
+    @board.save!
+
+    get hero_movement_finished_url( @hero )
+    assert_redirected_to hero_exploration_screen_url( @hero )
+  end
+
   test 'should rest and be redirected to advance story marker screen' do
     @board.aasm_state = :hero_rest_screen
     @board.save!
