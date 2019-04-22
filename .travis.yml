@@ -15,3 +15,7 @@ services:
 
 addons:
   postgresql: "9.6"
+
+env:
+  global:
+    - CC_TEST_REPORTER_ID=c73dfb9fe52e66e1852c212c35bd8b4ad3a19b4ca5db915340c457a833bab143
