@@ -94,39 +94,22 @@ class HeroesController < ApplicationController
 
         @actor.suffer_peril!(@board)
 
-        tokens_at_location = @board.get_tokens_at_location(@actor.location)
-        tokens_at_location.delete_if{ |e| e.type == :hero }
+        location_encounters = @board.check_location_encounters(@actor)
+        case location_encounters
+          when :empty
+            redirect_to hero_movement_screen_path(@actor)
+          when :monster
+            @board.next_to_combat_setup_screen_board_combats!
+            @board.save!
 
-        # We go to the exploration screen only if we found something on the location (other than a hero of course)
-        if tokens_at_location.empty?
-          redirect_to hero_movement_screen_path(@actor)
-        else
-          monsters_at_location = @board.mobs.where( location: @actor.location )
-
-          if monsters_at_location.count >= 1
-            first_monster = monsters_at_location.first
-
-            if first_monster.code == 'nothing'
-              @board.next_to_exploration!
-              @board.save!
-
-              @board.log( @actor, 'combat.encounter_nothing', location: @actor.location, hero: @actor.name )
-
-
-              redirect_to hero_exploration_screen_path(@actor)
-            else
-              @board.create_combat( @actor, first_monster )
-              @board.next_to_combat_setup_screen_board_combats!
-              @board.save!
-
-              redirect_to combat_setup_screen_board_combats_path(@board)
-            end
-          else
+            redirect_to combat_setup_screen_board_combats_path(@board)
+          when :exploration
             @board.next_to_exploration!
             @board.save!
 
             redirect_to hero_exploration_screen_path(@actor)
-          end
+          else
+            raise "location_encounters unknown : #{location_encounters}"
         end
       end
     end

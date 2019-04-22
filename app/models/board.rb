@@ -26,6 +26,32 @@ class Board < ApplicationRecord
   #
   # Create combat method
   #
+  def check_location_encounters(actor)
+    tokens_at_location = get_tokens_at_location(actor.location)
+    tokens_at_location.delete_if{ |e| e.type == :hero }
+
+    # We go to the exploration screen only if we found something on the location (other than a hero of course)
+    if tokens_at_location.empty?
+      :empty
+    else
+      monster_at_location = mobs.where( location: actor.location ).order( 'life, strength' ).first
+
+      if monster_at_location
+        if monster_at_location.code == 'nothing'
+          log( actor, 'combat.encounter_nothing', location: actor.location, hero: actor.name )
+
+          :empty
+        else
+          create_combat( actor, monster_at_location )
+
+          :monster
+        end
+      else
+        :exploration
+      end
+    end
+  end
+
   def create_combat( hero, mob )
     mob.transaction do
       cards = GameData::MobsCards.new.get_deck(mob.attack_deck)
