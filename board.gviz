@@ -1,0 +1,46 @@
+digraph G {
+wait_for_players [shape=plaintext];
+next_to_sauron_setup_screen [shape=plaintext];
+next_to_edit_sauron_sauron_actions [shape=plaintext];
+next_to_hero_draw_cards_screen [shape=plaintext];
+next_to_hero_rest_screen [shape=plaintext];
+next_to_after_rest_advance_story_marker [shape=plaintext];
+next_to_hero_movement_screen [shape=plaintext];
+next_to_combat_setup_screen_board_combats [shape=plaintext];
+next_to_exploration [shape=plaintext];
+next_to_single_hero_draw [shape=plaintext];
+next_to_play_screen_sauron_plot_cards [shape=plaintext];
+next_to_play_combat_card_screen_board_combats [shape=plaintext];
+created -> wait_for_players
+wait_for_players -> waiting_for_players
+created -> next_to_sauron_setup_screen
+next_to_sauron_setup_screen -> sauron_setup_screen
+waiting_for_players -> next_to_sauron_setup_screen
+sauron_setup_screen -> next_to_edit_sauron_sauron_actions
+next_to_edit_sauron_sauron_actions -> edit_sauron_sauron_actions
+edit_sauron_sauron_actions -> next_to_hero_draw_cards_screen
+next_to_hero_draw_cards_screen -> hero_draw_cards_screen
+hero_draw_cards_screen -> next_to_hero_rest_screen
+next_to_hero_rest_screen -> hero_rest_screen
+hero_rest_screen -> next_to_after_rest_advance_story_marker
+next_to_after_rest_advance_story_marker -> after_rest_advance_story_marker
+hero_rest_screen -> next_to_hero_movement_screen
+next_to_hero_movement_screen -> hero_movement_screen
+single_hero_draw -> next_to_hero_rest_screen
+hero_movement_screen -> next_to_combat_setup_screen_board_combats
+next_to_combat_setup_screen_board_combats -> combat_setup_screen_board_combats
+hero_movement_screen -> next_to_exploration
+next_to_exploration -> exploration
+exploration -> next_to_single_hero_draw
+next_to_single_hero_draw -> single_hero_draw
+exploration -> next_to_hero_rest_screen
+exploration -> next_to_hero_movement_screen
+exploration -> next_to_play_screen_sauron_plot_cards
+next_to_play_screen_sauron_plot_cards -> play_screen_sauron_plot_cards
+play_screen_sauron_plot_cards -> next_to_edit_sauron_sauron_actions
+after_rest_advance_story_marker -> next_to_hero_movement_screen
+combat_setup_screen_board_combats -> next_to_play_combat_card_screen_board_combats
+next_to_play_combat_card_screen_board_combats -> play_combat_card_screen_board_combats
+play_combat_card_screen_board_combats -> next_to_hero_movement_screen
+play_combat_card_screen_board_combats -> next_to_exploration
+}
