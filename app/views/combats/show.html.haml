@@ -4,56 +4,10 @@
     Current fight
 
   .row
-    .col-3
-      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
-        = @hero.name
-
-    .col-3
-      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
-        Used strength
-        %span.badge.badge-light
-          = @hero_used_strength
-        \/
-        %span.badge.badge-light
-          = @combat.temporary_hero_strength
-
-    .col-3
-      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
-        Damages taken
-        %span.badge.badge-light
-          = @hero.damages_taken_this_turn
-
-    .col-3
-      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
-        Remaining life
-        %span.badge.badge-light
-          = @hero_life
+    = render partial: 'hero_stats'
 
   .row.mt-2
-    .col-3
-      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
-        = @mob.name
-
-    .col-3
-      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
-        Used strength
-        %span.badge.badge-light
-          = @mob_used_strength
-        \/
-        %span.badge.badge-light
-          = @mob.strength
-
-    .col-3
-      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
-        Damages taken
-        %span.badge.badge-light
-          = @mob.damages_taken_this_turn
-
-    .col-3
-      %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
-        Remaining life
-        %span.badge.badge-light
-          = @mob.life
+    = render partial: 'mob_stats'
 
   = render partial: 'combat_status'
 
@@ -69,11 +23,11 @@
       .col-2
         = image_tag "monsters/#{card.pic_path}", class: 'small-card'
 
-  %hr
-
-  = image_tag "heroes/#{@hero.name_code}.jpg", class: 'actor-card'
-  = fa_icon "bolt", class: 'fa-big'
-  = image_tag "monsters/monsters/#{@mob.code}.jpg", class: 'actor-card'
+  -#%hr
+  -#
+  -#= image_tag "heroes/#{@hero.name_code}.jpg", class: 'actor-card'
+  -#= fa_icon "bolt", class: 'fa-big'
+  -#= image_tag "monsters/monsters/#{@mob.code}.jpg", class: 'actor-card'
 
 -#- if @combat
 -#  -if @combat.hero_choices?

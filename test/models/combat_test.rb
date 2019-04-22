@@ -22,6 +22,24 @@ class CombatTest < ActiveSupport::TestCase
     @board.users << @user
   end
 
+  test 'precision vs ranged strike' do
+    @board.combat.hero_secret_played_card = 2
+    @board.combat.mob_secret_played_card = 1
+    @board.combat.save!
+
+    @mob.attack_deck = 'zealot'
+    @mob.hand = @game_data_mobs_cards.get_deck( 'zealot' )
+    @mob.save!
+
+    assert_difference '@hero.reload.life_pool.count', -2 do
+      assert_difference '@hero.damage_pool.count', 2 do
+        assert_difference '@mob.reload.life', -2 do
+          @board.combat.reveal_secretly_played_cards
+        end
+      end
+    end
+  end
+
   test 'attack of opportunity vs charge' do
     @board.combat.hero_secret_played_card = 8
     @board.combat.mob_secret_played_card = 8

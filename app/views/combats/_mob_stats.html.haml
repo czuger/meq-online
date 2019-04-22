@@ -1,0 +1,24 @@
+.col-3
+  %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+    = @mob.name
+
+.col-3
+  %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+    Used strength
+    %span.badge.badge-light
+      = @mob_used_strength
+    \/
+    %span.badge.badge-light
+      = @mob.strength
+
+.col-3
+  %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+    Damages taken
+    %span.badge.badge-light
+      = @mob.damages_taken_this_turn
+
+.col-3
+  %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+    Remaining life
+    %span.badge.badge-light
+      = @mob.life

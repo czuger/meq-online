@@ -3,12 +3,9 @@ class CombatsController < ApplicationController
   before_action :require_logged_in
   before_action :set_combat
   before_action :set_actor_ensure_actor, only: [:play_combat_card_screen]
-  before_action :set_combat_result, only: [:show]
+  before_action :set_combat_result, only: [:show, :play_combat_card_screen]
 
   def show
-    @hero_used_strength = @combat.hero_strength_used
-    @mob_used_strength = @combat.mob_strength_used
-
     @last_hero_cards_used = @combat.combat_card_played_heroes.last(6)
     @last_mob_cards_used = @combat.combat_card_played_mobs.last(6)
 
@@ -113,6 +110,9 @@ class CombatsController < ApplicationController
     @hero_life = @hero.life_pool.count + @hero.hand.count
     @combat_result = OpenStruct.new( mob_defeated: @mob.life <= 0,
                                      hero_defeated: @hero_life <= 0 )
+
+    @hero_used_strength = @combat.hero_strength_used
+    @mob_used_strength = @combat.mob_strength_used
   end
 
   def resolve_played_combats_cards

@@ -1,0 +1,24 @@
+.col-3
+  %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+    = @hero.name
+
+.col-3
+  %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+    Used strength
+    %span.badge.badge-light
+      = @hero_used_strength
+    \/
+    %span.badge.badge-light
+      = @combat.temporary_hero_strength
+
+.col-3
+  %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+    Damages taken
+    %span.badge.badge-light
+      = @hero.damages_taken_this_turn
+
+.col-3
+  %button.btn.btn-secondary.btn-block{ type: :button, disabled: true }
+    Remaining life
+    %span.badge.badge-light
+      = @hero_life
