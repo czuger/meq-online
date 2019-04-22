@@ -51,12 +51,8 @@ module GameEngine
           transitions :from => :combat_setup_screen_board_combats, :to => :play_combat_card_screen_board_combats
         end
 
-        event :next_to_apply_damages_board_combats do
-          transitions :from => :play_combat_card_screen_board_combats, :to => :apply_damages_board_combats
-        end
-
         event :next_to_exploration do
-          transitions :from => :hero_movement_screen, :to => :exploration
+          transitions :from => [:play_combat_card_screen_board_combats, :hero_movement_screen], :to => :exploration
         end
 
         event :next_to_play_screen_sauron_plot_cards do

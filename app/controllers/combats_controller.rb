@@ -3,7 +3,7 @@ class CombatsController < ApplicationController
   before_action :require_logged_in
   before_action :set_combat
   before_action :set_actor_ensure_actor, only: [:play_combat_card_screen]
-  before_action :set_combat_result, only: [:show, :play_combat_card_screen]
+  before_action :set_combat_result, only: [:show, :play_combat_card_screen, :terminate]
 
   def show
     @last_hero_cards_used = @combat.combat_card_played_heroes.last(6)
@@ -68,15 +68,24 @@ class CombatsController < ApplicationController
     end
   end
 
-  def finish_combat_and_continue_movement
+  def terminate
     @board.transaction do
       discard_cards
       destroy_combat
 
-      @board.next_to_hero_movement_screen!
-      @board.activate_current_hero
+      if @combat_result.hero_defeated
+      elsif @combat_result.mob_defeated
+        @board.next_to_hero_movement_screen!
+        @board.activate_current_hero
 
-      redirect_to hero_movement_screen_path( @hero )
+        redirect_to hero_movement_screen_path( @hero )
+      elsif @combat_result.mob_exhausted && @combat_result.hero_exhausted
+        @board.next_to_exploration!
+
+        redirect_to hero_exploration_finished_path( @board.current_hero )
+      else
+        raise "Shouldn't happen : #{@combat_result.inspect}"
+      end
     end
   end
 
@@ -108,8 +117,8 @@ class CombatsController < ApplicationController
 
   def set_combat_result
     @hero_life = @hero.life_pool.count + @hero.hand.count
-    @combat_result = OpenStruct.new( mob_defeated: @mob.life <= 0,
-                                     hero_defeated: @hero_life <= 0 )
+    @combat_result = OpenStruct.new( mob_defeated: @mob.life <= 0, hero_defeated: @hero_life <= 0,
+                                     mob_exhausted: @combat.mob_exhausted, hero_exhausted: @combat.hero_exhausted )
 
     @hero_used_strength = @combat.hero_strength_used
     @mob_used_strength = @combat.mob_strength_used

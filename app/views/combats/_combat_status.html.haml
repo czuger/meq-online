@@ -1,18 +1,35 @@
-- unless @combat_result.hero_defeated
-  - if @combat_result.mob_defeated
-    .row.mt-2
-      .col-3
-      .col-3
-        %h3
-          Hero win the fight !!!
-      .col-3
-        = link_to 'Continue movement', finish_combat_and_continue_movement_board_combats_path( @board ), role: :button, class: 'btn btn-primary btn-block'
-  - else
-    .row.mt-2
-      .col-3
-      .col-3
-        - if @print_hero_play_link
-          = link_to 'Play hero card', play_combat_card_screen_board_combats_path( @board, @hero ), role: :button, class: 'btn btn-primary btn-block'
-      .col-3
-        - if @print_sauron_play_link
-          = link_to 'Play mob card', play_combat_card_screen_board_combats_path( @board, @board.sauron ), role: :button, class: 'btn btn-primary btn-block'
+- if @combat_result.hero_defeated
+  .row.mt-2
+    .col-3
+    .col-3
+      %h3
+        Hero was defeated !!!
+    .col-3
+      = link_to 'Respawn in haven', terminate_board_combats_path( @board ), role: :button, class: 'btn btn-primary btn-block'
+
+- elsif @combat_result.mob_defeated
+  .row.mt-2
+    .col-3
+    .col-3
+      %h3
+        Hero win the fight !!!
+    .col-3
+      = link_to 'Continue movement', terminate_board_combats_path( @board ), role: :button, class: 'btn btn-primary btn-block'
+
+- elsif @combat_result.mob_exhausted && @combat_result.hero_exhausted
+  .row.mt-2
+    .col-6
+      %h3
+        Hero and mob where both exhausted.
+    .col-3
+      = link_to 'End turn', terminate_board_combats_path( @board ), role: :button, class: 'btn btn-primary btn-block'
+
+- else
+  .row.mt-2
+    .col-3
+    .col-3
+      - if @print_hero_play_link
+        = link_to 'Play hero card', play_combat_card_screen_board_combats_path( @board, @hero ), role: :button, class: 'btn btn-primary btn-block'
+    .col-3
+      - if @print_sauron_play_link
+        = link_to 'Play mob card', play_combat_card_screen_board_combats_path( @board, @board.sauron ), role: :button, class: 'btn btn-primary btn-block'
