@@ -25,14 +25,6 @@
   z-index: 500;
 }
 
-.sauron-actions-token{
-  position: absolute;
-  z-index: 1;
-  color: black;
-  font-weight: bolder;
-  font-size: 1.2em;
-}
-
 .alert-error{
   @extend .alert-danger;
 }
