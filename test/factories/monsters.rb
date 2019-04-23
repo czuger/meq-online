@@ -12,6 +12,12 @@ FactoryBot.define do
 
     hand { [ 3, 4, 5 ] }
 
-    attack_deck { :ravager }
+    attack_deck { :zealot }
+
+    factory :orc do
+      name { 'Orc' }
+      code { 'orc' }
+    end
+
   end
 end
