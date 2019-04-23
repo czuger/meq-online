@@ -140,6 +140,10 @@ class BoardsController < ApplicationController
     def load_heroes
       @heroes = GameData::Heroes.new
       existing_heroes = @board.heroes.pluck(:name_code).map{ |h| h.to_sym }
+
+      # For now, we forbidd :beravor, :eleanor, :thalin
+      existing_heroes += [ :beravor, :eleanor, :thalin ]
+
       @heroes.delete_heroes!( existing_heroes )
     end
 
