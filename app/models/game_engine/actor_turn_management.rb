@@ -52,7 +52,12 @@ module GameEngine
         self.save!
       end
     end
-    
+
+    def hero_end_turn_operations
+      @actor.used_powers['argalad'] = false
+      @actor.save!
+    end
+
     private
 
     def actions_before_switch_to_sauron

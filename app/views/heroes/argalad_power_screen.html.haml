@@ -1,0 +1,22 @@
+.container
+
+  %h3
+    Argalad power
+
+  .alert.alert-secondary
+    %ul.mt-3
+      %li Once per turn, Argalad can see what monsters are around him.
+
+  %hr
+
+  - @monsters.each do |monster|
+    .row.mb-2
+      .col-4
+        = @board.location_name(monster.location)
+      .col-4
+        = monster.name
+
+  .row.my-4
+    .col-4
+      = link_to hero_movement_screen_path(@actor), role: :button, class: 'btn btn-primary btn-block' do
+        Back to movement screen

@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     post :move
     get :movement_finished
 
+    get :argalad_power_screen
+
     get :exploration_screen
     post :explore
     get :exploration_finished

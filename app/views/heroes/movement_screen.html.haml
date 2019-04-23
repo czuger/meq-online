@@ -21,7 +21,7 @@
         - location_group.each do |location|
           .col.mt-2
             - if location
-              = button_tag class: 'btn btn-primary btn-block', value: location.last do
+              = button_tag class: 'btn btn-secondary btn-block', value: location.last do
                 = location.first
     %input{ id: :selected_cards, name: 'selected_cards', type: :hidden }
 
@@ -29,3 +29,8 @@
     .col-4
       = link_to hero_movement_finished_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
         Movement finished
+
+    - if @argalad_can_use_power
+      .col-4
+        = link_to hero_argalad_power_screen_path(@actor), role: :button, class: 'btn btn-primary btn-block' do
+          Use Argalad power

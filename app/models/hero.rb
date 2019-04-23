@@ -93,6 +93,14 @@ class Hero < Actor
     discard_cards(cards){ |c| self.life_pool += c }
   end
 
+  #
+  # Heroes powers
+  #
+  def argalad_surrounding_monsters
+    near_locations = GameData::LocationsPaths.new.get_connected_locations( location )
+    board.monsters.where( location: near_locations )
+  end
+
   private
 
   def current_location_perilous?(board)

@@ -3,6 +3,13 @@ class HeroesController < ApplicationController
   before_action :require_logged_in
   before_action :set_actor_ensure_actor, except: [:index, :new]
 
+  def argalad_power_screen
+    raise "Abuse of Argalad power : #{current_user.inspect}" unless @actor.name_code == 'argalad'
+
+    @monsters = @actor.argalad_surrounding_monsters
+    @actor.used_powers['argalad'] = true
+    @actor.save!
+  end
 
   def show
     if @actor.active
@@ -79,6 +86,7 @@ class HeroesController < ApplicationController
   # Movement methods
   #
   def movement_screen
+    check_heroes_powers
     set_heroes_hero_and_locations
   end
 
@@ -191,6 +199,8 @@ class HeroesController < ApplicationController
   def exploration_finished
     @board.transaction do
       # If we have more than one player
+      hero_end_turn_operations
+
       if @board.current_heroes_count > 1
         @board.finish_heroes_turn!
         redirect_to boards_path
@@ -267,6 +277,15 @@ class HeroesController < ApplicationController
   end
 
   private
+
+  def check_heroes_powers
+    if @actor.name_code == 'argalad' && !@actor.used_powers['argalad']
+      # Check monsters near Argalad
+      if @actor.argalad_surrounding_monsters.count >= 1
+        @argalad_can_use_power = true
+      end
+    end
+  end
 
   def after_rest_or_heal
     if advance_lowest_story_marker

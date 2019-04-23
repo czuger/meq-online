@@ -1,6 +1,7 @@
 require 'yaml'
 require 'ostruct'
 
+# This module is included in Board and is used to handle monsters placement.
 module GameData
   class LocationsMonsters < Base
 
