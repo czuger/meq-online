@@ -25,3 +25,38 @@
   cursor: pointer;
   font-size: 1.3em;
 }
+
+#plot-1{
+  position: absolute;
+  top: 279px;
+  left: 2594px;
+  width: 163px;
+  z-index: 1;
+}
+
+#plot-2 {
+  @extend #plot-1;
+  top: 570px;
+}
+
+#plot-3 {
+  @extend #plot-1;
+  top: 859px;
+}
+
+.zoomed-plot-card {
+  width: 250px !important;
+  left: 2565px !important;
+  z-index: 20 !important;
+}
+
+.token-on-map{
+  position: absolute;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.token-on-map-pic{
+  width: 77px;
+  position: absolute;
+}

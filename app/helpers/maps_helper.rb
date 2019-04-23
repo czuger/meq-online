@@ -28,8 +28,8 @@ module MapsHelper
 
       tokens_hover_text = tokens.map{ |t| monster_name_sauron_filter(t) }.join( ', ' )
 
-      px = loc.pos_x-23
-      py = loc.pos_y-25
+      px = loc.pos_x*@mul_x-23-15
+      py = loc.pos_y*@mul_y-25-16
 
       token_decal = first_token.type == :plot ? 7 : 0
 

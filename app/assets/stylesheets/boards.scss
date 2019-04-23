@@ -33,30 +33,6 @@
   font-size: 1.2em;
 }
 
-#plot-1{
-  position: absolute;
-  top: 187px;
-  left: 1684px;
-  width: 97px;
-  z-index: 1;
-}
-
-#plot-2 {
-  @extend #plot-1;
-  top: 374px;
-}
-
-#plot-3 {
-  @extend #plot-1;
-  top: 560px;
-}
-
-.zoomed-plot-card {
-  width: 250px !important;
-  left: 1612px !important;
-  z-index: 20 !important;
-}
-
 .alert-error{
   @extend .alert-danger;
 }
@@ -69,17 +45,6 @@
 //  background-image: url('http://ginger-mum.com/wp-content/uploads/2015/10/3633-1269758855-0da5042c33400a811a5d766be4579cb8.jpg');
 //  background-repeat: no-repeat;
 //}
-
-.token-on-map{
-  position: absolute;
-  z-index: 1;
-  cursor: pointer;
-}
-
-.token-on-map-pic{
-  width: 48px;
-  position: absolute;
-}
 
 .tokens-count{
   z-index: 2;
