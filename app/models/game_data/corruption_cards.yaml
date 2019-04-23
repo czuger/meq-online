@@ -1,0 +1,42 @@
+---
+:deck:
+- 2
+- 3
+- 5
+- 7
+- 8
+- 9
+- 10
+- 14
+:cards:
+  2:
+    :name: Helpless
+    :favor_cost: 2
+    :power: helpless
+  3:
+    :name: Distraught
+    :favor_cost: 2
+    :power: distraught
+  5:
+    :name: Cowardly
+    :favor_cost: 2
+    :power: cowardly
+  7:
+    :name: Weary
+    :favor_cost: 2
+    :power: weary
+  8:
+    :name: Deranged
+    :favor_cost: 2
+    :power: deranged
+  9:
+    :name: Dispairing
+    :favor_cost: 2
+    :power: dispairing
+  10:
+    :name: Careless
+    :power: careless
+  14:
+    :name: Weak
+    :favor_cost: 2
+    :power: weak
