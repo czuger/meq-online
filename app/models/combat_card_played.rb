@@ -77,6 +77,13 @@ class CombatCardPlayed < ApplicationRecord
     end
   end
 
+  def volley
+    if previous? && cancellation_dont_break( :me_previous, :me_current ) && me_current_ranged?
+      self.final_attack += 2
+      self.save!
+    end
+  end
+
   def aimed_shot 
     if current? && cancellation_dont_break( :op_current, :op_previous ) &&
         @combat_params.op_current.card_type == @combat_params.op_previous&.card_type
@@ -138,6 +145,10 @@ class CombatCardPlayed < ApplicationRecord
 
   def op_current_ranged?
     @combat_params.op_current.card_type == 'ranged'.freeze
+  end
+
+  def me_current_ranged?
+    @combat_params.me_current.card_type == 'ranged'.freeze
   end
 
   #
