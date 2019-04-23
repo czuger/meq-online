@@ -7,6 +7,8 @@ class Combat < ApplicationRecord
   has_many :combat_card_played_mobs
   has_many :combat_card_played_heroes
 
+  include GameEngine::CombatMobsPowers
+
   def reveal_secretly_played_cards
     @game_data_heroes ||= GameData::Heroes.new
     @game_data_mobs_cards ||= GameData::MobsCards.new
@@ -37,11 +39,13 @@ class Combat < ApplicationRecord
 
     call_power_params_hero =
         OpenStruct.new( me_previous: previous_hero_card, op_previous: previous_mob_card,
-                    op_current: @current_mob_card, me: hero, op: mob, current_combat: self )
+                    op_current: @current_mob_card, me_current: @current_hero_card, me: hero, op: mob, current_combat: self )
 
     call_power_params_mob =
         OpenStruct.new( me_previous: previous_mob_card, op_previous: previous_hero_card,
-                    op_current: @current_hero_card, me: mob, op: hero, current_combat: self )
+                    op_current: @current_hero_card, me_current: @current_mob_card, me: mob, op: hero, current_combat: self )
+
+    call_mob_power( mob, call_power_params_mob )
 
     previous_hero_card.call_power( :previous, call_power_params_hero ) if previous_hero_card
     previous_mob_card.call_power( :previous, call_power_params_mob ) if previous_mob_card
