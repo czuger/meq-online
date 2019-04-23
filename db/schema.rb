@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_22_120842) do
+ActiveRecord::Schema.define(version: 2019_04_23_092449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2019_04_22_120842) do
     t.integer "turn", limit: 2, default: 1, null: false
     t.integer "favor", limit: 2, default: 0
     t.integer "damages_taken_this_turn", limit: 2, default: 0, null: false
+    t.jsonb "items", default: {}, null: false
     t.index ["board_id"], name: "index_actors_on_board_id"
   end
 
@@ -70,7 +71,6 @@ ActiveRecord::Schema.define(version: 2019_04_22_120842) do
   end
 
   create_table "boards", force: :cascade do |t|
-    t.string "heroes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "max_heroes_count", default: 3, null: false

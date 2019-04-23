@@ -47,8 +47,10 @@ class HeroesController < ApplicationController
   end
 
   def rest_skip
-    @board.next_to_hero_movement_screen!
-    redirect_to hero_movement_screen_path(@actor)
+    @board.transaction do
+      @board.next_to_hero_movement_screen!
+      redirect_to hero_movement_screen_path(@actor)
+    end
   end
 
   def after_rest_advance_story_marker_screen
@@ -300,7 +302,7 @@ class HeroesController < ApplicationController
 
     @last_location = @actor.location
 
-    @locations = GameData::LocationsPaths.new.get_connected_locations_for_select(@last_location)
+    @locations = GameData::LocationsPaths.new.get_connected_locations_for_select(@last_location, @actor.items['horse'])
 
     @selectable_card_class = 'selectable-card-selection-multiple'
   end
@@ -310,6 +312,8 @@ class HeroesController < ApplicationController
     skills_data = GameData::Skills.new
 
     path_type, path_difficulty = GameData::LocationsPaths.new.path_data(@actor.location, params[:button] )
+
+    path_difficulty = [path_difficulty-1,1].max if @actor.items['horse']
 
     selected_cards.each do |card|
       if card >= 100

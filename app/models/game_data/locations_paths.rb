@@ -14,8 +14,9 @@ module GameData
       @data[name_code][:destinations].map{ |e| e[:dest] }
     end
 
-    def get_connected_locations_for_select( name_code )
-      @data[name_code][:destinations].map{ |e| [ "#{e[:dest].to_s.humanize} - #{e[:path_type]}(#{e[:difficulty]})", e[:dest] ] }
+    def get_connected_locations_for_select( name_code, has_horse )
+      @path_difficulty_decrease = has_horse ? 1 : 0
+      @data[name_code][:destinations].map{ |e| [ "#{e[:dest].to_s.humanize} - #{e[:path_type]}(#{get_path_difficulty(e)})", e[:dest] ] }
     end
 
     def path_data( source, required_dest )
@@ -33,6 +34,12 @@ module GameData
 
     def delete!( location_name )
       @data.delete( location_name )
+    end
+
+    private
+
+    def get_path_difficulty(e)
+      [e[:difficulty]-@path_difficulty_decrease, 1].max
     end
 
   end

@@ -166,11 +166,14 @@ class BoardsController < ApplicationController
           starting_quest = quests_manager.get_starting_quest( hero_code )
           quests_manager.hero_setup( @board, hero_code )
 
+          items = {}
+          items[:horse] = true if hero_code == :eometh
+
           @board.heroes.create!(
               name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
               wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: life_pool,
               rest_pool: [], damage_pool: [], hand: hand, user_id: @current_user.id, name: hero.name,
-              current_quest: starting_quest, playing_order: index
+              current_quest: starting_quest, playing_order: index, items: items
           )
           # Just tell that the user is connected to this board
           @current_user.boards << @board unless @current_user.boards.include?( @board )
