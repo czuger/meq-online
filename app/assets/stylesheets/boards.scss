@@ -25,36 +25,12 @@
   z-index: 500;
 }
 
-.influence-pawn-box{
-  position: absolute;
-  z-index: 20;
-}
-
-.influence-pool-value{
-  position: absolute;
-  z-index: 1;
-  color: white;
-  cursor: pointer;
-}
-
 .sauron-actions-token{
   position: absolute;
   z-index: 1;
   color: black;
   font-weight: bolder;
   font-size: 1.2em;
-}
-
-.influence-pawn{
-  width: 30px;
-}
-
-.influence-value{
-  color: white;
-  position: relative;
-  left: -24px;
-  top: 1px;
-  cursor: pointer;
 }
 
 #plot-1{

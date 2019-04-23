@@ -11,7 +11,7 @@
     - @positions.each do |p|
       - unless p.haven
         .influence-pawn-box{ style: "top:#{p.y+5}px; left:#{p.x-35}px;" }
-          = image_tag 'influence.png', class: 'influence-pawn', style: "top:#{p.y+5}px; left:#{p.x-35}px;", location: p.name_code
+          = image_tag 'influence.png', class: 'influence-pawn', location: p.name_code
           %spawn.influence-value
             = @influence[p.name_code] ? @influence[p.name_code] : 0
 

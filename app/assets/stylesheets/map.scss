@@ -1,0 +1,25 @@
+.influence-pawn-box{
+  position: absolute;
+  z-index: 20;
+  width: 30px;
+}
+
+.influence-pawn{
+  width: 30px;
+  position: relative;
+}
+
+.influence-value{
+  color: white;
+  position: relative;
+  left: 9px;
+  top: -27px;
+  cursor: pointer;
+}
+
+.influence-pool-value{
+  position: absolute;
+  z-index: 1;
+  color: white;
+  cursor: pointer;
+}
