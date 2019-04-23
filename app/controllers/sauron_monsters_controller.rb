@@ -10,6 +10,13 @@ class SauronMonstersController < ApplicationController
 
   def new
     @available_locations = @board.influence.map{ |k, v| k if v >= 1 }.compact.sort
+
+    black_serpent = @board.mobs.where( code: :black_serpent ).first
+    if black_serpent
+      surrounding_locations = GameData::LocationsPaths.new.get_connected_locations(black_serpent.location )
+      @available_locations += surrounding_locations
+    end
+
     heroes_locations = @board.heroes.map{ |l| l.location }
     @available_locations -= heroes_locations
   end
