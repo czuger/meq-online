@@ -3,7 +3,7 @@ require 'fileutils'
 
 require_relative 'libs/round.rb'
 
-directory = 'hero_cards/heroes'
+directory = 'raw_pics/hero_cards/heroes'
 
 decal_x = {
     'beravor.jpg' => 30, 'eometh.jpg' => 20, 'thalin.jpg' => 50
@@ -25,13 +25,13 @@ Dir.entries( directory ).each do |f|
   left = 125
   left += decal_y[f] if decal_y[f]
 
-  new_image_name = directory + '/small/' + File.basename( f, '.jpg' ) + '.png'
+  new_image_name = '../app/assets/images/heroes_tokens/' + File.basename( f, '.jpg' ) + '.png'
 
   new_img = img.crop(left, top, 92, 92)
 
   new_img = round( new_img, 20 )
 
-  new_img.resize_to_fit!( 48, 48 )
+  new_img.resize_to_fit!( 67, 67 )
 
   new_img.write( new_image_name )
 end

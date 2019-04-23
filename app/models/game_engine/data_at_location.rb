@@ -16,7 +16,7 @@ module GameEngine
         @tokens[location] ||= []
         @tokens[location] << OpenStruct.new( type: :character, code: character,
                                              name: @characters.name( character ), priority: 50,
-                                             pic_path: "characters/small_#{character}.jpg".freeze )
+                                             pic_path: "characters/#{character}.png".freeze )
       end
 
       board.current_plots.each do |plot|
@@ -49,7 +49,7 @@ module GameEngine
 
       board.minions.each do |minion|
         @tokens[minion.location] ||= []
-        @tokens[minion.location] << OpenStruct.new( type: :monster, code: minion.code,
+        @tokens[minion.location] << OpenStruct.new( type: :minion, code: minion.code,
                                                      name: minion.name, priority: 40,
                                                      pic_path: "monsters/tokens/covers/#{minion.code}.png".freeze )
       end

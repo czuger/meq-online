@@ -16,9 +16,9 @@
             = @influence[p.name_code] ? @influence[p.name_code] : 0
 
     -# Placing other tokens
-    - get_token_positions do |pic_path, style, tokens_hover_text, tokens_count, token_decal|
+    - get_token_positions do |pic_path, style, tokens_hover_text, tokens_count, token_decal, token_pic_class|
       .token-on-map{ style: style, 'data-toggle'=> 'tooltip', 'data-placement' => 'top', title: tokens_hover_text }
-        = image_tag pic_path, class: 'token-on-map-pic'
+        = image_tag pic_path, class: token_pic_class
         - if tokens_count > 1
           .tokens-count{ style: "top:#{14-token_decal}px" }
             = tokens_count

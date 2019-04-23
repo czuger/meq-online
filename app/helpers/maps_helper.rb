@@ -35,15 +35,31 @@ module MapsHelper
 
       py += token_decal
 
-      style = "top:#{py}px; left:#{px}px;"
-
       pic_path = first_token.pic_path
 
       if @actor.is_a?(Sauron) && first_token.sauron_pic_path
         pic_path = first_token.sauron_pic_path
       end
 
-      yield pic_path, style, tokens_hover_text, tokens_count, token_decal
+      token_pic_class = 'token-on-map-pic'
+      case first_token.type
+        when :minion
+          token_pic_class = 'token-on-map-pic-minion'
+        when :character
+          px += 4
+          py += 4
+        when :favor
+          token_pic_class = 'token-on-map-pic-favor'
+          px += 9
+          py += 9
+        else
+          px += 4
+          py += 4
+      end
+
+      style = "top:#{py}px; left:#{px}px;"
+
+      yield pic_path, style, tokens_hover_text, tokens_count, token_decal, token_pic_class
     end
   end
 
