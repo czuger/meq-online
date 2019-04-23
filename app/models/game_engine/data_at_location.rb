@@ -21,8 +21,8 @@ module GameEngine
 
       board.current_plots.each do |plot|
         @tokens[plot.affected_location] ||= []
-        @tokens[plot.affected_location] << OpenStruct.new( type: :plot, code: :plot, name: 'Plot', priority: 30,
-                                             pic_path: 'plot_1.png'.freeze )
+        @tokens[plot.affected_location] << OpenStruct.new( type: :plot, code: :plot, name: "Plot #{plot.plot_position}", priority: 30,
+                                             pic_path: "plot_#{plot.plot_position}.png".freeze )
 
       end
 

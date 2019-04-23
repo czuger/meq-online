@@ -52,6 +52,9 @@ module MapsHelper
           token_pic_class = 'token-on-map-pic-favor'
           px += 9
           py += 9
+        when :plot
+          px += 7
+          py += 12
         else
           px += 4
           py += 4
