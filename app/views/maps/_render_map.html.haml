@@ -5,12 +5,12 @@
   #map
 
     -# Showing map
-    = image_tag 'map-med.jpg', id: :map
+    = image_tag 'map_half.jpg', id: :map
 
     -# Placing influence tokens
     - @positions.each do |p|
       - unless p.haven
-        .influence-pawn-box{ style: "top:#{p.y+5}px; left:#{p.x-35}px;" }
+        .influence-pawn-box{ style: "top:#{(p.y*@mul_y)+15}px; left:#{(p.x*@mul_x)-55}px" }
           = image_tag 'influence.png', class: 'influence-pawn', location: p.name_code
           %spawn.influence-value
             = @influence[p.name_code] ? @influence[p.name_code] : 0
@@ -23,21 +23,10 @@
           .tokens-count{ style: "top:#{14-token_decal}px" }
             = tokens_count
 
-
     -# Placing markers on shadow pool
-    - y_position = 1181
-    - pool_token_number = 0
-    - 1.upto( 12 ).to_a.in_groups_of(4).each do |row|
-      - x_position = 1694
-      - row.each do |element|
-        .influence-pool-value{ style: "top:#{y_position}px; left:#{x_position}px;", id: "pool_token_id_#{pool_token_number}" }
-          - if pool_token_number < @board.shadow_pool
-            1
-          - else
-            0
-          - pool_token_number += 1
-        - x_position += 39
-      - y_position += 35
+    - shadow_pool_tokens do |y_position, x_position, pool_token_number, value|
+      .influence-pool-value{ style: "top:#{y_position}px; left:#{x_position}px;", id: "pool_token_id_#{pool_token_number}" }
+        = value
 
     -# Placing markers on sauron actions bar
     - @board.sauron_actions.each do |key|

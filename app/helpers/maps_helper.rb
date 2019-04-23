@@ -1,5 +1,24 @@
 module MapsHelper
 
+  def shadow_pool_tokens
+    y_position = 1183*@mul_y
+    pool_token_number = 0
+    1.upto( 12 ).to_a.in_groups_of(4).each do |row|
+      x_position = 1695*@mul_x
+      row.each do |element|
+        if pool_token_number < @board.shadow_pool
+          value = 1
+        else
+          value = 0
+        end
+        yield(y_position, x_position, pool_token_number, value)
+        pool_token_number += 1
+        x_position += 38.5*@mul_x
+      end
+      y_position += 35*@mul_y
+    end
+  end
+
   def get_token_positions
     @tokens.each do |loc, tokens|
       loc = @locations.get( loc )

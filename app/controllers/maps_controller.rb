@@ -7,11 +7,18 @@ class MapsController < ApplicationController
   before_action :set_actor_ensure_board, only: [:show]
   before_action :set_map_data
 
+  MUL_X=1.5442
+  MUL_Y=1.5444
+
   # For board spectators
   def show
+    @mul_x = MUL_X
+    @mul_y = MUL_Y
   end
 
   def edit
+    @mul_x = MUL_X
+    @mul_y = MUL_Y
   end
   
   private
