@@ -53,9 +53,9 @@ module GameEngine
       end
     end
 
-    def hero_end_turn_operations
-      @actor.used_powers['argalad'] = false
-      @actor.save!
+    def hero_end_turn_operations(actor)
+      actor.used_powers['argalad'] = false
+      actor.save!
     end
 
     private

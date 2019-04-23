@@ -199,7 +199,7 @@ class HeroesController < ApplicationController
   def exploration_finished
     @board.transaction do
       # If we have more than one player
-      hero_end_turn_operations
+      @board.hero_end_turn_operations(@actor)
 
       if @board.current_heroes_count > 1
         @board.finish_heroes_turn!
