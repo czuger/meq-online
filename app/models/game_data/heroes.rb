@@ -11,6 +11,14 @@ module GameData
       hero
     end
 
+    def get_card_number_by_name( hero_name_code, card_name )
+      raise "#{hero_name_code} not found in #{@data.keys}" unless @data.keys.include?(hero_name_code.to_sym)
+      @data[hero_name_code][:cards].each do |k, v|
+        return k if v[:name] == card_name.to_sym
+      end
+      raise "Card #{card_name} not found."
+    end
+
     def get_card_data( name_code, card_number )
       return nil unless card_number
       OpenStruct.new( @data[name_code.to_sym][:cards][card_number.to_i] )

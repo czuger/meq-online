@@ -26,7 +26,7 @@ behemoth:
   - 4
   - 9
   - 0
-  :data:
+  :cards:
     0:
       :name: Precision
       :type: :ranged
@@ -142,7 +142,7 @@ ravager:
   - 2
   - 4
   - 5
-  :data:
+  :cards:
     0:
       :name: Concentrate
       :type: :ranged
@@ -258,7 +258,7 @@ zealot:
   - 9
   - 10
   - 1
-  :data:
+  :cards:
     0:
       :name: Quick Shot
       :type: :ranged

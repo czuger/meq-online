@@ -44,10 +44,13 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should play card' do
+    @board.aasm_state = 'play_screen_sauron_plot_cards'
+    @board.save!
+
     @sauron.plot_cards << 8
     @sauron.save!
     post play_sauron_plot_cards_url @sauron, params: { selected_card: 8, card_slot: 2 }
-    assert_redirected_to play_screen_sauron_plot_cards_url(@sauron)
+    assert_redirected_to edit_sauron_sauron_actions_url(@sauron)
     assert_equal 8, @board.get_plot_card(2)
     refute_includes  @sauron.reload.plot_cards, 8
   end

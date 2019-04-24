@@ -127,10 +127,10 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     @board.aasm_state = :hero_movement_screen
     @board.save!
 
-    @board.create_monster( :agent, :old_forest, :monsters_pool_orange )
+    mob = @board.create_monster( :agent, :old_forest, :monsters_pool_orange )
 
     assert_difference 'Combat.count' do
-      post hero_move_url( @hero, params: { button: :old_forest, selected_cards: '1' } )
+      post hero_move_url( @hero, params: { button: :old_forest, selected_cards: @hero.hand.first } )
     end
 
     assert @board.combat

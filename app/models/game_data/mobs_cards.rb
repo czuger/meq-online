@@ -9,10 +9,18 @@ module GameData
       @data[attack_deck][:deck].shuffle
     end
 
+    def get_card_number_by_name( attack_deck, card_name )
+      check_attack_deck(attack_deck)
+      @data[attack_deck][:cards].each do |k, v|
+        return k if v[:name] == card_name
+      end
+      raise "Card #{card_name} not found."
+    end
+
     def get_card_data( attack_deck, card_number )
       return nil unless card_number
       check_attack_deck(attack_deck)
-      OpenStruct.new( @data[attack_deck][:data][card_number.to_i])
+      OpenStruct.new( @data[attack_deck][:cards][card_number.to_i])
     end
 
     def get_deck_with_card_name( name_code )
@@ -21,11 +29,11 @@ module GameData
 
     def get_card_pic_path( attack_deck, card_number )
       check_attack_deck(attack_deck)
-      @data[attack_deck][:data][card_number.to_i][:pic_path]
+      @data[attack_deck][:cards][card_number.to_i][:pic_path]
     end
 
     def common_cards_names
-      @data.values.map{ |h| h[:data].values.map{ |c| c[:name].to_s } }.flatten
+      @data.values.map{ |h| h[:cards].values.map{ |c| c[:name].to_s } }.flatten
     end
 
     private

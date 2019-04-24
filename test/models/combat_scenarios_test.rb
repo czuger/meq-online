@@ -100,7 +100,39 @@ class CombatScenariosTest < ActiveSupport::TestCase
         end
       end
     end
+  end
 
+  test 'Mouth of Sauron example 1' do
+    mob = create( :mouth_of_sauron, board: @board )
+    @board.combat.mob = mob
+
+    @board.combat.temporary_hero_strength = @hero.strength
+
+    @board.combat.save!
+
+    @board.combat.hero_secret_played_card = @game_data_heroes.get_card_number_by_name( :argalad, 'Volley')
+    @board.combat.mob_secret_played_card = @game_data_mobs_cards.get_card_number_by_name( 'zealot', 'Ranged Strike')
+    @board.combat.save!
+
+    assert_difference '@hero.reload.life_pool.count', -1 do
+      assert_difference '@hero.damage_pool.count', 1 do
+        assert_difference 'mob.reload.life', -1 do
+          @board.combat.reveal_secretly_played_cards
+        end
+      end
+    end
+
+    @board.combat.hero_secret_played_card = @game_data_heroes.get_card_number_by_name( :argalad, 'Aimed Shot')
+    @board.combat.mob_secret_played_card = @game_data_mobs_cards.get_card_number_by_name( 'zealot', 'Reckless')
+    @board.combat.save!
+
+    assert_difference '@hero.reload.life_pool.count', -5 do
+      assert_difference '@hero.damage_pool.count', 5 do
+        assert_difference 'mob.reload.life', 0 do
+          @board.combat.reveal_secretly_played_cards
+        end
+      end
+    end
   end
 
 end
