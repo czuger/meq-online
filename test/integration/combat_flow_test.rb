@@ -32,7 +32,7 @@ class CombatFlowTest < ActionDispatch::IntegrationTest
   end
 
   test 'Test a full combat round' do
-    post "/heroes/#{@hero.id}/move", params: { selected_cards: '1', button: :the_grey_havens }
+    post "/heroes/#{@hero.id}/move", params: { selected_cards: @hero.hand.first, button: :the_grey_havens }
     assert_response :redirect
     follow_redirect!
 

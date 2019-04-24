@@ -56,11 +56,32 @@ class Combat < ApplicationRecord
     @current_hero_card.call_power( :current, call_power_params_hero )
     @current_mob_card.call_power( :current, call_power_params_mob )
 
-    hero.deal_damages( @current_mob_card.final_attack - @current_hero_card.final_defense ) unless @current_mob_card.cancelled
-    mob.deal_damages( @current_hero_card.final_attack - @current_mob_card.final_defense ) unless @current_hero_card.cancelled
+    deal_damages
 
     @current_hero_card.call_power( :after, call_power_params_hero )
     @current_mob_card.call_power( :after, call_power_params_mob )
+  end
+
+  def deal_damages
+    mob_damages = !@current_mob_card.cancelled ? @current_mob_card.final_attack : 0
+    hero_damages = !@current_hero_card.cancelled ? @current_hero_card.final_attack : 0
+
+    mob_defense = !@current_mob_card.cancelled ? @current_mob_card.final_defense : 0
+    hero_defense = !@current_hero_card.cancelled ? @current_hero_card.final_defense : 0
+
+    mob_damages -= hero_defense
+    hero_damages -= mob_defense
+
+    unless @current_mob_card.cancelled
+      mob_damages += 1 if mob.code == 'snaga' && @current_mob_card.card_type = 'ranged'
+      mob_damages += 1 if mob.code == 'huorn' && @current_mob_card.card_type = 'melee'
+    end
+
+    mob_damages = [mob_damages,0].max
+    hero_damages = [hero_damages,0].max
+
+    hero.deal_damages( mob_damages ) unless @current_mob_card.cancelled
+    mob.deal_damages( hero_damages ) unless @current_hero_card.cancelled
   end
   
   def exhaustion_check
@@ -72,7 +93,11 @@ class Combat < ApplicationRecord
       self.hero_exhausted= true
     end
 
-    self.mob_strength_used += @current_mob_card.strength_cost
+    mob_strength_cost = @current_mob_card.strength_cost
+    mob_strength_cost -= 1 if mob.code == 'southron'
+    mob_strength_cost = [ mob_strength_cost, 0 ].max
+
+    self.mob_strength_used += mob_strength_cost
     if mob_strength_used >= mob.strength
       @current_mob_card.cancelled = true
       @current_mob_card.save!

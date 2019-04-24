@@ -94,13 +94,15 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
+    before_count = @hero.reload.hand.count
+
     post "/heroes/#{@hero.id}/draw_cards", params: { nb_cards: 5 }
     assert_response :redirect
     follow_redirect!
     assert_response :success
     assert_select 'h3', 'Draw cards screen'
 
-    assert_equal 6, @hero.reload.hand.count
+    assert_equal before_count + 5, @hero.reload.hand.count
 
     get "/heroes/#{@hero.id}/draw_cards_finished"
     assert_response :redirect

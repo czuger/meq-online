@@ -1,53 +1,53 @@
 ---
 :orange:
+  - :snaga
+  - :snaga
   - :orc
   - :orc
-  - :orc
-  - :orc
-  - :orc
-  - :orc
+  - :snaga
+  - :snaga
   - :nothing
   - :nothing
   - :nothing
   - :nothing
 :purple:
+  - :snaga
+  - :snaga
+  - :snaga
   - :orc
-  - :orc
-  - :orc
-  - :orc
-  - :orc
+  - :cave_troll
   - :orc
   - :nothing
   - :nothing
   - :nothing
   - :nothing
 :dark_green:
-  - :orc
-  - :orc
-  - :orc
-  - :orc
-  - :orc
+  - :snaga
+  - :snaga
+  - :huorn
+  - :huorn
+  - :huorn
   - :orc
   - :nothing
   - :nothing
   - :nothing
   - :nothing
 :dark_blue:
-  - :orc
-  - :orc
-  - :orc
-  - :orc
-  - :orc
+  - :snaga
+  - :snaga
+  - :southron
+  - :southron
+  - :southron
   - :orc
   - :nothing
   - :nothing
   - :nothing
   - :nothing
 :brown:
-  - :orc
-  - :orc
-  - :orc
-  - :orc
+  - :cave_troll
+  - :cave_troll
+  - :cave_troll
+  - :cave_troll
   - :orc
   - :orc
   - :nothing

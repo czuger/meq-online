@@ -19,5 +19,12 @@ module GameEngine
       end
     end
 
+    def cave_troll( params )
+      if params.me_current.card_type == 'ranged'
+        params.op_current.cancelled = true
+        params.op_current.save!
+      end
+    end
+
   end
 end
