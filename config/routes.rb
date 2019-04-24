@@ -83,6 +83,9 @@ Rails.application.routes.draw do
 
       get :keep_screen
       post :keep
+
+      get :look_for_gollum_cards
+      post :get_gollum_card
     end
 
     resource :sauron_actions, only: [:edit, :update] do

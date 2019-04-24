@@ -54,9 +54,14 @@ class PlotCardsController < ApplicationController
       @actor.save!
       @board.save!
       @board.log( @board.sauron, 'plot_cards.play', { plot_card: selected_card } )
-    end
 
-    redirect_to play_screen_sauron_plot_cards_path(@actor), notice: 'Card successfuly played'
+      unless selected_card == 13
+        play_finished
+      else
+        @board.next_to_look_for_gollum_cards_sauron_plot_cards
+        redirect_to look_for_gollum_cards_sauron_plot_cards_path(@actor)
+      end
+    end
   end
 
   def play_finished
@@ -66,6 +71,34 @@ class PlotCardsController < ApplicationController
       GameData::Events.new.draw_next_event_card(@board)
 
       redirect_to edit_sauron_sauron_actions_path(@actor)
+    end
+  end
+
+  def look_for_gollum_cards
+    gollum_cards = [ 5, 12 ].freeze
+    @gollum_cards_found = []
+
+    @gollum_cards_found += gollum_cards & @board.plot_deck
+    @gollum_cards_found += gollum_cards & @board.plot_discard
+  end
+
+  def get_gollum_card
+    selected_card = params[:selected_card].to_i
+
+    @actor.plot_cards << selected_card
+
+    deck = @board.plot_deck + @board.plot_discard
+    deck.delete( selected_card )
+    deck.shuffle!
+
+    @board.plot_discard = []
+    @board.plot_deck = deck
+
+    @board.transaction do
+      @board.save!
+      @actor.save!
+
+      play_finished
     end
   end
 
