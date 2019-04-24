@@ -11,7 +11,7 @@ class CombatExhaustionTest < ActiveSupport::TestCase
 
     @hero = create( :hero, user: @user, board: @board, hand: @game_data_heroes.get_deck(:argalad ),
       life_pool: @game_data_heroes.get_deck(:argalad ) )
-    @mob = create( :monster, board: @board, hand: @game_data_mobs_cards.get_deck( 'ravager' ) )
+    @mob = create( :orc, board: @board )
 
     @board.create_combat( @hero, @mob )
 
@@ -25,15 +25,11 @@ class CombatExhaustionTest < ActiveSupport::TestCase
 
   test 'exhaustion test, both - aimed shot vs reckless on near' do
     @board.combat.hero_strength_used = 3
-    @board.combat.mob_strength_used = 7
+    @board.combat.mob_strength_used = 3
 
     @board.combat.hero_secret_played_card = 3
     @board.combat.mob_secret_played_card = 10
     @board.combat.save!
-
-    @mob.attack_deck = 'zealot'
-    @mob.hand = @game_data_mobs_cards.get_deck( 'zealot' )
-    @mob.save!
 
     assert_no_difference '@hero.reload.life_pool.count' do
       assert_no_difference '@hero.damage_pool.count' do
@@ -54,10 +50,6 @@ class CombatExhaustionTest < ActiveSupport::TestCase
     @board.combat.mob_secret_played_card = 10
     @board.combat.save!
 
-    @mob.attack_deck = 'zealot'
-    @mob.hand = @game_data_mobs_cards.get_deck( 'zealot' )
-    @mob.save!
-
     assert_difference '@hero.reload.life_pool.count', -5 do
       assert_difference '@hero.damage_pool.count', 5 do
         assert_no_difference '@mob.reload.life' do
@@ -71,15 +63,11 @@ class CombatExhaustionTest < ActiveSupport::TestCase
 
   test 'exhaustion test, mob only - aimed shot vs reckless on near' do
     @board.combat.hero_strength_used = 0
-    @board.combat.mob_strength_used = 7
+    @board.combat.mob_strength_used = 3
 
     @board.combat.hero_secret_played_card = 3
     @board.combat.mob_secret_played_card = 10
     @board.combat.save!
-
-    @mob.attack_deck = 'zealot'
-    @mob.hand = @game_data_mobs_cards.get_deck( 'zealot' )
-    @mob.save!
 
     assert_no_difference '@hero.reload.life_pool.count' do
       assert_no_difference '@hero.damage_pool.count' do

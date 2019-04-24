@@ -11,11 +11,11 @@ class CombatScenariosTest < ActiveSupport::TestCase
 
     @hero = create( :hero, user: @user, board: @board, hand: @game_data_heroes.get_deck(:argalad ),
       life_pool: @game_data_heroes.get_deck(:argalad ) )
-    @mob = create( :monster, board: @board, hand: @game_data_mobs_cards.get_deck( 'ravager' ) )
+    @mob = create( :southron, board: @board )
 
     @board.create_combat( @hero, @mob )
 
-    @board.combat.temporary_hero_strength = 5
+    @board.combat.temporary_hero_strength = @hero.strength + @hero.agility
     @board.combat.hero_secret_played_card = @hero.hand.first
     @board.combat.mob_secret_played_card = @mob.hand.first
     @board.combat.save!
@@ -77,6 +77,9 @@ class CombatScenariosTest < ActiveSupport::TestCase
     @board.combat.hero_secret_played_card = 4
     @board.combat.mob_secret_played_card = 10
     @board.combat.save!
+
+    @mob.strength = 50
+    @mob.save!
 
     assert_difference '@hero.reload.life_pool.count', -1 do
       assert_difference '@hero.damage_pool.count', 1 do

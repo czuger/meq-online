@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class CombatScenariosTest < ActiveSupport::TestCase
+class CombatMobsPowersTest < ActiveSupport::TestCase
 
   setup do
     @game_data_heroes ||= GameData::Heroes.new
