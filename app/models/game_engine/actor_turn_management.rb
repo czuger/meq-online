@@ -34,6 +34,7 @@ module GameEngine
 
         activate_current_hero
 
+        self.next_to_finish_hero_turn!
         self.next_to_hero_draw_cards_screen!
       end
     end
@@ -54,7 +55,8 @@ module GameEngine
             actions_before_switch_to_sauron
           else
             # Otherwise, we start the next hero turn
-            self.next_to_hero_rest_screen!
+            self.next_to_finish_hero_turn!
+            self.next_to_hero_draw_cards_screen!
           end
         else
           # If we have only one player
@@ -81,6 +83,7 @@ module GameEngine
       # - Call the automated rally step
       advance_stories_markers
 
+      self.next_to_finish_hero_turn!
       self.next_to_play_screen_sauron_plot_cards!
       self.switch_to_sauron
       self.turn += 1

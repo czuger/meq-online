@@ -21,7 +21,7 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
 
     @board.users << @user
 
-    @board.aasm_state = 'combat_setup_screen_board_combats'
+    @board.aasm_state = 'play_combat_card_screen_board_combats'
     @board.current_hero = @hero
     @board.save!
 
@@ -51,6 +51,9 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should start combat with strength increase' do
+    @board.aasm_state = 'combat_setup_screen_board_combats'
+    @board.save!
+
     post combat_setup_board_combats_url(@board, button: :increase)
 
     assert_equal 8, @board.combat.reload.temporary_hero_strength
@@ -188,11 +191,13 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'h3', 'Hero and mob where both exhausted.'
 
     get terminate_board_combats_url( @board )
-    assert_redirected_to hero_draw_cards_screen_path(@second_hero)
+    assert_redirected_to boards_url
 
     refute @hero.reload.active
     refute @sauron.reload.active
     assert @second_hero.reload.active
   end
+
+  # TODO : add a test with a hero linked to another user.
 
 end
