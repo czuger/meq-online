@@ -197,22 +197,10 @@ class HeroesController < ApplicationController
   end
 
   def exploration_finished
-    @board.transaction do
-      # If we have more than one player
-      @board.hero_end_turn_operations(@actor)
-
-      if @board.current_heroes_count > 1
-        @board.finish_heroes_turn!
-        redirect_to boards_path
-      else
-      # If we have only one player
-        if @board.start_hero_second_turn(@actor)
-          # We started a new turn for hero
-          redirect_to hero_draw_cards_screen_path(@actor)
-        else
-          redirect_to boards_path
-        end
-      end
+    if @board.finish_heroes_turn!(@actor) == :hero_draw_cards_screen
+      redirect_to hero_draw_cards_screen_path(@actor)
+    else
+      redirect_to boards_path
     end
   end
 
@@ -273,6 +261,26 @@ class HeroesController < ApplicationController
   end
 
   private
+
+  def finish_hero_turn
+    @board.transaction do
+      # If we have more than one player
+      @board.hero_end_turn_operations(@actor)
+
+      if @board.current_heroes_count > 1
+        @board.finish_heroes_turn!
+        redirect_to boards_path
+      else
+        # If we have only one player
+        if @board.start_hero_second_turn(@actor)
+          # We started a new turn for hero
+          redirect_to hero_draw_cards_screen_path(@actor)
+        else
+          redirect_to boards_path
+        end
+      end
+    end
+  end
 
   def check_heroes_powers
     if @actor.name_code == 'argalad' && !@actor.used_powers['argalad']

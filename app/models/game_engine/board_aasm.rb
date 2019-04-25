@@ -24,7 +24,7 @@ module GameEngine
         end
 
         event :next_to_hero_draw_cards_screen do
-          transitions :from => [:exploration, :edit_sauron_sauron_actions], :to => :hero_draw_cards_screen
+          transitions :from => [:combat_setup_screen_board_combats, :exploration, :edit_sauron_sauron_actions], :to => :hero_draw_cards_screen
         end
 
         event :next_to_hero_rest_screen do

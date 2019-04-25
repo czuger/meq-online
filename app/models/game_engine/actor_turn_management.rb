@@ -39,17 +39,33 @@ module GameEngine
     end
 
     # Use this method when we have more than one heroes
-    def finish_heroes_turn!
+    def finish_heroes_turn!(hero)
+
+      controller_redirect_to = :boards
+
       self.transaction do
-        unless switch_to_next_hero
-          # If all heroes have played, we switch to sauron turn
-          actions_before_switch_to_sauron
+        hero_end_turn_operations(hero)
+
+        # If we have more than one player
+        if current_heroes_count > 1
+
+          unless switch_to_next_hero
+            # If all heroes have played, we switch to sauron turn
+            actions_before_switch_to_sauron
+          else
+            # Otherwise, we start the next hero turn
+            self.next_to_hero_rest_screen!
+          end
         else
-          # Otherwise, we start the next hero turn
-          self.next_to_hero_rest_screen!
+          # If we have only one player
+          if start_hero_second_turn(hero)
+            # We started a new turn for hero
+            controller_redirect_to = :hero_draw_cards_screen
+          end
         end
 
         self.save!
+        controller_redirect_to
       end
     end
 

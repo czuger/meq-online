@@ -83,10 +83,13 @@ class CombatsController < ApplicationController
 
         redirect_to hero_movement_screen_path( @hero )
       elsif @combat_result.mob_exhausted && @combat_result.hero_exhausted
-        @board.next_to_exploration!
 
-        # The hero immediately finish his turn
-        redirect_to hero_exploration_finished_path( @board.current_hero )
+        if @board.finish_heroes_turn!(@hero) == :hero_draw_cards_screen
+          redirect_to hero_draw_cards_screen_path(@hero)
+        else
+          redirect_to boards_path
+        end
+
       else
         raise "Shouldn't happen : #{@combat_result.inspect}"
       end
@@ -132,8 +135,9 @@ class CombatsController < ApplicationController
     if @hero.active == false && @board.sauron.active == false
 
       @combat.reveal_secretly_played_cards
-        redirect_to board_combats_path(@board)
+      redirect_to board_combats_path(@board)
     else
+
       redirect_to boards_path
     end
   end
