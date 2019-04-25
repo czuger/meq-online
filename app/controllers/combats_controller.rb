@@ -75,7 +75,9 @@ class CombatsController < ApplicationController
       # destroy_combat
 
       if @combat_result.hero_defeated
+        
       elsif @combat_result.mob_defeated
+        # The hero continue his movement.
         @board.next_to_hero_movement_screen!
         @board.activate_current_hero
 
@@ -83,6 +85,7 @@ class CombatsController < ApplicationController
       elsif @combat_result.mob_exhausted && @combat_result.hero_exhausted
         @board.next_to_exploration!
 
+        # The hero immediately finish his turn
         redirect_to hero_exploration_finished_path( @board.current_hero )
       else
         raise "Shouldn't happen : #{@combat_result.inspect}"
