@@ -31,6 +31,17 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     follow_redirect!
   end
 
+  test 'should show combat with exhausted cards' do
+    create( :argalad_quick_shot, combat: @board.combat )
+    create( :argalad_quick_shot, combat: @board.combat )
+
+    create( :behemoth_precision, combat: @board.combat )
+    create( :mob_exhausted, combat: @board.combat )
+
+    get board_combats_url(@board)
+    assert_response :success
+  end
+
   test 'should get hero_setup_new' do
     get combat_setup_screen_board_combats_url(@board)
     assert_response :success

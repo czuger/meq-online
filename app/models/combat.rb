@@ -76,7 +76,7 @@ class Combat < ApplicationRecord
   end
 
   def create_exhausted_card( collection )
-    collection.create!( card: -1, pic_path: 'Exhausted', name: 'Exhausted', power: 'None',
+    collection.create!( card: -1, pic_path: 'exhausted', name: 'Exhausted', power: 'None',
               strength_cost: 0, printed_attack: 0, final_attack: 0,
               printed_defense: 0, final_defense: 0, card_type: 'none', cancelled: true )
   end
