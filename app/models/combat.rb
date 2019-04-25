@@ -63,6 +63,9 @@ class Combat < ApplicationRecord
 
     hero.save!
     mob.save!
+
+    @board.set_hero_activation_state( @hero, true ) unless hero_exhausted
+    @board.set_sauron_activation_state( true ) unless mob_exhausted
   end
 
   def deal_damages
@@ -94,6 +97,7 @@ class Combat < ApplicationRecord
       @current_hero_card.save!
 
       self.hero_exhausted= true
+      board.set_hero_activation_state( hero, false )
     end
 
     mob_strength_cost = @current_mob_card.strength_cost
@@ -106,6 +110,7 @@ class Combat < ApplicationRecord
       @current_mob_card.save!
 
       self.mob_exhausted= true
+      board.set_sauron_activation_state( false )
     end
 
     self.save!

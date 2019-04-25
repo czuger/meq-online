@@ -9,8 +9,8 @@ class CombatsController < ApplicationController
     @last_hero_cards_used = @combat.combat_card_played_heroes.last(6)
     @last_mob_cards_used = @combat.combat_card_played_mobs.last(6)
 
-    @print_hero_play_link = current_user?( @hero )
-    @print_sauron_play_link = current_user?( @board.sauron )
+    @print_hero_play_link = current_user?( @hero ) && !@combat.hero_exhausted
+    @print_sauron_play_link = current_user?( @board.sauron ) && !@combat.mob_exhausted
   end
 
   def play_combat_card_screen
@@ -128,15 +128,7 @@ class CombatsController < ApplicationController
     if @hero.active == false && @board.sauron.active == false
 
       @combat.reveal_secretly_played_cards
-
-      # if result.mob_defeated || result.hero_defeated || (result.mob_exhausted && result.hero_exhausted)
-      #   resolve_combat(result)
-      # else
-        @board.set_hero_activation_state( @hero, true )
-        @board.set_sauron_activation_state( true )
-
         redirect_to board_combats_path(@board)
-      # end
     else
       redirect_to boards_path
     end
