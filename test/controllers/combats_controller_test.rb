@@ -33,7 +33,7 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
 
   test 'should show combat with exhausted cards' do
     create( :argalad_quick_shot, combat: @board.combat )
-    create( :argalad_quick_shot, combat: @board.combat )
+    create( :hero_exhausted, combat: @board.combat )
 
     create( :behemoth_precision, combat: @board.combat )
     create( :mob_exhausted, combat: @board.combat )

@@ -44,6 +44,10 @@ FactoryBot.define do
       printed_defense { 0 }
       final_defense { 0 }
       cancelled { true }
+
+      factory :hero_exhausted do
+        type { 'CombatCardPlayedHero' }
+      end
     end
 
   end

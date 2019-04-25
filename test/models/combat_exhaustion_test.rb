@@ -94,7 +94,7 @@ class CombatExhaustionTest < ActiveSupport::TestCase
       end
     end
 
-    assert @board.combat.combat_card_played_heroes.last.cancelled
+    assert @board.combat.combat_card_played_mobs.last.cancelled
   end
 
 end

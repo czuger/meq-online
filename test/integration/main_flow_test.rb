@@ -122,7 +122,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    post "/heroes/#{@hero.id}/move", params: { selected_cards: '1', button: :the_grey_havens }
+    post "/heroes/#{@hero.id}/move", params: { selected_cards: @hero.hand.first, button: :the_grey_havens }
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -137,7 +137,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'h3', 'Movement screen'
 
-    post "/heroes/#{@hero.id}/move", params: { selected_cards: '2', button: :the_shire }
+    post "/heroes/#{@hero.id}/move", params: { selected_cards: @hero.hand.first, button: :the_shire }
     assert_response :redirect
     follow_redirect!
     assert_response :success
