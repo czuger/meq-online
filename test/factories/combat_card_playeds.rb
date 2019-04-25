@@ -33,10 +33,10 @@ FactoryBot.define do
 
     factory :mob_exhausted do
       type { 'CombatCardPlayedMob' }
-      card_type { 'none' }
+      card_type { 'exhausted' }
       card { -1 }
       pic_path { 'exhausted' }
-      name { 'None' }
+      name { 'Exhausted' }
       power { 'none' }
       strength_cost { 0 }
       printed_attack { 0 }

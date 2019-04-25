@@ -40,7 +40,7 @@ class CombatExhaustionTest < ActiveSupport::TestCase
       end
     end
 
-    assert @board.combat.combat_card_played_heroes.last.cancelled = true
+    assert @board.combat.combat_card_played_heroes.last.cancelled
   end
 
   test 'exhaustion test, hero only - aimed shot vs reckless on near' do
@@ -48,6 +48,22 @@ class CombatExhaustionTest < ActiveSupport::TestCase
     @board.combat.mob_strength_used = 0
 
     @board.combat.hero_secret_played_card = 3
+    @board.combat.mob_secret_played_card = 10
+    @board.combat.save!
+
+    @mob.strength = 50
+    @mob.save!
+
+    assert_difference '@hero.reload.life_pool.count', -5 do
+      assert_difference '@hero.damage_pool.count', 5 do
+        assert_no_difference '@mob.reload.life' do
+          @board.combat.reveal_secretly_played_cards
+        end
+      end
+    end
+
+    assert @board.combat.combat_card_played_heroes.last.cancelled
+
     @board.combat.mob_secret_played_card = 10
     @board.combat.save!
 
@@ -59,7 +75,7 @@ class CombatExhaustionTest < ActiveSupport::TestCase
       end
     end
 
-    assert @board.combat.combat_card_played_heroes.last.cancelled = true
+    assert_equal 'exhausted', @board.combat.combat_card_played_heroes.last.card_type
   end
 
   test 'exhaustion test, mob only - aimed shot vs reckless on near' do
@@ -78,7 +94,7 @@ class CombatExhaustionTest < ActiveSupport::TestCase
       end
     end
 
-    assert @board.combat.combat_card_played_heroes.last.cancelled = true
+    assert @board.combat.combat_card_played_heroes.last.cancelled
   end
 
 end
