@@ -126,6 +126,73 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     assert_select 'h3', 'Hero and mob where both exhausted.'
 
     get terminate_board_combats_url( @board )
+    assert_redirected_to hero_draw_cards_screen_url(@hero)
+
+    assert @hero.reload.active
+    refute @sauron.reload.active
+  end
+
+  test 'On mob and hero exhaustion, should switch to sauron if it was the second hero turn' do
+    @hero.hand << @hero_aimed_shot
+    @hero.turn = 2
+    @hero.save!
+    @mob.hand << @mob_aimed_shot
+    @mob.save!
+
+    @board.combat.hero_strength_used = 4
+    @board.combat.mob_strength_used = 3
+    @board.combat.save!
+
+    post play_combat_card_hero_board_combats_url(@board, selected_card: @hero_aimed_shot)
+    assert_redirected_to boards_url
+
+    assert_difference 'CombatCardPlayed.count', 2 do
+      post play_combat_card_mob_board_combats_url(@board, selected_card: @mob_aimed_shot)
+    end
+    assert_redirected_to board_combats_url(@board)
+    follow_redirect!
+
+    assert_select 'h3', 'Hero and mob where both exhausted.'
+
+    get terminate_board_combats_url( @board )
+    assert_redirected_to boards_url
+
+    refute @hero.reload.active
+    assert @sauron.reload.active
+  end
+
+  test 'On mob and hero exhaustion, should switch to next hero if we have more than one player' do
+    @hero.hand << @hero_aimed_shot
+    @hero.save!
+    @mob.hand << @mob_aimed_shot
+    @mob.save!
+
+    @second_hero = create( :hero, user: @user, board: @board )
+
+    @board.combat.hero_strength_used = 4
+    @board.combat.mob_strength_used = 3
+    @board.combat.save!
+
+    @board.current_heroes_count = 2
+    @board.save!
+
+    post play_combat_card_hero_board_combats_url(@board, selected_card: @hero_aimed_shot)
+    assert_redirected_to boards_url
+
+    assert_difference 'CombatCardPlayed.count', 2 do
+      post play_combat_card_mob_board_combats_url(@board, selected_card: @mob_aimed_shot)
+    end
+    assert_redirected_to board_combats_url(@board)
+    follow_redirect!
+
+    assert_select 'h3', 'Hero and mob where both exhausted.'
+
+    get terminate_board_combats_url( @board )
+    assert_redirected_to hero_draw_cards_screen_path(@second_hero)
+
+    refute @hero.reload.active
+    refute @sauron.reload.active
+    assert @second_hero.reload.active
   end
 
 end
