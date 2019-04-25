@@ -43,11 +43,9 @@ class EndTurnTest < ActionDispatch::IntegrationTest
 
     get '/boards'
     assert_select 'td', 'Sauron'
-    assert_select 'a[href=?]', "/heroes/#{@hero.id}/single_hero_draw"
+    assert_select 'a[href=?]', hero_draw_cards_screen_path(@hero)
 
-    get "/heroes/#{@hero.id}/single_hero_draw"
-    assert_response :redirect
-    follow_redirect!
+    get "#{hero_draw_cards_screen_path(@hero)}"
     assert_response :success
     # puts @response.body
     assert_select 'h3', 'Draw cards screen'

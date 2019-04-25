@@ -34,7 +34,7 @@ module GameEngine
 
         activate_current_hero
 
-        self.next_to_hero_single_hero_draw!
+        self.next_to_hero_draw_cards_screen!
       end
     end
 

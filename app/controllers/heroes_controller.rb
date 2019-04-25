@@ -237,10 +237,6 @@ class HeroesController < ApplicationController
   #   redirect_to @actor
   # end
 
-  def single_hero_draw
-    redirect_to hero_draw_cards_screen_path(@actor)
-  end
-
   def draw_cards_screen
     # nb_cards_to_draw = params[:nb_cards].to_i
     @cards = @actor.hand

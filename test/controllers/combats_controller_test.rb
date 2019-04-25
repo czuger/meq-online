@@ -10,10 +10,10 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     @user = create( :user )
     @board = create( :board )
 
-    @hero = create( :hero, user: @user, board: @board, hand: @game_data_heroes.get_deck(:argalad ) )
+    @hero = create( :hero, user: @user, board: @board )
     @sauron = create( :sauron, user: @user, board: @board )
 
-    @mob = create( :monster, board: @board, hand: @game_data_mobs_cards.get_deck( 'ravager' ) )
+    @mob = create( :orc, board: @board )
     @board.create_combat( @hero, @mob )
 
     @board.combat.temporary_hero_strength = 5
@@ -24,6 +24,9 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     @board.aasm_state = 'combat_setup_screen_board_combats'
     @board.current_hero = @hero
     @board.save!
+
+    @hero_aimed_shot = @game_data_heroes.get_card_number_by_name( :argalad, 'Aimed Shot' )
+    @mob_aimed_shot = @game_data_mobs_cards.get_card_number_by_name( 'zealot', 'Aimed Shot' )
 
     $google_auth_hash[:uid] = @user.uid
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
@@ -99,6 +102,30 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to board_combats_url(@board)
 
     follow_redirect!
+  end
+
+  test 'On mob and hero exhaustion, should switch to hero next turn' do
+    @hero.hand << @hero_aimed_shot
+    @hero.save!
+    @mob.hand << @mob_aimed_shot
+    @mob.save!
+
+    @board.combat.hero_strength_used = 4
+    @board.combat.mob_strength_used = 3
+    @board.combat.save!
+
+    post play_combat_card_hero_board_combats_url(@board, selected_card: @hero_aimed_shot)
+    assert_redirected_to boards_url
+
+    assert_difference 'CombatCardPlayed.count', 2 do
+      post play_combat_card_mob_board_combats_url(@board, selected_card: @mob_aimed_shot)
+    end
+    assert_redirected_to board_combats_url(@board)
+    follow_redirect!
+
+    assert_select 'h3', 'Hero and mob where both exhausted.'
+
+    get terminate_board_combats_url( @board )
   end
 
 end
