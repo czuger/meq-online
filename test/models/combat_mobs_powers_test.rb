@@ -11,6 +11,7 @@ class CombatMobsPowersTest < ActiveSupport::TestCase
 
     @hero = create( :hero, user: @user, board: @board )
     @mob = create( :orc, board: @board )
+    create( :sauron, board: @board, user: @user )
 
     @board.create_combat( @hero, @mob )
 

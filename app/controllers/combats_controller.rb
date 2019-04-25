@@ -71,7 +71,8 @@ class CombatsController < ApplicationController
   def terminate
     @board.transaction do
       discard_cards
-      destroy_combat
+      # For debug purpose, we keep combats.
+      # destroy_combat
 
       if @combat_result.hero_defeated
       elsif @combat_result.mob_defeated

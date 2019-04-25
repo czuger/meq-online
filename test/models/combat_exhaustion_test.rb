@@ -12,6 +12,7 @@ class CombatExhaustionTest < ActiveSupport::TestCase
     @hero = create( :hero, user: @user, board: @board, hand: @game_data_heroes.get_deck(:argalad ),
       life_pool: @game_data_heroes.get_deck(:argalad ) )
     @mob = create( :orc, board: @board )
+    create( :sauron, board: @board, user: @user )
 
     @board.create_combat( @hero, @mob )
 

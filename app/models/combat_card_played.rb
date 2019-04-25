@@ -4,9 +4,11 @@ class CombatCardPlayed < ApplicationRecord
   include GameEngine::CombatCardPowers
 
   def call_power( phase, combat_params )
-    @combat_params = combat_params
-    @phase = phase
-    send(power)
+    unless cancelled
+      @combat_params = combat_params
+      @phase = phase
+      send(power)
+    end
   end
 
   private

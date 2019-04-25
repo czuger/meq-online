@@ -12,6 +12,7 @@ class CombatCallOnlyTest < ActiveSupport::TestCase
     @hero = create( :hero, user: @user, board: @board, hand: @game_data_heroes.get_deck(:argalad ),
       life_pool: @game_data_heroes.get_deck(:argalad ) )
     @mob = create( :monster, board: @board, hand: @game_data_mobs_cards.get_deck( 'ravager' ) )
+    create( :sauron, board: @board, user: @user )
 
     @board.create_combat( @hero, @mob )
 

@@ -13,29 +13,11 @@ class Combat < ApplicationRecord
     @game_data_heroes ||= GameData::Heroes.new
     @game_data_mobs_cards ||= GameData::MobsCards.new
 
-    ch_cd = @game_data_heroes.get_card_data( hero.name_code, hero_secret_played_card )
-    combat_card_played_heroes.create!( card: hero_secret_played_card, pic_path: ch_cd.pic_path, name: ch_cd.name, power: ch_cd.power,
-                                       strength_cost: ch_cd.strength_cost, printed_attack: ch_cd.attack, final_attack: ch_cd.attack,
-                                       printed_defense: ch_cd.defense, final_defense: ch_cd.defense, card_type: ch_cd.type )
-
-    cm_cd = @game_data_mobs_cards.get_card_data( mob.attack_deck, mob_secret_played_card )
-    combat_card_played_mobs.create!( card: mob_secret_played_card, pic_path: cm_cd.pic_path, name: cm_cd.name, power: cm_cd.power,
-                                       strength_cost: cm_cd.strength_cost, printed_attack: cm_cd.attack, final_attack: cm_cd.attack,
-                                       printed_defense: cm_cd.defense, final_defense: cm_cd.defense, card_type: cm_cd.type )
-
-    @current_hero_card = combat_card_played_heroes.last
-    # p "Hero play : #{@current_hero_card.name}"
-
-    @current_mob_card = combat_card_played_mobs.last
-    # p "Mob play : #{@current_mob_card.name}"
-
     mob.damages_taken_this_turn = 0
     hero.damages_taken_this_turn = 0
 
+    previous_hero_card, previous_mob_card = set_current_and_previous_card
     exhaustion_check
-
-    previous_hero_card = combat_card_played_heroes.where( 'id < ?', @current_hero_card.id ).last
-    previous_mob_card = combat_card_played_mobs.where( 'id < ?', @current_mob_card.id ).last
 
     call_power_params_hero =
         OpenStruct.new( me_previous: previous_hero_card, op_previous: previous_mob_card,
@@ -64,8 +46,39 @@ class Combat < ApplicationRecord
     hero.save!
     mob.save!
 
-    @board.set_hero_activation_state( @hero, true ) unless hero_exhausted
-    @board.set_sauron_activation_state( true ) unless mob_exhausted
+    board.set_hero_activation_state( hero, true ) unless hero_exhausted
+    board.set_sauron_activation_state( true ) unless mob_exhausted
+  end
+
+  def set_current_and_previous_card
+    unless hero_exhausted
+      ch_cd = @game_data_heroes.get_card_data( hero.name_code, hero_secret_played_card )
+      @current_hero_card = combat_card_played_heroes.create!( card: hero_secret_played_card, pic_path: ch_cd.pic_path, name: ch_cd.name, power: ch_cd.power,
+                                                              strength_cost: ch_cd.strength_cost, printed_attack: ch_cd.attack, final_attack: ch_cd.attack,
+                                                              printed_defense: ch_cd.defense, final_defense: ch_cd.defense, card_type: ch_cd.type )
+    else
+      @current_hero_card = create_exhausted_card(combat_card_played_heroes)
+    end
+
+    unless mob_exhausted
+      cm_cd = @game_data_mobs_cards.get_card_data( mob.attack_deck, mob_secret_played_card )
+      @current_mob_card = combat_card_played_mobs.create!( card: mob_secret_played_card, pic_path: cm_cd.pic_path, name: cm_cd.name, power: cm_cd.power,
+                                                           strength_cost: cm_cd.strength_cost, printed_attack: cm_cd.attack, final_attack: cm_cd.attack,
+                                                           printed_defense: cm_cd.defense, final_defense: cm_cd.defense, card_type: cm_cd.type )
+    else
+      @current_mob_card = create_exhausted_card(combat_card_played_mobs)
+    end
+
+    previous_hero_card = combat_card_played_heroes.where( 'id < ?', @current_hero_card.id ).last
+    previous_mob_card = combat_card_played_mobs.where( 'id < ?', @current_mob_card.id ).last
+
+    [previous_hero_card, previous_mob_card]
+  end
+
+  def create_exhausted_card( collection )
+    collection.create!( card: -1, pic_path: 'Exhausted', name: 'Exhausted', power: 'None',
+              strength_cost: 0, printed_attack: 0, final_attack: 0,
+              printed_defense: 0, final_defense: 0, card_type: 'none', cancelled: true )
   end
 
   def deal_damages

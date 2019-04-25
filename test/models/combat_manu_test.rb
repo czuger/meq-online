@@ -13,6 +13,7 @@ class CombatManuTest < ActiveSupport::TestCase
       life_pool: @game_data_heroes.get_deck(:argalad ) )
     @mob = create( :monster, board: @board, hand: @game_data_mobs_cards.get_deck( 'zealot' ),
                    attack_deck: :zealot, strength: 50, life: 50 )
+    create( :sauron, board: @board, user: @user )
 
     @board.create_combat( @hero, @mob )
 

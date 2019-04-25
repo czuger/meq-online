@@ -5,8 +5,8 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     OmniAuth.config.test_mode = true
 
     @user = create( :user )
-    @board = create( :board, favors: [ :the_shire, :old_forest ] )
-    @hero = create( :hero, user: @user, board: @board, location: :the_shire )
+    @board = create( :board, favors: [ :old_forest, :bree ] )
+    @hero = create( :hero, user: @user, board: @board, location: :bree )
     @sauron = create( :sauron, user: @user, board: @board )
     @board.users << @user
 
@@ -102,18 +102,18 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get only one favor and leave one' do
-    @board.favors << :the_shire
+    @board.favors << :bree
     @board.save
 
     post hero_explore_url( @hero, tokens: { favor: [ :favor ] } )
     assert_redirected_to hero_exploration_screen_url(@hero)
     assert_equal 1, @hero.reload.favor
 
-    assert_equal %w( the_shire old_forest ).sort, @board.reload.favors.sort
+    assert_equal %w( old_forest bree ).sort, @board.reload.favors.sort
   end
 
   test 'should get two favors and leave none' do
-    @board.favors << :the_shire
+    @board.favors << :bree
     @board.save
 
     post hero_explore_url( @hero, tokens: { favor: [ :favor, :favor ] } )
@@ -127,7 +127,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     @board.aasm_state = :hero_movement_screen
     @board.save!
 
-    mob = @board.create_monster( :agent, :old_forest, :monsters_pool_orange )
+    @board.create_monster( :agent, :old_forest, :monsters_pool_orange )
 
     assert_difference 'Combat.count' do
       post hero_move_url( @hero, params: { button: :old_forest, selected_cards: @hero.hand.first } )
