@@ -8,13 +8,14 @@
 
       %ul.navbar-nav.mr-auto
 
-        %li.nav-item.dropdown
-          %a#navbarDropdownBoards.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
-            Boards
-          .dropdown-menu{"aria-labelledby" => "navbarDropdownBoards"}
-            = link_to 'All boards', boards_path( all: true ), role: :button, class: 'dropdown-item'
-            = link_to 'My boards', boards_path, role: :button, class: 'dropdown-item'
-            = link_to 'New Board', new_board_path, role: :button, class: 'dropdown-item'
+        - if @current_user
+          %li.nav-item.dropdown
+            %a#navbarDropdownBoards.nav-link.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+              Boards
+            .dropdown-menu{"aria-labelledby" => "navbarDropdownBoards"}
+              = link_to 'All boards', boards_path( all: true ), role: :button, class: 'dropdown-item'
+              = link_to 'My boards', boards_path, role: :button, class: 'dropdown-item'
+              = link_to 'New Board', new_board_path, role: :button, class: 'dropdown-item'
 
         - if @board && @board.id
           %li.nav-item.dropdown
@@ -56,4 +57,5 @@
         %span.badge.badge-light
           = @current_user.name
 
-    = link_to 'Sign out', sessions_path, method: :delete, role: :button, class: 'btn btn-primary ml-2'
+    - if @current_user
+      = link_to 'Sign out', sessions_path, method: :delete, role: :button, class: 'btn btn-primary ml-2'

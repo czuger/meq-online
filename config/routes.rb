@@ -130,7 +130,7 @@ Rails.application.routes.draw do
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
-  root 'boards#index'
+  root 'boards#welcome'
 
   match 'auth/:provider/callback', to: 'sessions#create', via: [:get, :post]
   get 'auth/failure', to: 'sessions#failure'
