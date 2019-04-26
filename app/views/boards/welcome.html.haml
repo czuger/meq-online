@@ -1,0 +1,58 @@
+.container
+
+  .alert.alert-secondary
+    %ul.mt-3
+      %li This version is a pre alpha version. This mean that a lot of things are not implemented and that it could contain some bugs.
+
+
+
+  .row
+    .col-4
+    .col-4
+      = link_to '#', role: :button, class: 'btn btn-primary btn-block' do
+        Proceed
+    .col-4
+
+  %hr
+  %h3
+    Here is a list of missing features.
+
+  %b
+    Will be fixed in short term.
+
+  %ul
+    %li Game does has no end.
+    %li Not all minions are present.
+    %li Sauron can place influence tokens in non adjacent places.
+    %li Requirement for plot cards are not implemented.
+    %li Not all actions are logged.
+    %li Sauron can't heal minions.
+    %li Hero can't use the cards he have in hand as life pool.
+    %li Not all heroes are present.
+
+  %hr
+  %b
+    Will be fixed in mid term.
+
+  %ul
+    %li After defeat, hero is moved to a fixed haven rather than the nearest.
+    %li Some monsters or minions powers are not working.
+    %li Peril is not working.
+    %li Corruption is not working.
+    %li Not all monsters are present.
+    %li All items are not present.
+    %li Formations are not available (nor do skills).
+
+  %hr
+  %b
+    Will be fixed in long term.
+
+  %ul
+    %li No encounters cards are drawn at the end of the hero turn.
+    %li No events cards are drawn at the beginning of Sauron turn.
+    %li Missing heroes cards.
+    %li No rally step.
+    %li Characters can only give influence.
+    %li After a combat, in case of equality, the system advance a random token rather than asking the user.
+    %li No tie break at the end of the game.
+    %li Heroes can rest everywhere.

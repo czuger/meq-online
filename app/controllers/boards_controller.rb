@@ -1,8 +1,11 @@
 class BoardsController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_board, except: [:index, :new, :create]
-  before_action :set_actor_ensure_actor, only: [:map], except: [:story_screen]
+  before_action :set_board, except: [:index, :new, :create, :welcome]
+  before_action :set_actor_ensure_actor, only: [:map], except: [:story_screen, :welcome]
+
+  def welcome
+  end
 
   # GET /boards
   # GET /boards.json

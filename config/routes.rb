@@ -102,6 +102,8 @@ Rails.application.routes.draw do
 
   resources :characters, only: [:edit,:update]
 
+  get 'welcome', to: 'boards#welcome'
+
   resources :boards, only:[ :index, :new, :create ] do
     get :join, action: :join_new
     post :join
