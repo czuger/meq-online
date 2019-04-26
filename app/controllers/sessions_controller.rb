@@ -1,6 +1,7 @@
 class SessionsController < ApplicationController
 
-  skip_before_action :verify_authenticity_token, if: -> { Rails.env.development? || Rails.env.test? }
+  # Todo : remove this when true production sign in is set up
+  skip_before_action :verify_authenticity_token, if: -> { Rails.env.production? || Rails.env.development? || Rails.env.test? }
 
   def new
   end

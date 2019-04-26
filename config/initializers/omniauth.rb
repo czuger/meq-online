@@ -2,7 +2,7 @@ OmniAuth.config.logger = Rails.logger
 
 Rails.application.config.middleware.use OmniAuth::Builder do
 
-  provider :developer if Rails.env.development?
+  provider :developer if Rails.env.development? || Rails.env.production?
   provider :google_oauth2 if Rails.env.test?
 
   if File.exists?( 'config/omniauth.yml' )
