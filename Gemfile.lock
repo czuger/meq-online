@@ -146,6 +146,7 @@ GEM
       railties (>= 3.2.16)
     json (2.2.0)
     jwt (2.1.0)
+    libv8 (6.7.288.46.1-x86_64-darwin-17)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -162,6 +163,8 @@ GEM
     mimemagic (0.3.3)
     mini_mime (1.0.1)
     mini_portile2 (2.4.0)
+    mini_racer (0.2.4)
+      libv8 (>= 6.3)
     minitest (5.11.3)
     mocha (1.7.0)
       metaclass (~> 0.0.1)
@@ -316,6 +319,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   listen (>= 3.0.5, < 3.2)
+  mini_racer
   mocha
   omniauth-google-oauth2
   pg (>= 0.18, < 2.0)

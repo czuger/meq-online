@@ -73,6 +73,10 @@ group :test do
   gem 'mocha'
 end
 
+group :production do
+  gem 'mini_racer', platforms: :ruby
+end
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
