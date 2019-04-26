@@ -11,8 +11,8 @@ module GameEngine
     def activate_current_hero
       transaction do
         set_heroes_activation_state( false )
-        set_hero_activation_state( current_hero, true )
         set_sauron_activation_state( false )
+        set_hero_activation_state( current_hero.reload, true )
       end
     end
 

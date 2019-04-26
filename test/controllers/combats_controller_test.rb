@@ -170,7 +170,7 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     @mob.hand << @mob_aimed_shot
     @mob.save!
 
-    @second_hero = create( :hero, user: @user, board: @board )
+    @second_hero = create( :hero, user: @user, board: @board, name_code: :foo )
 
     @board.combat.hero_strength_used = 4
     @board.combat.mob_strength_used = 3
@@ -195,6 +195,7 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
 
     refute @hero.reload.active
     refute @sauron.reload.active
+
     assert @second_hero.reload.active
   end
 

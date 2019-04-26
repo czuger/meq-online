@@ -107,7 +107,7 @@ class EndTurnTest < ActionDispatch::IntegrationTest
 
     assert_select 'td', 'Argalad'
     assert_select 'td', 'Sauron'
-    assert_select "a[href=?]", "/heroes/#{@thalin.id}/rest_screen"
+    assert_select "a[href=?]", hero_draw_cards_screen_path(@thalin)
   end
 
   test 'Test 2 player switch to sauron (after everybody has played).' do

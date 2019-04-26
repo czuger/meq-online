@@ -108,8 +108,9 @@ module GameEngine
           raise "Board #{self.id} : hero.playing_order should not be nil" unless next_hero.playing_order
 
           self.current_hero = next_hero
-          self.activate_current_hero
           self.save!
+
+          self.activate_current_hero
         else
           result = false
         end
