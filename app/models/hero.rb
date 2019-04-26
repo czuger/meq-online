@@ -27,7 +27,7 @@ class Hero < Actor
     @locations ||= GameData::Locations.new
     region_color = @locations.get(location).color_code
     haven_code = @locations.get_haven_for_color(region_color)
-    self.locatino = haven_code
+    self.location = haven_code
     self.save!
   end
 

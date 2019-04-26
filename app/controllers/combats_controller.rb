@@ -136,7 +136,7 @@ class CombatsController < ApplicationController
   end
 
   def set_combat_result
-    @hero_life = @hero.life_pool.count + @hero.hand.count
+    @hero_life = @hero.life_pool.count # + @hero.hand.count
     @combat_result = OpenStruct.new( mob_defeated: @mob.life <= 0, hero_defeated: @hero_life <= 0,
                                      mob_exhausted: @combat.mob_exhausted, hero_exhausted: @combat.hero_exhausted )
 

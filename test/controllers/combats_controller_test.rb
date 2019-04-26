@@ -201,4 +201,31 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
 
   # TODO : add a test with a hero linked to another user.
 
+  test 'On hero defeat, should switch to hero next turn' do
+    @hero.hand << @hero_aimed_shot
+    @hero.life_pool = [ 1 ]
+    @hero.save!
+    @mob.hand << @mob_aimed_shot
+    @mob.save!
+
+    post play_combat_card_hero_board_combats_url(@board, selected_card: @hero_aimed_shot)
+    assert_redirected_to boards_url
+
+    assert_difference 'CombatCardPlayed.count', 2 do
+      post play_combat_card_mob_board_combats_url(@board, selected_card: @mob_aimed_shot)
+    end
+    assert_redirected_to board_combats_url(@board)
+    follow_redirect!
+
+    assert_select 'h3', 'Hero was defeated !!!'
+
+    get terminate_board_combats_url( @board )
+    assert_redirected_to hero_draw_cards_screen_url(@hero)
+
+    assert @hero.reload.active
+    refute @sauron.reload.active
+
+    assert_equal 'fornost', @hero.reload.location
+  end
+
 end
