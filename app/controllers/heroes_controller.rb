@@ -106,7 +106,7 @@ class HeroesController < ApplicationController
         @actor.hand_to_rest(selected_cards)
         @actor.save!
 
-        @actor.suffer_peril!(@board)
+        # @actor.suffer_peril!(@board)
 
         location_encounters = @board.check_location_encounters(@actor)
         case location_encounters
