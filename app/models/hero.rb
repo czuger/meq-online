@@ -23,6 +23,14 @@ class Hero < Actor
     @locations.get(location).name
   end
 
+  def move_to_regional_haven
+    @locations ||= GameData::Locations.new
+    region_color = @locations.get(location).color_code
+    haven_code = @locations.get_haven_for_color(region_color)
+    self.locatino = haven_code
+    self.save!
+  end
+
   #
   # Cards methods
   #

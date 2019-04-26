@@ -8,6 +8,7 @@ hero_draw_cards_screen [shape=box];
 hero_rest_screen [shape=box];
 finish_hero_turn [shape=box];
 finish_sauron_turn [shape=box];
+after_defeat_advance_story_marker [shape=box];
 hero_movement_screen [shape=box];
 exploration [shape=box];
 play_screen_sauron_plot_cards [shape=box];
@@ -26,6 +27,7 @@ hero_rest_screen -> hero_movement_screen
 finish_hero_turn -> hero_draw_cards_screen
 finish_hero_turn -> play_screen_sauron_plot_cards
 finish_sauron_turn -> hero_draw_cards_screen
+after_defeat_advance_story_marker -> finish_hero_turn
 hero_movement_screen -> combat_setup_screen_board_combats
 hero_movement_screen -> exploration
 exploration -> hero_rest_screen
@@ -36,6 +38,6 @@ play_screen_sauron_plot_cards -> look_for_gollum_cards_sauron_plot_cards
 after_rest_advance_story_marker -> hero_rest_screen
 combat_setup_screen_board_combats -> play_combat_card_screen_board_combats
 play_combat_card_screen_board_combats -> hero_movement_screen
-play_combat_card_screen_board_combats -> finish_hero_turn
+play_combat_card_screen_board_combats -> after_defeat_advance_story_marker
 look_for_gollum_cards_sauron_plot_cards -> play_screen_sauron_plot_cards
 }

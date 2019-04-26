@@ -4,6 +4,10 @@ require 'ostruct'
 module GameData
   class Locations < Base
 
+    REGIONAL_HAVEN_COLORS_CONVERSIONS = { yellow: :light_green, purple: :orange, red: :light_blue, brown: :light_blue }
+
+    # TODO : data should be a class variable rather than an instance variable
+    # And should not be read again if already assigned.
     attr_reader :data
 
     def initialize
@@ -32,11 +36,19 @@ module GameData
     end
 
     def position_list
-      @data.map{ |k, v| OpenStruct.new( name_code: k, x: v[:pos_x], y: v[:pos_y], haven: v[:heaven] ) }
+      @data.map{ |k, v| OpenStruct.new( name_code: k, x: v[:pos_x], y: v[:pos_y], haven: v[:haven] ) }
     end
 
     def alpha_select_tag_data
       @data.map{ |k, v| [ v[:name], k ] }.sort
+    end
+
+    def get_haven_for_color(color)
+      color = REGIONAL_HAVEN_COLORS_CONVERSIONS[color] || color
+      @data.each do |k, v|
+        return k if v[:color_code] == color && v[:haven] == true
+      end
+      raise "Could not find haven for #{color}"
     end
 
   end

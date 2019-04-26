@@ -106,6 +106,33 @@ class Board < ApplicationRecord
   end
 
   #
+  # Story marker method
+  #
+  # Try to advance the lowest story marker. If was able to do, return true, false otherwise.
+  def advance_lowest_story_marker( random: false )
+    @lowest_markers = [ self.story_marker_ring, self.story_marker_conquest, self.story_marker_corruption ]
+    @min_marker = @lowest_markers.min
+
+    lowests_markers_count = @lowest_markers.select{ |e| e == @min_marker }.count
+
+    # If we have more than one lowest markers, we will have to ask to player
+    unless random
+      return false if lowests_markers_count > 1
+    end
+
+    self.story_marker_ring += 1 if self.story_marker_ring == @min_marker
+    return true if self.story_marker_ring == @min_marker
+
+    self.story_marker_conquest += 1 if self.story_marker_conquest == @min_marker
+    return true if self.story_marker_conquest == @min_marker
+
+    self.story_marker_corruption += 1 if self.story_marker_corruption == @min_marker
+    self.save!
+
+    true
+  end
+
+  #
   # Log methods
   #
   def log( actor, action, params= {} )

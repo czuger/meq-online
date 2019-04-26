@@ -69,29 +69,42 @@ class CombatsController < ApplicationController
   end
 
   def terminate
+    hero_turn_end = false
+
     @board.transaction do
       discard_cards
       # For debug purpose, we keep combats.
       # destroy_combat
 
       if @combat_result.hero_defeated
-        
+
+        @board.advance_lowest_story_marker( random: true )
+        @hero.favor = [ @hero.favor - 1, 0 ].min
+        @hero.move_to_regional_haven
+        @hero.heal
+
+        @board.next_to_after_defeat_advance_story_marker!
+        hero_turn_end = true
       elsif @combat_result.mob_defeated
         # The hero continue his movement.
         @board.next_to_hero_movement_screen!
         @board.activate_current_hero
 
-        redirect_to hero_movement_screen_path( @hero )
       elsif @combat_result.mob_exhausted && @combat_result.hero_exhausted
+        @board.next_to_after_defeat_advance_story_marker!
+        hero_turn_end = true
+      else
+        raise "Shouldn't happen : #{@combat_result.inspect}"
+      end
 
+      if hero_turn_end
         if @board.finish_heroes_turn!(@hero) == :hero_draw_cards_screen
           redirect_to hero_draw_cards_screen_path(@hero)
         else
           redirect_to boards_path
         end
-
       else
-        raise "Shouldn't happen : #{@combat_result.inspect}"
+        redirect_to hero_movement_screen_path( @hero )
       end
     end
   end

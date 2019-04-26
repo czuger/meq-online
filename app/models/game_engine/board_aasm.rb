@@ -7,7 +7,7 @@ module GameEngine
       base.send(:aasm) do
         state :created, :initial => true
         state :waiting_for_players, :sauron_setup_screen, :edit_sauron_sauron_actions, :hero_draw_cards_screen
-        state :hero_rest_screen, :finish_hero_turn, :finish_sauron_turn
+        state :hero_rest_screen, :finish_hero_turn, :finish_sauron_turn, :after_defeat_advance_story_marker
         state :hero_movement_screen, :exploration, :play_screen_sauron_plot_cards, :after_rest_advance_story_marker
         state :combat_setup_screen_board_combats, :play_combat_card_screen_board_combats, :look_for_gollum_cards_sauron_plot_cards
 
@@ -60,11 +60,15 @@ module GameEngine
         end
 
         event :next_to_finish_hero_turn do
-          transitions :from => [:play_combat_card_screen_board_combats, :exploration], :to => :finish_hero_turn
+          transitions :from => [:after_defeat_advance_story_marker, :exploration], :to => :finish_hero_turn
         end
 
         event :next_to_finish_sauron_turn do
           transitions :from => [:edit_sauron_sauron_actions], :to => :finish_sauron_turn
+        end
+
+        event :next_to_after_defeat_advance_story_marker do
+          transitions :from => :play_combat_card_screen_board_combats, :to => :after_defeat_advance_story_marker
         end
 
       end

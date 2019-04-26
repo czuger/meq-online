@@ -292,31 +292,13 @@ class HeroesController < ApplicationController
   end
 
   def after_rest_or_heal
-    if advance_lowest_story_marker
+    if @board.advance_lowest_story_marker
       @board.next_to_hero_movement_screen!
       redirect_to hero_movement_screen_path(@actor)
     else
       @board.next_to_after_rest_advance_story_marker!
       redirect_to hero_after_rest_advance_story_marker_screen_path(@actor)
     end
-  end
-
-  # Try to advance the lowest story marker. If was able to do, return true, false otherwise.
-  def advance_lowest_story_marker
-    @lowest_markers = [ @board.story_marker_ring, @board.story_marker_conquest, @board.story_marker_corruption ]
-    @min_marker = @lowest_markers.min
-
-    lowests_markers_count = @lowest_markers.select{ |e| e == @min_marker }.count
-
-    # If we have more than one lowest markers, we will have to ask to player
-    return false if lowests_markers_count > 1
-
-    @board.story_marker_ring += 1 if @board.story_marker_ring == @min_marker
-    @board.story_marker_conquest += 1 if @board.story_marker_conquest == @min_marker
-    @board.story_marker_corruption += 1 if @board.story_marker_corruption == @min_marker
-    @board.save!
-
-    true
   end
 
   def set_heroes_hero_and_locations
