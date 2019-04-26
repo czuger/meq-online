@@ -53,6 +53,15 @@ group :development do
   gem 'rmagick'
   gem 'bullet'
   gem 'traceroute'
+
+  gem 'capistrano', '>= 3.11'
+  gem 'capistrano-rails', '~> 1.3'
+  gem 'capistrano-rbenv', '~> 2.1'
+
+  gem 'capistrano3-puma', '3.1.1'
+
+  gem 'ed25519', '~> 1.2'
+  gem 'bcrypt_pbkdf', '~> 1.0'
 end
 
 group :test do
