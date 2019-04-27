@@ -25,6 +25,7 @@ module GameEngine
         hero.turn = 1
         hero.save!
 
+        # Hero turn is finished in this case
         actions_before_switch_to_sauron
 
         return false
@@ -55,7 +56,6 @@ module GameEngine
             actions_before_switch_to_sauron
           else
             # Otherwise, we start the next hero turn
-            self.next_to_finish_hero_turn!
             self.next_to_hero_draw_cards_screen!
           end
         else
@@ -81,14 +81,17 @@ module GameEngine
     def actions_before_switch_to_sauron
       # At this place we need to :
       # - Call the automated rally step
-      advance_stories_markers
 
       self.next_to_finish_hero_turn!
-      self.next_to_play_screen_sauron_plot_cards!
-      self.switch_to_sauron
-      self.turn += 1
+      advance_stories_markers
 
-      self.save!
+      unless self.finished?
+        self.next_to_play_screen_sauron_plot_cards!
+        self.switch_to_sauron
+        self.turn += 1
+
+        self.save!
+      end
     end
 
     # Set the variable current_hero to  the next current hero

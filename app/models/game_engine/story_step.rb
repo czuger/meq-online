@@ -19,6 +19,8 @@ module GameEngine
         end
         log( nil, 'story.advance', marker_name: plot.story_type, count: plot.story_advance )
       end
+
+      check_game_end
     end
 
     def story_data
@@ -46,6 +48,26 @@ module GameEngine
       OpenStruct.new( heroes_to_final: heroes_to_final, sauron_to_final: sauron_to_final,
                       sauron_to_shadowfall: sauron_to_shadowfall,
                       dominance: dominance )
+    end
+
+    def check_game_end
+      sd = story_data
+
+      if sd.sauron_to_final <= 0 || sd.sauron_to_shadowfall <= 0
+        if sd.heroes_to_final <= 0
+          self.winner = 'Equality'
+        else
+          self.winner = 'Sauron'
+        end
+        finish_game!
+      else
+        if sd.heroes_to_final <= 0
+          self.winner = 'Heroes'
+          finish_game!
+        end
+      end
+
+      self.save!
     end
 
   end

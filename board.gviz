@@ -16,6 +16,7 @@ after_rest_advance_story_marker [shape=box];
 combat_setup_screen_board_combats [shape=box];
 play_combat_card_screen_board_combats [shape=box];
 look_for_gollum_cards_sauron_plot_cards [shape=box];
+finished [shape=box];
 created -> waiting_for_players
 created -> sauron_setup_screen
 waiting_for_players -> sauron_setup_screen
@@ -26,6 +27,7 @@ hero_rest_screen -> after_rest_advance_story_marker
 hero_rest_screen -> hero_movement_screen
 finish_hero_turn -> hero_draw_cards_screen
 finish_hero_turn -> play_screen_sauron_plot_cards
+finish_hero_turn -> finished
 finish_sauron_turn -> hero_draw_cards_screen
 after_defeat_advance_story_marker -> finish_hero_turn
 hero_movement_screen -> combat_setup_screen_board_combats

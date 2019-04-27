@@ -10,6 +10,9 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     @sauron = create( :sauron, user: @user, board: @board )
     @board.users << @user
 
+    @board.current_hero = @hero
+    @board.save!
+
     $google_auth_hash[:uid] = @user.uid
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new $google_auth_hash
     get '/auth/google_oauth2'
@@ -138,59 +141,57 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to combat_setup_screen_board_combats_url(@board)
   end
 
-  # test 'should POST draw_cards' do
-  #   post hero_draw_cards_url( @hero )
-  #   assert_redirected_to hero_url(@hero)
-  # end
+  test 'end game with heroes victory' do
+    @board.aasm_state = :exploration
+    @board.story_marker_heroes = 16
+    @board.save!
 
-  # test 'should get heal' do
-  #   get hero_heal_url( @hero )
-  #   assert_redirected_to hero_url(@hero)
-  # end
+    @hero.turn = 2
+    @hero.save!
 
-  # test 'should get rest' do
-  #   get hero_rest_url( @hero )
-  #   assert_redirected_to hero_url(@hero)
-  # end
+    get hero_exploration_finished_url( @hero )
 
-  # test 'should POST move' do
-  #   post hero_move_url( @hero, params: { move_to: :the_grey_havens, card_used: 1 } )
-  #   assert_redirected_to hero_url(@hero)
-  # end
+    assert @board.reload.finished?
+    assert_equal 'Heroes', @board.winner
 
-  # test 'should get new' do
-  #   get new_hero_url
-  #   assert_response :success
-  # end
+    assert_redirected_to boards_url
+  end
 
-  # test 'should create hero' do
-  #   assert_difference('Hero.count') do
-  #     post board_heros_url( @board ), params: { hero: { agility: @hero.agility, damage_pool: @hero.damage_pool, fortitude: @hero.fortitude, life_pool: @hero.life_pool, location: @hero.location, name_code: @hero.name_code, rest_pool: @hero.rest_pool, strength: @hero.strength, wisdom: @hero.wisdom } }
-  #   end
-  #
-  #   assert_redirected_to hero_url(Hero.last)
-  # end
+  test 'end game with sauron victory' do
+    @board.aasm_state = :exploration
+    @board.story_marker_conquest = 16
+    @board.save!
 
-  # test 'should show hero' do
-  #   get hero_url( @hero )
-  #   assert_response :success
-  # end
+    @hero.turn = 2
+    @hero.save!
 
-  # test 'should get edit' do
-  #   get edit_hero_url(@hero)
-  #   assert_response :success
-  # end
-  #
-  # test 'should update hero' do
-  #   patch hero_url(@hero), params: { hero: { agility: @hero.agility, damage_pool: @hero.damage_pool, fortitude: @hero.fortitude, life_pool: @hero.life_pool, location: @hero.location, name_code: @hero.name_code, rest_pool: @hero.rest_pool, strength: @hero.strength, wisdom: @hero.wisdom } }
-  #   assert_redirected_to hero_url(@hero)
-  # end
-  #
-  # test 'should destroy hero' do
-  #   assert_difference('Hero.count', -1) do
-  #     delete hero_url(@hero)
-  #   end
-  #
-  #   assert_redirected_to heros_url
-  # end
+    create( :conquest_plot, board: @board )
+
+    get hero_exploration_finished_url( @hero )
+
+    assert @board.reload.finished?
+    assert_equal 'Sauron', @board.winner
+
+    assert_redirected_to boards_url
+  end
+
+  test 'end game with equality' do
+    @board.aasm_state = :exploration
+    @board.story_marker_conquest = 16
+    @board.story_marker_heroes = 16
+    @board.save!
+
+    @hero.turn = 2
+    @hero.save!
+
+    create( :conquest_plot, board: @board )
+
+    get hero_exploration_finished_url( @hero )
+
+    assert @board.reload.finished?
+    assert_equal 'Equality', @board.winner
+
+    assert_redirected_to boards_url
+  end
+
 end
