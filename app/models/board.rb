@@ -40,6 +40,8 @@ class Board < ApplicationRecord
         if monster_at_location.code == 'nothing'
           log( actor, 'combat.encounter_nothing', location: actor.location, hero: actor.name )
 
+          monster_at_location.destroy!
+
           :empty
         else
           create_combat( actor, monster_at_location )

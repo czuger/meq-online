@@ -141,6 +141,17 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to combat_setup_screen_board_combats_url(@board)
   end
 
+  test 'after movement, if monster was nothing, should go to exploration screen' do
+    @board.aasm_state = :hero_movement_screen
+    @board.save!
+
+    @board.create_monster( :nothing, :old_forest, :monsters_pool_orange )
+
+    post hero_move_url( @hero, params: { button: :old_forest, selected_cards: @hero.hand.first } )
+    assert_redirected_to hero_movement_screen_url(@hero)
+    refute @board.monsters.where( location: :old_forest, code: :nothing ).exists?
+  end
+
   test 'end game with heroes victory' do
     @board.aasm_state = :exploration
     @board.story_marker_heroes = 16

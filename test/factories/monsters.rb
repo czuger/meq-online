@@ -69,5 +69,17 @@ FactoryBot.define do
       life { 8 }
     end
 
+    factory :nothing do
+      hand { [] }
+      attack_deck { :none }
+
+      name { 'Nothing' }
+      code { 'nothing' }
+
+      fortitude { 0 }
+      strength { 0 }
+      life { 0 }
+    end
+
   end
 end
