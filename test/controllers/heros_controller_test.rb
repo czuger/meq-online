@@ -206,4 +206,36 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_select 'td', 'Argalad'
   end
 
+  test 'should create the rinwraith and gothmog' do
+    @board.aasm_state = :exploration
+    @board.story_marker_heroes = 6
+    @board.save!
+
+    @hero.turn = 2
+    @hero.save!
+
+    refute @board.mobs.where( code: :ringwraiths ).exists?
+    refute @board.mobs.where( code: :gothmog ).exists?
+
+    get hero_exploration_finished_url( @hero )
+
+    assert @board.mobs.where( code: :ringwraiths ).exists?
+    assert @board.mobs.where( code: :gothmog ).exists?
+  end
+
+  test 'should create the witch-king' do
+    @board.aasm_state = :exploration
+    @board.story_marker_heroes = 12
+    @board.save!
+
+    @hero.turn = 2
+    @hero.save!
+
+    refute @board.mobs.where( code: :witch_king ).exists?
+
+    get hero_exploration_finished_url( @hero )
+
+    assert @board.mobs.where( code: :witch_king ).exists?
+  end
+
 end

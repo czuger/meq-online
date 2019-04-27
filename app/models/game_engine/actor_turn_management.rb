@@ -54,9 +54,6 @@ module GameEngine
           unless switch_to_next_hero
             # If all heroes have played, we switch to sauron turn
             actions_before_switch_to_sauron
-          else
-            # Otherwise, we start the next hero turn
-            self.next_to_hero_draw_cards_screen!
           end
         else
           # If we have only one player
@@ -83,7 +80,20 @@ module GameEngine
       # - Call the automated rally step
 
       self.next_to_finish_hero_turn!
+
+      old_stage = self.story_stage
       advance_stories_markers
+
+      new_stage = self.story_stage
+      if new_stage > old_stage
+        if new_stage == 2
+          create_monster( :gothmog, :mount_gundabad )
+          create_monster( :ringwraiths, :minas_morgul )
+        end
+        if new_stage == 3
+          create_monster( :witch_king, :minas_morgul )
+        end
+      end
 
       unless self.finished?
         self.next_to_play_screen_sauron_plot_cards!
@@ -114,6 +124,9 @@ module GameEngine
           self.save!
 
           self.activate_current_hero
+
+          self.next_to_finish_hero_turn!
+          self.next_to_hero_draw_cards_screen!
         else
           result = false
         end

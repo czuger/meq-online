@@ -77,8 +77,8 @@ class Board < ApplicationRecord
     if monster_code.to_s == 'nothing'
       monster_data = OpenStruct.new( fortitude: -1, strength: -1, life: -1, name: 'Nothing', attack_deck: :none )
     else
-      game_data_monsters ||= GameData::Mobs.new
-      monster_data = game_data_monsters.get(monster_code)
+      @game_data_monsters ||= GameData::Mobs.new
+      monster_data = @game_data_monsters.get(monster_code)
     end
 
     monster_hash = { location: location, code: monster_code, fortitude: monster_data.fortitude,
@@ -103,37 +103,6 @@ class Board < ApplicationRecord
 
   def get_tokens_at_location(location)
     GameEngine::DataAtLocation.new.gather(self).tokens[location.to_s]
-  end
-
-  #
-  # Story marker method
-  #
-  # Try to advance the lowest story marker. If was able to do, return true, false otherwise.
-  def advance_lowest_story_marker( random: false )
-    @lowest_markers = [ self.story_marker_ring, self.story_marker_conquest, self.story_marker_corruption ]
-    @min_marker = @lowest_markers.min
-
-    lowests_markers_count = @lowest_markers.select{ |e| e == @min_marker }.count
-
-    # If we have more than one lowest markers, we will have to ask to player
-    unless random
-      return false if lowests_markers_count > 1
-    end
-
-    self.story_marker_ring += 1 if self.story_marker_ring == @min_marker
-    return true if self.story_marker_ring == @min_marker
-
-    self.story_marker_conquest += 1 if self.story_marker_conquest == @min_marker
-    return true if self.story_marker_conquest == @min_marker
-
-    self.story_marker_corruption += 1 if self.story_marker_corruption == @min_marker
-    self.save!
-
-    true
-  end
-
-  def story_stage
-    ( [ [ story_marker_heroes, story_marker_ring, story_marker_conquest, story_marker_corruption ].max - 1, 0].max / 6 ) + 1
   end
 
   #

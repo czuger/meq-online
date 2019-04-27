@@ -4,6 +4,37 @@
 module GameEngine
   module StoryStep
 
+    #
+    # Story marker method
+    #
+    # Try to advance the lowest story marker. If was able to do, return true, false otherwise.
+    def advance_lowest_story_marker( random: false )
+      @lowest_markers = [ self.story_marker_ring, self.story_marker_conquest, self.story_marker_corruption ]
+      @min_marker = @lowest_markers.min
+
+      lowests_markers_count = @lowest_markers.select{ |e| e == @min_marker }.count
+
+      # If we have more than one lowest markers, we will have to ask to player
+      unless random
+        return false if lowests_markers_count > 1
+      end
+
+      self.story_marker_ring += 1 if self.story_marker_ring == @min_marker
+      return true if self.story_marker_ring == @min_marker
+
+      self.story_marker_conquest += 1 if self.story_marker_conquest == @min_marker
+      return true if self.story_marker_conquest == @min_marker
+
+      self.story_marker_corruption += 1 if self.story_marker_corruption == @min_marker
+      self.save!
+
+      true
+    end
+
+    def story_stage
+      ( [ [ story_marker_heroes, story_marker_ring, story_marker_conquest, story_marker_corruption ].max - 1, 0].max / 6 ) + 1
+    end
+
     def advance_stories_markers
       self.story_marker_heroes += 2
       log( nil, 'story.advance', marker_name: :heroes, count: 2 )
