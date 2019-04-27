@@ -155,6 +155,10 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Heroes', @board.winner
 
     assert_redirected_to boards_url
+    follow_redirect!
+
+    assert_select 'td', 'Sauron'
+    assert_select 'td', 'Argalad'
   end
 
   test 'end game with sauron victory' do
@@ -173,6 +177,10 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Sauron', @board.winner
 
     assert_redirected_to boards_url
+    follow_redirect!
+
+    assert_select 'td', 'Sauron'
+    assert_select 'td', 'Argalad'
   end
 
   test 'end game with equality' do
@@ -192,6 +200,10 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'Equality', @board.winner
 
     assert_redirected_to boards_url
+    follow_redirect!
+
+    assert_select 'td', 'Sauron'
+    assert_select 'td', 'Argalad'
   end
 
 end
