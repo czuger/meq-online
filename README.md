@@ -6,4 +6,4 @@
 
 An online version of the game middle earth quest. Currently under development
 
-Pre-alpha is about to come.
+Pre-alpha version available https://meq-online.ieroe.com
