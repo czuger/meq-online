@@ -11,8 +11,10 @@ class PlotCardsController < ApplicationController
   end
 
   def draw
-    ge = GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME, discard_card_action: :back_to_bottom )
-    ge.draw_cards(params[:nb_cards])
+    if @actor.drawn_plot_cards.empty?
+      ge = GameEngine::Deck.new(current_user, @board, @actor, DECK_NAME, discard_card_action: :back_to_bottom )
+      ge.draw_cards(params[:nb_cards])
+    end
 
     redirect_to keep_screen_sauron_plot_cards_path(@actor)
   end
