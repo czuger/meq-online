@@ -53,3 +53,10 @@
         Dominance
         %span.badge.badge-light
           = @dominance.to_s.humanize
+
+  .row.my-4
+    .col-3
+      %button.btn.btn-primary.btn-block{ type: :button, disabled: true }
+        Story stage
+        %span.badge.badge-light
+          = @board.story_stage

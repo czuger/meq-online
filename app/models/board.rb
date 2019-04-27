@@ -132,6 +132,10 @@ class Board < ApplicationRecord
     true
   end
 
+  def story_stage
+    ( [ [ story_marker_heroes, story_marker_ring, story_marker_conquest, story_marker_corruption ].max - 1, 0].max / 6 ) + 1
+  end
+
   #
   # Log methods
   #
