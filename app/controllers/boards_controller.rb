@@ -107,26 +107,7 @@ class BoardsController < ApplicationController
   end
 
   def story_screen
-    @heroes_to_final = 18 - @board.story_marker_heroes
-
-    sauron_highest_marker = [ @board.story_marker_ring, @board.story_marker_conquest, @board.story_marker_corruption ].max
-    @sauron_to_final = 18 - sauron_highest_marker
-
-    shadowfall_points = 0
-    %w( story_marker_ring story_marker_conquest story_marker_corruption ).each do |sm|
-      shadowfall_points += [ @board.send( sm ), 10 ].min
-    end
-    @sauron_to_shadowfall = 30 - shadowfall_points
-
-    @sauron_dominance = [ @sauron_to_final, @sauron_to_shadowfall ].min
-
-    if @heroes_to_final < @sauron_dominance
-      @dominance = :heroes
-    elsif @heroes_to_final > @sauron_dominance
-      @dominance = :sauron
-    else
-      @dominance = :nobody
-    end
+    @story_data = @board.story_data
   end
 
   private
