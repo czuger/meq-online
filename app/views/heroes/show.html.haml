@@ -6,13 +6,13 @@
   %h3 Hand
   = render partial: 'cards_hand'
 
-  %hr
-  %h3 Quest and objectives
-
-  = image_tag "hero_cards/quests/standard/#{@actor.name_code}-#{@actor.current_quest}", class: 'big-card'
-
-  - if GameData::Objectives.heroes_objective_card(@board)
-    = image_tag GameData::Objectives.heroes_objective_card(@board), id: 'objectives-card'
+  -#%hr
+  -#%h3 Quest and objectives
+  -#
+  -#= image_tag "hero_cards/quests/standard/#{@actor.name_code}-#{@actor.current_quest}", class: 'big-card'
+  -#
+  -#- if GameData::Objectives.heroes_objective_card(@board)
+  -#  = image_tag GameData::Objectives.heroes_objective_card(@board), id: 'objectives-card'
 
   %hr
 
