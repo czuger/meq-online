@@ -6,6 +6,8 @@
     %thead
       %tr
         %th Heroes
+        %th Turn
+        %th Winner
         %th
         %th
         %th
@@ -19,7 +21,12 @@
       - @boards.each do |board|
         %tr
           %td= players_list(board)
-          %td= board.aasm_state.humanize
+          %td= board.turn
+          %td
+            - if board.finished?
+              = board.winner
+            - else
+              Running
           %td= link_to( 'Join', board_join_path(board) ) if board.current_heroes_count < board.max_heroes_count || !board.sauron_created
 
           %td= sauron_link( board )
