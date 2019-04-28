@@ -17,6 +17,11 @@ FactoryBot.define do
     active { true }
     playing_order { 0 }
 
+    factory :eometh do
+      name_code {'eometh'}
+      name {'Eometh'}
+    end
+
     after(:create) do |hero|
       cards = GameData::Heroes.new.get_deck( :argalad )
       hero.hand = cards.shift( hero.fortitude )

@@ -253,11 +253,12 @@ class HeroesController < ApplicationController
       # We switch to the first hero to play an switch to sauron shadow card play turn
       @board.transaction do
         @board.set_first_hero_to_play
+
         @board.next_to_hero_rest_screen!
       end
     end
 
-    redirect_to hero_rest_screen_path(@actor)
+    redirect_to boards_path
   end
 
   private
@@ -268,7 +269,7 @@ class HeroesController < ApplicationController
       @board.hero_end_turn_operations(@actor)
 
       if @board.current_heroes_count > 1
-        @board.finish_heroes_turn!
+        @board.finish_heroes_turn!(@actor)
         redirect_to boards_path
       else
         # If we have only one player
@@ -310,6 +311,10 @@ class HeroesController < ApplicationController
     @locations = GameData::LocationsPaths.new.get_connected_locations_for_select(@last_location, @actor.items['horse'])
 
     @selectable_card_class = 'selectable-card-selection-multiple'
+  end
+
+  def check_for_ambush
+
   end
 
   def validate_movement( selected_cards )

@@ -44,6 +44,32 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to hero_exploration_screen_url( @hero )
   end
 
+  test 'should finish drawing cards and be redirected to boards_path' do
+    @board.aasm_state = 'hero_draw_cards_screen'
+    @board.save!
+
+    get hero_draw_cards_finished_url( @hero )
+    assert_redirected_to boards_path
+    follow_redirect!
+
+    assert_select 'td', 'Sauron'
+    assert_select "a[href=?]", hero_rest_screen_path(@hero)
+  end
+
+  test 'should finish drawing cards and be redirected to boards_path if we have 2 heroes' do
+    @board.aasm_state = 'hero_draw_cards_screen'
+    @board.save!
+
+    @eometh = create( :eometh, board: @board, user: @user )
+
+    get hero_draw_cards_finished_url( @hero )
+    assert_redirected_to boards_path
+    follow_redirect!
+
+    assert_select 'td', 'Sauron'
+    assert_select "a[href=?]", hero_draw_cards_screen_path(@eometh)
+  end
+
   test 'should rest and be redirected to advance story marker screen' do
     @board.aasm_state = :hero_rest_screen
     @board.save!
