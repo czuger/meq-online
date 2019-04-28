@@ -23,6 +23,7 @@ waiting_for_players -> sauron_setup_screen
 sauron_setup_screen -> edit_sauron_sauron_actions
 edit_sauron_sauron_actions -> finish_sauron_turn
 hero_draw_cards_screen -> hero_rest_screen
+hero_draw_cards_screen -> combat_setup_screen_board_combats
 hero_rest_screen -> after_rest_advance_story_marker
 hero_rest_screen -> hero_movement_screen
 finish_hero_turn -> hero_draw_cards_screen

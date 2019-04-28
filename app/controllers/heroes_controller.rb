@@ -253,8 +253,7 @@ class HeroesController < ApplicationController
       # We switch to the first hero to play an switch to sauron shadow card play turn
       @board.transaction do
         @board.set_first_hero_to_play
-
-        @board.next_to_hero_rest_screen!
+        check_for_ambush
       end
     end
 
@@ -314,7 +313,12 @@ class HeroesController < ApplicationController
   end
 
   def check_for_ambush
-
+    location_encounters = @board.check_location_encounters(@actor)
+    if location_encounters == :monster
+      @board.next_to_combat_setup_screen_board_combats!
+    else
+      @board.next_to_hero_rest_screen!
+    end
   end
 
   def validate_movement( selected_cards )

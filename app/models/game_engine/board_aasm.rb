@@ -41,7 +41,7 @@ module GameEngine
         end
 
         event :next_to_combat_setup_screen_board_combats do
-          transitions :from => :hero_movement_screen, :to => :combat_setup_screen_board_combats
+          transitions :from => [:hero_movement_screen, :hero_draw_cards_screen], :to => :combat_setup_screen_board_combats
         end
 
         event :next_to_play_combat_card_screen_board_combats do

@@ -56,6 +56,23 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", hero_rest_screen_path(@hero)
   end
 
+  test 'should finish drawing cards and be redirected to boards_path but prepared for combat' do
+    @board.aasm_state = 'hero_draw_cards_screen'
+    @board.save!
+
+    create( :cave_troll, location: @hero.location, board: @board )
+
+    get hero_draw_cards_finished_url( @hero )
+    assert_redirected_to boards_path
+    follow_redirect!
+
+    puts @response.body
+
+    assert_select 'td', 'Sauron'
+    assert_select "a[href=?]", combat_setup_screen_board_combats_path(@board)
+  end
+
+
   test 'should finish drawing cards and be redirected to boards_path if we have 2 heroes' do
     @board.aasm_state = 'hero_draw_cards_screen'
     @board.save!
