@@ -17,6 +17,7 @@ combat_setup_screen_board_combats [shape=box];
 play_combat_card_screen_board_combats [shape=box];
 look_for_gollum_cards_sauron_plot_cards [shape=box];
 finished [shape=box];
+cards_loss_screen_board_combats [shape=box];
 created -> waiting_for_players
 created -> sauron_setup_screen
 waiting_for_players -> sauron_setup_screen
@@ -41,6 +42,8 @@ play_screen_sauron_plot_cards -> look_for_gollum_cards_sauron_plot_cards
 after_rest_advance_story_marker -> hero_rest_screen
 combat_setup_screen_board_combats -> play_combat_card_screen_board_combats
 play_combat_card_screen_board_combats -> hero_movement_screen
-play_combat_card_screen_board_combats -> after_defeat_advance_story_marker
+play_combat_card_screen_board_combats -> cards_loss_screen_board_combats
 look_for_gollum_cards_sauron_plot_cards -> play_screen_sauron_plot_cards
+cards_loss_screen_board_combats -> play_combat_card_screen_board_combats
+cards_loss_screen_board_combats -> after_defeat_advance_story_marker
 }

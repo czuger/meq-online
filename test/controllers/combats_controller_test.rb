@@ -96,15 +96,15 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
 
   test 'if hero and mob play, should resolve combat' do
 
-    post play_combat_card_hero_board_combats_url(@board, selected_card: @hero.hand.sample)
+    post play_combat_card_hero_board_combats_url(@board, selected_card: @hero.hand.first)
     assert_redirected_to boards_url
 
     assert_difference 'CombatCardPlayed.count', 2 do
-      post play_combat_card_mob_board_combats_url(@board, selected_card: @mob.hand.sample)
+      post play_combat_card_mob_board_combats_url(@board, selected_card: @mob.hand.first)
     end
-    assert_redirected_to board_combats_url(@board)
+    assert_redirected_to cards_loss_screen_board_combats_url(@board)
 
-    follow_redirect!
+    # follow_redirect!
   end
 
   test 'On mob and hero exhaustion, should switch to hero next turn' do
@@ -202,9 +202,10 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
   # TODO : add a test with a hero linked to another user.
 
   test 'On hero defeat, should switch to hero next turn' do
-    @hero.hand << @hero_aimed_shot
+    @hero.hand = [ @hero_aimed_shot ]
     @hero.life_pool = [ 1 ]
     @hero.save!
+
     @mob.hand << @mob_aimed_shot
     @mob.save!
 

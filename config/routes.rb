@@ -119,6 +119,9 @@ Rails.application.routes.draw do
       get :combat_setup_screen
       post :combat_setup
 
+      get :cards_loss_screen
+      post :cards_loss
+
       get ':actor_id/play_combat_card_screen', action: :play_combat_card_screen, as: :play_combat_card_screen
       post :play_combat_card_hero
       post :play_combat_card_mob

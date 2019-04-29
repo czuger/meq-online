@@ -37,6 +37,29 @@ class CombatsController < ApplicationController
     end
   end
 
+  def cards_loss_screen
+    @loss_mandatory = @hero.temporary_damages > 0 && @hero.life_pool.count <= 0
+  end
+
+  def cards_loss
+    selected_cards = params[:selected_cards].split(',').map(&:to_i)
+
+    required_cards = selected_cards.shift( @hero.temporary_damages )
+
+    @hero.temporary_damages -= required_cards.count
+    @hero.hand_to_life( selected_cards )
+
+    @hero.apply_temporary_damages
+    @hero.save!
+
+    if @hero.temporary_damages >= 0
+      redirect_to cards_loss_screen_board_combats_path(@board)
+    else
+      @board.next_to_play_combat_card_screen_board_combats!
+      redirect_to board_combats_path(@board)
+    end
+  end
+
   def apply_damages
   end
 
@@ -83,6 +106,7 @@ class CombatsController < ApplicationController
         @hero.move_to_regional_haven
         @hero.heal
 
+        @board.next_to_cards_loss_screen_board_combats!
         @board.next_to_after_defeat_advance_story_marker!
         hero_turn_end = true
       elsif @combat_result.mob_defeated
@@ -91,6 +115,7 @@ class CombatsController < ApplicationController
         @board.activate_current_hero
 
       elsif @combat_result.mob_exhausted && @combat_result.hero_exhausted
+        @board.next_to_cards_loss_screen_board_combats!
         @board.next_to_after_defeat_advance_story_marker!
         hero_turn_end = true
       else
@@ -136,7 +161,7 @@ class CombatsController < ApplicationController
   end
 
   def set_combat_result
-    @hero_life = @hero.life_pool.count # + @hero.hand.count
+    @hero_life = @hero.life_pool.count + @hero.hand.count
     @combat_result = OpenStruct.new( mob_defeated: @mob.life <= 0, hero_defeated: @hero_life <= 0,
                                      mob_exhausted: @combat.mob_exhausted, hero_exhausted: @combat.hero_exhausted )
 
@@ -148,29 +173,25 @@ class CombatsController < ApplicationController
     if @hero.active == false && @board.sauron.active == false
 
       @combat.reveal_secretly_played_cards
-      redirect_to board_combats_path(@board)
-    else
 
+      if @hero.temporary_damages > 0
+        if @hero.temporary_damages < @hero.life_pool.count + @hero.hand.count
+          @board.next_to_cards_loss_screen_board_combats!
+          redirect_to cards_loss_screen_board_combats_path(@board)
+        else
+          # The hero has been defeated.
+          @hero.damage_pool += @hero.life_pool + @hero.hand
+          @hero.life_pool.clear
+          @hero.hand.clear
+          @hero.save!
+          redirect_to board_combats_path(@board)
+        end
+      else
+        redirect_to board_combats_path(@board)
+      end
+    else
       redirect_to boards_path
     end
-  end
-
-  # Monster defeated -> Remove monster, Continue movement
-  # Hero defeated -> Remove monster, Place influence, Stop movement, Heal
-  # Both defeated -> Remove monster, Stop movement, Heal
-  # Monster exauhsted -> Continue combat
-  # Hero exauhsted -> Continue combat
-  # Both exauhsted -> Remove monster, Place influence, Stop movement
-  # Else -> Continue combat
-  def resolve_combat(result)
-    discard_cards
-
-    # This will be a step for Sauron
-    place_influence_amount unless result.mob_defeated
-
-    # This will be a step for Sauron
-    defeate_hero if result.hero_defeated
-
   end
 
   def destroy_combat

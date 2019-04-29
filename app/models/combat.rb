@@ -43,11 +43,12 @@ class Combat < ApplicationRecord
     @current_hero_card.call_power( :after, call_power_params_hero )
     @current_mob_card.call_power( :after, call_power_params_mob )
 
-    hero.save!
-    mob.save!
-
     board.set_hero_activation_state( hero, true ) unless hero_exhausted
     board.set_sauron_activation_state( true ) unless mob_exhausted
+
+    hero.save!
+    mob.save!
+    self.save!
   end
 
   def set_current_and_previous_card
@@ -99,8 +100,9 @@ class Combat < ApplicationRecord
     mob_damages = [mob_damages,0].max
     hero_damages = [hero_damages,0].max
 
-    hero.deal_damages( mob_damages ) unless @current_mob_card.cancelled
-    mob.deal_damages( hero_damages ) unless @current_hero_card.cancelled
+    # hero.deal_damages( self, mob_damages ) unless @current_mob_card.cancelled
+    hero.deal_damages(mob_damages ) unless @current_mob_card.cancelled
+    mob.deal_damages(hero_damages ) unless @current_hero_card.cancelled
   end
   
   def exhaustion_check

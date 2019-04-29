@@ -32,11 +32,9 @@ class CombatExhaustionTest < ActiveSupport::TestCase
     @board.combat.mob_secret_played_card = 10
     @board.combat.save!
 
-    assert_no_difference '@hero.reload.life_pool.count' do
-      assert_no_difference '@hero.damage_pool.count' do
-        assert_no_difference '@mob.reload.life' do
-          @board.combat.reveal_secretly_played_cards
-        end
+    assert_no_difference '@hero.reload.temporary_damages' do
+      assert_no_difference '@mob.reload.life' do
+        @board.combat.reveal_secretly_played_cards
       end
     end
 
@@ -54,11 +52,9 @@ class CombatExhaustionTest < ActiveSupport::TestCase
     @mob.strength = 50
     @mob.save!
 
-    assert_difference '@hero.reload.life_pool.count', -5 do
-      assert_difference '@hero.damage_pool.count', 5 do
-        assert_no_difference '@mob.reload.life' do
-          @board.combat.reveal_secretly_played_cards
-        end
+    assert_difference '@hero.reload.temporary_damages', 5 do
+      assert_no_difference '@mob.reload.life' do
+        @board.combat.reveal_secretly_played_cards
       end
     end
 
@@ -67,11 +63,9 @@ class CombatExhaustionTest < ActiveSupport::TestCase
     @board.combat.mob_secret_played_card = 10
     @board.combat.save!
 
-    assert_difference '@hero.reload.life_pool.count', -5 do
-      assert_difference '@hero.damage_pool.count', 5 do
-        assert_no_difference '@mob.reload.life' do
-          @board.combat.reveal_secretly_played_cards
-        end
+    assert_difference '@hero.reload.temporary_damages', 5 do
+      assert_no_difference '@mob.reload.life' do
+        @board.combat.reveal_secretly_played_cards
       end
     end
 
@@ -86,11 +80,9 @@ class CombatExhaustionTest < ActiveSupport::TestCase
     @board.combat.mob_secret_played_card = 10
     @board.combat.save!
 
-    assert_no_difference '@hero.reload.life_pool.count' do
-      assert_no_difference '@hero.damage_pool.count' do
-        assert_difference '@mob.reload.life', -3 do
-          @board.combat.reveal_secretly_played_cards
-        end
+    assert_no_difference '@hero.reload.temporary_damages' do
+      assert_difference '@mob.reload.life', -3 do
+        @board.combat.reveal_secretly_played_cards
       end
     end
 

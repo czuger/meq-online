@@ -28,13 +28,13 @@ class CombatMobsPowersTest < ActiveSupport::TestCase
     @board.combat.mob_secret_played_card = 9
     @board.combat.save!
 
-    assert_difference '@hero.reload.life_pool.count', -1 do
-      assert_difference '@hero.damage_pool.count', 1 do
+
+      assert_difference '@hero.reload.temporary_damages', 1 do
         assert_difference '@mob.reload.life', 0 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
   end
 
   test 'snaga power' do
@@ -46,13 +46,13 @@ class CombatMobsPowersTest < ActiveSupport::TestCase
     @board.combat.mob = mob
     @board.combat.save!
 
-    assert_difference '@hero.reload.life_pool.count', -1 do
-      assert_difference '@hero.damage_pool.count', 1 do
+
+      assert_difference '@hero.reload.temporary_damages', 1 do
         assert_difference 'mob.reload.life', 0 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
   end
 
   test 'huorn power' do
@@ -64,13 +64,13 @@ class CombatMobsPowersTest < ActiveSupport::TestCase
     @board.combat.mob = mob
     @board.combat.save!
 
-    assert_difference '@hero.reload.life_pool.count', -3 do
-      assert_difference '@hero.damage_pool.count', 3 do
+
+      assert_difference '@hero.reload.temporary_damages', 3 do
         assert_difference 'mob.reload.life', -3 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
   end
 
   test 'cave troll power' do
@@ -82,13 +82,13 @@ class CombatMobsPowersTest < ActiveSupport::TestCase
     @board.combat.mob = mob
     @board.combat.save!
 
-    assert_difference '@hero.reload.life_pool.count', -3 do
-      assert_difference '@hero.damage_pool.count', 3 do
+
+      assert_difference '@hero.reload.temporary_damages', 3 do
         assert_difference 'mob.reload.life', 0 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
   end
 
   test 'southron power' do
@@ -100,15 +100,15 @@ class CombatMobsPowersTest < ActiveSupport::TestCase
     @board.combat.mob = mob
     @board.combat.save!
 
-    assert_difference '@hero.reload.life_pool.count', -1 do
-      assert_difference '@hero.reload.damage_pool.count', 1 do
+
+      assert_difference '@hero.reload.temporary_damages', 1 do
         assert_difference 'mob.reload.life', -2 do
           assert_difference '@board.combat.reload.mob_strength_used', 2 do
             @board.combat.reveal_secretly_played_cards
           end
         end
       end
-    end
+
   end
 
   test 'southron power assert zero strength cost' do
@@ -120,15 +120,15 @@ class CombatMobsPowersTest < ActiveSupport::TestCase
     @board.combat.mob = mob
     @board.combat.save!
 
-    assert_difference '@hero.reload.life_pool.count', 0 do
-      assert_difference '@hero.reload.damage_pool.count', 0 do
+
+      assert_difference '@hero.reload.temporary_damages', 0 do
         assert_difference 'mob.reload.life', -2 do
           assert_difference '@board.combat.reload.mob_strength_used', 0 do
             @board.combat.reveal_secretly_played_cards
           end
         end
       end
-    end
+
   end
 
 end

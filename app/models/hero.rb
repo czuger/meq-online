@@ -9,10 +9,15 @@ class Hero < Actor
 
   def deal_damages( damages_amount )
     damages_amount = [ damages_amount, 0 ].max
-    life_cards_lost = self.life_pool.shift( damages_amount )
-    self.damage_pool += life_cards_lost
+
+    self.temporary_damages += damages_amount
     self.damages_taken_this_turn += damages_amount
-    self.save!
+  end
+
+  def apply_temporary_damages
+    life_cards_lost = self.life_pool.shift( self.temporary_damages )
+    self.damage_pool += life_cards_lost
+    self.temporary_damages -= life_cards_lost.count
   end
 
   #
@@ -142,7 +147,6 @@ class Hero < Actor
     end
 
     yield(cards)
-    self.save!
   end
 
 end

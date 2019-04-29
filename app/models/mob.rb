@@ -5,7 +5,6 @@ class Mob < ApplicationRecord
     damages_amount = [ damages_amount, 0 ].max
     self.life -= damages_amount
     self.damages_taken_this_turn += damages_amount
-    self.save!
   end
 
   #

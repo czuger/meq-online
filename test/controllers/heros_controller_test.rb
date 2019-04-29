@@ -66,7 +66,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to boards_path
     follow_redirect!
 
-    puts @response.body
+    # puts @response.body
 
     assert_select 'td', 'Sauron'
     assert_select "a[href=?]", combat_setup_screen_board_combats_path(@board)

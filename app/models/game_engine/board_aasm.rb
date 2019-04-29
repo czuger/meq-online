@@ -10,7 +10,7 @@ module GameEngine
         state :hero_rest_screen, :finish_hero_turn, :finish_sauron_turn, :after_defeat_advance_story_marker
         state :hero_movement_screen, :exploration, :play_screen_sauron_plot_cards, :after_rest_advance_story_marker
         state :combat_setup_screen_board_combats, :play_combat_card_screen_board_combats, :look_for_gollum_cards_sauron_plot_cards
-        state :finished
+        state :finished, :cards_loss_screen_board_combats
 
         event :wait_for_players do
           transitions :from => :created, :to => :waiting_for_players
@@ -45,7 +45,15 @@ module GameEngine
         end
 
         event :next_to_play_combat_card_screen_board_combats do
-          transitions :from => :combat_setup_screen_board_combats, :to => :play_combat_card_screen_board_combats
+          transitions :from => [:cards_loss_screen_board_combats, :combat_setup_screen_board_combats], :to => :play_combat_card_screen_board_combats
+        end
+
+        event :next_to_cards_loss_screen_board_combats do
+          transitions :from => :play_combat_card_screen_board_combats, :to => :cards_loss_screen_board_combats
+        end
+
+        event :next_to_after_defeat_advance_story_marker do
+          transitions :from => :cards_loss_screen_board_combats, :to => :after_defeat_advance_story_marker
         end
 
         event :next_to_exploration do
@@ -66,10 +74,6 @@ module GameEngine
 
         event :next_to_finish_sauron_turn do
           transitions :from => [:edit_sauron_sauron_actions], :to => :finish_sauron_turn
-        end
-
-        event :next_to_after_defeat_advance_story_marker do
-          transitions :from => :play_combat_card_screen_board_combats, :to => :after_defeat_advance_story_marker
         end
 
         event :finish_game do

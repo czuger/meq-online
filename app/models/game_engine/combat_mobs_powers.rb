@@ -15,7 +15,7 @@ module GameEngine
     #
     def orc( params )
       if params.op_current.card_type == 'melee' && params.me_current.card_type == 'melee'
-        params.op.deal_damages( 1 )
+        params.op.deal_damages(1)
       end
     end
 

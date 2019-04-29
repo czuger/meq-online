@@ -33,13 +33,13 @@ class CombatScenariosTest < ActiveSupport::TestCase
     @mob.hand = @game_data_mobs_cards.get_deck( 'zealot' )
     @mob.save!
 
-    assert_difference '@hero.reload.life_pool.count', -2 do
-      assert_difference '@hero.damage_pool.count', 2 do
+
+      assert_difference '@hero.reload.temporary_damages', 2 do
         assert_difference '@mob.reload.life', -2 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
   end
 
   test 'attack of opportunity vs charge' do
@@ -51,13 +51,13 @@ class CombatScenariosTest < ActiveSupport::TestCase
     @mob.hand = @game_data_mobs_cards.get_deck( 'zealot' )
     @mob.save!
 
-    assert_difference '@hero.reload.life_pool.count', -2 do
-      assert_difference '@hero.damage_pool.count', 2 do
+
+      assert_difference '@hero.reload.temporary_damages', 2 do
         assert_difference '@mob.reload.life', -7 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
   end
 
   test 'charge vs aimed shot' do
@@ -65,13 +65,13 @@ class CombatScenariosTest < ActiveSupport::TestCase
     @board.combat.mob_secret_played_card = 7
     @board.combat.save!
 
-    assert_difference '@hero.reload.life_pool.count', -2 do
-      assert_difference '@hero.damage_pool.count', 2 do
+
+      assert_difference '@hero.reload.temporary_damages', 2 do
         assert_no_difference '@mob.reload.life' do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
   end
 
   test 'fall_back vs attack of_opportunity, then parry vs attack of_opportunity' do
@@ -82,25 +82,25 @@ class CombatScenariosTest < ActiveSupport::TestCase
     @mob.strength = 50
     @mob.save!
 
-    assert_difference '@hero.reload.life_pool.count', -1 do
-      assert_difference '@hero.damage_pool.count', 1 do
+
+      assert_difference '@hero.reload.temporary_damages', 1 do
         assert_difference '@mob.reload.life', -1 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
 
     @board.combat.hero_secret_played_card = 6
     @board.combat.mob_secret_played_card = 10
     @board.combat.save!
 
-    assert_no_difference '@hero.reload.life_pool.count' do
-      assert_no_difference '@hero.damage_pool.count' do
+
+      assert_no_difference '@hero.reload.temporary_damages' do
         assert_difference '@mob.reload.life', -1 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
   end
 
   test 'Mouth of Sauron example 1' do
@@ -115,25 +115,25 @@ class CombatScenariosTest < ActiveSupport::TestCase
     @board.combat.mob_secret_played_card = @game_data_mobs_cards.get_card_number_by_name( 'zealot', 'Ranged Strike')
     @board.combat.save!
 
-    assert_difference '@hero.reload.life_pool.count', -1 do
-      assert_difference '@hero.damage_pool.count', 1 do
+
+      assert_difference '@hero.reload.temporary_damages', 1 do
         assert_difference 'mob.reload.life', -1 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
 
     @board.combat.hero_secret_played_card = @game_data_heroes.get_card_number_by_name( :argalad, 'Aimed Shot')
     @board.combat.mob_secret_played_card = @game_data_mobs_cards.get_card_number_by_name( 'zealot', 'Reckless')
     @board.combat.save!
 
-    assert_difference '@hero.reload.life_pool.count', -5 do
-      assert_difference '@hero.damage_pool.count', 5 do
+
+      assert_difference '@hero.reload.temporary_damages', 5 do
         assert_difference 'mob.reload.life', 0 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
   end
 
 end

@@ -213,18 +213,6 @@ class HeroesController < ApplicationController
   def encounter
   end
 
-  ###
-
-  # def take_damages
-  #   damage_amount = params[:damage_amount].to_i
-  #   damages_taken_from_life_pool = @actor.life_pool.shift(damage_amount)
-  #   @actor.damage_pool += damages_taken_from_life_pool
-  #   rest_damages = damage_amount - damages_taken_from_life_pool.count
-  #   @actor.damage_pool += @actor.hand.shift(rest_damages)
-  #   @actor.save!
-  #   redirect_to @actor
-  # end
-
   def draw_cards_screen
     # nb_cards_to_draw = params[:nb_cards].to_i
     @cards = @actor.hand

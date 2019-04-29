@@ -35,39 +35,38 @@ class CombatManuTest < ActiveSupport::TestCase
     @board.combat.save!
 
     hero_damages = -0
-    assert_difference '@hero.reload.life_pool.count', hero_damages do
-      assert_difference '@hero.damage_pool.count', -hero_damages do
+
+      assert_difference '@hero.reload.temporary_damages', -hero_damages do
         assert_difference '@mob.reload.life', -2 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
 
     @board.combat.hero_secret_played_card = 6
     @board.combat.mob_secret_played_card = 7
     @board.combat.save!
 
     hero_damages = -1
-    assert_difference '@hero.reload.life_pool.count', hero_damages do
-      assert_difference '@hero.damage_pool.count', -hero_damages do
+
+      assert_difference '@hero.reload.temporary_damages', -hero_damages do
         assert_difference '@mob.reload.life', 0 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
 
     @board.combat.hero_secret_played_card = 4
     @board.combat.mob_secret_played_card = 10
     @board.combat.save!
 
     hero_damages = -5
-    assert_difference '@hero.reload.life_pool.count', hero_damages do
-      assert_difference '@hero.damage_pool.count', -hero_damages do
+
+      assert_difference '@hero.reload.temporary_damages', -hero_damages do
         assert_difference '@mob.reload.life', -8 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
   end
 
   test 'Combat 2' do
@@ -80,13 +79,13 @@ class CombatManuTest < ActiveSupport::TestCase
     @board.combat.save!
 
     hero_damages = -2
-    assert_difference '@hero.reload.life_pool.count', hero_damages do
-      assert_difference '@hero.damage_pool.count', -hero_damages do
+
+      assert_difference '@hero.reload.temporary_damages', -hero_damages do
         assert_difference '@mob.reload.life', -3 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
 
     @hero.name_code = 'argalad'
     @hero.hand = @game_data_heroes.get_deck(:argalad )
@@ -97,26 +96,26 @@ class CombatManuTest < ActiveSupport::TestCase
     @board.combat.save!
 
     hero_damages = 0
-    assert_difference '@hero.reload.life_pool.count', hero_damages do
-      assert_difference '@hero.damage_pool.count', -hero_damages do
+
+      assert_difference '@hero.reload.temporary_damages', -hero_damages do
         assert_difference '@mob.reload.life', 0 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
 
     @board.combat.hero_secret_played_card = 6
     @board.combat.mob_secret_played_card = 7
     @board.combat.save!
 
     hero_damages = 0
-    assert_difference '@hero.reload.life_pool.count', hero_damages do
-      assert_difference '@hero.damage_pool.count', -hero_damages do
+
+      assert_difference '@hero.reload.temporary_damages', -hero_damages do
         assert_difference '@mob.reload.life', -1 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
   end
 
   test 'Combat 1' do
@@ -125,13 +124,13 @@ class CombatManuTest < ActiveSupport::TestCase
     @board.combat.save!
 
     hero_damages = -5
-    assert_difference '@hero.reload.life_pool.count', hero_damages do
-      assert_difference '@hero.damage_pool.count', -hero_damages do
+
+      assert_difference '@hero.reload.temporary_damages', -hero_damages do
         assert_difference '@mob.reload.life', -9 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
 
     @hero.name_code = 'beravor'
     @hero.hand = @game_data_heroes.get_deck(:beravor )
@@ -142,26 +141,26 @@ class CombatManuTest < ActiveSupport::TestCase
     @board.combat.save!
 
     hero_damages = 0
-    assert_difference '@hero.reload.life_pool.count', hero_damages do
-      assert_difference '@hero.damage_pool.count', -hero_damages do
+
+      assert_difference '@hero.reload.temporary_damages', -hero_damages do
         assert_difference '@mob.reload.life', 0 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
 
     @board.combat.hero_secret_played_card = 0
     @board.combat.mob_secret_played_card = 9
     @board.combat.save!
 
     hero_damages = -2
-    assert_difference '@hero.reload.life_pool.count', hero_damages do
-      assert_difference '@hero.damage_pool.count', -hero_damages do
+
+      assert_difference '@hero.reload.temporary_damages', -hero_damages do
         assert_difference '@mob.reload.life', 0 do
           @board.combat.reveal_secretly_played_cards
         end
       end
-    end
+
   end
 
 end
