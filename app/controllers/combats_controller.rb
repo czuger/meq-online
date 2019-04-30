@@ -9,8 +9,8 @@ class CombatsController < ApplicationController
     @last_hero_cards_used = @combat.combat_card_played_heroes.last(6)
     @last_mob_cards_used = @combat.combat_card_played_mobs.last(6)
 
-    @print_hero_play_link = current_user?( @hero ) && !@combat.hero_exhausted
-    @print_sauron_play_link = current_user?( @board.sauron ) && !@combat.mob_exhausted
+    @print_hero_play_link = current_user?( @hero ) && @hero.active && !@combat.hero_exhausted
+    @print_sauron_play_link = current_user?( @board.sauron ) && @board.sauron.active && !@combat.mob_exhausted
   end
 
   def play_combat_card_screen

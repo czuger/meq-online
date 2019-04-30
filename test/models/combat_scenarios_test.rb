@@ -133,7 +133,6 @@ class CombatScenariosTest < ActiveSupport::TestCase
           @board.combat.reveal_secretly_played_cards
         end
       end
-
   end
 
 end
