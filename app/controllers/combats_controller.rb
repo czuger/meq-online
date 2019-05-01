@@ -98,8 +98,7 @@ class CombatsController < ApplicationController
 
     @board.transaction do
       discard_cards
-      # For debug purpose, we keep combats.
-      # destroy_combat
+      destroy_combat
 
       if @combat_result.hero_defeated
 
@@ -212,6 +211,19 @@ class CombatsController < ApplicationController
   end
 
   def destroy_combat
+
+    unless Rails.env.test?
+      File.open("log/combat_#{@combat.id}.json", 'w') do |f|
+        c = {}
+        c[:combat] = @combat
+        c[:hero] = @combat.hero
+        c[:mob] = @combat.mob
+        c[:played_cards] = @combat.combat_card_playeds
+
+        PP.pp(c.to_json,f)
+      end
+    end
+
     @combat.destroy!
     @mob.destroy! if @mob.is_a?( Monster )
   end

@@ -133,6 +133,8 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
 
     assert @hero.reload.active
     refute @sauron.reload.active
+
+    refute Mob.where( code: @mob.code, location: @mob.location ).exists?
   end
 
   test 'On mob and hero exhaustion, should switch to sauron if it was the second hero turn' do
@@ -162,6 +164,8 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
 
     refute @hero.reload.active
     assert @sauron.reload.active
+
+    refute Mob.where( code: @mob.code, location: @mob.location ).exists?
   end
 
   test 'On mob and hero exhaustion, should switch to next hero if we have more than one player' do
@@ -197,6 +201,8 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     refute @sauron.reload.active
 
     assert @second_hero.reload.active
+
+    refute Mob.where( code: @mob.code, location: @mob.location ).exists?
   end
 
   # TODO : add a test with a hero linked to another user.
@@ -227,6 +233,8 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     refute @sauron.reload.active
 
     assert_equal 'fornost', @hero.reload.location
+
+    refute Mob.where( code: @mob.code, location: @mob.location ).exists?
   end
 
 end
