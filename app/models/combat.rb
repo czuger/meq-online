@@ -65,8 +65,8 @@ class Combat < ApplicationRecord
     unless hero_exhausted
       ch_cd = @game_data_heroes.get_card_data( hero.name_code, hero_secret_played_card )
       @current_hero_card = combat_card_played_heroes.create!( card: hero_secret_played_card, pic_path: ch_cd.pic_path, name: ch_cd.name, power: ch_cd.power,
-                                                              strength_cost: ch_cd.strength_cost, printed_attack: ch_cd.attack, final_attack: ch_cd.attack,
-                                                              printed_defense: ch_cd.defense, final_defense: ch_cd.defense, card_type: ch_cd.type )
+                                                              strength_cost: ch_cd.strength_cost, printed_attack: ch_cd.attack,
+                                                              printed_defense: ch_cd.defense, card_type: ch_cd.type )
     else
       @current_hero_card = create_exhausted_card(combat_card_played_heroes)
     end
@@ -74,8 +74,8 @@ class Combat < ApplicationRecord
     unless mob_exhausted
       cm_cd = @game_data_mobs_cards.get_card_data( mob.attack_deck, mob_secret_played_card )
       @current_mob_card = combat_card_played_mobs.create!( card: mob_secret_played_card, pic_path: cm_cd.pic_path, name: cm_cd.name, power: cm_cd.power,
-                                                           strength_cost: cm_cd.strength_cost, printed_attack: cm_cd.attack, final_attack: cm_cd.attack,
-                                                           printed_defense: cm_cd.defense, final_defense: cm_cd.defense, card_type: cm_cd.type )
+                                                           strength_cost: cm_cd.strength_cost, printed_attack: cm_cd.attack,
+                                                           printed_defense: cm_cd.defense, card_type: cm_cd.type )
     else
       @current_mob_card = create_exhausted_card(combat_card_played_mobs)
     end
@@ -88,8 +88,7 @@ class Combat < ApplicationRecord
 
   def create_exhausted_card( collection )
     collection.create!( card: -1, pic_path: 'exhausted', name: 'Exhausted', power: 'none',
-              strength_cost: 0, printed_attack: 0, final_attack: 0,
-              printed_defense: 0, final_defense: 0, card_type: 'exhausted', cancelled: true )
+              strength_cost: 0, printed_attack: 0, printed_defense: 0, card_type: 'exhausted', cancelled: true )
   end
 
   def deal_damages

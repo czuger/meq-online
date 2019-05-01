@@ -96,11 +96,11 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
 
   test 'if hero and mob play, should resolve combat' do
 
-    post play_combat_card_hero_board_combats_url(@board, selected_card: @hero.hand.first)
+    post play_combat_card_hero_board_combats_url(@board, selected_card: @hero.hand.sort.first)
     assert_redirected_to boards_url
 
     assert_difference 'CombatCardPlayed.count', 2 do
-      post play_combat_card_mob_board_combats_url(@board, selected_card: @mob.hand.first)
+      post play_combat_card_mob_board_combats_url(@board, selected_card: @mob.hand.sort.first)
     end
     assert_redirected_to cards_loss_screen_board_combats_url(@board)
 

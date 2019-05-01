@@ -10,9 +10,7 @@ FactoryBot.define do
       power { 'quick_shot' }
       strength_cost { 0 }
       printed_attack { 1 }
-      final_attack { 1 }
       printed_defense { 0 }
-      final_defense { 0 }
       cancelled { false }
     end
 
@@ -25,9 +23,7 @@ FactoryBot.define do
       power { 'precision' }
       strength_cost { 2 }
       printed_attack { 2 }
-      final_attack { 2 }
       printed_defense { 1 }
-      final_defense { 1 }
       cancelled { false }
     end
 
@@ -40,9 +36,7 @@ FactoryBot.define do
       power { 'none' }
       strength_cost { 0 }
       printed_attack { 0 }
-      final_attack { 0 }
       printed_defense { 0 }
-      final_defense { 0 }
       cancelled { true }
 
       factory :hero_exhausted do

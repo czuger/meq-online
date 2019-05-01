@@ -124,9 +124,7 @@ ActiveRecord::Schema.define(version: 2019_04_28_163242) do
     t.string "power", null: false
     t.integer "strength_cost", limit: 2, null: false
     t.integer "printed_attack", limit: 2, null: false
-    t.integer "final_attack", limit: 2, null: false
     t.integer "printed_defense", limit: 2, null: false
-    t.integer "final_defense", limit: 2, null: false
     t.string "card_type", null: false
     t.boolean "cancelled", default: false, null: false
     t.datetime "created_at", null: false

@@ -55,8 +55,8 @@ class CombatCardPlayed < ApplicationRecord
   end
 
   def op_current_cancel!
-    @combat_params.op_current.final_attack = 0
-    @combat_params.op_current.final_defense = 0
+    @combat_params.op.final_attack = 0
+    @combat_params.op.final_defense = 0
     @combat_params.op_current.cancelled = true
     @combat_params.op_current.save!
   end

@@ -33,7 +33,6 @@ class CombatScenariosTest < ActiveSupport::TestCase
     @mob.hand = @game_data_mobs_cards.get_deck( 'zealot' )
     @mob.save!
 
-
       assert_difference '@hero.reload.temporary_damages', 2 do
         assert_difference '@mob.reload.life', -2 do
           @board.combat.reveal_secretly_played_cards
@@ -134,8 +133,6 @@ class CombatScenariosTest < ActiveSupport::TestCase
         end
       end
   end
-
-
 
 	test 'Combat example #7' do
 		mob = create( :black_serpent, board: @board, hand: [6, 5, 6, 5, 4, 4, 0, 2, 0] )
