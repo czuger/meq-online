@@ -2,7 +2,7 @@
 
   %h3
     - if @loss_mandatory
-      = "You have to choose #{@hero.temporary_damages} cards as damages result."
+      = "Your life pool is empty. You have to choose #{@hero.temporary_damages} cards as damages result."
     - else
       = "You may to choose up to #{@hero.temporary_damages} to prevent cards being taken from the life pool."
 
@@ -11,11 +11,11 @@
   %hr
 
   = form_tag cards_loss_board_combats_path(@board) do
-    - @locations.in_groups_of(3).each do |location_group|
-      .row
-        .col.mt-2
-          = button_tag class: 'btn btn-primary btn-block' do
-            Discard cards
+    .row
+      .col.mt-2
+        = button_tag class: 'btn btn-primary btn-block' do
+          Discard cards
+      - unless @loss_mandatory
         .col.mt-2
           = button_tag class: 'btn btn-primary btn-block' do
             Don't discard cards
