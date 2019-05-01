@@ -8,6 +8,7 @@ FactoryBot.define do
     fortitude { 5 }
     strength { 3 }
     life { 3 }
+    max_life { 3 }
 
     hand { GameData::MobsCards.new.get_deck( 'zealot' ) }
     attack_deck { :zealot }
@@ -19,6 +20,7 @@ FactoryBot.define do
       fortitude { 5 }
       strength { 4 }
       life { 3 }
+      max_life { 3 }
     end
 
     factory :southron do
@@ -31,6 +33,7 @@ FactoryBot.define do
       fortitude { 6 }
       strength { 3 }
       life { 4 }
+      max_life { 4 }
     end
 
     factory :snaga do
@@ -43,6 +46,7 @@ FactoryBot.define do
       fortitude { 6 }
       strength { 3 }
       life { 3 }
+      max_life { 3 }
     end
 
     factory :huorn do
@@ -55,6 +59,7 @@ FactoryBot.define do
       fortitude { 6 }
       strength { 7 }
       life { 7 }
+      max_life { 7 }
     end
 
     factory :cave_troll do
@@ -67,6 +72,7 @@ FactoryBot.define do
       fortitude { 8 }
       strength { 8 }
       life { 8 }
+      max_life { 8 }
     end
 
     factory :nothing do
@@ -79,6 +85,7 @@ FactoryBot.define do
       fortitude { 0 }
       strength { 0 }
       life { 0 }
+      max_life { 0 }
     end
 
   end

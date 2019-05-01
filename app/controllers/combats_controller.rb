@@ -40,6 +40,7 @@ class CombatsController < ApplicationController
   def cards_loss_screen
     @loss_mandatory = @hero.temporary_damages > 0 && @hero.life_pool.count <= 0
     @selectable_card_class = 'selectable-card-selection-multiple'
+    @actor = @hero
   end
 
   def cards_loss

@@ -85,7 +85,7 @@ class Board < ApplicationRecord
 
     monster_hash = { location: location, code: monster_code, fortitude: monster_data.fortitude,
                      strength: monster_data.strength, life: monster_data.life, name: monster_data.name,
-                     attack_deck: monster_data.attack_deck }
+                     attack_deck: monster_data.attack_deck, max_life: monster_data.life }
 
     if monster_data.type == :minion
       minions.create!( monster_hash )

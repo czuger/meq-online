@@ -174,6 +174,7 @@ ActiveRecord::Schema.define(version: 2019_04_28_163242) do
     t.string "name", null: false
     t.jsonb "hand", default: [], null: false
     t.integer "damages_taken_this_turn", limit: 2, default: 0, null: false
+    t.integer "max_life", limit: 2, null: false
     t.index ["board_id"], name: "index_mobs_on_board_id"
   end
 

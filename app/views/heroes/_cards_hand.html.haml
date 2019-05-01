@@ -1,7 +1,7 @@
 %h3 Hand
-- @hero.hand.in_groups_of(6).each do |group|
+- @actor.hand.in_groups_of(6).each do |group|
   .row
     - group.each do |card_number|
       .col.mb-3
         - if card_number
-          = image_tag "hero_cards/actions/#{@hero.card_pic_path(card_number)}", class: small_cards_classes, card_id: card_number
+          = image_tag "hero_cards/actions/#{@actor.card_pic_path(card_number)}", class: small_cards_classes, card_id: card_number

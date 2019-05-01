@@ -6,6 +6,7 @@ FactoryBot.define do
     fortitude { 8 }
     strength { 8 }
     life { 8 }
+    max_life { 8 }
 
     name { 'The black serpent' }
 
@@ -18,6 +19,7 @@ FactoryBot.define do
       fortitude { 6 }
       strength { 6 }
       life { 9 }
+      max_life { 9 }
 
       name { 'Mouth of Sauron' }
 
@@ -31,6 +33,7 @@ FactoryBot.define do
       fortitude { 9 }
       strength { 8 }
       life { 11 }
+      max_life { 11 }
 
       name { 'Black serpent' }
 

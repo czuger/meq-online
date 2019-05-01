@@ -64,4 +64,12 @@ class SauronActionsController < ApplicationController
     end
   end
 
+  def heal_minion_screen
+
+  end
+
+  def heal_minion
+
+  end
+
 end
