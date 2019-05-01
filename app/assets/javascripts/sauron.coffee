@@ -2,7 +2,7 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
-influence= () ->
+sauron_actions= () ->
 #  console.log('toto')
   $('.sauron_action' ).change () ->
 #    console.log($(this))
@@ -14,11 +14,13 @@ influence= () ->
       $(this).prop( "checked", true );
 
     actor_id = $('#actor_id').val();
-    console.log(actor_id)
+#    console.log(actor_id)
 
     $.ajax "/sauron/#{actor_id}/sauron_actions",
       type: 'PATCH'
       data: { actions: jQuery.makeArray( $("input:checked") ).map (e) -> e.id }
+      success: (data, textStatus, jqXHR) ->
+        $('#used_actions').text(data)
 
 #    console.log( jQuery.makeArray( $("input:checked") ).map (e) -> e.id )
 
@@ -29,5 +31,5 @@ $(document).on('turbolinks:load'
   ->
 #    console.log('toto1')
     if window.location.pathname.match( /sauron\/\d+\/sauron_actions\/edit/ )
-      influence()
+      sauron_actions()
 )

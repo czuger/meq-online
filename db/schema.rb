@@ -106,6 +106,7 @@ ActiveRecord::Schema.define(version: 2019_04_28_163242) do
     t.jsonb "monsters_pool_brown", default: [], null: false
     t.jsonb "monsters_pool_dark_green", default: [], null: false
     t.string "winner"
+    t.integer "sauron_actions_count", limit: 2, default: 0, null: false
     t.index ["current_hero_id"], name: "index_boards_on_current_hero_id"
   end
 

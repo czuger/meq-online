@@ -6,5 +6,7 @@ class AddHeroRemainingDamagesToCombat < ActiveRecord::Migration[5.2]
     remove_column :combat_card_playeds, :final_defense, :integer
 
     add_column :mobs, :max_life, :integer, limit: 1, null: false
+
+    add_column :boards, :sauron_actions_count, :integer, limit: 1, null: false, default: 0
   end
 end

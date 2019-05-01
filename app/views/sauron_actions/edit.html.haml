@@ -6,11 +6,22 @@
       %li Then execute your action using the buttons on the bottom.
       %li Note : no rules are implemented, you are the master at this step.
       %li When you are done, click on the terminate button.
-      %li Remember : Sauron has 2 actions with 1 or 2 heroes and 3 actions with 3 heroes.
-      %li Remember : When you place your fourth token, you must remove the three others.
+      %li
+        %s
+          Remember : Sauron has 2 actions with 1 or 2 heroes and 3 actions with 3 heroes.
+      %li
+        Currently : Sauron has 4 actions with 1 or 2 heroes and 6 actions with 3 heroes (compensate Sauron missing abilities).
+      %li
+        You can only place 2 influences tokens in the shadow pool per "place influence order".
 
   = form_tag sauron_sauron_actions_path(@actor), method: :patch do
 
+    .row
+      .col-4
+        %b
+          = 'Used actions this turn : '
+          %span#used_actions
+            = @board.sauron_actions_count
     .row
       .col
         .row.mt-2

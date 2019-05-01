@@ -21,7 +21,11 @@ class SauronActionsController < ApplicationController
         @board.log( @actor, 'sauron_actions.remove.' + action )
       end
 
-      @board.update!( sauron_actions: actions_array )
+      @board.sauron_actions = actions_array
+      @board.sauron_actions_count += 1
+      @board.save!
+
+      render json: @board.sauron_actions_count
     end
 
     # flash[:success] = 'Actions updated successfully.'
@@ -59,6 +63,9 @@ class SauronActionsController < ApplicationController
 
       @board.next_to_finish_sauron_turn!
       @board.next_to_hero_draw_cards_screen!
+
+      @board.sauron_actions_count = 0
+      @board.save!
 
       redirect_to boards_path
     end
