@@ -19,6 +19,11 @@ class Combat < ApplicationRecord
     previous_hero_card, previous_mob_card = set_current_and_previous_card
     exhaustion_check
 
+    hero.final_attack = 0
+    hero.final_defense = 0
+    mob.final_attack = 0
+    mob.final_defense = 0
+
     call_power_params_hero =
         OpenStruct.new( me_previous: previous_hero_card, op_previous: previous_mob_card,
                     op_current: @current_mob_card, me_current: @current_hero_card, me: hero, op: mob, current_combat: self )
@@ -37,6 +42,11 @@ class Combat < ApplicationRecord
 
     @current_hero_card.call_power( :current, call_power_params_hero )
     @current_mob_card.call_power( :current, call_power_params_mob )
+
+    hero.final_attack += @current_hero_card.printed_attack
+    hero.final_defense += @current_hero_card.printed_defense
+    mob.final_attack += @current_mob_card.printed_attack
+    mob.final_defense += @current_mob_card.printed_defense
 
     deal_damages
 
@@ -83,11 +93,11 @@ class Combat < ApplicationRecord
   end
 
   def deal_damages
-    mob_damages = !@current_mob_card.cancelled ? @current_mob_card.final_attack : 0
-    hero_damages = !@current_hero_card.cancelled ? @current_hero_card.final_attack : 0
+    mob_damages = !@current_mob_card.cancelled ? mob.final_attack : 0
+    hero_damages = !@current_hero_card.cancelled ? hero.final_attack : 0
 
-    mob_defense = !@current_mob_card.cancelled ? @current_mob_card.final_defense : 0
-    hero_defense = !@current_hero_card.cancelled ? @current_hero_card.final_defense : 0
+    mob_defense = !@current_mob_card.cancelled ? mob.final_defense : 0
+    hero_defense = !@current_hero_card.cancelled ? hero.final_defense : 0
 
     mob_damages -= hero_defense
     hero_damages -= mob_defense

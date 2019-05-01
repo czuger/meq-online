@@ -23,5 +23,18 @@ FactoryBot.define do
 
       attack_deck { :zealot }
     end
+
+    factory :black_serpent do
+      code { 'black_serpent' }
+      location { 'near_harad' }
+
+      fortitude { 9 }
+      strength { 8 }
+      life { 11 }
+
+      name { 'Black serpent' }
+
+      attack_deck { :ravager }
+    end
   end
 end

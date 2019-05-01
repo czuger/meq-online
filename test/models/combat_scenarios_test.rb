@@ -135,4 +135,39 @@ class CombatScenariosTest < ActiveSupport::TestCase
       end
   end
 
+
+
+	test 'Combat example #7' do
+		mob = create( :black_serpent, board: @board, hand: [6, 5, 6, 5, 4, 4, 0, 2, 0] )
+		@board.combat.mob = mob
+		hero = create( :argalad, board: @board, user: @user, hand: [3, 6, 6, 2, 2, 1, 3, 3, 1, 6, 1, 1, 1, 1, 4, 5] )
+		@board.combat.hero = hero
+		@board.combat.temporary_hero_strength = 8
+		@board.combat.save!
+
+		@board.combat.hero_secret_played_card = 1
+		@board.combat.mob_secret_played_card = 0
+		assert_difference 'hero.reload.temporary_damages', 0 do
+			assert_difference 'mob.reload.life', -4 do
+				@board.combat.reveal_secretly_played_cards
+			end
+		end
+
+		@board.combat.hero_secret_played_card = 5
+		@board.combat.mob_secret_played_card = 2
+		assert_difference 'hero.reload.temporary_damages', 6 do
+			assert_difference 'mob.reload.life', 0 do
+				@board.combat.reveal_secretly_played_cards
+			end
+		end
+
+		@board.combat.hero_secret_played_card = 4
+		@board.combat.mob_secret_played_card = 0
+		assert_difference 'hero.reload.temporary_damages', 0 do
+			assert_difference 'mob.reload.life', -3 do
+				@board.combat.reveal_secretly_played_cards
+			end
+		end
+	end
+
 end

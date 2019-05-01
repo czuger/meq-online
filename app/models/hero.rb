@@ -7,6 +7,8 @@ class Hero < Actor
 
   has_many :movement_preparation_steps, foreign_key: :actor_id
 
+  attr_accessor :final_attack, :final_defense
+
   def deal_damages( damages_amount )
     damages_amount = [ damages_amount, 0 ].max
 

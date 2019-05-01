@@ -62,9 +62,11 @@ module GameEngine
 
     def concentrate
       if previous? && cancellation_dont_break( :me_previous )
-        self.final_attack += 2
-        self.final_defense += 2
-        self.save!
+        # self.final_attack += 2
+        # self.final_defense += 2
+        # self.save!
+        @combat_params.me.final_attack += 2
+        @combat_params.me.final_defense += 2
       end
     end
 
@@ -76,16 +78,18 @@ module GameEngine
 
     def volley
       if previous? && cancellation_dont_break( :me_previous, :me_current ) && me_current_ranged?
-        self.final_attack += 2
-        self.save!
+        # self.final_attack += 2
+        # self.save!
+        @combat_params.me.final_attack += 2
       end
     end
 
     def aimed_shot
       if current? && cancellation_dont_break( :op_current, :op_previous ) &&
           @combat_params.op_current.card_type == @combat_params.op_previous&.card_type
-        self.final_attack += 3
-        self.save!
+        # self.final_attack += 3
+        # self.save!
+        @combat_params.me.final_attack += 3
       end
     end
 
@@ -95,8 +99,9 @@ module GameEngine
 
     def ranged_strike
       if current? && cancellation_dont_break( :op_current ) && op_current_ranged?
-        self.final_attack += 2
-        self.save!
+        # self.final_attack += 2
+        # self.save!
+        @combat_params.me.final_attack += 2
       end
     end
 

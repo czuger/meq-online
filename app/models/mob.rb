@@ -1,6 +1,8 @@
 class Mob < ApplicationRecord
   belongs_to :board
 
+  attr_accessor :final_attack, :final_defense
+
   def deal_damages( damages_amount )
     damages_amount = [ damages_amount, 0 ].max
     self.life -= damages_amount

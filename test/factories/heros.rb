@@ -22,6 +22,16 @@ FactoryBot.define do
       name {'Eometh'}
     end
 
+    factory :argalad do
+      name_code {'argalad'}
+      name {'Argalad'}
+
+      fortitude {5}
+      strength {5}
+      agility {3}
+      wisdom {2}
+    end
+
     after(:create) do |hero|
       cards = GameData::Heroes.new.get_deck( :argalad )
       hero.hand = cards.shift( hero.fortitude )
