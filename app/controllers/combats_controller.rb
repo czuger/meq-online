@@ -166,6 +166,21 @@ class CombatsController < ApplicationController
     @combat_result = OpenStruct.new( mob_defeated: @mob.life <= 0, hero_defeated: @hero_life <= 0,
                                      mob_exhausted: @combat.mob_exhausted, hero_exhausted: @combat.hero_exhausted )
 
+    # There is a special exhaustion rule that does not apply when opponents play cards
+    if @hero.hand.count <= 0
+      @combat.hero_exhausted = true
+      @combat_result.hero_exhausted = true
+    end
+
+    if @mob.hand.count <= 0
+      @combat.mob_exhausted = true
+      @combat_result.mob_exhausted = true
+    end
+
+    @hero.save!
+    @mob.save!
+    @combat.save!
+
     @hero_used_strength = @combat.hero_strength_used
     @mob_used_strength = @combat.mob_strength_used
   end

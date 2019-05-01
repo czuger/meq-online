@@ -5,7 +5,7 @@ class SauronMonstersController < ApplicationController
   before_action :set_mob, only: [:edit, :update]
 
   def index
-    @monsters = @board.mobs.order( 'type, location, code' )
+    @monsters = @board.mobs.order( 'type, updated_at DESC, code' )
   end
 
   def new
