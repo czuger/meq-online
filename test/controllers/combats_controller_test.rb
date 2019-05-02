@@ -206,7 +206,6 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
   end
 
   # TODO : add a test with a hero linked to another user.
-
   test 'On hero defeat, should switch to hero next turn' do
     @hero.hand = [ @hero_aimed_shot ]
     @hero.life_pool = [ 1 ]
@@ -235,6 +234,33 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 'fornost', @hero.reload.location
 
     refute Mob.where( code: @mob.code, location: @mob.location ).exists?
+  end
+
+  test 'should show cards loss screen' do
+    get cards_loss_screen_board_combats_url(@board)
+    assert_response :success
+
+    # puts @response.body
+    # puts assert_select 'img'
+
+    assert_select "img[class='small-card selectable-card-selection-multiple']"
+  end
+
+  test 'should loose selected cards' do
+    @hero.life_pool = []
+    @hero.temporary_damages = 3
+    @hero.save!
+
+    @board.aasm_state = 'cards_loss_screen_board_combats'
+    @board.save!
+
+    assert_difference '@hero.reload.hand.count', -3 do
+      assert_difference '@hero.reload.damage_pool.count', 3 do
+        post cards_loss_board_combats_path(@board), params: { selected_cards: @hero.hand.sort.first(3).join(',') }
+      end
+    end
+
+    assert_redirected_to board_combats_url(@board)
   end
 
 end

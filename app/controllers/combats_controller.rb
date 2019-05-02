@@ -49,9 +49,7 @@ class CombatsController < ApplicationController
     required_cards = selected_cards.shift( @hero.temporary_damages )
 
     @hero.temporary_damages -= required_cards.count
-    @hero.hand_to_life( selected_cards )
-
-    @hero.apply_temporary_damages
+    @hero.hand_to_damages(required_cards)
     @hero.save!
 
     if @hero.temporary_damages > 0

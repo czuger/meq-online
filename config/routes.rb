@@ -50,10 +50,6 @@ Rails.application.routes.draw do
     get :setup_screen
     get :setup_finished
 
-    get :movement_break_schedule_screen
-    post :movement_break_schedule_add
-    get :movement_break_schedule_finished
-
     resource :shadow_cards, only: [] do
       get :play_screen
       post :play

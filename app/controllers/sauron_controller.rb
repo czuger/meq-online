@@ -23,23 +23,4 @@ class SauronController < ApplicationController
     redirect_to edit_sauron_sauron_actions_path(@actor)
   end
 
-  #
-  # Mouvement break schedule methods
-  #
-  def movement_break_schedule_screen
-  end
-
-  def movement_break_schedule_add
-  end
-
-  def movement_break_schedule_finished
-    @board.transaction do
-      @board.next_to_movement!
-      @board.activate_current_hero
-      @board.save!
-
-      redirect_to boards_path
-    end
-  end
-
 end

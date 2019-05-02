@@ -16,12 +16,6 @@ class Hero < Actor
     self.damages_taken_this_turn += damages_amount
   end
 
-  def apply_temporary_damages
-    life_cards_lost = self.life_pool.shift( self.temporary_damages )
-    self.damage_pool += life_cards_lost
-    self.temporary_damages -= life_cards_lost.count
-  end
-
   #
   # Location methods
   #
@@ -83,13 +77,13 @@ class Hero < Actor
           when 1
             board.log( self, 'peril.pass_trough', location_name: @locations.get(location).name )
           when 2
-            hand_to_life(hand.sample)
+            hand_to_damages(hand.sample)
             board.log( self, 'peril.lose_card', location_name: @locations.get(location).name )
           when 3
             self.favor -= 1
             board.log( self, 'peril.lose_favor', location_name: @locations.get(location).name )
           when 4
-            hand_to_life(hand.sample)
+            hand_to_damages(hand.sample)
             self.favor -= 1
             board.log( self, 'peril.lose_favor_and_card', location_name: @locations.get(location).name )
           else
@@ -104,8 +98,8 @@ class Hero < Actor
     discard_cards(cards){ |c| self.rest_pool += c }
   end
 
-  def hand_to_life(cards)
-    discard_cards(cards){ |c| self.life_pool += c }
+  def hand_to_damages(cards)
+    discard_cards(cards){ |c| self.damage_pool += c }
   end
 
   #

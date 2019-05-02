@@ -36,7 +36,7 @@ class HeroTest < ActiveSupport::TestCase
     Kernel.stubs( :rand ).returns( 2 )
 
     assert_difference '@hero.reload.hand.count', -1 do
-      assert_difference '@hero.reload.life_pool.count' do
+      assert_difference '@hero.reload.damage_pool.count' do
         @hero.suffer_peril!(@board)
       end
     end
@@ -49,7 +49,7 @@ class HeroTest < ActiveSupport::TestCase
     @hero.save!
 
     assert_no_difference '@hero.reload.hand.count', -1 do
-      assert_no_difference '@hero.reload.life_pool.count' do
+      assert_no_difference '@hero.reload.damage_pool.count' do
         @hero.suffer_peril!(@board)
       end
     end
@@ -67,7 +67,7 @@ class HeroTest < ActiveSupport::TestCase
     Kernel.stubs( :rand ).returns( 4 )
 
     assert_difference '@hero.reload.hand.count', -1 do
-      assert_difference '@hero.reload.life_pool.count' do
+      assert_difference '@hero.reload.damage_pool.count' do
         assert_difference '@hero.reload.favor', -1 do
           @hero.suffer_peril!(@board)
         end
