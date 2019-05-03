@@ -34,7 +34,8 @@ class Board < ApplicationRecord
     if tokens_at_location.empty?
       :empty
     else
-      monster_at_location = mobs.where( location: actor.location ).order( 'life, strength' ).first
+      # We fight the hardest monster first
+      monster_at_location = mobs.where( location: actor.location ).order( 'life DESC, strength DESC' ).first
 
       if monster_at_location
         if monster_at_location.code == 'nothing'

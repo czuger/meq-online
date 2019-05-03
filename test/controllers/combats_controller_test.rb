@@ -102,7 +102,7 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     assert_difference 'CombatCardPlayed.count', 2 do
       post play_combat_card_mob_board_combats_url(@board, selected_card: @mob.hand.sort.first)
     end
-    assert_redirected_to cards_loss_screen_board_combats_url(@board)
+    assert_redirected_to board_combats_path(@board)
 
     # follow_redirect!
   end

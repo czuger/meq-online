@@ -60,9 +60,6 @@ class CombatsController < ApplicationController
     end
   end
 
-  def apply_damages
-  end
-
   def combat_setup_screen
     @actor = @hero
   end
@@ -187,6 +184,12 @@ class CombatsController < ApplicationController
     if @hero.active == false && @board.sauron.active == false
 
       @combat.reveal_secretly_played_cards
+
+      # Immediately apply damages
+      required_cards = @hero.life_pool.shift( @hero.temporary_damages )
+      @hero.temporary_damages -= required_cards.count
+      @hero.damage_pool += required_cards
+      @hero.save!
 
       if @hero.temporary_damages > 0
         if @hero.temporary_damages < @hero.life_pool.count + @hero.hand.count

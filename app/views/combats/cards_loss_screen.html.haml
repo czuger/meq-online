@@ -4,7 +4,7 @@
     - if @loss_mandatory
       = "Your life pool is empty. You have to choose #{@hero.temporary_damages} cards as damages result."
     - else
-      = "You may to choose up to #{@hero.temporary_damages} to prevent cards being taken from the life pool."
+      = "You may to choose up to #{@hero.temporary_damages} card(s) to prevent damages."
 
   = render partial: 'heroes/cards_hand'
 
