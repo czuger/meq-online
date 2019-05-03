@@ -98,7 +98,7 @@ class CombatsController < ApplicationController
       if @combat_result.hero_defeated
 
         @board.advance_lowest_story_marker( random: true )
-        @hero.favor = [ @hero.favor - 1, 0 ].min
+        @hero.favor = [ @hero.favor - 1, 0 ].max
         @hero.move_to_regional_haven
         @hero.heal
 
