@@ -18,7 +18,7 @@
   - else
     = render partial: 'hero_fight'
 
-  - if @actor.is_a? Sauron
+  - if @actor.is_a?(Sauron) && @mob.is_a?(Monster)
     %hr
     .row
       .col-12
