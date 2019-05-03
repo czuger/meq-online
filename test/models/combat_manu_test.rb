@@ -25,6 +25,23 @@ class CombatManuTest < ActiveSupport::TestCase
     @board.users << @user
   end
 
+  test 'Combat 4' do
+    mob = create( :snaga, board: @board )
+    @board.combat.mob = mob
+
+    @board.combat.temporary_hero_strength = @hero.strength
+
+    @board.combat.hero_secret_played_card = @game_data_heroes.get_card_number_by_name( :argalad, 'Precision')
+    @board.combat.mob_secret_played_card = @game_data_mobs_cards.get_card_number_by_name( 'zealot', 'Hack')
+    @board.combat.save!
+
+    assert_difference '@hero.reload.temporary_damages', 0 do
+      assert_difference 'mob.reload.life', -2 do
+        @board.combat.reveal_secretly_played_cards
+      end
+    end
+  end
+
   test 'Combat 3' do
     @hero.name_code = 'beravor'
     @hero.hand = @game_data_heroes.get_deck(:beravor )

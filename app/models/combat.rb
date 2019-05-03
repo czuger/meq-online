@@ -102,8 +102,8 @@ class Combat < ApplicationRecord
     hero_damages -= mob_defense
 
     unless @current_mob_card.cancelled
-      mob_damages += 1 if mob.code == 'snaga' && @current_mob_card.card_type = 'ranged'
-      mob_damages += 1 if mob.code == 'huorn' && @current_mob_card.card_type = 'melee'
+      mob_damages += 1 if mob.code == 'snaga' && @current_mob_card.card_type == 'ranged'
+      mob_damages += 1 if mob.code == 'huorn' && @current_mob_card.card_type == 'melee'
     end
 
     mob_damages = [mob_damages,0].max
