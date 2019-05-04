@@ -126,6 +126,8 @@ class HeroesController < ApplicationController
             raise "location_encounters unknown : #{location_encounters}"
         end
       end
+
+      RefreshChannel.refresh
     end
   end
 
