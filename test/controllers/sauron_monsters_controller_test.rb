@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SauronMonstersControllerTest < ActionDispatch::IntegrationTest
+class SauronmobsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     OmniAuth.config.test_mode = true
@@ -12,7 +12,7 @@ class SauronMonstersControllerTest < ActionDispatch::IntegrationTest
     @board_message = create( :board_message, sender: @sauron, reciever: @hero )
     @board.users << @user
 
-    @board.create_monster( :agent, :old_forest, :monsters_pool_orange )
+    @board.create_monster( :agent, :old_forest, :mobs_pool_orange )
 
     @black_serpent = create( :minion, board: @board )
 
@@ -28,28 +28,28 @@ class SauronMonstersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get index' do
-    get sauron_sauron_monsters_url(@sauron)
+    get sauron_sauron_mobs_url(@sauron)
     assert_response :success
   end
 
   test 'should get new' do
-    get new_sauron_sauron_monster_url(@sauron)
+    get new_sauron_sauron_mob_url(@sauron)
     assert_response :success
   end
 
   test 'should get edit' do
-    get edit_sauron_sauron_monster_url(@sauron, @black_serpent)
+    get edit_sauron_sauron_mob_url(@sauron, @black_serpent)
     assert_response :success
   end
 
-  test 'should move_monster' do
-    patch sauron_sauron_monster_url(@sauron, @black_serpent, params: { button: :fornost } )
-    assert_redirected_to sauron_sauron_monsters_url(@sauron)
+  test 'should move_mob' do
+    patch sauron_sauron_mob_url(@sauron, @black_serpent, params: {button: :fornost } )
+    assert_redirected_to sauron_sauron_mobs_url(@sauron)
   end
 
-  test 'should create a monster' do
-    post sauron_sauron_monsters_url(@sauron, params: { location: :fornost } )
-    assert_redirected_to sauron_sauron_monsters_url(@sauron)
+  test 'should create a mob' do
+    post sauron_sauron_mobs_url(@sauron, params: { location: :fornost } )
+    assert_redirected_to sauron_sauron_mobs_url(@sauron)
   end
 
 end

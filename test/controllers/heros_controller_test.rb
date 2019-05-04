@@ -87,12 +87,12 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", hero_draw_cards_screen_path(@eometh)
   end
 
-  test 'should rest and be redirected to advance story marker screen' do
+  test 'should rest and be redirected to movement screen' do
     @board.aasm_state = :hero_rest_screen
     @board.save!
 
     get hero_rest_rest_url( @hero )
-    assert_redirected_to hero_after_rest_advance_story_marker_screen_url(@hero)
+    assert_redirected_to hero_movement_screen_url(@hero)
   end
 
   test 'should heal and be redirected to movement' do

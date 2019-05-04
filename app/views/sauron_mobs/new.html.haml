@@ -16,4 +16,4 @@
       - g.each do |l|
         .col.mt-2
           - if l
-            = link_to @board.location_name( l ), sauron_sauron_monsters_path(@actor, location: l ), role: :button, class: 'btn btn-danger btn-block', method: :post
+            = link_to @board.location_name( l ), sauron_sauron_mobs_path(@actor, location: l ), role: :button, class: 'btn btn-danger btn-block', method: :post

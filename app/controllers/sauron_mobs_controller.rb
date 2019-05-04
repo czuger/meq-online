@@ -1,11 +1,11 @@
-class SauronMonstersController < ApplicationController
+class SauronMobsController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_actor_ensure_actor
   before_action :set_mob, only: [:edit, :update]
 
   def index
-    @monsters = @board.mobs.order( 'type, updated_at DESC, code' )
+    @mobs = @board.mobs.order( 'type, updated_at DESC, code' )
   end
 
   def new
@@ -30,7 +30,7 @@ class SauronMonstersController < ApplicationController
     # TODO : we need to handle an empty monster pool
     @game_data_locations_monsters.place_new_monster(@board, location )
 
-    redirect_to sauron_sauron_monsters_path(@actor)
+    redirect_to sauron_sauron_mobs_path(@actor)
   end
 
   def edit
@@ -45,7 +45,7 @@ class SauronMonstersController < ApplicationController
   def update
     @mob.update( location: params[:button] )
 
-    redirect_to sauron_sauron_monsters_path(@actor), notice: 'Monster moved'
+    redirect_to sauron_sauron_mobs_path(@actor), notice: 'Monster moved'
   end
 
   private

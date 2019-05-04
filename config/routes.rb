@@ -88,7 +88,9 @@ Rails.application.routes.draw do
       post :set_influence
     end
 
-    resources :sauron_monsters, except: [ :delete, :show ]
+    resources :sauron_mobs, except: [:delete, :show ] do
+      post :heal
+    end
 
   end
 

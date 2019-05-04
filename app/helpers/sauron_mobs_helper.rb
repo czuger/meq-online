@@ -1,0 +1,2 @@
+module SauronMobsHelper
+end

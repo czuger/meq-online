@@ -5,7 +5,7 @@
 
   %hr
 
-  = form_tag sauron_sauron_monster_path(@actor), method: :patch do
+  = form_tag sauron_sauron_mob_path(@actor), method: :patch do
     - @available_locations.in_groups_of(3).each do |location_group|
       .row
         - location_group.each do |location|
