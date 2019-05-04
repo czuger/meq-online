@@ -280,7 +280,7 @@ class HeroesController < ApplicationController
   end
 
   def after_rest_or_heal
-    if @board.advance_lowest_story_marker
+    if @board.advance_lowest_story_marker( random: true )
       @board.next_to_hero_movement_screen!
       redirect_to hero_movement_screen_path(@actor)
     else
