@@ -19,6 +19,6 @@ m= (path) ->
 $(document).on('turbolinks:load'
   ->
     w_path = window.location.pathname
-    if m( /maps\/\d+\/edit/ ) || m( /maps\/\d+/ ) || m( /boards/ )
-      refresh()
+#    if m( /maps\/\d+\/edit/ ) || m( /maps\/\d+/ ) || m( /boards/ )
+    refresh()
 )

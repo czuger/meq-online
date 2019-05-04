@@ -67,6 +67,8 @@ class SauronActionsController < ApplicationController
       @board.sauron_actions_count = 0
       @board.save!
 
+      RefreshChannel.refresh
+
       redirect_to boards_path
     end
   end

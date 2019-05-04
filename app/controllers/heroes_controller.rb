@@ -202,6 +202,8 @@ class HeroesController < ApplicationController
     if @board.finish_heroes_turn!(@actor) == :hero_draw_cards_screen
       redirect_to hero_draw_cards_screen_path(@actor)
     else
+      RefreshChannel.refresh
+
       redirect_to boards_path
     end
   end

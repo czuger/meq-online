@@ -194,6 +194,8 @@ class CombatsController < ApplicationController
       if @hero.temporary_damages > 0
         if @hero.temporary_damages < @hero.life_pool.count + @hero.hand.count
           @board.next_to_cards_loss_screen_board_combats!
+
+          RefreshChannel.refresh
           redirect_to cards_loss_screen_board_combats_path(@board)
         else
           # The hero has been defeated.
@@ -201,12 +203,16 @@ class CombatsController < ApplicationController
           @hero.life_pool.clear
           @hero.hand.clear
           @hero.save!
+
+          RefreshChannel.refresh
           redirect_to board_combats_path(@board)
         end
       else
+        RefreshChannel.refresh
         redirect_to board_combats_path(@board)
       end
     else
+      RefreshChannel.refresh
       redirect_to boards_path
     end
   end
