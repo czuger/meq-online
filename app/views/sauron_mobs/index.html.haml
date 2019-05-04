@@ -15,7 +15,7 @@
         = link_to 'Move', edit_sauron_sauron_mob_path(@actor, mob.id), role: :button, class: 'btn btn-secondary btn-block'
       .col-3
         - if mob.is_a?(Minion) && mob.life < mob.max_life
-          = link_to 'Heal', sauron_sauron_mob_heal_path(@actor, mob.id), role: :button, class: 'btn btn-secondary btn-block'
+          = link_to "Heal #{mob.life} / #{mob.max_life}", sauron_sauron_mob_heal_path(@actor, mob.id), role: :button, class: 'btn btn-secondary btn-block'
 
   .row
     .col-3.mt-2

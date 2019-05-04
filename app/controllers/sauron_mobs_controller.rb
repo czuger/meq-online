@@ -48,6 +48,16 @@ class SauronMobsController < ApplicationController
     redirect_to sauron_sauron_mobs_path(@actor), notice: 'Monster moved'
   end
 
+  def heal
+    minion = Minion.find(params[:sauron_mob_id].to_i)
+    minion.life = [minion.life+4, minion.max_life].min
+
+    minion.transaction do
+      minion.save!
+      redirect_to sauron_sauron_mobs_path( @actor ), alert: 'Minion successfully healed.'
+    end
+  end
+
   private
 
   def set_mob

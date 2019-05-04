@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SauronmobsControllerTest < ActionDispatch::IntegrationTest
+class SauronMobsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     OmniAuth.config.test_mode = true
@@ -14,7 +14,7 @@ class SauronmobsControllerTest < ActionDispatch::IntegrationTest
 
     @board.create_monster( :agent, :old_forest, :mobs_pool_orange )
 
-    @black_serpent = create( :minion, board: @board )
+    @black_serpent = create( :black_serpent, board: @board, life: 9 )
 
     @board.aasm_state = 'edit_sauron_sauron_actions'
     @board.save!
@@ -49,6 +49,12 @@ class SauronmobsControllerTest < ActionDispatch::IntegrationTest
 
   test 'should create a mob' do
     post sauron_sauron_mobs_url(@sauron, params: { location: :fornost } )
+    assert_redirected_to sauron_sauron_mobs_url(@sauron)
+  end
+
+  test 'should heal a mob' do
+    get sauron_sauron_mob_heal_url(@sauron, @black_serpent)
+    assert_equal 11, @black_serpent.reload.life
     assert_redirected_to sauron_sauron_mobs_url(@sauron)
   end
 

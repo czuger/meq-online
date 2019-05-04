@@ -89,7 +89,7 @@ Rails.application.routes.draw do
     end
 
     resources :sauron_mobs, except: [:delete, :show ] do
-      post :heal
+      get :heal
     end
 
   end
