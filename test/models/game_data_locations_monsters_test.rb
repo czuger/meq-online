@@ -45,7 +45,7 @@ class GameDataLocationsMonsters < ActiveSupport::TestCase
   end
 
   test 'test monster pick on all locations' do
-    @loc.data.keys.sort.each do |loc|
+    @loc.all_codes.sort.each do |loc|
       m = @lm.place_new_monster(@board, loc)
       @lm.place_monster_back_to_monster_pool(@board, m )
     end

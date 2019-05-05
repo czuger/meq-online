@@ -29,14 +29,8 @@ class HeroesController < ApplicationController
   # Rest methods
   #
   def rest_screen
-    location_encounters = @board.check_location_encounters(@actor)
-
-    if location_encounters == :monster
-      @board.next_to_combat_setup_screen_board_combats!
-      @board.save!
-
-      redirect_to combat_setup_screen_board_combats_path(@board)
-    end
+    game_data_location = GameData::Locations.new
+    @can_heal = game_data_location.can_heal?(@actor.location)
   end
 
   def rest_rest
@@ -245,7 +239,7 @@ class HeroesController < ApplicationController
       # We switch to the first hero to play an switch to sauron shadow card play turn
       @board.transaction do
         @board.set_first_hero_to_play
-        check_for_ambush
+        check_rest
       end
     end
 
@@ -304,10 +298,15 @@ class HeroesController < ApplicationController
     @selectable_card_class = 'selectable-card-selection-multiple'
   end
 
-  def check_for_ambush
+  def check_rest
     location_encounters = @board.check_location_encounters(@actor)
+    game_data_location = GameData::Locations.new
+
     if location_encounters == :monster
       @board.next_to_combat_setup_screen_board_combats!
+    elsif game_data_location.can_not_rest?( @actor.location )
+      @board.next_to_hero_rest_screen!
+      @board.next_to_hero_movement_screen!
     else
       @board.next_to_hero_rest_screen!
     end

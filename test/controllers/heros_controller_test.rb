@@ -54,6 +54,44 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
 
     assert_select 'td', 'Sauron'
     assert_select "a[href=?]", hero_rest_screen_path(@hero)
+
+    get hero_rest_screen_url( @hero )
+    assert_select 'a[href=?]', hero_rest_rest_path(@hero)
+  end
+
+  test 'should finish drawing cards and be redirected to boards_path in movement state' do
+    @board.aasm_state = 'hero_draw_cards_screen'
+    @board.save!
+
+    @hero.location = 'barad_dur'
+    @hero.save!
+
+    get hero_draw_cards_finished_url( @hero )
+    assert_redirected_to boards_path
+    follow_redirect!
+
+    assert_select 'td', 'Sauron'
+    # puts @response.body
+    assert_select "a[href=?]", hero_movement_screen_path(@hero)
+  end
+
+  test 'should finish drawing cards and be rest screen. Only rest button should be available.' do
+    @board.aasm_state = 'hero_draw_cards_screen'
+    @board.save!
+
+    @hero.location = 'rivendell'
+    @hero.save!
+
+    get hero_draw_cards_finished_url( @hero )
+    assert_redirected_to boards_path
+    follow_redirect!
+
+    assert_select 'td', 'Sauron'
+    assert_select 'a[href=?]', hero_rest_screen_path(@hero)
+
+    get hero_rest_screen_url( @hero )
+    assert_select 'a[href=?]', hero_rest_rest_path(@hero)
+    assert_select 'a[href=?]', hero_rest_heal_path(@hero)
   end
 
   test 'should finish drawing cards and be redirected to boards_path but prepared for combat' do
@@ -93,6 +131,16 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
 
     get hero_rest_rest_url( @hero )
     assert_redirected_to hero_movement_screen_url(@hero)
+  end
+
+  test 'should be redirected to combat screen as there is a monster at location' do
+    @board.aasm_state = :hero_rest_screen
+    @board.save!
+
+    @board.create_monster( :orc, :bree, pool_key: :dummy )
+
+    get hero_rest_screen_url( @hero )
+    assert_redirected_to combat_setup_screen_board_combats_url(@hero)
   end
 
   test 'should heal and be redirected to movement' do

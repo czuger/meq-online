@@ -6,21 +6,24 @@ module GameData
 
     REGIONAL_HAVEN_COLORS_CONVERSIONS = { yellow: :light_green, purple: :orange, red: :light_blue, brown: :light_blue }
 
-    # TODO : data should be a class variable rather than an instance variable
-    # And should not be read again if already assigned.
-    attr_reader :data
-
-    def initialize
-      @data = YAML.load_file("#{Rails.root}/app/models/game_data/locations.yaml")
+    def get( name_code )
+      OpenStruct.new fast_get(name_code )
     end
 
-    def get( name_code )
-      raise "Location '#{name_code.inspect}' not found" unless @data.has_key?(name_code.to_s)
-      OpenStruct.new( @data[name_code.to_s] )
+    def all_codes
+      @data.keys
     end
 
     def perilous?( name_code )
       get(name_code).perilous
+    end
+
+    def can_not_rest?( name_code )
+      fast_get(name_code)[:shadow_fortress]
+    end
+
+    def can_heal?( name_code )
+      fast_get(name_code)[:haven]
     end
 
     def exist?( name_code )
@@ -49,6 +52,13 @@ module GameData
         return k if v[:color_code] == color && v[:haven] == true
       end
       raise "Could not find haven for #{color}"
+    end
+
+    private
+
+    def fast_get( name_code )
+      raise "Location '#{name_code.inspect}' not found" unless @data.has_key?(name_code.to_s)
+      @data[name_code.to_s]
     end
 
   end
