@@ -1,7 +1,7 @@
 .container-fluid
 
-  %h3
-    Press alt for zoom
+  -#%h3
+  -#  Press alt for zoom
   #map
 
     -# Showing map
@@ -38,6 +38,6 @@
     - @plots.each do |plot|
       = image_tag 'sauron/plots/' + plot.plot_card.to_s + '.png', id: "plot-#{plot.plot_position}", class: 'plot-card-on-map'
 
-  #zoom-area
+  -##zoom-area
 
 = hidden_field_tag :actor_id, @actor.id
