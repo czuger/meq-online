@@ -232,7 +232,22 @@ class CombatsController < ApplicationController
     end
 
     @combat.destroy!
-    @mob.destroy! if @mob.is_a?( Monster )
+
+    # Only monsters and defeated Minions are removed
+    if @mob.is_a?( Monster )
+      @mob.destroy!
+
+    elsif @mob.is_a?( Minion )
+      if @mob.life <= 0
+        if @mob.code == 'ringwraiths'.freeze
+          @mob.location = 'minas_tirith'
+          @mob.save!
+        else
+          @mob.destroy!
+        end
+      end
+    end
+
   end
 
   def discard_cards

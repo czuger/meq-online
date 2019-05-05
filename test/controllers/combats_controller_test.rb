@@ -14,7 +14,7 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     @sauron = create( :sauron, user: @user, board: @board )
 
     @mob = create( :orc, board: @board )
-    @board.create_combat( @hero, @mob )
+    @combat = @board.create_combat( @hero, @mob )
 
     @board.combat.temporary_hero_strength = 5
     @board.combat.save!
@@ -261,6 +261,80 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to board_combats_url(@board)
+  end
+
+  test 'On minion defeat, minion should be removed' do
+    @hero.hand << @hero_aimed_shot
+    @hero.save!
+
+    @mob = create( :mouth_of_sauron, board: @board, life: 1 )
+
+    @combat.destroy!
+
+    @combat = @board.create_combat( @hero, @mob )
+    @combat.temporary_hero_strength = 50
+    @combat.save!
+
+    @mob.hand << @mob_aimed_shot
+    @mob.save!
+
+    post play_combat_card_hero_board_combats_url(@board, selected_card: @hero_aimed_shot)
+    post play_combat_card_mob_board_combats_url(@board, selected_card: @mob_aimed_shot)
+
+    get terminate_board_combats_url( @board )
+    assert_redirected_to hero_movement_screen_url( @hero )
+
+    refute @board.minions.where( code: :mouth_of_sauron ).exists?
+  end
+
+  test 'Undefeated minions should not be removed' do
+    @hero.hand << @hero_aimed_shot
+    @hero.save!
+
+    @mob = create( :mouth_of_sauron, board: @board, life: 50 )
+
+    @combat.destroy!
+
+    @combat = @board.create_combat( @hero, @mob )
+    @combat.temporary_hero_strength = 1
+    @combat.save!
+
+    @mob.hand << @mob_aimed_shot
+    @mob.strength = 1
+    @mob.save!
+
+    post play_combat_card_hero_board_combats_url(@board, selected_card: @hero_aimed_shot)
+    post play_combat_card_mob_board_combats_url(@board, selected_card: @mob_aimed_shot)
+
+    get terminate_board_combats_url( @board )
+    assert @mob.reload
+  end
+
+  test 'On ringwraith defeat, they should not be defeated, instead : moved to minas tirith' do
+    @hero.hand << @hero_aimed_shot
+    @hero.save!
+
+    @mob = @board.create_monster( :ringwraiths, :the_shire )
+
+    @combat.destroy!
+
+    @combat = @board.create_combat( @hero, @mob )
+    @combat.temporary_hero_strength = 50
+    @combat.save!
+
+    @mob.hand << 0
+    @mob.life = 1
+    @mob.save!
+
+    post play_combat_card_hero_board_combats_url(@board, selected_card: @hero_aimed_shot)
+    post play_combat_card_mob_board_combats_url(@board, selected_card: 0)
+
+    get terminate_board_combats_url( @board )
+    assert_redirected_to hero_movement_screen_url( @hero )
+
+    assert @mob.reload
+    assert @board.minions.where( code: :ringwraiths ).exists?
+    assert_equal 'minas_tirith', @mob.location
   end
 
 end

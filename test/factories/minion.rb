@@ -39,5 +39,6 @@ FactoryBot.define do
 
       attack_deck { :ravager }
     end
+
   end
 end
