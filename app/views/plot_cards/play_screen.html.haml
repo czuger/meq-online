@@ -29,3 +29,10 @@
       .col-2
         = link_to play_finished_sauron_plot_cards_path(@actor), role: :button, class: 'btn btn-danger btn-block' do
           Finished
+
+  %hr
+
+  %h3 Cards you does not have requirements for
+
+  - @unplayable_cards.each do |card|
+    = card_picture( card )
