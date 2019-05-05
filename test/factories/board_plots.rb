@@ -16,5 +16,13 @@ FactoryBot.define do
       favor_to_discard { 3 }
     end
 
+    factory :saruman_falls_to_corruption do
+      plot_card { 6 }
+      affected_location { 'isengard' }
+      story_type { 'corruption' }
+      story_advance { 2 }
+      favor_to_discard { 5 }
+    end
+
   end
 end

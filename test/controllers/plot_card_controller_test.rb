@@ -5,6 +5,8 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
   setup do
     OmniAuth.config.test_mode = true
 
+    @plot_cards = GameData::Plots.new
+
     @user = create( :user )
     @board = create( :board )
     @board.users << @user
@@ -39,11 +41,88 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get play_screen' do
-    @plot_cards = GameData::Plots.new
     @sauron.plot_cards = @plot_cards.all_cards
     @sauron.save!
 
     get play_screen_sauron_plot_cards_url @sauron
+
+    assert_equal [ 3, 4, 7, 9, 13, 16 ],assert_select("img[class='medium-card']").map{ |e| e.attribute('card_id').value.to_i }.sort
+    assert_response :success
+  end
+
+  test 'should get play_screen and a dark messenger should be selectable' do
+    @sauron.plot_cards = @plot_cards.all_cards
+    @sauron.save!
+
+    @board.create_monster( :mouth_of_sauron, :erebor )
+
+    get play_screen_sauron_plot_cards_url @sauron
+
+    assert_equal [ 4, 7, 9, 13, 16 ],assert_select("img[class='medium-card']").map{ |e| e.attribute('card_id').value.to_i }.sort
+    assert_response :success
+  end
+
+  test 'should get play_screen and osgilliath invaded should be selectable' do
+    @sauron.plot_cards = @plot_cards.all_cards
+    @sauron.save!
+
+    @board.create_monster( :orc, :osgiliath, pool_key: :dummy )
+
+    get play_screen_sauron_plot_cards_url @sauron
+
+    assert_equal [ 3, 7, 9, 13, 16 ],assert_select("img[class='medium-card']").map{ |e| e.attribute('card_id').value.to_i }.sort
+    assert_response :success
+  end
+
+  test 'should get play_screen and wormtongue taints théoden should be selectable' do
+    @sauron.plot_cards = @plot_cards.all_cards
+    @sauron.save!
+
+    create( :saruman_falls_to_corruption, board: @board )
+
+    get play_screen_sauron_plot_cards_url @sauron
+
+    assert_equal [ 3, 4, 9, 13, 16 ],assert_select("img[class='medium-card']").map{ |e| e.attribute('card_id').value.to_i }.sort
+    assert_response :success
+  end
+
+  test 'should get play_screen and orcs in the mountains should be selectable' do
+    @sauron.plot_cards = @plot_cards.all_cards
+    @sauron.save!
+
+    @board.influence['mount_gundabad'] = 3
+    @board.influence['the_ruins_of_angmar'] = 3
+    @board.influence['the_high_pass'] = 2
+    @board.save!
+
+    get play_screen_sauron_plot_cards_url @sauron
+
+    assert_equal [ 3, 4, 7, 13, 16 ],assert_select("img[class='medium-card']").map{ |e| e.attribute('card_id').value.to_i }.sort
+    assert_response :success
+  end
+
+  test 'should get play_screen and smeagol escapes should be selectable' do
+    @sauron.plot_cards = @plot_cards.all_cards
+    @sauron.save!
+
+    @board.create_monster( :mouth_of_sauron, :the_forest_trail )
+
+    get play_screen_sauron_plot_cards_url @sauron
+
+    assert_equal [ 3, 4, 7, 9, 16 ],assert_select("img[class='medium-card']").map{ |e| e.attribute('card_id').value.to_i }.sort
+    assert_response :success
+  end
+
+  test 'should get play_screen and raise of the uruk-hai should be selectable' do
+    @sauron.plot_cards = @plot_cards.all_cards
+    @sauron.save!
+
+    @board.influence['isengard'] = 3
+    @board.save!
+
+    get play_screen_sauron_plot_cards_url @sauron
+
+    assert_equal [ 3, 4, 7, 9, 13 ],assert_select("img[class='medium-card']").map{ |e| e.attribute('card_id').value.to_i }.sort
     assert_response :success
   end
 
