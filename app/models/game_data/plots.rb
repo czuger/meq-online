@@ -23,9 +23,10 @@ module GameData
     end
 
     def requirement( board, code )
-      r = @@data[code.to_i][:require]
-      return true if r.nil?
-      send( r, board )
+      plot = @@data[code.to_i]
+      r = plot[:require]
+      specific_requirement = r.nil? ? true : send( r, board )
+      board.shadow_pool >= plot[:required_influence] && specific_requirement
     end
 
     def all_cards

@@ -13,6 +13,7 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
     @sauron = create( :sauron, board: @board, user: @user )
 
     @board.aasm_state = 'edit_sauron_sauron_actions'
+    @board.shadow_pool = 10
     @board.save!
 
     $google_auth_hash[:uid] = @user.uid

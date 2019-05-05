@@ -18,6 +18,7 @@
     :type: ring
     :advance: 1
   :affect: gladden_fields
+  :required_influence: 0
 
 1:
   :influence:
@@ -38,6 +39,7 @@
     :type: conquest
     :advance: 1
   :affect: sea_of_udun
+  :required_influence: 0
 
 2:
   :influence:
@@ -58,6 +60,7 @@
     :type: conquest
     :advance: 1
   :affect: isengard
+  :required_influence: 0
 
 3:
   :min_shadow_pool: 0
@@ -67,6 +70,7 @@
     :advance: 1
   :affect: erebor
   :require: :minion_in_erebor
+  :required_influence: 0
 
 4:
   :min_shadow_pool: 0
@@ -76,6 +80,7 @@
     :advance: 1
   :affect: osgiliath
   :require: :monster_in_osgiliath
+  :required_influence: 0
 
 5:
   :min_shadow_pool: 2
@@ -84,6 +89,7 @@
     :type: ring
     :advance: 2
   :affect: sea_of_udun
+  :required_influence: 2
 
 6:
   :min_shadow_pool: 5
@@ -92,6 +98,7 @@
     :type: corruption
     :advance: 2
   :affect: isengard
+  :required_influence: 5
 
 7:
   :min_shadow_pool: 5
@@ -101,6 +108,7 @@
     :advance: 2
   :affect: edoras
   :require: :influence_near_edoras
+  :required_influence: 5
 
 8:
   :min_shadow_pool: 8
@@ -109,6 +117,7 @@
     :type: corruption
     :advance: 3
   :affect: minas_tirith
+  :required_influence: 8
 
 9:
   :min_shadow_pool: 0
@@ -118,6 +127,7 @@
     :advance: 2
   :affect: mount_gundabad
   :require: :influence_near_mount_gundabad
+  :required_influence: 0
 
 10:
   :min_shadow_pool: 0
@@ -126,6 +136,7 @@
     :type: conquest
     :advance: 2
   :affect:
+  :required_influence: 0
 
 11:
   :min_shadow_pool: 0
@@ -134,6 +145,7 @@
     :type: conquest
     :advance: 2
   :affect:
+  :required_influence: 0
 
 12:
   :min_shadow_pool: 4
@@ -142,6 +154,7 @@
     :type: ring
     :advance: 2
   :affect: barad_dur
+  :required_influence: 4
 
 13:
   :min_shadow_pool: 0
@@ -151,6 +164,7 @@
     :advance: 1
   :affect: woodland_realm
   :require: :require_mob_near_wodden_land
+  :required_influence: 0
 
 14:
   :min_shadow_pool: 0
@@ -159,6 +173,7 @@
     :type: corruption
     :advance: 1
   :affect:
+  :required_influence: 0
 
 15:
   :min_shadow_pool: 0
@@ -167,6 +182,7 @@
     :type: ring
     :advance: 2
   :affect:
+  :required_influence: 0
 
 16:
   :min_shadow_pool: 5
@@ -176,6 +192,7 @@
     :advance: 3
   :affect: isengard
   :require: :influence_in_isengard
+  :required_influence: 5
 
 17:
   :min_shadow_pool: 4
@@ -184,3 +201,4 @@
     :type: ring
     :advance: 2
   :affect:
+  :required_influence: 4

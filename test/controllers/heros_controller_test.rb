@@ -133,16 +133,6 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to hero_movement_screen_url(@hero)
   end
 
-  test 'should be redirected to combat screen as there is a monster at location' do
-    @board.aasm_state = :hero_rest_screen
-    @board.save!
-
-    @board.create_monster( :orc, :bree, pool_key: :dummy )
-
-    get hero_rest_screen_url( @hero )
-    assert_redirected_to combat_setup_screen_board_combats_url(@hero)
-  end
-
   test 'should heal and be redirected to movement' do
     @board.aasm_state = :hero_rest_screen
     @board.story_marker_corruption = 5
