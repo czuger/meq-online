@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
 
   def require_logged_in
-    redirect_to new_sessions_path unless current_user
+    redirect_to welcome_path unless current_user
   end
   #
   # private

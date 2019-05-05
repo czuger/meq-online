@@ -66,6 +66,7 @@
     :type: corruption
     :advance: 1
   :affect: erebor
+  :require: :minion_in_erebor
 
 4:
   :min_shadow_pool: 0
@@ -74,6 +75,7 @@
     :type: conquest
     :advance: 1
   :affect: osgiliath
+  :require: :monster_in_osgiliath
 
 5:
   :min_shadow_pool: 2
@@ -98,6 +100,7 @@
     :type: corruption
     :advance: 2
   :affect: edoras
+  :require: :influence_near_edoras
 
 8:
   :min_shadow_pool: 8
@@ -114,6 +117,7 @@
     :type: conquest
     :advance: 2
   :affect: mount_gundabad
+  :require: :influence_near_mount_gundabad
 
 10:
   :min_shadow_pool: 0
@@ -170,6 +174,7 @@
     :type: conquest
     :advance: 3
   :affect: isengard
+  :require: :influence_in_isengard
 
 17:
   :min_shadow_pool: 4
