@@ -24,5 +24,13 @@ FactoryBot.define do
       favor_to_discard { 5 }
     end
 
+    factory :gollum_is_captured do
+      plot_card { 5 }
+      affected_location { 'sea_of_udun' }
+      story_type { 'ring' }
+      story_advance { 2 }
+      favor_to_discard { 2 }
+    end
+
   end
 end

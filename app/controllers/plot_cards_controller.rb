@@ -57,9 +57,12 @@ class PlotCardsController < ApplicationController
     @actor.plot_cards.delete(selected_card)
 
     @board.transaction do
+      @board.log( @board.sauron, 'plot_cards.play', { plot_card: selected_card } )
+
+      remove_gollum_cards( selected_card )
+
       @actor.save!
       @board.save!
-      @board.log( @board.sauron, 'plot_cards.play', { plot_card: selected_card } )
 
       unless selected_card == 13
         play_finished
@@ -130,6 +133,22 @@ class PlotCardsController < ApplicationController
     end
 
     redirect_to play_screen_sauron_plot_cards_path(@actor)
+  end
+
+  def remove_gollum_cards( selected_card )
+    gollum_cards = [ 5, 12 ]
+
+    if gollum_cards.include?( selected_card )
+      gollum_cards.delete( selected_card )
+      to_discard_card = gollum_cards.first
+      to_discard_card = @board.current_plots.where( plot_card: to_discard_card ).first
+
+      if to_discard_card
+        @board.log( nil, 'plot_cards.discard_gollum', { plot_card: to_discard_card } )
+        @board.plot_discard << to_discard_card.plot_card
+        to_discard_card.destroy!
+      end
+    end
   end
 
 end

@@ -138,6 +138,50 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
     refute_includes  @sauron.reload.plot_cards, 8
   end
 
+  test 'should play card - in case of smeagol card, should lead to gollum card choice' do
+    @board.aasm_state = 'play_screen_sauron_plot_cards'
+    @board.save!
+
+    @sauron.plot_cards << 13
+    @sauron.save!
+
+    post play_sauron_plot_cards_url @sauron, params: { selected_card: 13, card_slot: 2 }
+    assert_equal 13, @board.get_plot_card(2)
+    refute_includes  @sauron.reload.plot_cards, 13
+
+    assert_redirected_to look_for_gollum_cards_sauron_plot_cards_url(@sauron)
+    follow_redirect!
+  end
+
+  test 'should play card - in case of gollum card, should remove other gollum cards' do
+    @board.aasm_state = 'play_screen_sauron_plot_cards'
+    @board.save!
+
+    create( :gollum_is_captured, board: @board )
+
+    @sauron.plot_cards << 12
+    @sauron.save!
+
+    post play_sauron_plot_cards_url @sauron, params: { selected_card: 12, card_slot: 2 }
+    assert_equal 12, @board.get_plot_card(2)
+    refute_includes  @sauron.reload.plot_cards, 12
+
+    refute_equal 5, @board.reload.get_plot_card(1)
+    assert_includes  @board.reload.plot_discard, 5
+
+    assert_redirected_to edit_sauron_sauron_actions_url(@sauron)
+  end
+
+
+  test 'get one of the proposed gollum card' do
+    @board.aasm_state = 'play_screen_sauron_plot_cards'
+    @board.save!
+
+    post get_gollum_card_sauron_plot_cards_url @sauron, params: { selected_card: 12 }
+    assert_includes @sauron.reload.plot_cards, 12
+    assert_redirected_to edit_sauron_sauron_actions_url(@sauron)
+  end
+
   test "should fail because user don't have the card in hand card" do
     assert_raise do
       post play_sauron_plot_cards_url @sauron, params: { selected_card: 8, card_slot: 'plot-card-1' }
