@@ -39,6 +39,10 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should get play_screen' do
+    @plot_cards = GameData::Plots.new
+    @sauron.plot_cards = @plot_cards.all_cards
+    @sauron.save!
+
     get play_screen_sauron_plot_cards_url @sauron
     assert_response :success
   end

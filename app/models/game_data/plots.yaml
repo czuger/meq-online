@@ -150,6 +150,7 @@
     :type: ring
     :advance: 1
   :affect: woodland_realm
+  :require: :require_mob_near_wodden_land
 
 14:
   :min_shadow_pool: 0

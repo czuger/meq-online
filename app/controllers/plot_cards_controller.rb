@@ -36,7 +36,10 @@ class PlotCardsController < ApplicationController
   # Play area
   #
   def play_screen
-    @cards = @actor.plot_cards
+    game_data = GameData::Plots.new
+
+    @playable_cards = @actor.plot_cards.to_a.select{ |e| game_data.requirement( @board,e ) }
+
     @free_slots = 1.upto(3).to_a - @board.current_plots.map{ |e| e.plot_position }
 
     @free_slots_options = @free_slots.map{ |e| [ "Card slot #{e}".freeze, e ] }.sort

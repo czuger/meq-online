@@ -18,6 +18,7 @@ m= (path) ->
 
 $(document).on('turbolinks:load'
   ->
+    # Refresh for boards and other screen leads to self refresh issues.
     if m( /maps\/\d+\/edit/ ) || m( /maps\/\d+/ )
       refresh()
 )

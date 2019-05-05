@@ -8,7 +8,7 @@
       %li In this screen you can play a plot card.
       %li Remember you can only place or discard on card per turn.
 
-  - @cards.each do |card|
+  - @playable_cards.each do |card|
     = card_picture( card, selectable: :unique )
 
   = form_tag play_sauron_plot_cards_path(@actor), class: 'ml-3' do
