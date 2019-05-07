@@ -10,6 +10,10 @@ module GameData
       @data = YAML.load_file("#{Rails.root}/app/models/game_data/locations_paths.yaml")
     end
 
+    # Return the codes of surrounding locations
+    #
+    # @param name_code [String] the code of the current location.
+    # @return [Array[String]] all codes of surrounding locations.
     def get_connected_locations( name_code )
       @data[name_code][:destinations].map{ |e| e[:dest] }
     end

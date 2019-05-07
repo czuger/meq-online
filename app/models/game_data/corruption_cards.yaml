@@ -12,31 +12,35 @@
   2:
     :name: Helpless
     :favor_cost: 2
-    :power: helpless
+    :modification: helpless
   3:
     :name: Distraught
     :favor_cost: 2
-    :power: distraught
+    :flaw: distraught
   5:
     :name: Cowardly
     :favor_cost: 2
-    :power: cowardly
+    :flaw: cowardly
   7:
     :name: Weary
     :favor_cost: 2
-    :power: weary
+    :modification: weary
   8:
     :name: Deranged
     :favor_cost: 2
-    :power: deranged
+    :modification: deranged
   9:
     :name: Dispairing
     :favor_cost: 2
-    :power: dispairing
+    :flaw: dispairing
   10:
     :name: Careless
-    :power: careless
+    :immediate: careless
+  11:
+    :name: Isolated
+    :favor_cost: 2
+    :flaw: isolated
   14:
     :name: Weak
     :favor_cost: 2
-    :power: weak
+    :modification: weak

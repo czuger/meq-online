@@ -100,7 +100,7 @@ class CombatsController < ApplicationController
         @board.advance_lowest_story_marker( random: true )
         @hero.favor = [ @hero.favor - 1, 0 ].max
         @hero.move_to_regional_haven
-        @hero.heal
+        @hero.heal!
 
         @board.next_to_cards_loss_screen_board_combats!
         @board.next_to_after_defeat_advance_story_marker!

@@ -35,14 +35,14 @@ class HeroesController < ApplicationController
 
   def rest_rest
     @actor.transaction do
-      @actor.rest
+      @actor.rest!
       after_rest_or_heal
     end
   end
 
   def rest_heal
     @actor.transaction do
-      @actor.heal
+      @actor.heal!
       after_rest_or_heal
     end
   end
@@ -100,7 +100,7 @@ class HeroesController < ApplicationController
         @actor.hand_to_rest(selected_cards)
         @actor.save!
 
-        # @actor.suffer_peril!(@board)
+        @actor.suffer_peril!(@board)
 
         location_encounters = @board.check_location_encounters(@actor)
         case location_encounters
