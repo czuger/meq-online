@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_28_163242) do
+ActiveRecord::Schema.define(version: 2019_05_07_123856) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 2019_04_28_163242) do
     t.jsonb "items", default: {}, null: false
     t.jsonb "used_powers", default: {}, null: false
     t.integer "temporary_damages", limit: 2, default: 0, null: false
+    t.string "flaws", default: [], null: false, array: true
     t.index ["board_id"], name: "index_actors_on_board_id"
   end
 
@@ -73,7 +74,6 @@ ActiveRecord::Schema.define(version: 2019_04_28_163242) do
   end
 
   create_table "boards", force: :cascade do |t|
-    t.string "heroes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "max_heroes_count", default: 3, null: false
@@ -107,6 +107,8 @@ ActiveRecord::Schema.define(version: 2019_04_28_163242) do
     t.jsonb "monsters_pool_dark_green", default: [], null: false
     t.string "winner"
     t.integer "sauron_actions_count", limit: 2, default: 0, null: false
+    t.integer "corruption_deck", default: [], null: false, array: true
+    t.integer "corruption_discard", default: [], null: false, array: true
     t.index ["current_hero_id"], name: "index_boards_on_current_hero_id"
   end
 
@@ -147,6 +149,20 @@ ActiveRecord::Schema.define(version: 2019_04_28_163242) do
     t.boolean "hero_exhausted", default: false, null: false
     t.boolean "mob_exhausted", default: false, null: false
     t.index ["board_id"], name: "index_combats_on_board_id", unique: true
+  end
+
+  create_table "corruptions", force: :cascade do |t|
+    t.bigint "board_id"
+    t.bigint "actor_id"
+    t.integer "card_code", null: false
+    t.string "name", null: false
+    t.integer "favor_cost", null: false
+    t.string "flaw"
+    t.string "modification"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_corruptions_on_actor_id"
+    t.index ["board_id", "card_code"], name: "index_corruptions_on_board_id_and_card_code", unique: true
   end
 
   create_table "logs", force: :cascade do |t|
@@ -210,6 +226,8 @@ ActiveRecord::Schema.define(version: 2019_04_28_163242) do
   add_foreign_key "combats", "actors"
   add_foreign_key "combats", "boards"
   add_foreign_key "combats", "mobs"
+  add_foreign_key "corruptions", "actors"
+  add_foreign_key "corruptions", "boards"
   add_foreign_key "logs", "actors"
   add_foreign_key "logs", "boards"
   add_foreign_key "mobs", "boards"

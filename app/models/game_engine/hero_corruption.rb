@@ -13,7 +13,7 @@ module GameEngine
           else
             board.log(self, 'peril.encounter_orcs_couts', location_name: @locations.get(location).name)
           end
-          gain_random_corruption(board)
+          gain_corruption(board)
         end
       end
     end
@@ -22,32 +22,18 @@ module GameEngine
       self.favor = [ favor - amount, 0 ].max
     end
 
-    def gain_random_corruption(board)
+    def gain_corruption(board)
       corruption_card = draw_corruption_card(board)
 
       if corruption_card.immediate
-        send(corruption_card.immediate)
 
       elsif corruption_card.modification
-        send("get_corruption_#{corruption_card.modification}")
 
       elsif corruption_card.flaw
-        self.flaws << corruption_card.flaw
 
       else
-        raise 'Arrrrrgh !!!'
+        
       end
-    end
-
-    def loose_corruption(board, corruption)
-      if corruption.modification
-        send("loose_corruption_#{corruption_card.modification}")
-      elsif corruption.flaw
-        self.flaws.delete(corruption.flaw)
-      end
-
-      board.corruption_discard << corruption.card_code
-      corruption.destroy!
     end
 
     private
