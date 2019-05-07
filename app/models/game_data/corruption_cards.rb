@@ -2,7 +2,7 @@ module GameData
   class CorruptionCards < Base
 
     def get(card_code)
-      OpenStruct.new(@data[:cards][card_code])
+      OpenStruct.new(@data[:cards][card_code].merge(code: card_code))
     end
 
     def deck

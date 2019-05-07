@@ -1,7 +1,7 @@
 module GameEngine
   module HeroPeril
 
-    def suffer_peril!(board)
+    def suffer_peril(board)
       # current_location_perilous? also instantiate @locations
       if current_location_perilous?(board)
         unless Hazard.lucky?(5)
@@ -23,19 +23,15 @@ module GameEngine
     end
 
     def gain_random_corruption(board)
+      @game_data_corruption_cards = GameData::CorruptionCards.new
+
       corruption_card = draw_corruption_card(board)
 
       if corruption_card.immediate
         send(corruption_card.immediate)
-
-      elsif corruption_card.modification
-        send("get_corruption_#{corruption_card.modification}")
-
-      elsif corruption_card.flaw
-        self.flaws << corruption_card.flaw
-
       else
-        raise 'Arrrrrgh !!!'
+        send("get_corruption_#{corruption_card.modification}") if corruption_card.modification
+        @game_data_corruption_cards.create_from_code!(board, corruption_card.code)
       end
     end
 
@@ -55,15 +51,6 @@ module GameEngine
     def current_location_perilous?(board)
       @locations = GameData::Locations.new
       @locations.perilous?(location) || (board.influence[location].to_i > wisdom)
-    end
-
-    def draw_corruption_card(board)
-      game_data_corruption_cards = GameData::CorruptionCards.new
-      if board.corruption_deck.empty?
-        board.corruption_deck = board.corruption_discard.shuffle
-        board.corruption_discard = []
-      end
-      game_data_corruption_cards.get(board.corruption_deck.shift)
     end
 
   end

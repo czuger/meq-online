@@ -2,6 +2,7 @@ class Hero < Actor
 
   include GameEngine::HeroDamages
   include GameEngine::HeroPeril
+  include GameEngine::HeroCorruption
 
   belongs_to :user
   belongs_to :board

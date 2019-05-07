@@ -1,55 +1,64 @@
 module GameEngine
-  module HeroPeril
+  module HeroCorruption
 
-    def suffer_peril!(board)
-      # current_location_perilous? also instantiate @locations
-      if current_location_perilous?(board)
-        unless Hazard.lucky?(5)
-          connected_locations = GameData::LocationsPaths.new.get_connected_locations(location)
-          surrounding_locations_with_influence = board.influence.select { |k, v| connected_locations.include?(k) && v >= 0 }.count
-          if wisdom <= surrounding_locations_with_influence
-            favor_loss
-            board.log(self, 'peril.shadow_background_memories', location_name: @locations.get(location).name)
-          else
-            board.log(self, 'peril.encounter_orcs_couts', location_name: @locations.get(location).name)
-          end
-          gain_corruption(board)
-        end
-      end
+    def distraught?
+      flaw?( __method__ )
     end
 
-    def favor_loss( amount = 1 )
-      self.favor = [ favor - amount, 0 ].max
+    def cowardly?
+      flaw?( __method__ )
     end
 
-    def gain_corruption(board)
-      corruption_card = draw_corruption_card(board)
+    def dispairing?
+      flaw?( __method__ )
+    end
 
-      if corruption_card.immediate
-
-      elsif corruption_card.modification
-
-      elsif corruption_card.flaw
-
-      else
-        
-      end
+    def isolated?
+      flaw?( __method__ )
     end
 
     private
 
-    def current_location_perilous?(board)
-      @locations = GameData::Locations.new
-      @locations.perilous?(location) || (board.influence[location].to_i > wisdom)
+    def get_corruption_helpless
+      self.agility -= 1
+    end
+
+    def get_corruption_derangd
+      self.wisdom -= 1
+    end
+
+    def get_corruption_weary
+      self.fortitude -= 1
+    end
+
+    def get_corruption_weak
+      self.strength -= 1
+    end
+
+    def get_corruption_helpless
+      self.agility -= 1
+    end
+
+    def careless(board)
+      favor_loss(2)
+      board.corruption_deck << 10
+      shuffle_corruption_discard_in_deck(board)
     end
 
     def draw_corruption_card(board)
-      game_data_corruption_cards = GameData::CorruptionCards.new
-      if board.corruption_deck.empty?
-        board.corruption_deck = board.corruption_discard.shuffle
-        board.corruption_discard = []
-      end
-      game_data_corruption_cards.get(board.corruption_deck.shift)
+      shuffle_corruption_discard_in_deck(board) if board.corruption_deck.empty?
+      @game_data_corruption_cards.get(board.corruption_deck.shift)
+    end
+
+    def shuffle_corruption_discard_in_deck(board)
+      board.corruption_deck += board.corruption_discard
+      board.corruption_deck.shuffle!
+      board.corruption_discard = []
+    end
+
+    def flaw?( method_name )
+      flaw = method_name.to_s[0..-2]
+      self.corruptions.where( flaw: flaw ).exists?
     end
 
   end

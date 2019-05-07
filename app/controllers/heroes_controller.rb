@@ -98,9 +98,9 @@ class HeroesController < ApplicationController
         end
 
         @actor.hand_to_rest(selected_cards)
+        @actor.suffer_peril(@board)
         @actor.save!
-
-        @actor.suffer_peril!(@board)
+        @board.save!
 
         location_encounters = @board.check_location_encounters(@actor)
         case location_encounters
@@ -108,12 +108,10 @@ class HeroesController < ApplicationController
             redirect_to hero_movement_screen_path(@actor)
           when :monster
             @board.next_to_combat_setup_screen_board_combats!
-            @board.save!
 
             redirect_to combat_setup_screen_board_combats_path(@board)
           when :exploration
             @board.next_to_exploration!
-            @board.save!
 
             redirect_to hero_exploration_screen_path(@actor)
           else
