@@ -74,7 +74,8 @@ class BoardsController < ApplicationController
         shadow_discard: [],
         max_heroes_count: max_heroes_count,
         shadow_pool: starting_plot.influence.shadow_pool,
-        characters: {}
+        characters: {},
+        corruption_deck: GameData::CorruptionCards.new.deck.shuffle
     )
 
     respond_to do |format|

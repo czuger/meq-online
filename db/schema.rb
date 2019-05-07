@@ -47,7 +47,6 @@ ActiveRecord::Schema.define(version: 2019_05_07_123856) do
     t.jsonb "items", default: {}, null: false
     t.jsonb "used_powers", default: {}, null: false
     t.integer "temporary_damages", limit: 2, default: 0, null: false
-    t.string "flaws", default: [], null: false, array: true
     t.index ["board_id"], name: "index_actors_on_board_id"
   end
 
@@ -154,9 +153,9 @@ ActiveRecord::Schema.define(version: 2019_05_07_123856) do
   create_table "corruptions", force: :cascade do |t|
     t.bigint "board_id"
     t.bigint "actor_id"
-    t.integer "card_code", null: false
+    t.integer "card_code", limit: 2, null: false
     t.string "name", null: false
-    t.integer "favor_cost", null: false
+    t.integer "favor_cost", limit: 2, null: false
     t.string "flaw"
     t.string "modification"
     t.datetime "created_at", null: false

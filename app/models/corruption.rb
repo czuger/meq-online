@@ -1,3 +1,3 @@
 class Corruption < ApplicationRecord
-  balongs_to :board
+  belongs_to :board
 end

@@ -4,10 +4,10 @@ class CreateCorruptions < ActiveRecord::Migration[5.2]
       t.references :board, foreign_key: true, index:false
       t.references :actor, foreign_key: true
 
-      t.integer :card_code, null: false
+      t.integer :card_code, null: false, limit: 1
       t.string :name, null: false
 
-      t.integer :favor_cost, null: false
+      t.integer :favor_cost, null: false, limit: 1
 
       t.string :flaw
       t.string :modification
@@ -19,6 +19,5 @@ class CreateCorruptions < ActiveRecord::Migration[5.2]
 
     add_column :boards, :corruption_deck, :integer, null: false, array: true, default: []
     add_column :boards, :corruption_discard, :integer, null: false, array: true, default: []
-    add_column :actors, :flaws, :string, null: false, default: [], array: true
   end
 end
