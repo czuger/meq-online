@@ -39,6 +39,29 @@ module GameEngine
       self.agility -= 1
     end
 
+    def get_corruption_dispairing
+      self.favor = [favor, 3].min
+    end
+
+    def loose_corruption_derangd
+      self.wisdom += 1
+    end
+
+    def loose_corruption_weary
+      self.fortitude += 1
+    end
+
+    def loose_corruption_weak
+      self.strength += 1
+    end
+
+    def loose_corruption_helpless
+      self.agility += 1
+    end
+
+    def loose_corruption_dispairing
+    end
+
     def careless(board)
       favor_loss(2)
       board.corruption_deck << 10

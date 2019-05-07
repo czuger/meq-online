@@ -28,7 +28,7 @@ module GameEngine
       corruption_card = draw_corruption_card(board)
 
       if corruption_card.immediate
-        send(corruption_card.immediate)
+        send(corruption_card.immediate, board)
       else
         send("get_corruption_#{corruption_card.modification}") if corruption_card.modification
         @game_data_corruption_cards.create_from_code!(board, self, corruption_card.code)

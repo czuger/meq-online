@@ -18,7 +18,7 @@ class CorruptionTest < ActiveSupport::TestCase
     end
   end
 
-  test 'modifications cards' do
+  test 'modifications cards acquisition' do
     cards = [ [ 8, :wisdom ], [ 2, :agility ], [ 7, :fortitude ], [ 14, :strength ] ]
 
     cards.each do |c|
@@ -35,7 +35,7 @@ class CorruptionTest < ActiveSupport::TestCase
   end
 
   test 'flaws cards' do
-    flaws = [ [ 3, :distraught ], [ 5, :cowardly ], [ 9, :dispairing ], [ 11, :isolated ] ]
+    flaws = [ [ 5, :cowardly ], [ 9, :dispairing ], [ 11, :isolated ] ]
 
     flaws.each do |c|
       @board.corruption_deck = [c.first]
@@ -47,6 +47,66 @@ class CorruptionTest < ActiveSupport::TestCase
         assert @hero.send( "#{c.last}?" )
       end
     end
+  end
+
+  test 'careless' do
+    @board.corruption_deck = [10]
+    @board.save!
+
+    @hero.favor = 1
+    @hero.save!
+
+    assert_no_difference 'Corruption.count' do
+      @hero.suffer_peril(@board)
+      @hero.save!
+      assert_equal 0,  @hero.reload.favor
+    end
+
+    @board.corruption_deck = [10]
+    @board.corruption_discard = [4, 5, 6]
+    @board.save!
+
+    @hero.favor = 6
+    @hero.save!
+
+    assert_no_difference 'Corruption.count' do
+      @hero.suffer_peril(@board)
+      @hero.save!
+      assert_equal 4,  @hero.reload.favor
+    end
+
+    @board.save!
+    assert_equal 4, @board.reload.corruption_deck.count
+  end
+
+  test 'dispairing' do
+    @board.corruption_deck = [9]
+    @board.save!
+
+    @hero.favor = 1
+    @hero.save!
+
+    assert_difference 'Corruption.count' do
+      @hero.suffer_peril(@board)
+      @hero.save!
+      assert_equal 1,  @hero.reload.favor
+    end
+
+    Corruption.delete_all
+
+    @board.corruption_deck = [9]
+    @board.save!
+
+    @hero.favor = 20
+    @hero.save!
+
+    assert_difference 'Corruption.count' do
+      @hero.suffer_peril(@board)
+      @hero.save!
+      assert_equal 3,  @hero.reload.favor
+    end
+
+    @board.save!
   end
 
   # test 'The shire should be perilous' do

@@ -3,44 +3,57 @@
 - 2
 - 3
 - 5
-- 7
 - 8
 - 9
 - 10
 - 14
 :cards:
+  10:
+    :name: Careless
+    :immediate: careless
+    :desc: Immediately discard 2 favor from your hero sheet. Then Shuffle this card and the discard pile back into the Corruption deck.
+
   2:
     :name: Helpless
     :favor_cost: 2
     :modification: helpless
-  3:
-    :name: Distraught
-    :favor_cost: 2
-    :flaw: distraught
-  5:
-    :name: Cowardly
-    :favor_cost: 2
-    :flaw: cowardly
+    :desc: Your agility is reduced by 1.
   7:
     :name: Weary
     :favor_cost: 2
     :modification: weary
+    :desc: Your fortitude is reduced by 1.
   8:
     :name: Deranged
     :favor_cost: 2
     :modification: derangd
-  9:
-    :name: Dispairing
-    :favor_cost: 2
-    :flaw: dispairing
-  10:
-    :name: Careless
-    :immediate: careless
-  11:
-    :name: Isolated
-    :favor_cost: 2
-    :flaw: isolated
+    :desc: Your wisdom is reduced by 1.
   14:
     :name: Weak
     :favor_cost: 2
     :modification: weak
+    :desc: Your strength is reduced by 1
+
+  3:
+    :name: Distraught
+    :favor_cost: 2
+    :flaw: distraught
+    :modification: distraught
+    :desc: You may never have more than 7 hero cards in your hand.
+
+  9:
+    :name: Dispairing
+    :favor_cost: 2
+    :flaw: dispairing
+    :modification: dispairing
+    :desc: You may never have more than 3 favor on your hero sheet.
+  5:
+    :name: Cowardly
+    :favor_cost: 2
+    :flaw: cowardly
+    :desc: At the start of each future combat that you are involved in, you must discard 1 random Hero card.
+  11:
+    :name: Isolated
+    :favor_cost: 2
+    :flaw: isolated
+    :desc: You may not consult with characters or trade with other heroes.
