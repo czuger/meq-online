@@ -18,7 +18,7 @@ class CorruptionTest < ActiveSupport::TestCase
     end
   end
 
-  test 'modifications_cards' do
+  test 'modifications cards' do
     cards = [ [ 8, :wisdom ], [ 2, :agility ], [ 7, :fortitude ], [ 14, :strength ] ]
 
     cards.each do |c|
@@ -30,6 +30,21 @@ class CorruptionTest < ActiveSupport::TestCase
           @hero.suffer_peril(@board)
           @hero.save!
         end
+      end
+    end
+  end
+
+  test 'flaws cards' do
+    flaws = [ [ 3, :distraught ], [ 5, :cowardly ], [ 9, :dispairing ], [ 11, :isolated ] ]
+
+    flaws.each do |c|
+      @board.corruption_deck = [c.first]
+      @board.save!
+
+      assert_difference 'Corruption.count' do
+        @hero.suffer_peril(@board)
+        @hero.save!
+        assert @hero.send( "#{c.last}?" )
       end
     end
   end
