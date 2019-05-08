@@ -30,10 +30,10 @@ class EndTurnTest < ActionDispatch::IntegrationTest
   end
 
   test 'Test 1 player switch to second turn.' do
-    @board.aasm_state = 'exploration'
+    @board.aasm_state = 'hero_exploration'
     @board.save!
 
-    get "/heroes/#{@hero.id}/exploration_finished"
+    get next_step_hero_exploration_url(@hero)
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -60,13 +60,13 @@ class EndTurnTest < ActionDispatch::IntegrationTest
   end
 
   test 'Test 1 player switch to sauron after finishing his second turn.' do
-    @board.aasm_state = 'exploration'
+    @board.aasm_state = 'hero_exploration'
     @board.save!
 
     @hero.turn = 2
     @hero.save!
 
-    get "/heroes/#{@hero.id}/exploration_finished"
+    get next_step_hero_exploration_url(@hero)
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -94,10 +94,10 @@ class EndTurnTest < ActionDispatch::IntegrationTest
 
     @board.current_hero = @argalad
 
-    @board.aasm_state = 'exploration'
+    @board.aasm_state = 'hero_exploration'
     @board.save!
 
-    get "/heroes/#{@hero.id}/exploration_finished"
+    get next_step_hero_exploration_url(@hero)
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -125,10 +125,10 @@ class EndTurnTest < ActionDispatch::IntegrationTest
 
     @board.current_hero = @argalad
 
-    @board.aasm_state = 'exploration'
+    @board.aasm_state = 'hero_exploration'
     @board.save!
 
-    get "/heroes/#{@hero.id}/exploration_finished"
+    get next_step_hero_exploration_url(@hero)
     assert_response :redirect
     follow_redirect!
     assert_response :success

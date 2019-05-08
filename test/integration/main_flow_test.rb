@@ -131,7 +131,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    get "/heroes/#{@hero.id}/exploration_back_to_movement"
+    get next_movement_hero_exploration_url(@hero)
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -146,7 +146,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    get "/heroes/#{@hero.id}/exploration_finished"
+    get next_step_hero_exploration_url(@hero)
     assert_response :redirect
     follow_redirect!
     assert_response :success
@@ -182,7 +182,7 @@ class MainFlowTest < ActionDispatch::IntegrationTest
     assert @hero.reload.active
     refute @sauron.reload.active
 
-    get "/heroes/#{@hero.id}/exploration_finished"
+    get next_step_hero_exploration_url(@hero)
     assert_response :redirect
     follow_redirect!
     assert_response :success

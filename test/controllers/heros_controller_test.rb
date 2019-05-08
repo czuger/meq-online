@@ -41,7 +41,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     @board.save!
 
     get hero_movement_finished_url( @hero )
-    assert_redirected_to hero_exploration_screen_url( @hero )
+    assert_redirected_to hero_exploration_url( @hero )
   end
 
   test 'should finish drawing cards and be redirected to boards_path' do
@@ -179,49 +179,6 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   #   assert_redirected_to hero_url(@hero)
   # end
 
-  test 'should get a favor' do
-    post hero_explore_url( @hero, tokens: { favor: [ :favor ] } )
-    assert_redirected_to hero_exploration_screen_url(@hero)
-    assert_equal 1, @hero.reload.favor
-  end
-
-  test 'should not be able to see gandalf, because hero is isolated' do
-    create( :isolated, board: @board, hero: @hero )
-
-    @board.favors = []
-    @board.characters[:gandalf] = :bree
-    @board.save!
-    get hero_exploration_screen_url(@hero)
-
-    # puts @response.body
-    assert_select 'input[class=form-check-input]', false
-
-    get board_logs_url(@board)
-    # puts @response.body
-    assert_select 'td', true, "Was't able to talk with Gandalf because of the isolated corruption."
-  end
-
-  test 'should get only one favor and leave one' do
-    @board.favors << :bree
-    @board.save
-
-    post hero_explore_url( @hero, tokens: { favor: [ :favor ] } )
-    assert_redirected_to hero_exploration_screen_url(@hero)
-    assert_equal 1, @hero.reload.favor
-
-    assert_equal %w( old_forest bree ).sort, @board.reload.favors.sort
-  end
-
-  test 'should get two favors and leave none' do
-    @board.favors << :bree
-    @board.save
-
-    post hero_explore_url( @hero, tokens: { favor: [ :favor, :favor ] } )
-    assert_redirected_to hero_exploration_screen_url(@hero)
-    assert_equal 2, @hero.reload.favor
-
-    assert_equal %w( old_forest ).sort, @board.reload.favors.sort
-  end
 
   test 'after movement, should create a combat' do
     @board.aasm_state = :hero_movement_screen
@@ -250,14 +207,14 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'end game with heroes victory' do
-    @board.aasm_state = :exploration
+    @board.aasm_state = 'hero_exploration'
     @board.story_marker_heroes = 16
     @board.save!
 
     @hero.turn = 2
     @hero.save!
 
-    get hero_exploration_finished_url( @hero )
+    get next_step_hero_exploration_url( @hero )
 
     assert @board.reload.finished?
     assert_equal 'Heroes', @board.winner
@@ -270,7 +227,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'end game with sauron victory' do
-    @board.aasm_state = :exploration
+    @board.aasm_state = 'hero_exploration'
     @board.story_marker_conquest = 16
     @board.save!
 
@@ -279,7 +236,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
 
     create( :conquest_plot, board: @board )
 
-    get hero_exploration_finished_url( @hero )
+    get next_step_hero_exploration_url( @hero )
 
     assert @board.reload.finished?
     assert_equal 'Sauron', @board.winner
@@ -292,7 +249,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'end game with equality' do
-    @board.aasm_state = :exploration
+    @board.aasm_state = 'hero_exploration'
     @board.story_marker_conquest = 16
     @board.story_marker_heroes = 16
     @board.save!
@@ -302,7 +259,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
 
     create( :conquest_plot, board: @board )
 
-    get hero_exploration_finished_url( @hero )
+    get next_step_hero_exploration_url( @hero )
 
     assert @board.reload.finished?
     assert_equal 'Equality', @board.winner
@@ -315,7 +272,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'should create the rinwraith and gothmog' do
-    @board.aasm_state = :exploration
+    @board.aasm_state = 'hero_exploration'
     @board.story_marker_heroes = 6
     @board.save!
 
@@ -325,14 +282,14 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     refute @board.mobs.where( code: :ringwraiths ).exists?
     refute @board.mobs.where( code: :gothmog ).exists?
 
-    get hero_exploration_finished_url( @hero )
+    get next_step_hero_exploration_url( @hero )
 
     assert @board.mobs.where( code: :ringwraiths ).exists?
     assert @board.mobs.where( code: :gothmog ).exists?
   end
 
   test 'should create the witch-king' do
-    @board.aasm_state = :exploration
+    @board.aasm_state = 'hero_exploration'
     @board.story_marker_heroes = 12
     @board.save!
 
@@ -341,7 +298,7 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
 
     refute @board.mobs.where( code: :witch_king ).exists?
 
-    get hero_exploration_finished_url( @hero )
+    get next_step_hero_exploration_url( @hero )
 
     assert @board.mobs.where( code: :witch_king ).exists?
   end

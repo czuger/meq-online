@@ -50,7 +50,7 @@ class Board < ApplicationRecord
           :monster
         end
       else
-        :exploration
+        :explorations
       end
     end
   end

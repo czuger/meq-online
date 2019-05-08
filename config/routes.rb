@@ -19,10 +19,10 @@ Rails.application.routes.draw do
 
     get :argalad_power_screen
 
-    get :exploration_screen
-    post :explore
-    get :exploration_finished
-    get :exploration_back_to_movement
+    resource :exploration, only: [:show, :update ] do
+      get :next_movement
+      get :next_step
+    end
 
     get :draw_cards_screen
     post :draw_cards
