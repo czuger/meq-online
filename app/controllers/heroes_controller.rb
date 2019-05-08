@@ -212,15 +212,6 @@ class HeroesController < ApplicationController
     end
   end
 
-  #
-  # Encounter methods
-  #
-  def encounter_screen
-  end
-
-  def encounter
-  end
-
   def draw_cards_screen
     # nb_cards_to_draw = params[:nb_cards].to_i
     @cards = @actor.hand

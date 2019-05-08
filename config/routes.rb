@@ -24,9 +24,6 @@ Rails.application.routes.draw do
     get :exploration_finished
     get :exploration_back_to_movement
 
-    get :encounter_screen
-    post :encounter
-
     get :draw_cards_screen
     post :draw_cards
     get :draw_cards_finished
