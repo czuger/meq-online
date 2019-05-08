@@ -61,6 +61,28 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to play_combat_card_screen_board_combats_url(@board, @hero)
   end
 
+  test 'should start combat with strength increase but hero should loose a random card because of the cowardly corruption' do
+    @board.aasm_state = 'combat_setup_screen_board_combats'
+    @board.save!
+
+    @hero.hand = [ 1, 2, 3 ]
+    @hero.rest_pool = []
+    @hero.save!
+
+    create( :cowardly, board: @board, hero: @hero )
+
+    post combat_setup_board_combats_url(@board, button: :increase)
+
+    assert_equal 2, @hero.reload.hand.count
+    assert_equal 1, @hero.rest_pool.count
+
+    assert_redirected_to play_combat_card_screen_board_combats_url(@board, @hero)
+
+    get board_logs_url(@board)
+    assert_select 'td', true, "Has lost a random hero card because of the cowardly corruption."
+  end
+
+
   test 'hero should show play card screen' do
     get play_combat_card_screen_board_combats_url(@board, @hero)
     assert_response :success

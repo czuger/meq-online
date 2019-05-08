@@ -102,17 +102,4 @@ class ExplorationsController < ApplicationController
     notice
   end
 
-  def corruption_dispairing
-    if @actor.dispairing?
-      favors = @tokens_at_location.select{ |e| e.type == :character }
-      @tokens_at_location.reject!{ |e| e.type == :character }
-
-      @board.transaction do
-        characters.each do |c|
-          @board.log( @actor, 'corruption.isolated', character: c.name )
-        end
-      end
-    end
-  end
-
 end

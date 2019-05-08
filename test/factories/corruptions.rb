@@ -18,6 +18,14 @@ FactoryBot.define do
       modification { nil }
     end
 
+    factory :cowardly do
+      name { 'Cowardly' }
+      card_code { 5 }
+      favor_cost { 2 }
+      flaw { 'cowardly' }
+      modification { nil }
+    end
+
   end
 
 end

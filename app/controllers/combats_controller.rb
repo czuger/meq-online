@@ -68,6 +68,9 @@ class CombatsController < ApplicationController
     temporary_strength = @hero.strength
 
     @combat.transaction do
+
+      corruption_cowardly
+
       if params[:button] == 'draw'
         @hero.draw_cards( @board, @hero.agility, true )
       else
@@ -253,5 +256,13 @@ class CombatsController < ApplicationController
   def discard_cards
     @hero.rest_pool += @combat.combat_card_played_heroes.map{ |c| c.card }
     @hero.save!
+  end
+
+  def corruption_cowardly
+    if @hero.cowardly?
+      card = @hero.hand.sample
+      @hero.hand_to_rest(card) if card
+      @board.log(@hero, 'corruption.cowardly' )
+    end
   end
 end
