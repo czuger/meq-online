@@ -18,6 +18,8 @@ en:
          lose_card: 'Enter a perilous location %{location_name} and loose a card.'
          lose_favor: 'Enter a perilous location %{location_name} and loose a favor.'
          lose_favor_and_card: 'Enter a perilous location %{location_name}, and loose a favor and a card.'
+         encounter_orcs_couts: 'Encounter orcs scouts at %{location} and recieve a %{corruption} corruption card.'
+         shadow_background_memories: 'Is haunted by the shadows of background memories at %{location}. He loose a favor and receive a %{corruption} corruption card.'
 
       corruption:
         isolated: "Wasn't able to talk with %{character} because of the isolated corruption."

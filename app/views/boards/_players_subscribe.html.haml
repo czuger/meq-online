@@ -15,7 +15,7 @@
     .col-2
       = label_tag :hero_1, 'Hero you play', class: 'col-form-label'
     .col-4
-      = select_tag(:hero_1, options_for_select( @heroes.select_tag_data, :argalad ), include_blank: true, class: 'form-control' )
+      = select_tag(:hero_1, options_for_select( @heroes.select_tag_data, :eometh ), include_blank: true, class: 'form-control' )
 
 .row
   - if @remaining_heroes >= 2

@@ -8,17 +8,7 @@ class ExplorationsController < ApplicationController
     # Need to process that.
     @tokens_at_location = @board.get_tokens_at_location(@actor.location)
 
-    if @actor.isolated?
-      characters = @tokens_at_location.select{ |e| e.type == :character }
-      @tokens_at_location.reject!{ |e| e.type == :character }
-
-      @board.transaction do
-        characters.each do |c|
-          @board.log( @actor, 'corruption.isolated', character: c.name )
-        end
-      end
-
-    end
+    corruption_isolated
   end
 
   # Update the db according to the exploration result
@@ -81,6 +71,34 @@ class ExplorationsController < ApplicationController
       RefreshChannel.refresh
 
       redirect_to boards_path
+    end
+  end
+
+  private
+
+  def corruption_isolated
+    if @actor.isolated?
+      characters = @tokens_at_location.select{ |e| e.type == :character }
+      @tokens_at_location.reject!{ |e| e.type == :character }
+
+      @board.transaction do
+        characters.each do |c|
+          @board.log( @actor, 'corruption.isolated', character: c.name )
+        end
+      end
+    end
+  end
+
+  def corruption_dispairing
+    if @actor.dispairing?
+      favors = @tokens_at_location.select{ |e| e.type == :character }
+      @tokens_at_location.reject!{ |e| e.type == :character }
+
+      @board.transaction do
+        characters.each do |c|
+          @board.log( @actor, 'corruption.isolated', character: c.name )
+        end
+      end
     end
   end
 

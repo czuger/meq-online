@@ -10,7 +10,7 @@ class Hero < Actor
   has_one :combat
 
   has_many :movement_preparation_steps, foreign_key: :actor_id
-  has_many :corruptions, foreign_key: :actor_id
+  has_many :corruptions, foreign_key: :actor_id, dependent: :destroy
 
   attr_accessor :final_attack, :final_defense
 

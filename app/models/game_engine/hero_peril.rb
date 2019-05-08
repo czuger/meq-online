@@ -7,13 +7,16 @@ module GameEngine
         unless Hazard.lucky?(5)
           connected_locations = GameData::LocationsPaths.new.get_connected_locations(location)
           surrounding_locations_with_influence = board.influence.select { |k, v| connected_locations.include?(k) && v >= 0 }.count
+
+          corruption_card = gain_random_corruption(board)
+
           if wisdom <= surrounding_locations_with_influence
             favor_loss
-            board.log(self, 'peril.shadow_background_memories', location_name: @locations.get(location).name)
+            board.log(self, 'peril.shadow_background_memories', location: board.location_name(location), corruption: corruption_card.name.downcase )
           else
-            board.log(self, 'peril.encounter_orcs_couts', location_name: @locations.get(location).name)
+            board.log(self, 'peril.encounter_orcs_couts', location: board.location_name(location), corruption: corruption_card.name.downcase)
           end
-          gain_random_corruption(board)
+
         end
       end
     end
@@ -33,6 +36,8 @@ module GameEngine
         send("get_corruption_#{corruption_card.modification}") if corruption_card.modification
         @game_data_corruption_cards.create_from_code!(board, self, corruption_card.code)
       end
+
+      corruption_card
     end
 
     def loose_corruption(board, corruption)
