@@ -20,6 +20,7 @@ en:
 
       corruption:
         isolated: "Wasn't able to talk with %{character} because of the isolated corruption."
+        dispairing: "Wasn't able to get all favors because of the dispairing corruption."
 
       setup:
         set_starting_plot: 'set starting plot.'

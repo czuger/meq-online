@@ -26,13 +26,7 @@ class ExplorationsController < ApplicationController
             end
             notice = 'Character successfully encountered.'
           when 'favor'
-            elements.each do |_|
-              @actor.favor += 1
-              # Ensure that only one favor is removed at one time.
-              @board.favors.slice!(@board.favors.index(@actor.location))
-              @board.log( @actor, 'exploration.get_favor', { location_name: @actor.current_location_name } )
-            end
-            notice = 'Favor successfully taken.'
+             notice = pick_favors(elements)
           when 'plot'
             # For now we assume that there is only one plot at the location. If there is more than one, we get the first
             plot = @board.current_plots.where( affected_location: @actor.location ).first
@@ -87,6 +81,25 @@ class ExplorationsController < ApplicationController
         end
       end
     end
+  end
+
+  def pick_favors(elements)
+    notice = 'Favor successfully taken.'
+
+    elements.each do |_|
+      if @actor.dispairing? && @actor.favor >= 3
+        @board.log( @actor, 'corruption.dispairing' )
+        notice = I18n.t( 'logs.show.corruption.dispairing' )
+        break
+      else
+        @actor.favor += 1
+        # Ensure that only one favor is removed at one time.
+        @board.favors.slice!(@board.favors.index(@actor.location))
+        @board.log( @actor, 'exploration.get_favor', { location_name: @actor.current_location_name } )
+      end
+    end
+
+    notice
   end
 
   def corruption_dispairing
