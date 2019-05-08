@@ -19,6 +19,9 @@ en:
          lose_favor: 'Enter a perilous location %{location_name} and loose a favor.'
          lose_favor_and_card: 'Enter a perilous location %{location_name}, and loose a favor and a card.'
 
+      corruption:
+        isolated: "Wasn't able to talk with %{character} because of the isolated corruption."
+
       setup:
         set_starting_plot: 'set starting plot.'
         set_influence_in_shadow_pool:

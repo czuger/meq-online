@@ -185,6 +185,22 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1, @hero.reload.favor
   end
 
+  test 'should not be able to see gandalf, because hero is isolated' do
+    create( :isolated, board: @board, hero: @hero )
+
+    @board.favors = []
+    @board.characters[:gandalf] = :bree
+    @board.save!
+    get hero_exploration_screen_url(@hero)
+
+    # puts @response.body
+    assert_select 'input[class=form-check-input]', false
+
+    get board_logs_url(@board)
+    # puts @response.body
+    assert_select 'td', true, "Was't able to talk with Gandalf because of the isolated corruption."
+  end
+
   test 'should get only one favor and leave one' do
     @board.favors << :bree
     @board.save
