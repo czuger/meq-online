@@ -24,10 +24,16 @@ card_id = 0
     crop.rotate!(-90)
     crop = round(crop)
     crop.write("#{output_path}/#{card_id}.png")
+
+    crap = Magick::Image.read("#{output_path}/#{card_id}.png")[0]
+    crap.scale!(0.4)
+    crap.write("#{output_path}/#{card_id}.png")
+
     card_id += 1
 
     break if card_id >= 16
   end
+  break if card_id >= 16
 end
 
 

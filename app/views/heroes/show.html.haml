@@ -3,7 +3,6 @@
   = render partial: 'hero_info'
 
   %hr
-  %h3 Hand
   = render partial: 'cards_hand'
 
   -#%hr
@@ -16,4 +15,9 @@
 
   %hr
 
-  = image_tag "heroes/#{@actor.name_code}.jpg"
+  .hero-card
+    = image_tag "heroes/#{@actor.name_code}.jpg"
+
+  .corruption_area
+    - @actor.corruptions.each do |corruption|
+      = image_tag "corruption/#{corruption.card_code}.png"
