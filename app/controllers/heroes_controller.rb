@@ -98,14 +98,14 @@ class HeroesController < ApplicationController
         end
 
         @actor.hand_to_rest(selected_cards)
-        @actor.suffer_peril(@board)
+        peril_notice = @actor.suffer_peril(@board)
         @actor.save!
         @board.save!
 
         location_encounters = @board.check_location_encounters(@actor)
         case location_encounters
           when :empty
-            redirect_to hero_movement_screen_path(@actor)
+            redirect_to hero_movement_screen_path(@actor), notice: peril_notice
           when :monster
             @board.next_to_combat_setup_screen_board_combats!
 

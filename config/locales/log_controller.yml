@@ -14,12 +14,9 @@ en:
           remove: 'Removing a plot at %{location_name}.'
 
       peril:
-         pass_trough: 'Enter a perilous location (%{location_name}), but was lucky.'
-         lose_card: 'Enter a perilous location %{location_name} and loose a card.'
-         lose_favor: 'Enter a perilous location %{location_name} and loose a favor.'
-         lose_favor_and_card: 'Enter a perilous location %{location_name}, and loose a favor and a card.'
-         encounter_orcs_couts: 'Encounter orcs scouts at %{location} and recieve a %{corruption} corruption card.'
-         shadow_background_memories: 'Is haunted by the shadows of background memories at %{location}. He loose a favor and receive a %{corruption} corruption card.'
+         pass_trough: 'Entered a perilous location at %{location}. Felt strange but nothing happened.'
+         encounter_orcs_couts: 'Encountered orcs scouts at %{location} and received a %{corruption} corruption card.'
+         shadow_background_memories: 'Was haunted by the shadows of background memories at %{location}. Lost a favor and received a %{corruption} corruption card.'
 
       corruption:
         isolated: "Wasn't able to talk with %{character} because of the isolated corruption."

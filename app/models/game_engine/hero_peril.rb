@@ -2,8 +2,11 @@ module GameEngine
   module HeroPeril
 
     def suffer_peril(board)
+      peril_notice = nil
+
       # current_location_perilous? also instantiate @locations
       if current_location_perilous?(board)
+
         unless Hazard.lucky?(5)
           connected_locations = GameData::LocationsPaths.new.get_connected_locations(location)
           surrounding_locations_with_influence = board.influence.select { |k, v| connected_locations.include?(k) && v >= 0 }.count
@@ -14,11 +17,16 @@ module GameEngine
             favor_loss
             board.log(self, 'peril.shadow_background_memories', location: board.location_name(location), corruption: corruption_card.name.downcase )
           else
-            board.log(self, 'peril.encounter_orcs_couts', location: board.location_name(location), corruption: corruption_card.name.downcase)
+            board.log(self, 'peril.encounter_orcs_couts', location: board.location_name(location), corruption: corruption_card.name.downcase )
           end
 
+          peril_notice = 'Entered a perilous location and suffer consequences.'
+        else
+          board.log(self, 'peril.pass_trough', location: board.location_name(location) )
+          peril_notice = 'Entered a perilous location but was lucky.'
         end
       end
+      peril_notice
     end
 
     def favor_loss( amount = 1 )
