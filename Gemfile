@@ -90,3 +90,4 @@ gem 'aasm'
 gem 'hazard', '~> 1.3'
 
 gem 'font-awesome-rails'
+gem 'algorithms'

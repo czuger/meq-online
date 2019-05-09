@@ -105,6 +105,7 @@ $(document).on('turbolinks:load'
       zoom_plot_cards()
 
     if window.location.pathname.match( /maps\/\d+\/edit/ )
+      keyboard_probe()
       influence()
       shadow_pool()
 )
