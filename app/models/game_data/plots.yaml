@@ -57,7 +57,7 @@
     :keep: 2
   :favor_to_discard: 3
   :story:
-    :type: conquest
+    :type: corruption
     :advance: 1
   :affect: isengard
   :required_influence: 0
