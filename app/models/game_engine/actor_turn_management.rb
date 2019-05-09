@@ -76,8 +76,7 @@ module GameEngine
     private
 
     def actions_before_switch_to_sauron
-      # At this place we need to :
-      # - Call the automated rally step
+      rally_step
 
       self.next_to_finish_hero_turn!
 
@@ -133,6 +132,24 @@ module GameEngine
       end
 
       result
+    end
+
+    def rally_step
+      heroes.each do |hero|
+        local_influence = influence[hero.location].to_i
+        if local_influence > 0
+          log(nil, 'rally.hero_remove', hero: hero.name, location: location_name(hero.location), count: local_influence )
+          influence.delete(hero.location)
+        end
+      end
+      i_path = GameEngine::InfluencePaths.new(self)
+      influence.keys.each do |location|
+        location_max = i_path.max_for_existing_token(location)
+        if location_max < influence[location]
+          log(nil, 'rally.auto_remove', location: location_name(location), count: influence[location] - location_max )
+          influence[location] = location_max
+        end
+      end
     end
 
   end

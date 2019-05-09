@@ -2,6 +2,15 @@ en:
   logs:
     show:
 
+      rally:
+        hero_remove:
+          one: '%{hero} at %{location} removed 1 influence token.'
+          other: '%{hero} at %{location} removed %{count} influence tokens.'
+
+        auto_remove:
+          one: 'At %{location} 1 influence token were removed.'
+          other: 'At %{location} %{count} influence tokens were removed.'
+
       story:
         advance:
           one: 'Marker %{marker_name} advanced by 1 position'
@@ -37,7 +46,7 @@ en:
       draw_cards: "%{name} draw %{cards_drawn} cards. Remains %{lp_cards} cards in life pool."
 
       place_influence:
-        success: "Influence set to %{value} in %{location}."
+        success: "Influence set to %{val} in %{location}."
         no_connection: "Couldn't find any connection to a shadow stronghold from %{location}."
         max_reached: "Couldn't place influence at %{location} because it would exceed max connected shadow stronghold value."
 
