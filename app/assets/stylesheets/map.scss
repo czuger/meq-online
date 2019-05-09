@@ -1,31 +1,3 @@
-.influence-pawn-box{
-  position: absolute;
-  z-index: 20;
-  width: 40px;
-}
-
-.influence-pawn{
-  width: 40px;
-  position: relative;
-}
-
-.influence-value{
-  color: white;
-  position: relative;
-  left: 13px;
-  top: -35px;
-  cursor: pointer;
-  font-size: 1.3em;
-}
-
-.influence-pool-value{
-  position: absolute;
-  z-index: 1;
-  color: white;
-  cursor: pointer;
-  font-size: 1.3em;
-}
-
 #plot-1{
   position: absolute;
   top: 279px;

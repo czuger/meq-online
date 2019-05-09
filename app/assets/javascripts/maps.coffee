@@ -67,13 +67,26 @@ influence= () ->
       location: location
       val: val
       (data) ->
-        console.log( data )
 
         if data.result
           $("#influence-value-#{data.location}").html( data.val )
         else
+#          console.log( data )
+          p = $("#influence-value-#{data.location}").parent().position()
 
+#          console.log(p)
 
+          alert = $( '#influence-alert' )
+          unless alert.is(":visible")
+            alert.html(data.message)
+            alert.html(data.message)
+            alert.css('top', p.top-80 + "px");
+            alert.css('left', p.left-180 + "px");
+            alert.show()
+            setTimeout(hide_influence_alert, 2000);
+
+hide_influence_alert= () ->
+  $( '#influence-alert' ).fadeOut()
 
 zoom_plot_cards= () ->
   $('.plot-card-on-map').hover () ->
