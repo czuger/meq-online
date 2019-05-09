@@ -36,7 +36,11 @@ en:
       # TODO : pluralize this
       draw_cards: "%{name} draw %{cards_drawn} cards. Remains %{lp_cards} cards in life pool."
 
-      place_influence: "Influence set to %{value} in %{place}."
+      place_influence:
+        success: "Influence set to %{value} in %{location}."
+        no_connection: "Couldn't find any connection to a shadow stronghold from %{location}."
+        max_reached: "Couldn't place influence at %{location} because it would exceed max connected shadow stronghold value."
+
       change_shadow_pool: "Shadow pool changed from %{old_value} to %{new_value}."
       update_story_marker: "Story marker %{story_marker} moved from position %{old_value} to %{new_value}."
 

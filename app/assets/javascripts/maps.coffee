@@ -59,15 +59,21 @@ influence= () ->
     else
       val += 1
 
-    $(this).find('.influence-value' ).html( val )
-
     actor_id = $('#actor_id').val()
     locations = {}
     locations[location]=val
 
-    $.ajax "/sauron/#{actor_id}/sauron_actions/set_influence",
-      type: 'POST'
-      data: { locations: locations }
+    $.post "/sauron/#{actor_id}/sauron_actions/set_influence",
+      location: location
+      val: val
+      (data) ->
+        console.log( data )
+
+        if data.result
+          $("#influence-value-#{data.location}").html( data.val )
+        else
+
+
 
 zoom_plot_cards= () ->
   $('.plot-card-on-map').hover () ->

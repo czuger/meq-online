@@ -34,24 +34,35 @@ class SauronActionsController < ApplicationController
   end
 
   def set_influence
-    ActionController::Parameters.permit_all_parameters = true
-    @locations= GameData::Locations.new
+    location = params[:location]
+    val = params[:val].to_i
 
-    tmp_hash = params[:locations].select{ |l, v| !v.empty? && @locations.exist?( l ) }.to_h
-    tmp_hash.transform_values!{ |v| v.to_i }
-    tmp_hash = tmp_hash
+    set_influence_result = nil
 
-    @board.transaction do
-      diff_hash = Hash[ tmp_hash.to_a.sort - @board.influence.to_a.sort ]
-      diff_hash.each do |k, v|
-        @board.log( @actor, :place_influence, place: @locations.get(k).name, value: v )
+    if @board.location_exists?( location )
+      @board.transaction do
+
+        max_influence_for_location = GameEngine::InfluencePaths.new(@board).max_for_new_token(location)
+
+        if max_influence_for_location == 0
+          @board.log( @actor, 'place_influence.no_connection', location: @board.location_name(location) )
+          set_influence_result = I18n.t( 'logs.show.place_influence.no_connection', location: @board.location_name(location) )
+
+        elsif max_influence_for_location < val
+          @board.log( @actor, 'place_influence.max_reached', location: @board.location_name(location), val: val )
+          set_influence_result = I18n.t( 'logs.show.place_influence.max_reached', location: @board.location_name(location), val: val )
+
+        elsif @board.influence[location].to_i != val || !@board.influence[location]
+          @board.influence[location] = val
+
+          @board.log( @actor, 'place_influence.success', location: @board.location_name(location), val: val )
+        end
+        @board.save!
       end
-
-      @board.influence.merge!( tmp_hash )
-      @board.save!
     end
-  end
 
+    render json: { result: set_influence_result == nil, message: set_influence_result, location: location, val: val }
+  end
 
   # Called when Sauron terminate his turn
   def terminate

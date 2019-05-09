@@ -1,15 +1,23 @@
 module GameEngine
-  class DijkstraMovement
+  class InfluencePaths
 
     def initialize( board )
       @board = board
     end
 
-    def get_max_influence_for_location( location )
-      get_connected_shadow_strongholds( location ).map{ |stronghold| @board.influence[stronghold] }.max || 1
+    def max_for_new_token( location )
+      get_max_influence_for_location( location ) || 0
+    end
+
+    def max_for_existing_token( location )
+      get_max_influence_for_location( location ) || 1
     end
 
     private
+
+    def get_max_influence_for_location( location )
+      get_connected_shadow_strongholds( location ).map{ |stronghold| @board.influence[stronghold] }.max
+    end
 
     def get_connected_shadow_strongholds( location )
       connected_locations = []

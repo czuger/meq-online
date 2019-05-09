@@ -72,6 +72,11 @@ class Board < ApplicationRecord
     @game_data_locations.get(location_code).name
   end
 
+  def location_exists?( location_code )
+    @game_data_locations ||= GameData::Locations.new
+    @game_data_locations.exist?(location_code)
+  end
+
   #
   # Monster methods
   #

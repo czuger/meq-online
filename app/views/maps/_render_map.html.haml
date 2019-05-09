@@ -12,7 +12,7 @@
       - unless p.haven
         .influence-pawn-box{ style: "top:#{(p.y*@mul_y)+15}px; left:#{(p.x*@mul_x)-55}px" }
           = image_tag 'influence.png', class: 'influence-pawn', location: p.name_code
-          %spawn.influence-value
+          %spawn.influence-value{ id: "influence-value-#{p.name_code}" }
             = @influence[p.name_code] ? @influence[p.name_code] : 0
 
     -# Placing other tokens
