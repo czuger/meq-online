@@ -54,6 +54,12 @@ class HeroesController < ApplicationController
     end
   end
 
+  def discard_corruption_card_screen
+  end
+
+  def discard_corruption_card
+  end
+
   def after_rest_advance_story_marker_screen
     # TODO : add logs
     @lowest_screens = []

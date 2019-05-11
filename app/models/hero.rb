@@ -50,6 +50,13 @@ class Hero < Actor
   end
 
   #
+  # Corruption methods
+  #
+  def can_discard_corruption_cards?
+    !corruption_card_discarded_this_turn && corruptions.where( 'favor_cost <= ?', favor ).exists?
+  end
+
+  #
   # Heroes powers
   #
   def argalad_surrounding_monsters

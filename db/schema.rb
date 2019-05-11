@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_07_123856) do
+ActiveRecord::Schema.define(version: 2019_05_11_110550) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "hstore"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 2019_05_07_123856) do
     t.jsonb "items", default: {}, null: false
     t.jsonb "used_powers", default: {}, null: false
     t.integer "temporary_damages", limit: 2, default: 0, null: false
+    t.boolean "corruption_card_discarded_this_turn", default: true, null: false
     t.index ["board_id"], name: "index_actors_on_board_id"
   end
 
