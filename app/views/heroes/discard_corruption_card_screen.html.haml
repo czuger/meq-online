@@ -7,17 +7,10 @@
     %ul.mt-3
       %li Select a corruption card to discard.
 
-  -#- @actor.hand.in_groups_of(6).each do |group|
-  -#  .row
-  -#    - group.each do |card_number|
-  -#      .col.mb-3
-  -#        - if card_number
-  -#          = image_tag "hero_cards/actions/#{@actor.card_pic_path(card_number)}", class: small_cards_classes, card_id: card_number
-
   .corruption_area
     - @corruptions.each do |corruption|
-      = image_tag "corruption/#{corruption.card_code}.png", class: 'selectable-card-selection-unique'
+      = image_tag "corruption/#{corruption.card_code}.png", class: 'selectable-card-selection-unique', card_id: corruption.card_code
 
-  = form_tag hero_discard_corruption_card_path(@actor), class: 'ml-3' do
+  = form_tag hero_discard_corruption_card_path(@actor), class: 'ml-3 mt-3' do
     = hidden_field_tag :selected_card, nil
     = button_tag 'Discard card', role: :button, class: 'btn btn-primary', id: :validate_unique, value: :card, disabled: true

@@ -55,10 +55,24 @@ class HeroesController < ApplicationController
   end
 
   def discard_corruption_card_screen
-    @corruptions = @actor.discardeable_corruption_cards
+    @corruptions = @actor.discardable_corruption_cards
   end
 
   def discard_corruption_card
+    card = params[:selected_cards].to_i
+    raise "Card #{card} already in deck #{@board.corruption_deck.inspect}" if @board.corruption_deck.include?( card )
+
+    @board.transaction do
+      @board.corruption_deck << params[:selected_cards]
+      Corruption.where( board: @board, card_code: card ).delete_all
+
+      @actor.corruption_card_discarded_this_turn = true
+
+      @board.save!
+      @actor.save!
+
+      redirect_to hero_rest_screen_path(@actor), alert: 'Corruption card successfully discarded.'
+    end
   end
 
   def after_rest_advance_story_marker_screen

@@ -64,11 +64,14 @@ module GameEngine
         end
 
         self.save!
+
         controller_redirect_to
       end
     end
 
+    # This is the place where you want to place all hero counters or booleans that you have to reset at the end of the turn.
     def hero_end_turn_operations(actor)
+      actor.corruption_card_discarded_this_turn = false
       actor.used_powers['argalad'] = false
       actor.save!
     end
