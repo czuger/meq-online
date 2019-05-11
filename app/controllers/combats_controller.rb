@@ -61,6 +61,7 @@ class CombatsController < ApplicationController
   end
 
   def combat_setup_screen
+
     @actor = @hero
   end
 

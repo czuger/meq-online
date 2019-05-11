@@ -7,34 +7,17 @@
     %ul.mt-3
       %li Select a corruption card to discard.
 
-  %hr
+  -#- @actor.hand.in_groups_of(6).each do |group|
+  -#  .row
+  -#    - group.each do |card_number|
+  -#      .col.mb-3
+  -#        - if card_number
+  -#          = image_tag "hero_cards/actions/#{@actor.card_pic_path(card_number)}", class: small_cards_classes, card_id: card_number
 
-  .row
-    .col-3
-      = link_to hero_rest_rest_path(@actor), role: :button, class: 'btn btn-primary btn-block' do
-        Rest
+  .corruption_area
+    - @corruptions.each do |corruption|
+      = image_tag "corruption/#{corruption.card_code}.png", class: 'selectable-card-selection-unique'
 
-    .col-3
-      -if @can_heal
-        = link_to hero_rest_heal_path(@actor), role: :button, class: 'btn btn-primary btn-block' do
-          Heal
-
-    .col-3
-      -if @actor.can_discard_corruption_cards?
-        = link_to hero_rest_heal_path(@actor), role: :button, class: 'btn btn-primary btn-block' do
-          Heal
-
-    .col-3
-      = link_to hero_rest_skip_path(@actor), role: :button, class: 'btn btn-primary btn-block' do
-        Skip
-
-
-    -#.col-2
-    -#  = label_tag :rest, 'Do you want to rest ?', class: 'col-form-label'
-    -#.col-1
-    -#  = check_box_tag( :rest, 'yes', false, 'data-toggle' => 'toggle', class: :toggle )
-    -#
-    -#.col-2
-    -#  = label_tag :heal, 'Do you want to heal ?', class: 'col-form-label'
-    -#.col-1
-    -#  = check_box_tag( :heal, 'yes', false, 'data-toggle' => 'toggle', class: :toggle )
+  = form_tag hero_discard_corruption_card_path(@actor), class: 'ml-3' do
+    = hidden_field_tag :selected_card, nil
+    = button_tag 'Discard card', role: :button, class: 'btn btn-primary', id: :validate_unique, value: :card, disabled: true

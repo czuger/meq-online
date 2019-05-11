@@ -55,6 +55,7 @@ class HeroesController < ApplicationController
   end
 
   def discard_corruption_card_screen
+    @corruptions = @actor.discardeable_corruption_cards
   end
 
   def discard_corruption_card

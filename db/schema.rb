@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
     t.jsonb "items", default: {}, null: false
     t.jsonb "used_powers", default: {}, null: false
     t.integer "temporary_damages", limit: 2, default: 0, null: false
-    t.boolean "corruption_card_discarded_this_turn", default: true, null: false
+    t.boolean "corruption_card_discarded_this_turn", default: false, null: false
     t.index ["board_id"], name: "index_actors_on_board_id"
   end
 
@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
   end
 
   create_table "boards", force: :cascade do |t|
+    t.string "heroes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "max_heroes_count", default: 3, null: false

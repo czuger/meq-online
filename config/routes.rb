@@ -13,6 +13,12 @@ Rails.application.routes.draw do
     get :rest_heal
     get :rest_skip
 
+    get :discard_corruption_card_screen
+    post :discard_corruption_card
+
+    get :after_rest_advance_story_marker_screen
+    get :after_rest_advance_story_marker
+
     get :movement_screen
     post :move
     get :movement_finished
@@ -27,9 +33,6 @@ Rails.application.routes.draw do
     get :draw_cards_screen
     post :draw_cards
     get :draw_cards_finished
-
-    get :after_rest_advance_story_marker_screen
-    get :after_rest_advance_story_marker
 
     # Good example on how to have a route like : /foo/:foo_id/bar/foobar rather than /foo/:foo_id/bar/:id/foobar
     # resources :movement_preparation_steps, except: [ :show ] do

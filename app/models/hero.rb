@@ -52,8 +52,12 @@ class Hero < Actor
   #
   # Corruption methods
   #
+  def discardeable_corruption_cards
+    corruptions.where( 'favor_cost <= ?', favor )
+  end
+
   def can_discard_corruption_cards?
-    !corruption_card_discarded_this_turn && corruptions.where( 'favor_cost <= ?', favor ).exists?
+    !corruption_card_discarded_this_turn && discardeable_corruption_cards.exists?
   end
 
   #

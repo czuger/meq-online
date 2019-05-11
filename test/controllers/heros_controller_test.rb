@@ -125,6 +125,32 @@ class HerosControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", hero_draw_cards_screen_path(@eometh)
   end
 
+  test 'should show rest screen and not show a link to discard corruption card' do
+    @board.aasm_state = :hero_rest_screen
+    @board.save!
+
+    get hero_rest_screen_url( @hero )
+    assert_response :success
+
+    assert_select "a[href='#{hero_discard_corruption_card_screen_path(@hero)}']", false
+  end
+
+  test 'should show rest screen and show a link to discard corruption card' do
+    @board.aasm_state = :hero_rest_screen
+    @board.save!
+
+    create( :isolated, board: @board, hero: @hero )
+    @hero.favor = 2
+    @hero.save!
+
+    get hero_rest_screen_url( @hero )
+    assert_response :success
+
+    # puts response.body
+
+    assert_select "a[href='#{hero_discard_corruption_card_screen_path(@hero)}']", true
+  end
+
   test 'should rest and be redirected to movement screen' do
     @board.aasm_state = :hero_rest_screen
     @board.save!

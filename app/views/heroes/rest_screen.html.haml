@@ -23,8 +23,8 @@
 
     .col-3
       -if @actor.can_discard_corruption_cards?
-        = link_to hero_rest_heal_path(@actor), role: :button, class: 'btn btn-primary btn-block' do
-          Heal
+        = link_to hero_discard_corruption_card_screen_path(@actor), role: :button, class: 'btn btn-primary btn-block' do
+          Discard corruption card
 
     .col-3
       = link_to hero_rest_skip_path(@actor), role: :button, class: 'btn btn-primary btn-block' do
