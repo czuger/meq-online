@@ -30,7 +30,7 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
 
     $google_auth_hash[:uid] = @user.uid
     OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
-    get '/auth/google_oauth2'
+    post '/auth/google_oauth2'
     follow_redirect!
   end
 
