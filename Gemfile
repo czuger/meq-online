@@ -85,8 +85,11 @@ gem 'haml-rails', '~> 1.0'
 # gem 'bootstrap', '~> 4.1.0'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'omniauth-google-oauth2'
-gem "omniauth-rails_csrf_protection"
+
+# Currently disabled as there are security fixes and the project is stalled.
+# gem 'omniauth-google-oauth2'
+# gem "omniauth-rails_csrf_protection"
+
 gem 'aasm'
 gem 'hazard', '~> 1.3'
 
