@@ -1,7 +1,7 @@
 class ChangeBoardSerializedArraysToRealPostgresArrays < ActiveRecord::Migration[5.2]
   def change
 
-    enable_extension('hstore') unless extension_enabled?('hstore')
+    # enable_extension('string') unless extension_enabled?('string')
 
     remove_column :boards, :plot_deck, :string
     add_column :boards, :plot_deck, :integer, array: true, null: false
@@ -19,12 +19,12 @@ class ChangeBoardSerializedArraysToRealPostgresArrays < ActiveRecord::Migration[
     add_column :boards, :shadow_pool, :integer, limit: 1, null: false
 
     remove_column :boards, :influence, :string
-    add_column :boards, :influence, :hstore, null: false
+    add_column :boards, :influence, :string, null: false
 
     remove_column :boards, :current_plots, :string
-    add_column :boards, :current_plots, :hstore, null: false
+    add_column :boards, :current_plots, :string, null: false
 
     remove_column :boards, :characters, :string
-    add_column :boards, :characters, :hstore, null: false
+    add_column :boards, :characters, :string, null: false
   end
 end

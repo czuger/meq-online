@@ -2,7 +2,7 @@ class ChangeLogSerializedItemsToPostgresSpecificFields < ActiveRecord::Migration
   def change
 
     remove_column :logs, :params, :string
-    add_column :logs, :params, :hstore, null: false
+    add_column :logs, :params, :string, null: false
     
   end
 end

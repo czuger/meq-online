@@ -13,6 +13,6 @@ class CreateBoardPlots < ActiveRecord::Migration[5.2]
       t.timestamps
     end
 
-    remove_column :boards, :current_plots, :hstore
+    remove_column :boards, :current_plots, :string
   end
 end
