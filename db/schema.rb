@@ -12,48 +12,44 @@
 
 ActiveRecord::Schema.define(version: 2019_05_11_110550) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "hstore"
-  enable_extension "plpgsql"
-
   create_table "actors", force: :cascade do |t|
-    t.bigint "board_id", null: false
-    t.bigint "user_id", null: false
+    t.integer "board_id", null: false
+    t.integer "user_id", null: false
     t.string "type", null: false
     t.string "name_code"
     t.string "name"
     t.string "location"
-    t.integer "fortitude", limit: 2
-    t.integer "strength", limit: 2
-    t.integer "agility", limit: 2
-    t.integer "wisdom", limit: 2
+    t.integer "fortitude", limit: 1
+    t.integer "strength", limit: 1
+    t.integer "agility", limit: 1
+    t.integer "wisdom", limit: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "current_quest"
     t.boolean "turn_finished", default: false, null: false
-    t.integer "plot_cards", array: true
-    t.integer "shadow_cards", array: true
-    t.integer "drawn_plot_cards", array: true
-    t.integer "drawn_shadow_cards", array: true
-    t.integer "life_pool", array: true
-    t.integer "rest_pool", array: true
-    t.integer "damage_pool", array: true
-    t.integer "hand", array: true
+    t.integer "plot_cards"
+    t.integer "shadow_cards"
+    t.integer "drawn_plot_cards"
+    t.integer "drawn_shadow_cards"
+    t.integer "life_pool"
+    t.integer "rest_pool"
+    t.integer "damage_pool"
+    t.integer "hand"
     t.boolean "active", default: false, null: false
-    t.integer "playing_order", limit: 2
-    t.integer "turn", limit: 2, default: 1, null: false
-    t.integer "favor", limit: 2, default: 0
-    t.integer "damages_taken_this_turn", limit: 2, default: 0, null: false
-    t.jsonb "items", default: {}, null: false
-    t.jsonb "used_powers", default: {}, null: false
-    t.integer "temporary_damages", limit: 2, default: 0, null: false
+    t.integer "playing_order", limit: 1
+    t.integer "turn", limit: 1, default: 1, null: false
+    t.integer "favor", limit: 1, default: 0
+    t.integer "damages_taken_this_turn", limit: 1, default: 0, null: false
+    t.json "items", default: {}, null: false
+    t.json "used_powers", default: {}, null: false
+    t.integer "temporary_damages", limit: 1, default: 0, null: false
     t.boolean "corruption_card_discarded_this_turn", default: false, null: false
     t.index ["board_id"], name: "index_actors_on_board_id"
   end
 
   create_table "board_messages", force: :cascade do |t|
-    t.bigint "sender_id", null: false
-    t.bigint "reciever_id", null: false
+    t.integer "sender_id", null: false
+    t.integer "reciever_id", null: false
     t.string "text"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -61,15 +57,15 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
   end
 
   create_table "board_plots", force: :cascade do |t|
-    t.bigint "board_id", null: false
-    t.integer "plot_position", limit: 2, null: false
-    t.integer "plot_card", limit: 2, null: false
+    t.integer "board_id", null: false
+    t.integer "plot_position", limit: 1, null: false
+    t.integer "plot_card", limit: 1, null: false
     t.string "affected_location", null: false
     t.string "story_type", null: false
-    t.integer "story_advance", limit: 2, null: false
+    t.integer "story_advance", limit: 1, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "favor_to_discard", limit: 2, null: false
+    t.integer "favor_to_discard", limit: 1, null: false
     t.index ["board_id"], name: "index_board_plots_on_board_id"
   end
 
@@ -81,54 +77,54 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
     t.integer "current_heroes_count", default: 0, null: false
     t.boolean "sauron_created", default: false, null: false
     t.string "aasm_state"
-    t.integer "plot_deck", null: false, array: true
-    t.integer "shadow_deck", null: false, array: true
-    t.integer "plot_discard", null: false, array: true
-    t.integer "shadow_discard", array: true
-    t.integer "shadow_pool", limit: 2, null: false
-    t.hstore "characters", null: false
-    t.integer "story_marker_heroes", limit: 2, default: 0, null: false
-    t.integer "story_marker_ring", limit: 2, default: 0, null: false
-    t.integer "story_marker_conquest", limit: 2, default: 0, null: false
-    t.integer "story_marker_corruption", limit: 2, default: 0, null: false
-    t.integer "heroes_objective", limit: 2
-    t.integer "sauron_objective", limit: 2
-    t.integer "turn", limit: 2, default: 1, null: false
-    t.integer "last_event_card", limit: 2
-    t.integer "event_deck", limit: 2, null: false, array: true
-    t.integer "event_discard", limit: 2, default: [], null: false, array: true
-    t.jsonb "favors", default: [], null: false
-    t.bigint "current_hero_id"
-    t.jsonb "influence", default: {}, null: false
-    t.jsonb "sauron_actions", default: [], null: false
-    t.jsonb "monsters_pool_orange", default: [], null: false
-    t.jsonb "monsters_pool_purple", default: [], null: false
-    t.jsonb "monsters_pool_dark_blue", default: [], null: false
-    t.jsonb "monsters_pool_brown", default: [], null: false
-    t.jsonb "monsters_pool_dark_green", default: [], null: false
+    t.integer "plot_deck", null: false
+    t.integer "shadow_deck", null: false
+    t.integer "plot_discard", null: false
+    t.integer "shadow_discard"
+    t.integer "shadow_pool", limit: 1, null: false
+    t.string "characters", null: false
+    t.integer "story_marker_heroes", limit: 1, default: 0, null: false
+    t.integer "story_marker_ring", limit: 1, default: 0, null: false
+    t.integer "story_marker_conquest", limit: 1, default: 0, null: false
+    t.integer "story_marker_corruption", limit: 1, default: 0, null: false
+    t.integer "heroes_objective", limit: 1
+    t.integer "sauron_objective", limit: 1
+    t.integer "turn", limit: 1, default: 1, null: false
+    t.integer "last_event_card", limit: 1
+    t.integer "event_deck", limit: 1, null: false
+    t.integer "event_discard", limit: 1, null: false
+    t.json "favors", default: "\"\\\"\\\\\\\"\\\\\\\\\\\\\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"[]\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\\\\\\\\\\\\\"\\\\\\\"\\\"\"", null: false
+    t.integer "current_hero_id"
+    t.json "influence", default: "\"\\\"\\\\\\\"{}\\\\\\\"\\\"\"", null: false
+    t.json "sauron_actions", default: "\"[]\"", null: false
+    t.json "monsters_pool_orange", default: "\"[]\"", null: false
+    t.json "monsters_pool_purple", default: "\"[]\"", null: false
+    t.json "monsters_pool_dark_blue", default: "\"[]\"", null: false
+    t.json "monsters_pool_brown", default: "\"[]\"", null: false
+    t.json "monsters_pool_dark_green", default: "\"[]\"", null: false
     t.string "winner"
-    t.integer "sauron_actions_count", limit: 2, default: 0, null: false
-    t.integer "corruption_deck", default: [], null: false, array: true
-    t.integer "corruption_discard", default: [], null: false, array: true
+    t.integer "sauron_actions_count", limit: 1, default: 0, null: false
+    t.integer "corruption_deck", null: false
+    t.integer "corruption_discard", null: false
     t.index ["current_hero_id"], name: "index_boards_on_current_hero_id"
   end
 
   create_table "boards_users", id: false, force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.bigint "board_id", null: false
+    t.integer "user_id", null: false
+    t.integer "board_id", null: false
     t.index ["user_id", "board_id"], name: "index_boards_users_on_user_id_and_board_id", unique: true
   end
 
   create_table "combat_card_playeds", force: :cascade do |t|
-    t.bigint "combat_id"
+    t.integer "combat_id"
     t.string "type", null: false
-    t.integer "card", limit: 2, null: false
+    t.integer "card", limit: 1, null: false
     t.string "pic_path", null: false
     t.string "name", null: false
     t.string "power", null: false
-    t.integer "strength_cost", limit: 2, null: false
-    t.integer "printed_attack", limit: 2, null: false
-    t.integer "printed_defense", limit: 2, null: false
+    t.integer "strength_cost", limit: 1, null: false
+    t.integer "printed_attack", limit: 1, null: false
+    t.integer "printed_defense", limit: 1, null: false
     t.string "card_type", null: false
     t.boolean "cancelled", default: false, null: false
     t.datetime "created_at", null: false
@@ -137,14 +133,14 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
   end
 
   create_table "combats", force: :cascade do |t|
-    t.bigint "board_id", null: false
-    t.bigint "actor_id", null: false
-    t.bigint "mob_id", null: false
-    t.integer "temporary_hero_strength", limit: 2
-    t.integer "hero_secret_played_card", limit: 2
-    t.integer "mob_secret_played_card", limit: 2
-    t.integer "hero_strength_used", limit: 2, default: 0, null: false
-    t.integer "mob_strength_used", limit: 2, default: 0, null: false
+    t.integer "board_id", null: false
+    t.integer "actor_id", null: false
+    t.integer "mob_id", null: false
+    t.integer "temporary_hero_strength", limit: 1
+    t.integer "hero_secret_played_card", limit: 1
+    t.integer "mob_secret_played_card", limit: 1
+    t.integer "hero_strength_used", limit: 1, default: 0, null: false
+    t.integer "mob_strength_used", limit: 1, default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "hero_exhausted", default: false, null: false
@@ -153,11 +149,11 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
   end
 
   create_table "corruptions", force: :cascade do |t|
-    t.bigint "board_id"
-    t.bigint "actor_id"
-    t.integer "card_code", limit: 2, null: false
+    t.integer "board_id"
+    t.integer "actor_id"
+    t.integer "card_code", limit: 1, null: false
     t.string "name", null: false
-    t.integer "favor_cost", limit: 2, null: false
+    t.integer "favor_cost", limit: 1, null: false
     t.string "flaw"
     t.string "modification"
     t.datetime "created_at", null: false
@@ -166,19 +162,11 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
     t.index ["board_id", "card_code"], name: "index_corruptions_on_board_id_and_card_code", unique: true
   end
 
-  create_table "logs", force: :cascade do |t|
-    t.bigint "board_id", null: false
-    t.string "action", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "card_pic_path"
-    t.bigint "actor_id"
-    t.hstore "params", null: false
-    t.index ["board_id"], name: "index_logs_on_board_id"
-  end
+# Could not dump table "logs" because of following StandardError
+#   Unknown type '' for column 'params'
 
   create_table "mobs", force: :cascade do |t|
-    t.bigint "board_id", null: false
+    t.integer "board_id", null: false
     t.string "pool_key"
     t.string "code", null: false
     t.string "location", null: false
@@ -186,21 +174,21 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
     t.datetime "updated_at", null: false
     t.string "type", null: false
     t.string "attack_deck", null: false
-    t.integer "fortitude", limit: 2, null: false
-    t.integer "strength", limit: 2, null: false
-    t.integer "life", limit: 2, null: false
+    t.integer "fortitude", limit: 1, null: false
+    t.integer "strength", limit: 1, null: false
+    t.integer "life", limit: 1, null: false
     t.string "name", null: false
-    t.jsonb "hand", default: [], null: false
-    t.integer "damages_taken_this_turn", limit: 2, default: 0, null: false
-    t.integer "max_life", limit: 2, null: false
+    t.json "hand", default: [], null: false
+    t.integer "damages_taken_this_turn", limit: 1, default: 0, null: false
+    t.integer "max_life", limit: 1, null: false
     t.index ["board_id"], name: "index_mobs_on_board_id"
   end
 
   create_table "movement_preparation_steps", force: :cascade do |t|
-    t.bigint "actor_id", null: false
+    t.integer "actor_id", null: false
     t.string "origine", null: false
     t.string "destination", null: false
-    t.integer "selected_cards", default: [], null: false, array: true
+    t.integer "selected_cards", null: false
     t.boolean "validation_required", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -217,20 +205,4 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
 
-  add_foreign_key "actors", "boards"
-  add_foreign_key "actors", "users"
-  add_foreign_key "board_messages", "actors", column: "reciever_id"
-  add_foreign_key "board_messages", "actors", column: "sender_id"
-  add_foreign_key "board_plots", "boards"
-  add_foreign_key "boards", "actors", column: "current_hero_id"
-  add_foreign_key "combat_card_playeds", "combats"
-  add_foreign_key "combats", "actors"
-  add_foreign_key "combats", "boards"
-  add_foreign_key "combats", "mobs"
-  add_foreign_key "corruptions", "actors"
-  add_foreign_key "corruptions", "boards"
-  add_foreign_key "logs", "actors"
-  add_foreign_key "logs", "boards"
-  add_foreign_key "mobs", "boards"
-  add_foreign_key "movement_preparation_steps", "actors"
 end

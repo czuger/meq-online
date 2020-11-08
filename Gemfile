@@ -88,7 +88,8 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
 # Currently disabled as there are security fixes and the project is stalled.
-gem 'omniauth-google-oauth2'
+gem 'omniauth'
+gem 'omniauth-discord'
 gem 'omniauth-rails_csrf_protection'
 
 gem 'aasm'
