@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_11_110550) do
+ActiveRecord::Schema.define(version: 2020_11_09_082636) do
 
   create_table "actors", force: :cascade do |t|
     t.integer "board_id", null: false
@@ -93,7 +93,7 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
     t.integer "last_event_card", limit: 1
     t.integer "event_deck", limit: 1, null: false
     t.integer "event_discard", limit: 1, null: false
-    t.json "favors", default: "\"\\\"\\\\\\\"\\\\\\\\\\\\\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"[]\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"\\\\\\\\\\\\\\\"\\\\\\\"\\\"\"", null: false
+    t.string "favors", null: false
     t.integer "current_hero_id"
     t.json "influence", default: "\"\\\"\\\\\\\"{}\\\\\\\"\\\"\"", null: false
     t.json "sauron_actions", default: "\"[]\"", null: false
@@ -210,6 +210,7 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
     t.string "email", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "ia_user_id", limit: 1
     t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true
   end
 

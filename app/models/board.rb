@@ -31,7 +31,8 @@ class Board < ApplicationRecord
   serialize :corruption_discard
   serialize :event_deck
   serialize :event_discard
-
+  serialize :characters
+  serialize :favors
 
   #
   # Create a new board
@@ -49,7 +50,7 @@ class Board < ApplicationRecord
 
     max_heroes_count= max_heroes_count
 
-    Board.new(
+    board = Board.new(
       influence: starting_plot.influence.init,
       plot_deck: plot_deck,
       shadow_deck: shadow_deck,
@@ -63,6 +64,8 @@ class Board < ApplicationRecord
       characters: {},
       corruption_deck: GameData::CorruptionCards.new.deck.shuffle
     )
+
+    return board, starting_plot, starting_plot_id
   end
   #
   # Create combat method

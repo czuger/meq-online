@@ -55,7 +55,7 @@ class BoardsController < ApplicationController
   # POST /boards.json
   def create
 
-    @board = Board.create_new_board
+    @board, starting_plot, starting_plot_id = Board.create_new_board
 
     respond_to do |format|
       @board.transaction do
@@ -106,7 +106,7 @@ class BoardsController < ApplicationController
       existing_heroes = @board.heroes.pluck(:name_code).map{ |h| h.to_sym }
 
       # For now, we forbidd :beravor, :eleanor, :thalin
-      existing_heroes += [ :beravor, :eleanor, :thalin ]
+      # existing_heroes += [ :beravor, :eleanor, :thalin ]
 
       @heroes.delete_heroes!( existing_heroes )
     end
@@ -117,9 +117,12 @@ class BoardsController < ApplicationController
 
       # Adding heroes
       @board.transaction do
-        heroes_to_process = [:hero_1, :hero_2, :hero_3].map{ |h| params[h]&.to_sym }.compact.reject{ |h| h.empty? }.uniq
+        # heroes_to_process = [:hero_1, :hero_2, :hero_3].map{ |h| params[h]&.to_sym }.compact.reject{ |h| h.empty? }.uniq
+        # heroes_to_process = [:hero_1, :hero_2, :hero_3, :]
+        heroes_to_process = [:beravor, :eleanor, :thalin, :eometh]
         heroes_to_process.each_with_index do |hero_code, index|
 
+          ai_user = User.create_ia_user(index)
           hero = @heroes.get( hero_code )
 
           life_pool = hero.starting_deck.shuffle
@@ -136,7 +139,7 @@ class BoardsController < ApplicationController
           @board.heroes.create!(
               name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
               wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: life_pool,
-              rest_pool: [], damage_pool: [], hand: hand, user_id: @current_user.id, name: hero.name,
+              rest_pool: [], damage_pool: [], hand: hand, user_id: ai_user.id, name: hero.name,
               current_quest: starting_quest, playing_order: index, items: items
           )
           # Just tell that the user is connected to this board
@@ -144,12 +147,9 @@ class BoardsController < ApplicationController
         end
 
         # Adding Sauron
-        if params[:sauron]
-          @board.create_sauron!( plot_cards: [], shadow_cards: [], drawn_plot_cards: [], drawn_shadow_cards: [], user_id: @current_user.id )
-
-          # Just tell that the user is connected to this board
-          @current_user.boards << @board unless @current_user.boards.include?( @board )
-        end
+        @board.create_sauron!( plot_cards: [], shadow_cards: [], drawn_plot_cards: [], drawn_shadow_cards: [], user_id: @current_user.id )
+        # Just tell that the user is connected to this board
+        @current_user.boards << @board unless @current_user.boards.include?( @board )
 
         # Misc
         @board.current_heroes_count= @board.heroes.count

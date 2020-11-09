@@ -8,7 +8,7 @@ module GameData
       data_file_name = self.class::FILENAME if defined? self.class::FILENAME
       data_file_name ||= self.class.name.demodulize.underscore
 
-      data_file = "#{Rails.root}/app/models/game_data/#{data_file_name}.yaml"
+      data_file = "#{Rails.root}/data/#{data_file_name}.yaml"
       # p data_file
       @data = YAML.load_file(data_file)
     end
