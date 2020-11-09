@@ -15,16 +15,22 @@ class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 end
 
-$google_auth_hash =
-    {
-        :provider => 'google_oauth2',
-        :uid => '1234',
-        info: {
-            name: 'Foo Bar',
-            email: 'foo_bar@gmail.com'
-        },
-        credentials: {
-            token: 123456,
-            expires_at: 'expire_time'
-        }
+def connection_for_tests
+  auth_hash = {
+    provider: 'discord',
+    uid: 'foobar',
+    info: {
+      name: 'Foo Bar',
+      email: 'foo_bar@gmail.com'
+    },
+    credentials: {
+      token: 123456,
+      expires_at: 'expire_time'
     }
+  }
+
+  OmniAuth.config.test_mode = true
+  OmniAuth.config.mock_auth[:discord] = OmniAuth::AuthHash.new    auth_hash
+  post '/auth/discord'
+  follow_redirect!
+end

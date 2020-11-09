@@ -9,10 +9,7 @@ class LogsControllerTest < ActionDispatch::IntegrationTest
     @hero = create( :hero, board: @board, user: @user )
     @log = create(:log, board: @board, actor: @hero )
 
-    $google_auth_hash[:uid] = @user.uid
-    OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
-    post '/auth/google_oauth2'
-    follow_redirect!
+    connection_for_tests
   end
 
   test "should get index" do

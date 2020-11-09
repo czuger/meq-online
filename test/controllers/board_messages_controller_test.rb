@@ -7,6 +7,7 @@ class BoardMessagesControllerTest < ActionDispatch::IntegrationTest
 
     @user = create( :user )
     @board = create( :board )
+
     @hero = create( :hero, user: @user, board: @board )
     @sauron = create( :sauron, user: @user, board: @board )
     @board_message = create( :board_message, sender: @sauron, reciever: @hero )
@@ -15,10 +16,11 @@ class BoardMessagesControllerTest < ActionDispatch::IntegrationTest
     @board.aasm_state = 'edit_sauron_sauron_actions'
     @board.save!
 
-    $google_auth_hash[:uid] = @user.uid
-    OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
-    post '/auth/google_oauth2'
-    follow_redirect!
+    connection_for_tests
+  end
+
+  teardown do
+    OmniAuth.config.test_mode = false
   end
 
   test 'should get index' do

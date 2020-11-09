@@ -3,17 +3,12 @@ require 'test_helper'
 class CharactersControllerTest < ActionDispatch::IntegrationTest
 
   setup do
-    OmniAuth.config.test_mode = true
-
     @user = create( :user )
     @board = create( :board )
     @hero = create( :hero, user: @user, board: @board )
     @board.users << @user
 
-    $google_auth_hash[:uid] = @user.uid
-    OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
-    post '/auth/google_oauth2'
-    follow_redirect!
+    connection_for_tests
   end
 
   teardown do

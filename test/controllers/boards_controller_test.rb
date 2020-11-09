@@ -3,16 +3,10 @@ require 'test_helper'
 class BoardsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
-    OmniAuth.config.test_mode = true
-
     @user = create( :user )
-    @board, _, _ = Board.create_new_board
-    @board.save!
+    @board = create( :board )
 
-    $google_auth_hash[:uid] = @user.uid
-    OmniAuth.config.mock_auth[:discord] = OmniAuth::AuthHash.new    $google_auth_hash
-    post '/auth/discord'
-    follow_redirect!
+    connection_for_tests
   end
 
   teardown do

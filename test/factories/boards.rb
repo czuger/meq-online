@@ -6,6 +6,12 @@ FactoryBot.define do
 
     plot_discard {[]}
     shadow_discard {[]}
+    event_discard {[]}
+
+    favors {[]}
+
+    corruption_deck {[]}
+    corruption_discard {[]}
 
     influence { GameData::Plots.new.get(0).influence.init }
     shadow_pool { GameData::Plots.new.get(0).influence.shadow_pool }

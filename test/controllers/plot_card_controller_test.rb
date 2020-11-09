@@ -16,10 +16,7 @@ class PlotCardControllerTest < ActionDispatch::IntegrationTest
     @board.shadow_pool = 10
     @board.save!
 
-    $google_auth_hash[:uid] = @user.uid
-    OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
-    post '/auth/google_oauth2'
-    follow_redirect!
+    connection_for_tests
   end
 
   test 'should get discard_screen' do

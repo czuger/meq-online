@@ -28,10 +28,11 @@ class CombatsControllerTest < ActionDispatch::IntegrationTest
     @hero_aimed_shot = @game_data_heroes.get_card_number_by_name( :argalad, 'Aimed Shot' )
     @mob_aimed_shot = @game_data_mobs_cards.get_card_number_by_name( 'zealot', 'Aimed Shot' )
 
-    $google_auth_hash[:uid] = @user.uid
-    OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
-    post '/auth/google_oauth2'
-    follow_redirect!
+    connection_for_tests
+  end
+
+  teardown do
+    OmniAuth.config.test_mode = false
   end
 
   test 'should show combat with exhausted cards' do
