@@ -23,6 +23,47 @@ class Board < ApplicationRecord
 
   has_one :combat
 
+  serialize :plot_deck
+  serialize :shadow_deck
+  serialize :plot_discard
+  serialize :shadow_discard
+  serialize :corruption_deck
+  serialize :corruption_discard
+  serialize :event_deck
+  serialize :event_discard
+
+
+  #
+  # Create a new board
+  #
+  def self.create_new_board(max_heroes_count=4)
+
+    starting_plot_id= rand( 0..2 )
+    starting_plot = GameData::Plots.new.get(starting_plot_id)
+
+    plot_deck= ((3..17).to_a - [10, 11, 14, 15, 17]).to_a.shuffle
+
+    # We currently remove shadow cards that are played during hero movement.
+    shadow_deck= ((0..23).to_a - [1, 21]).shuffle
+    event_deck = GameData::Events.new.get_starting_event_deck
+
+    max_heroes_count= max_heroes_count
+
+    Board.new(
+      influence: starting_plot.influence.init,
+      plot_deck: plot_deck,
+      shadow_deck: shadow_deck,
+      event_deck: event_deck,
+      plot_discard: [],
+      shadow_discard: [],
+      corruption_discard: [],
+      event_discard: [],
+      max_heroes_count: max_heroes_count,
+      shadow_pool: starting_plot.influence.shadow_pool,
+      characters: {},
+      corruption_deck: GameData::CorruptionCards.new.deck.shuffle
+    )
+  end
   #
   # Create combat method
   #

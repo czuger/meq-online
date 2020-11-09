@@ -6,11 +6,11 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     OmniAuth.config.test_mode = true
 
     @user = create( :user )
-    @board = create( :board )
+    @board = Board.create_new_board
 
     $google_auth_hash[:uid] = @user.uid
-    OmniAuth.config.mock_auth[:google_oauth2] = OmniAuth::AuthHash.new    $google_auth_hash
-    post '/auth/google_oauth2'
+    OmniAuth.config.mock_auth[:discord] = OmniAuth::AuthHash.new    $google_auth_hash
+    post '/auth/discord'
     follow_redirect!
   end
 

@@ -16,25 +16,25 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
     t.integer "board_id", null: false
     t.integer "user_id", null: false
     t.string "type", null: false
+    t.string "plot_cards"
+    t.string "shadow_cards"
     t.string "name_code"
     t.string "name"
     t.string "location"
+    t.string "life_pool"
+    t.string "hand"
+    t.string "rest_pool"
+    t.string "damage_pool"
     t.integer "fortitude", limit: 1
     t.integer "strength", limit: 1
     t.integer "agility", limit: 1
     t.integer "wisdom", limit: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "drawn_plot_cards"
     t.integer "current_quest"
     t.boolean "turn_finished", default: false, null: false
-    t.integer "plot_cards"
-    t.integer "shadow_cards"
-    t.integer "drawn_plot_cards"
-    t.integer "drawn_shadow_cards"
-    t.integer "life_pool"
-    t.integer "rest_pool"
-    t.integer "damage_pool"
-    t.integer "hand"
+    t.string "drawn_shadow_cards"
     t.boolean "active", default: false, null: false
     t.integer "playing_order", limit: 1
     t.integer "turn", limit: 1, default: 1, null: false
@@ -77,11 +77,11 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
     t.integer "current_heroes_count", default: 0, null: false
     t.boolean "sauron_created", default: false, null: false
     t.string "aasm_state"
-    t.integer "plot_deck", null: false
-    t.integer "shadow_deck", null: false
-    t.integer "plot_discard", null: false
-    t.integer "shadow_discard"
-    t.integer "shadow_pool", limit: 1, null: false
+    t.string "shadow_pool", default: "0", null: false
+    t.string "plot_deck", null: false
+    t.string "shadow_deck", null: false
+    t.string "plot_discard", null: false
+    t.string "shadow_discard", null: false
     t.string "characters", null: false
     t.integer "story_marker_heroes", limit: 1, default: 0, null: false
     t.integer "story_marker_ring", limit: 1, default: 0, null: false
@@ -162,8 +162,16 @@ ActiveRecord::Schema.define(version: 2019_05_11_110550) do
     t.index ["board_id", "card_code"], name: "index_corruptions_on_board_id_and_card_code", unique: true
   end
 
-# Could not dump table "logs" because of following StandardError
-#   Unknown type '' for column 'params'
+  create_table "logs", force: :cascade do |t|
+    t.integer "board_id", null: false
+    t.string "action", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "card_pic_path"
+    t.bigint "actor_id"
+    t.string "params", null: false
+    t.index ["board_id"], name: "index_logs_on_board_id"
+  end
 
   create_table "mobs", force: :cascade do |t|
     t.integer "board_id", null: false
