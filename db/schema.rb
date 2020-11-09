@@ -99,7 +99,7 @@ ActiveRecord::Schema.define(version: 2020_11_09_174922) do
 
   create_table "combats", force: :cascade do |t|
     t.integer "board_id", null: false
-    t.integer "actor_id", null: false
+    t.integer "hero_id", null: false
     t.integer "mob_id", null: false
     t.integer "temporary_hero_strength", limit: 1
     t.integer "hero_secret_played_card", limit: 1
@@ -130,7 +130,6 @@ ActiveRecord::Schema.define(version: 2020_11_09_174922) do
   create_table "heroes", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "user_id", null: false
-    t.string "type", null: false
     t.string "name_code"
     t.string "name"
     t.string "location"
@@ -202,7 +201,6 @@ ActiveRecord::Schema.define(version: 2020_11_09_174922) do
   create_table "saurons", force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "user_id", null: false
-    t.string "name_code", null: false
     t.string "name", null: false
     t.string "plot_cards", null: false
     t.string "shadow_cards", null: false

@@ -17,6 +17,8 @@ FactoryBot.define do
     active { true }
     playing_order { 0 }
 
+    used_powers { [] }
+
     factory :eometh do
       name_code {'eometh'}
       name {'Eometh'}

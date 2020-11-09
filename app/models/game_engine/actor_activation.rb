@@ -43,11 +43,6 @@ module GameEngine
       end
     end
 
-    def set_sauron_activation_state( active= false )
-      sauron.active = active
-      sauron.save!
-    end
-
     def set_all_actors_activation_state( active= false )
       set_sauron_activation_state active
       set_heroes_activation_state active

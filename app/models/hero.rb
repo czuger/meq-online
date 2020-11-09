@@ -1,4 +1,6 @@
-class Hero < Actor
+class Hero < ApplicationRecord
+
+  self.table_name = 'heroes'
 
   include GameEngine::HeroDamages
   include GameEngine::HeroPeril
@@ -13,6 +15,11 @@ class Hero < Actor
   has_many :corruptions, foreign_key: :actor_id, dependent: :destroy
 
   attr_accessor :final_attack, :final_defense
+
+  serialize :hand
+  serialize :life_pool
+  serialize :rest_pool
+  serialize :damage_pool
 
   #
   # Location methods

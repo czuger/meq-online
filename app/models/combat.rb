@@ -1,6 +1,6 @@
 class Combat < ApplicationRecord
   belongs_to :board
-  belongs_to :hero, class_name: 'Actor', foreign_key: :actor_id
+  belongs_to :hero
   belongs_to :mob
 
   has_many :combat_card_playeds, dependent: :destroy
@@ -54,7 +54,7 @@ class Combat < ApplicationRecord
     @current_mob_card.call_power( :after, call_power_params_mob )
 
     board.set_hero_activation_state( hero, true ) unless hero_exhausted
-    board.set_sauron_activation_state( true ) unless mob_exhausted
+    # board.set_sauron_activation_state( true ) unless mob_exhausted
 
     hero.save!
     mob.save!
@@ -134,7 +134,7 @@ class Combat < ApplicationRecord
       @current_mob_card.save!
 
       self.mob_exhausted= true
-      board.set_sauron_activation_state( false )
+      # board.set_sauron_activation_state( false )
     end
 
     self.save!
