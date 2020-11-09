@@ -59,6 +59,7 @@ class Board < ApplicationRecord
       shadow_discard: [],
       corruption_discard: [],
       event_discard: [],
+      favors: [],
       max_heroes_count: max_heroes_count,
       shadow_pool: starting_plot.influence.shadow_pool,
       characters: {},
