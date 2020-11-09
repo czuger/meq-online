@@ -10,42 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_11_09_082636) do
-
-  create_table "actors", force: :cascade do |t|
-    t.integer "board_id", null: false
-    t.integer "user_id", null: false
-    t.string "type", null: false
-    t.string "plot_cards"
-    t.string "shadow_cards"
-    t.string "name_code"
-    t.string "name"
-    t.string "location"
-    t.string "life_pool"
-    t.string "hand"
-    t.string "rest_pool"
-    t.string "damage_pool"
-    t.integer "fortitude", limit: 1
-    t.integer "strength", limit: 1
-    t.integer "agility", limit: 1
-    t.integer "wisdom", limit: 1
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "drawn_plot_cards"
-    t.integer "current_quest"
-    t.boolean "turn_finished", default: false, null: false
-    t.string "drawn_shadow_cards"
-    t.boolean "active", default: false, null: false
-    t.integer "playing_order", limit: 1
-    t.integer "turn", limit: 1, default: 1, null: false
-    t.integer "favor", limit: 1, default: 0
-    t.integer "damages_taken_this_turn", limit: 1, default: 0, null: false
-    t.json "items", default: {}, null: false
-    t.json "used_powers", default: {}, null: false
-    t.integer "temporary_damages", limit: 1, default: 0, null: false
-    t.boolean "corruption_card_discarded_this_turn", default: false, null: false
-    t.index ["board_id"], name: "index_actors_on_board_id"
-  end
+ActiveRecord::Schema.define(version: 2020_11_09_174922) do
 
   create_table "board_messages", force: :cascade do |t|
     t.integer "sender_id", null: false
@@ -77,16 +42,18 @@ ActiveRecord::Schema.define(version: 2020_11_09_082636) do
     t.integer "current_heroes_count", default: 0, null: false
     t.boolean "sauron_created", default: false, null: false
     t.string "aasm_state"
-    t.string "shadow_pool", default: "0", null: false
+    t.string "influence", null: false
     t.string "plot_deck", null: false
     t.string "shadow_deck", null: false
     t.string "plot_discard", null: false
     t.string "shadow_discard", null: false
     t.string "characters", null: false
+    t.integer "shadow_pool", limit: 1, null: false
     t.integer "story_marker_heroes", limit: 1, default: 0, null: false
     t.integer "story_marker_ring", limit: 1, default: 0, null: false
     t.integer "story_marker_conquest", limit: 1, default: 0, null: false
     t.integer "story_marker_corruption", limit: 1, default: 0, null: false
+    t.string "sauron_actions", null: false
     t.integer "heroes_objective", limit: 1
     t.integer "sauron_objective", limit: 1
     t.integer "turn", limit: 1, default: 1, null: false
@@ -95,13 +62,11 @@ ActiveRecord::Schema.define(version: 2020_11_09_082636) do
     t.integer "event_discard", limit: 1, null: false
     t.string "favors", null: false
     t.integer "current_hero_id"
-    t.json "influence", default: "\"\\\"\\\\\\\"{}\\\\\\\"\\\"\"", null: false
-    t.json "sauron_actions", default: "\"[]\"", null: false
-    t.json "monsters_pool_orange", default: "\"[]\"", null: false
-    t.json "monsters_pool_purple", default: "\"[]\"", null: false
-    t.json "monsters_pool_dark_blue", default: "\"[]\"", null: false
-    t.json "monsters_pool_brown", default: "\"[]\"", null: false
-    t.json "monsters_pool_dark_green", default: "\"[]\"", null: false
+    t.string "monsters_pool_orange", null: false
+    t.string "monsters_pool_purple", null: false
+    t.string "monsters_pool_dark_blue", null: false
+    t.string "monsters_pool_brown", null: false
+    t.string "monsters_pool_dark_green", null: false
     t.string "winner"
     t.integer "sauron_actions_count", limit: 1, default: 0, null: false
     t.integer "corruption_deck", null: false
@@ -162,6 +127,37 @@ ActiveRecord::Schema.define(version: 2020_11_09_082636) do
     t.index ["board_id", "card_code"], name: "index_corruptions_on_board_id_and_card_code", unique: true
   end
 
+  create_table "heroes", force: :cascade do |t|
+    t.integer "board_id", null: false
+    t.integer "user_id", null: false
+    t.string "type", null: false
+    t.string "name_code"
+    t.string "name"
+    t.string "location"
+    t.string "life_pool"
+    t.string "hand"
+    t.string "rest_pool"
+    t.string "damage_pool"
+    t.integer "fortitude", limit: 1
+    t.integer "strength", limit: 1
+    t.integer "agility", limit: 1
+    t.integer "wisdom", limit: 1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "current_quest"
+    t.boolean "turn_finished", default: false, null: false
+    t.boolean "active", default: false, null: false
+    t.integer "playing_order", limit: 1
+    t.integer "turn", limit: 1, default: 1, null: false
+    t.integer "favor", limit: 1, default: 0
+    t.integer "damages_taken_this_turn", limit: 1, default: 0, null: false
+    t.string "items"
+    t.string "used_powers", null: false
+    t.integer "temporary_damages", limit: 1, default: 0, null: false
+    t.boolean "corruption_card_discarded_this_turn", default: false, null: false
+    t.index ["board_id"], name: "index_heroes_on_board_id"
+  end
+
   create_table "logs", force: :cascade do |t|
     t.integer "board_id", null: false
     t.string "action", null: false
@@ -186,7 +182,7 @@ ActiveRecord::Schema.define(version: 2020_11_09_082636) do
     t.integer "strength", limit: 1, null: false
     t.integer "life", limit: 1, null: false
     t.string "name", null: false
-    t.json "hand", default: [], null: false
+    t.string "hand", null: false
     t.integer "damages_taken_this_turn", limit: 1, default: 0, null: false
     t.integer "max_life", limit: 1, null: false
     t.index ["board_id"], name: "index_mobs_on_board_id"
@@ -201,6 +197,21 @@ ActiveRecord::Schema.define(version: 2020_11_09_082636) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["actor_id"], name: "index_movement_preparation_steps_on_actor_id"
+  end
+
+  create_table "saurons", force: :cascade do |t|
+    t.integer "board_id", null: false
+    t.integer "user_id", null: false
+    t.string "name_code", null: false
+    t.string "name", null: false
+    t.string "plot_cards", null: false
+    t.string "shadow_cards", null: false
+    t.string "drawn_plot_cards", null: false
+    t.string "drawn_shadow_cards", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["board_id"], name: "index_saurons_on_board_id", unique: true
+    t.index ["user_id"], name: "index_saurons_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|

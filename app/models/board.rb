@@ -23,16 +23,27 @@ class Board < ApplicationRecord
 
   has_one :combat
 
-  serialize :plot_deck
-  serialize :shadow_deck
-  serialize :plot_discard
-  serialize :shadow_discard
-  serialize :corruption_deck
-  serialize :corruption_discard
-  serialize :event_deck
-  serialize :event_discard
   serialize :characters
   serialize :favors
+  serialize :sauron_actions
+
+  serialize :plot_deck
+  serialize :plot_discard
+
+  serialize :shadow_deck
+  serialize :shadow_discard
+
+  serialize :corruption_deck
+  serialize :corruption_discard
+
+  serialize :event_deck
+  serialize :event_discard
+
+  serialize :monsters_pool_orange
+  serialize :monsters_pool_purple
+  serialize :monsters_pool_dark_blue
+  serialize :monsters_pool_brown
+  serialize :monsters_pool_dark_green
 
   #
   # Create a new board
@@ -63,7 +74,8 @@ class Board < ApplicationRecord
       max_heroes_count: max_heroes_count,
       shadow_pool: starting_plot.influence.shadow_pool,
       characters: {},
-      corruption_deck: GameData::CorruptionCards.new.deck.shuffle
+      corruption_deck: GameData::CorruptionCards.new.deck.shuffle,
+      sauron_actions: []
     )
 
     return board, starting_plot, starting_plot_id

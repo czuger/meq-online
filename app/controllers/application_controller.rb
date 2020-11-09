@@ -12,11 +12,7 @@ class ApplicationController < ActionController::Base
         if User.exists?(session[:user_id])
           user = User.find(session[:user_id])
           @current_user = user
-        else
-          redirect_to new_sessions_path
         end
-      else
-        redirect_to new_sessions_path
       end
     end
     @current_user

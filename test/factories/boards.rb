@@ -13,6 +13,12 @@ FactoryBot.define do
     corruption_deck {[]}
     corruption_discard {[]}
 
+    monsters_pool_orange {[]}
+    monsters_pool_purple {[]}
+    monsters_pool_dark_blue {[]}
+    monsters_pool_brown {[]}
+    monsters_pool_dark_green {[]}
+
     influence { GameData::Plots.new.get(0).influence.init }
     shadow_pool { GameData::Plots.new.get(0).influence.shadow_pool }
 

@@ -8,6 +8,6 @@ class AddTypeToMob < ActiveRecord::Migration[5.2]
     add_column :mobs, :life, :integer, null: false, limit: 1
     add_column :mobs, :name, :string, null: false
 
-    add_column :mobs, :hand, :jsonb, null: false, default: []
+    add_column :mobs, :hand, :string, null: false
   end
 end

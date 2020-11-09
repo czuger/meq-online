@@ -7,7 +7,7 @@ module GameData
     attr_reader :data
 
     def initialize
-      @data = YAML.load_file("#{Rails.root}/app/models/game_data/locations_paths.yaml")
+      @data = YAML.load_file("#{Rails.root}/data/locations_paths.yaml")
     end
 
     # Return the codes of surrounding locations
