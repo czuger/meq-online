@@ -1,6 +1,6 @@
 class SauronController < ApplicationController
   before_action :require_logged_in
-  before_action :set_actor_ensure_actor
+  before_action :set_sauron_ensure_sauron
 
   def show
   end

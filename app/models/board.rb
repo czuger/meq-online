@@ -26,6 +26,7 @@ class Board < ApplicationRecord
   serialize :characters
   serialize :favors
   serialize :sauron_actions
+  serialize :influence
 
   serialize :plot_deck
   serialize :plot_discard
@@ -61,6 +62,8 @@ class Board < ApplicationRecord
 
     max_heroes_count= max_heroes_count
 
+    location_monsters = GameData::LocationsMonsters.new
+
     board = Board.new(
       influence: starting_plot.influence.init,
       plot_deck: plot_deck,
@@ -75,7 +78,12 @@ class Board < ApplicationRecord
       shadow_pool: starting_plot.influence.shadow_pool,
       characters: {},
       corruption_deck: GameData::CorruptionCards.new.deck.shuffle,
-      sauron_actions: []
+      sauron_actions: [],
+      monsters_pool_orange: location_monsters.get_deck(:orange),
+      monsters_pool_purple: location_monsters.get_deck(:purple),
+      monsters_pool_dark_blue: location_monsters.get_deck(:dark_blue),
+      monsters_pool_brown: location_monsters.get_deck(:brown),
+      monsters_pool_dark_green: location_monsters.get_deck(:dark_green)
     )
 
     return board, starting_plot, starting_plot_id
@@ -138,6 +146,9 @@ class Board < ApplicationRecord
   # Monster methods
   #
   def create_monster( monster_code, location, pool_key= nil )
+
+    raise 'monster_code is a mandatory parameter' unless monster_code
+
     starting_deck = []
     if monster_code.to_s == 'nothing'
       monster_data = OpenStruct.new( fortitude: -1, strength: -1, life: -1, name: 'Nothing', attack_deck: :none )
@@ -148,7 +159,7 @@ class Board < ApplicationRecord
 
     monster_hash = { location: location, code: monster_code, fortitude: monster_data.fortitude,
                      strength: monster_data.strength, life: monster_data.life, name: monster_data.name,
-                     attack_deck: monster_data.attack_deck, max_life: monster_data.life }
+                     attack_deck: monster_data.attack_deck, max_life: monster_data.life, hand: [] }
 
     if monster_data.type == :minion
       minions.create!( monster_hash )
@@ -174,7 +185,7 @@ class Board < ApplicationRecord
   # Log methods
   #
   def log( actor, action, params= {} )
-    logs.create!( board: self, actor: actor, action: action, params: params )
+    # logs.create!( board: self, actor: actor, action: action, params: params )
   end
 
   #

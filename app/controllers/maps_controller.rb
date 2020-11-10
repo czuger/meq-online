@@ -3,8 +3,8 @@ require 'ostruct'
 class MapsController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_actor_ensure_actor, only: [:edit, :set_influence]
-  before_action :set_actor_ensure_board, only: [:show]
+  before_action :set_sauron_ensure_sauron, only: [:edit, :set_influence]
+  before_action :set_sauron_ensure_board, only: [:show]
   before_action :set_map_data
 
   MUL_X=1.5442

@@ -9,7 +9,7 @@ class SauronMobsControllerTest < ActionDispatch::IntegrationTest
     @board = create( :board )
     @hero = create( :hero, user: @user, board: @board )
     @sauron = create( :sauron, user: @user, board: @board )
-    @board_message = create( :board_message, sender: @sauron, reciever: @hero )
+    # @board_message = create( :board_message, sender: @sauron, reciever: @hero )
     @board.users << @user
 
     @board.create_monster( :agent, :old_forest, :mobs_pool_orange )
@@ -19,7 +19,7 @@ class SauronMobsControllerTest < ActionDispatch::IntegrationTest
     @board.aasm_state = 'edit_sauron_sauron_actions'
     @board.save!
 
-    GameData::LocationsMonsters.new.fill_board(@board)
+    # GameData::LocationsMonsters.new.fill_board(@board)
 
     connection_for_tests
   end

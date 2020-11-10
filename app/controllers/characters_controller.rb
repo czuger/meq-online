@@ -1,7 +1,7 @@
 class CharactersController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_actor_ensure_board, only: [:show, :edit, :update]
+  before_action :set_sauron_ensure_board, only: [:show, :edit, :update]
   before_action :set_characters, only: [:update, :edit]
 
   def edit

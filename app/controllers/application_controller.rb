@@ -28,20 +28,20 @@ class ApplicationController < ActionController::Base
 
 
   # For private actor part
-  def set_actor_ensure_actor
-    @actor = Actor.find(actor_from_params)
+  def set_sauron_ensure_sauron
+    @actor = Sauron.find(actor_from_params)
     @board = @actor.board
     ensure_board
   end
 
   # For board that could be accessed by all actors
-  def set_actor_ensure_board
-    @actor = Actor.find(actor_from_params)
+  def set_sauron_ensure_board
+    @actor = Sauron.find(actor_from_params)
     @board = @actor.board
     ensure_board
   end
 
-  def ensure_actor
+  def ensure_sauron
     raise "#{@actor.inspect} is not owned by #{current_user.inspect}" unless @actor.user_id == current_user.id
   end
 

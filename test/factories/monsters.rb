@@ -21,6 +21,7 @@ FactoryBot.define do
       strength { 4 }
       life { 3 }
       max_life { 3 }
+      hand { [6, 7, 8, 3, 10, 9, 10, 6, 3, 7, 8, 1, 1, 6, 1, 4, 1, 9, 9, 10, 8, 4, 7, 3, 4] }
     end
 
     factory :southron do
@@ -86,6 +87,8 @@ FactoryBot.define do
       strength { 0 }
       life { 0 }
       max_life { 0 }
+
+      hand { [] }
     end
 
   end

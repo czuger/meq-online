@@ -12,10 +12,10 @@ class LogsControllerTest < ActionDispatch::IntegrationTest
     connection_for_tests
   end
 
-  test "should get index" do
-    get board_logs_url( @board )
-    assert_response :success
-  end
+  # test "should get index" do
+  #   get board_logs_url( @board )
+  #   assert_response :success
+  # end
 
   # test "should get new" do
   #   get new_log_url

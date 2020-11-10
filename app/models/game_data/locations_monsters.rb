@@ -9,10 +9,14 @@ module GameData
                             dark_blue: :dark_blue, white: :purple, brown: :brown, red: :brown, light_green: :dark_green,
                             dark_green: :dark_green }
 
-    def fill_board(board)
-      @data.each do |key, values|
-        board.update( monster_pool_key(key) => values.shuffle )
-      end
+    # def fill_board(board)
+    #   @data.each do |key, values|
+    #     board.update( monster_pool_key(key) => values.shuffle )
+    #   end
+    # end
+
+    def get_deck(color)
+      @data[color].shuffle
     end
 
     def place_new_monster(board, location)

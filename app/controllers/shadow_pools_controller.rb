@@ -1,7 +1,7 @@
 class ShadowPoolsController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_actor_ensure_board
+  before_action :set_sauron_ensure_board
 
   def update_from_map
     val = params['current_val'].to_i

@@ -58,8 +58,8 @@ ActiveRecord::Schema.define(version: 2020_11_09_174922) do
     t.integer "sauron_objective", limit: 1
     t.integer "turn", limit: 1, default: 1, null: false
     t.integer "last_event_card", limit: 1
-    t.integer "event_deck", limit: 1, null: false
-    t.integer "event_discard", limit: 1, null: false
+    t.string "event_deck", null: false
+    t.string "event_discard", null: false
     t.string "favors", null: false
     t.integer "current_hero_id"
     t.string "monsters_pool_orange", null: false
@@ -69,8 +69,8 @@ ActiveRecord::Schema.define(version: 2020_11_09_174922) do
     t.string "monsters_pool_dark_green", null: false
     t.string "winner"
     t.integer "sauron_actions_count", limit: 1, default: 0, null: false
-    t.integer "corruption_deck", null: false
-    t.integer "corruption_discard", null: false
+    t.string "corruption_deck", null: false
+    t.string "corruption_discard", null: false
     t.index ["current_hero_id"], name: "index_boards_on_current_hero_id"
   end
 

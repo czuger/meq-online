@@ -17,7 +17,11 @@ class CreateCorruptions < ActiveRecord::Migration[5.2]
 
     add_index :corruptions, [:board_id, :card_code], unique: true
 
-    add_column :boards, :corruption_deck, :integer, null: false, array: true, default: []
-    add_column :boards, :corruption_discard, :integer, null: false, array: true, default: []
+    # add_column :boards, :corruption_deck, :integer, null: false, array: true, default: []
+    # add_column :boards, :corruption_discard, :integer, null: false, array: true, default: []
+
+    add_column :boards, :corruption_deck, :string, null: false
+    add_column :boards, :corruption_discard, :string, null: false
+
   end
 end

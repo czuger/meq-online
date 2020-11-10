@@ -15,7 +15,7 @@ class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
 end
 
-def connection_for_tests
+def connection_for_tests(custom_user_uid = nil)
   auth_hash = {
     provider: 'discord',
     uid: 'foobar',
@@ -28,6 +28,8 @@ def connection_for_tests
       expires_at: 'expire_time'
     }
   }
+
+  auth_hash[:uid] = custom_user_uid if custom_user_uid
 
   OmniAuth.config.test_mode = true
   OmniAuth.config.mock_auth[:discord] = OmniAuth::AuthHash.new    auth_hash

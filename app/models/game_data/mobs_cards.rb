@@ -5,6 +5,7 @@ module GameData
   class MobsCards < Base
 
     def get_deck( attack_deck )
+      attack_deck = attack_deck.to_s
       check_attack_deck(attack_deck)
       @data[attack_deck][:deck].shuffle
     end
@@ -39,7 +40,7 @@ module GameData
     private
 
     def check_attack_deck( attack_deck )
-      raise "#{attack_deck} does not existe" unless @data[attack_deck]
+      raise "#{attack_deck} does not exist. Available : #{@data.keys}" unless @data[attack_deck]
     end
 
   end

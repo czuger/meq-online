@@ -7,8 +7,6 @@ class GameDataLocationsMonsters < ActiveSupport::TestCase
     @board = create( :board )
     @lm = GameData::LocationsMonsters.new
     @loc = GameData::Locations.new
-
-    @lm.fill_board(@board)
   end
 
   test 'test monster pick twice on the shire' do

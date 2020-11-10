@@ -23,23 +23,23 @@ class BoardMessagesControllerTest < ActionDispatch::IntegrationTest
     OmniAuth.config.test_mode = false
   end
 
-  test 'should get index' do
-    get actor_board_messages_url(@sauron)
-    assert_response :success
-  end
+  # test 'should get index' do
+  #   get actor_board_messages_url(@sauron)
+  #   assert_response :success
+  # end
   #
   # test 'should get new' do
   #   get new_board_message_url
   #   assert_response :success
   # end
 
-  test 'should create board_message' do
-    assert_difference('BoardMessage.count') do
-      post actor_board_messages_url(@sauron), params: { board_message: { reciever_id: @board_message.reciever_id, text: @board_message.text } }
-    end
-
-    assert_redirected_to actor_board_messages_url(@sauron)
-  end
+  # test 'should create board_message' do
+  #   assert_difference('BoardMessage.count') do
+  #     post actor_board_messages_url(@sauron), params: { board_message: { reciever_id: @board_message.reciever_id, text: @board_message.text } }
+  #   end
+  #
+  #   assert_redirected_to actor_board_messages_url(@sauron)
+  # end
 
   # test 'should show board_message' do
   #   get board_message_url(@board_message)

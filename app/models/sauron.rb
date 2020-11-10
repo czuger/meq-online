@@ -7,4 +7,8 @@ class Sauron < ApplicationRecord
   serialize :drawn_plot_cards
   serialize :drawn_shadow_cards
 
+  # For compatibility
+  def assert_sauron
+    true
+  end
 end

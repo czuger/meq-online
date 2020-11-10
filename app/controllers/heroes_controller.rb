@@ -1,7 +1,7 @@
 class HeroesController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_actor_ensure_actor, except: [:index, :new]
+  before_action :set_sauron_ensure_sauron, except: [:index, :new]
 
   def argalad_power_screen
     raise "Abuse of Argalad power : #{current_user.inspect}" unless @actor.name_code == 'argalad'

@@ -28,7 +28,7 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'should create board without sauron' do
+  test 'should create a board' do
     assert_difference('Board.count') do
       post boards_url, params: {}
     end

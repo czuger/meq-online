@@ -1,7 +1,7 @@
 class BoardMessagesController < ApplicationController
 
   before_action :require_logged_in
-  before_action :set_actor_ensure_board
+  before_action :set_sauron_ensure_board
   before_action :set_board_message, only: [:show, :edit, :update, :destroy]
   before_action :set_recievers, only: [:new, :create]
 

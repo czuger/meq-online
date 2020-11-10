@@ -2,7 +2,7 @@ class CombatsController < ApplicationController
 
   before_action :require_logged_in
   before_action :set_combat
-  before_action :set_actor_ensure_actor, only: [:play_combat_card_screen]
+  before_action :set_sauron_ensure_sauron, only: [:play_combat_card_screen]
   before_action :set_combat_result, only: [:show, :play_combat_card_screen, :terminate]
 
   def show

@@ -9,7 +9,7 @@ class SauronActionsControllerTest < ActionDispatch::IntegrationTest
     @board = create( :board )
     @hero = create( :hero, user: @user, board: @board )
     @sauron = create( :sauron, user: @user, board: @board )
-    @board_message = create( :board_message, sender: @sauron, reciever: @hero )
+    # @board_message = create( :board_message, sender: @sauron, reciever: @hero )
     @board.users << @user
 
     @board.aasm_state = 'edit_sauron_sauron_actions'

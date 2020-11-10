@@ -2,7 +2,7 @@ class BoardsController < ApplicationController
 
   before_action :require_logged_in, except: [:welcome]
   before_action :set_board, except: [:index, :new, :create, :welcome]
-  before_action :set_actor_ensure_actor, only: [:map], except: [:story_screen, :welcome]
+  before_action :set_sauron_ensure_sauron, only: [:map], except: [:story_screen, :welcome]
 
   def welcome
   end
@@ -62,7 +62,7 @@ class BoardsController < ApplicationController
         if @board.save
           add_players_to_board
 
-          GameData::LocationsMonsters.new.fill_board(@board)
+          # GameData::LocationsMonsters.new.fill_board(@board)
 
           @board.create_monster( :mouth_of_sauron, :dol_guldur )
           @board.create_monster( :black_serpent, :near_harad )
@@ -140,14 +140,15 @@ class BoardsController < ApplicationController
               name_code: hero_code, fortitude: hero[:fortitude], strength: hero[:strength], agility: hero[:agility],
               wisdom: hero[:wisdom], location: hero[:start_location_code_name], life_pool: life_pool,
               rest_pool: [], damage_pool: [], hand: hand, user_id: ai_user.id, name: hero.name,
-              current_quest: starting_quest, playing_order: index, items: items
+              current_quest: starting_quest, playing_order: index, items: items, used_powers: []
           )
           # Just tell that the user is connected to this board
           @current_user.boards << @board unless @current_user.boards.include?( @board )
         end
 
         # Adding Sauron
-        @board.create_sauron!( plot_cards: [], shadow_cards: [], drawn_plot_cards: [], drawn_shadow_cards: [], user_id: @current_user.id )
+        @board.create_sauron!( plot_cards: [], shadow_cards: [], drawn_plot_cards: [], drawn_shadow_cards: [],
+                               user_id: @current_user.id, name: 'Sauron' )
         # Just tell that the user is connected to this board
         @current_user.boards << @board unless @current_user.boards.include?( @board )
 

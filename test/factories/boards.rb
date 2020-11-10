@@ -13,11 +13,11 @@ FactoryBot.define do
     corruption_deck {[]}
     corruption_discard {[]}
 
-    monsters_pool_orange {[]}
-    monsters_pool_purple {[]}
-    monsters_pool_dark_blue {[]}
-    monsters_pool_brown {[]}
-    monsters_pool_dark_green {[]}
+    monsters_pool_orange {[:orc, :nothing, :orc, :snaga, :snaga, :nothing, :snaga, :nothing, :snaga, :nothing]}
+    monsters_pool_purple {[:nothing, :nothing, :nothing, :orc, :nothing, :snaga, :orc, :snaga, :cave_troll, :snaga]}
+    monsters_pool_dark_blue {[:southron, :nothing, :nothing, :nothing, :southron, :snaga, :orc, :nothing, :snaga, :southron]}
+    monsters_pool_brown {[:nothing, :cave_troll, :cave_troll, :orc, :orc, :nothing, :nothing, :cave_troll, :nothing, :cave_troll]}
+    monsters_pool_dark_green {[:nothing, :nothing, :huorn, :nothing, :huorn, :snaga, :huorn, :snaga, :nothing, :orc]}
 
     influence { GameData::Plots.new.get(0).influence.init }
     shadow_pool { GameData::Plots.new.get(0).influence.shadow_pool }
