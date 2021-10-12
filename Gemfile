@@ -9,7 +9,7 @@ gem 'rails', '~> 5.2.0'
 # gem 'pg', '>= 0.18', '< 2.0'
 gem 'sqlite3'
 # Use Puma as the app server
-gem 'puma', '~> 3.12'
+gem 'puma', '~> 5.5'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -59,7 +59,7 @@ group :development do
   gem 'capistrano-rails', '~> 1.3'
   gem 'capistrano-rbenv', '~> 2.1'
 
-  gem 'capistrano3-puma', '3.1.1'
+  gem 'capistrano3-puma', '5.2.0'
 
   gem 'ed25519', '~> 1.2'
   gem 'bcrypt_pbkdf', '~> 1.0'
