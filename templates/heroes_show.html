@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  {% include "hero_info.html" %}
+  <hr>
+  {% include "cards_hand.html" %}
+  <hr>
+  <div class="hero-card"><img src="{{ sheet_pic }}" alt="{{ info.name }}"></div>
+  <div class="corruption_area">
+    {% for card in corruptions %}<img src="{{ card.pic }}" alt="">{% endfor %}
+  </div>
+</div>
+{% endblock %}

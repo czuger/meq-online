@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h1>Rejoindre la partie</h1>
+  <p>Toutes les places de cette partie sont attribuées à sa création.</p>
+  <form method="post" action="/boards/{{ board_id }}/join">
+    <button type="submit" class="btn btn-primary">Rejoindre</button>
+  </form>
+</div>
+{% endblock %}

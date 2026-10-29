@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h3>Choisissez le nombre de cartes intrigue à piocher</h3>
+  <form method="post" action="/sauron/{{ sauron_id }}/plot_cards/draw">
+    <div class="row">
+      <div class="col-md-3"><label for="nb_cards" class="col-form-label">Nombre de cartes</label></div>
+      <div class="col-md-3"><input class="form-control" type="number" id="nb_cards" name="nb_cards" value="{{ nb_cards }}" min="1" max="8"></div>
+      <div class="col-md-3"><button type="submit" class="btn btn-secondary btn-block" id="draw">Piocher</button></div>
+    </div>
+  </form>
+  {% if !drawn.is_empty() %}
+  <hr>
+  <h3>Cartes déjà piochées</h3>
+  {% for card in drawn %}<img src="{{ card.pic }}" class="medium-card" data-card-id="{{ card.id }}" alt="">{% endfor %}
+  {% endif %}
+</div>
+{% endblock %}

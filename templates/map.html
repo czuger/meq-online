@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container-fluid">
+  <div id="map" data-board-id="{{ board_id }}"{% if let Some(id) = sauron_id %} data-sauron-id="{{ id }}"{% endif %}>
+    <img src="{{ map.map_pic }}" id="map-picture" alt="Carte">
+    <div id="influence-alert"></div>
+
+    {% for pawn in map.pawns %}
+    <div class="influence-pawn-box" style="{{ pawn.style }}" data-location="{{ pawn.code }}">
+      <img src="{{ map.influence_pic }}" class="influence-pawn" alt="">
+      <span class="influence-value" id="influence-value-{{ pawn.code }}">{{ pawn.value }}</span>
+    </div>
+    {% endfor %}
+
+    {% for token in map.tokens %}
+    <div class="token-on-map" style="{{ token.style }}" title="{{ token.title }}">
+      <img src="{{ token.pic }}" class="{{ token.class }}" alt="">
+      {% if token.count > 1 %}<div class="tokens-count" style="{{ token.count_style }}">{{ token.count }}</div>{% endif %}
+    </div>
+    {% endfor %}
+
+    {% for slot in map.pool %}
+    <div class="influence-pool-value" style="{{ slot.style }}" id="pool_token_id_{{ slot.number }}">{{ slot.value }}</div>
+    {% endfor %}
+
+    {% for style in map.actions %}
+    <div class="sauron-actions-token" style="{{ style }}"><img src="{{ map.action_pic }}" alt=""></div>
+    {% endfor %}
+
+    {% for plot in map.plots %}
+    <img src="{{ plot.pic }}" id="plot-{{ plot.slot }}" class="plot-card-on-map" alt="">
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/js/map.js"></script>{% endblock %}

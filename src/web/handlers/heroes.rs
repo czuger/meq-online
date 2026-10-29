@@ -1,0 +1,512 @@
+//! A hero's turn: sheet, draw, rest, movement.
+
+use askama::Template;
+use axum::Form;
+use axum::extract::{Query, State};
+use axum::response::Response;
+use serde::Deserialize;
+
+use crate::app_state::AppState;
+use crate::engine::hero::peril::PerilOutcome;
+use crate::engine::movement::{MoveOutcome, path_difficulty};
+use crate::engine::rest::RestOutcome;
+use crate::game_data::plot::StoryType;
+use crate::model::game::Game;
+use crate::model::hero::Hero;
+use crate::web::access::HeroAccess;
+use crate::web::app_error::AppError;
+use crate::web::flash::{Flash, redirect};
+use crate::web::forms::{card_list, number};
+use crate::web::game_tx::{change_game, read_game};
+use crate::web::page::render;
+use crate::web::views::hero_info::HeroInfo;
+use crate::web::views::layout::Layout;
+use crate::web::views::pictures::{CardView, corruption_card, hero_hand, image};
+use crate::web::views::terrain_label::terrain_label;
+
+#[derive(Template)]
+#[template(path = "heroes_show.html")]
+struct ShowPage {
+    layout: Layout,
+    info: HeroInfo,
+    hand: Vec<CardView>,
+    card_class: &'static str,
+    sheet_pic: String,
+    corruptions: Vec<CardView>,
+}
+
+#[derive(Template)]
+#[template(path = "heroes_rest.html")]
+struct RestPage {
+    layout: Layout,
+    hero_id: i64,
+    can_heal: bool,
+    can_discard: bool,
+}
+
+#[derive(Template)]
+#[template(path = "heroes_discard_corruption.html")]
+struct DiscardCorruptionPage {
+    layout: Layout,
+    hero_id: i64,
+    corruptions: Vec<CardView>,
+}
+
+#[derive(Template)]
+#[template(path = "heroes_story_marker.html")]
+struct StoryMarkerPage {
+    layout: Layout,
+    hero_id: i64,
+    markers: Vec<(&'static str, &'static str)>,
+}
+
+struct Destination {
+    code: String,
+    label: String,
+}
+
+#[derive(Template)]
+#[template(path = "heroes_movement.html")]
+struct MovementPage {
+    layout: Layout,
+    hero_id: i64,
+    hand: Vec<CardView>,
+    card_class: &'static str,
+    destinations: Vec<Destination>,
+    argalad_can_use_power: bool,
+}
+
+#[derive(Template)]
+#[template(path = "heroes_argalad.html")]
+struct ArgaladPage {
+    layout: Layout,
+    hero_id: i64,
+    monsters: Vec<(String, String)>,
+}
+
+#[derive(Template)]
+#[template(path = "heroes_draw_cards.html")]
+struct DrawCardsPage {
+    layout: Layout,
+    hero_id: i64,
+    hand: Vec<CardView>,
+    card_class: &'static str,
+    fortitude: i32,
+}
+
+/// Form with one selected card.
+#[derive(Debug, Deserialize)]
+pub struct SelectedCardForm {
+    selected_card: String,
+}
+
+/// Movement form: the destination is the clicked button.
+#[derive(Debug, Deserialize)]
+pub struct MoveForm {
+    button: String,
+    #[serde(default)]
+    selected_cards: String,
+}
+
+/// Draw form.
+#[derive(Debug, Deserialize)]
+pub struct DrawForm {
+    nb_cards: String,
+}
+
+/// Chosen story marker.
+#[derive(Debug, Deserialize)]
+pub struct MarkerQuery {
+    marker: String,
+}
+
+fn hero(game: &Game, hero_id: i64) -> Result<&Hero, AppError> {
+    Ok(game.hero(hero_id)?)
+}
+
+/// `GET /heroes/{hero_id}`: the hero sheet, when it is the hero's turn.
+///
+/// # Errors
+/// Database and rendering errors.
+pub async fn show(State(state): State<AppState>, access: HeroAccess) -> Result<Response, AppError> {
+    let game = read_game(&state, access.board_id).await?;
+    let hero = hero(&game, access.hero_id)?;
+    if !hero.active {
+        return Ok(redirect(
+            &format!("/boards/{}/inactive_actor", access.board_id),
+            None,
+        ));
+    }
+    let page = ShowPage {
+        layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
+        info: HeroInfo::new(hero, &state.data),
+        hand: hero_hand(&state.data, &hero.code, &hero.hand),
+        card_class: "small-card",
+        sheet_pic: image(&format!("heroes/{}.jpg", hero.code)),
+        corruptions: hero
+            .corruption_cards
+            .iter()
+            .map(|c| corruption_card(*c))
+            .collect(),
+    };
+    render(&page, &page.layout)
+}
+
+/// `GET /heroes/{hero_id}/rest_screen`.
+///
+/// # Errors
+/// Database and rendering errors.
+pub async fn rest_screen(
+    State(state): State<AppState>,
+    access: HeroAccess,
+) -> Result<Response, AppError> {
+    let game = read_game(&state, access.board_id).await?;
+    let hero = hero(&game, access.hero_id)?;
+    let page = RestPage {
+        layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
+        hero_id: access.hero_id,
+        can_heal: state
+            .data
+            .locations
+            .get(&hero.location)
+            .is_ok_and(|l| l.haven),
+        can_discard: hero.can_discard_corruption_cards(&state.data),
+    };
+    render(&page, &page.layout)
+}
+
+async fn rest(state: AppState, access: HeroAccess, heal: bool) -> Result<Response, AppError> {
+    let hero_id = access.hero_id;
+    let (_, outcome) = change_game(&state, access.board_id, |game, data, _| {
+        game.rest_hero(hero_id, heal, data)
+    })
+    .await?;
+    Ok(match outcome {
+        RestOutcome::Movement => redirect(&format!("/heroes/{hero_id}/movement_screen"), None),
+        RestOutcome::ChooseStoryMarker => redirect(
+            &format!("/heroes/{hero_id}/after_rest_advance_story_marker_screen"),
+            None,
+        ),
+    })
+}
+
+/// `GET /heroes/{hero_id}/rest_rest`.
+///
+/// # Errors
+/// Rule and database errors.
+pub async fn rest_rest(
+    State(state): State<AppState>,
+    access: HeroAccess,
+) -> Result<Response, AppError> {
+    rest(state, access, false).await
+}
+
+/// `GET /heroes/{hero_id}/rest_heal`.
+///
+/// # Errors
+/// Rule and database errors.
+pub async fn rest_heal(
+    State(state): State<AppState>,
+    access: HeroAccess,
+) -> Result<Response, AppError> {
+    rest(state, access, true).await
+}
+
+/// `GET /heroes/{hero_id}/rest_skip`.
+///
+/// # Errors
+/// Rule and database errors.
+pub async fn rest_skip(
+    State(state): State<AppState>,
+    access: HeroAccess,
+) -> Result<Response, AppError> {
+    change_game(&state, access.board_id, |game, _, _| game.skip_rest()).await?;
+    Ok(redirect(
+        &format!("/heroes/{}/movement_screen", access.hero_id),
+        None,
+    ))
+}
+
+/// `GET /heroes/{hero_id}/discard_corruption_card_screen`.
+///
+/// # Errors
+/// Database and rendering errors.
+pub async fn discard_corruption_card_screen(
+    State(state): State<AppState>,
+    access: HeroAccess,
+) -> Result<Response, AppError> {
+    let game = read_game(&state, access.board_id).await?;
+    let hero = hero(&game, access.hero_id)?;
+    let page = DiscardCorruptionPage {
+        layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
+        hero_id: access.hero_id,
+        corruptions: hero
+            .discardable_corruption_cards(&state.data)
+            .into_iter()
+            .map(corruption_card)
+            .collect(),
+    };
+    render(&page, &page.layout)
+}
+
+/// `POST /heroes/{hero_id}/discard_corruption_card`.
+///
+/// # Errors
+/// Rule and database errors.
+pub async fn discard_corruption_card(
+    State(state): State<AppState>,
+    access: HeroAccess,
+    Form(form): Form<SelectedCardForm>,
+) -> Result<Response, AppError> {
+    let card: u32 = number(&form.selected_card, "card")?;
+    let hero_id = access.hero_id;
+    change_game(&state, access.board_id, |game, _, _| {
+        game.discard_corruption_card(hero_id, card)
+    })
+    .await?;
+    Ok(redirect(
+        &format!("/heroes/{hero_id}/rest_screen"),
+        Some(Flash::notice("La carte de corruption a été défaussée.")),
+    ))
+}
+
+/// `GET /heroes/{hero_id}/after_rest_advance_story_marker_screen`.
+///
+/// # Errors
+/// Database and rendering errors.
+pub async fn after_rest_advance_story_marker_screen(
+    State(state): State<AppState>,
+    access: HeroAccess,
+) -> Result<Response, AppError> {
+    let game = read_game(&state, access.board_id).await?;
+    let story = game.board.story;
+    let lowest = story.ring.min(story.conquest).min(story.corruption);
+    let markers = [
+        ("ring", "Anneau", story.ring),
+        ("conquest", "Conquête", story.conquest),
+        ("corruption", "Corruption", story.corruption),
+    ]
+    .into_iter()
+    .filter(|(_, _, value)| *value == lowest)
+    .map(|(code, label, _)| (code, label))
+    .collect();
+    let page = StoryMarkerPage {
+        layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
+        hero_id: access.hero_id,
+        markers,
+    };
+    render(&page, &page.layout)
+}
+
+/// `GET /heroes/{hero_id}/after_rest_advance_story_marker?marker=ring`.
+///
+/// # Errors
+/// [`AppError::BadRequest`] for an unknown marker; rule and database errors.
+pub async fn after_rest_advance_story_marker(
+    State(state): State<AppState>,
+    access: HeroAccess,
+    Query(query): Query<MarkerQuery>,
+) -> Result<Response, AppError> {
+    let marker = match query.marker.to_lowercase().as_str() {
+        "ring" => StoryType::Ring,
+        "conquest" => StoryType::Conquest,
+        "corruption" => StoryType::Corruption,
+        _ => return Err(AppError::BadRequest("unknown story marker".to_owned())),
+    };
+    change_game(&state, access.board_id, |game, _, _| {
+        game.advance_chosen_story_marker(marker)
+    })
+    .await?;
+    Ok(redirect(
+        &format!("/heroes/{}/movement_screen", access.hero_id),
+        None,
+    ))
+}
+
+/// `GET /heroes/{hero_id}/movement_screen`.
+///
+/// # Errors
+/// Database and rendering errors.
+pub async fn movement_screen(
+    State(state): State<AppState>,
+    access: HeroAccess,
+) -> Result<Response, AppError> {
+    let game = read_game(&state, access.board_id).await?;
+    let hero = hero(&game, access.hero_id)?;
+    let destinations = state
+        .data
+        .paths
+        .destinations(&hero.location)
+        .iter()
+        .map(|d| Destination {
+            code: d.dest.clone(),
+            label: format!(
+                "{} - {} ({})",
+                state.data.locations.name(&d.dest),
+                terrain_label(d.path_type),
+                path_difficulty(d, hero)
+            ),
+        })
+        .collect();
+    let page = MovementPage {
+        layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
+        hero_id: access.hero_id,
+        hand: hero_hand(&state.data, &hero.code, &hero.hand),
+        card_class: "small-card selectable-card-selection-multiple",
+        destinations,
+        argalad_can_use_power: game.argalad_can_use_power(hero, &state.data),
+    };
+    render(&page, &page.layout)
+}
+
+/// `POST /heroes/{hero_id}/move`.
+///
+/// # Errors
+/// [`AppError::BadRequest`] for malformed cards; rule and database errors.
+pub async fn move_hero(
+    State(state): State<AppState>,
+    access: HeroAccess,
+    Form(form): Form<MoveForm>,
+) -> Result<Response, AppError> {
+    let cards = card_list(&form.selected_cards)?;
+    let (hero_id, board_id) = (access.hero_id, access.board_id);
+    let (_, outcome) = change_game(&state, board_id, |game, data, rng| {
+        game.move_hero(hero_id, &form.button, &cards, data, rng)
+    })
+    .await?;
+    let movement = format!("/heroes/{hero_id}/movement_screen");
+    Ok(match outcome {
+        MoveOutcome::InvalidCards => redirect(
+            &movement,
+            Some(Flash::alert(
+                "Les cartes choisies ne permettent pas d'emprunter ce chemin.",
+            )),
+        ),
+        MoveOutcome::Empty(PerilOutcome::Suffered) => redirect(
+            &movement,
+            Some(Flash::notice(
+                "Vous êtes entré dans un lieu périlleux et en subissez les conséquences.",
+            )),
+        ),
+        MoveOutcome::Empty(PerilOutcome::Lucky) => redirect(
+            &movement,
+            Some(Flash::notice(
+                "Vous êtes entré dans un lieu périlleux mais la chance vous a souri.",
+            )),
+        ),
+        MoveOutcome::Empty(PerilOutcome::Safe) => redirect(&movement, None),
+        MoveOutcome::Combat => redirect(
+            &format!("/boards/{board_id}/combats/combat_setup_screen"),
+            None,
+        ),
+        MoveOutcome::Exploration => redirect(&format!("/heroes/{hero_id}/exploration"), None),
+    })
+}
+
+/// `GET /heroes/{hero_id}/movement_finished`.
+///
+/// # Errors
+/// Rule and database errors.
+pub async fn movement_finished(
+    State(state): State<AppState>,
+    access: HeroAccess,
+) -> Result<Response, AppError> {
+    change_game(&state, access.board_id, |game, _, _| {
+        game.movement_finished()
+    })
+    .await?;
+    Ok(redirect(
+        &format!("/heroes/{}/exploration", access.hero_id),
+        None,
+    ))
+}
+
+/// `GET /heroes/{hero_id}/argalad_power_screen`: Argalad sees the surrounding monsters.
+///
+/// # Errors
+/// [`AppError::Engine`] when the hero isn't Argalad; database errors.
+pub async fn argalad_power_screen(
+    State(state): State<AppState>,
+    access: HeroAccess,
+) -> Result<Response, AppError> {
+    let hero_id = access.hero_id;
+    let (game, ()) = change_game(&state, access.board_id, |game, _, _| {
+        game.use_argalad_power(hero_id)
+    })
+    .await?;
+    let hero = hero(&game, hero_id)?;
+    let monsters = game
+        .surrounding_monsters(hero, &state.data)
+        .into_iter()
+        .map(|m| {
+            (
+                state.data.locations.name(&m.location).to_owned(),
+                m.name.clone(),
+            )
+        })
+        .collect();
+    let page = ArgaladPage {
+        layout: Layout::hero(&access.session, &game, hero_id, &state.data),
+        hero_id,
+        monsters,
+    };
+    render(&page, &page.layout)
+}
+
+/// `GET /heroes/{hero_id}/draw_cards_screen`.
+///
+/// # Errors
+/// Database and rendering errors.
+pub async fn draw_cards_screen(
+    State(state): State<AppState>,
+    access: HeroAccess,
+) -> Result<Response, AppError> {
+    let game = read_game(&state, access.board_id).await?;
+    let hero = hero(&game, access.hero_id)?;
+    let page = DrawCardsPage {
+        layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
+        hero_id: access.hero_id,
+        hand: hero_hand(&state.data, &hero.code, &hero.hand),
+        card_class: "small-card",
+        fortitude: hero.fortitude,
+    };
+    render(&page, &page.layout)
+}
+
+/// `POST /heroes/{hero_id}/draw_cards`.
+///
+/// # Errors
+/// [`AppError::BadRequest`] for a malformed count; database errors.
+pub async fn draw_cards(
+    State(state): State<AppState>,
+    access: HeroAccess,
+    Form(form): Form<DrawForm>,
+) -> Result<Response, AppError> {
+    let count: usize = number(&form.nb_cards, "card count")?;
+    let hero_id = access.hero_id;
+    change_game(&state, access.board_id, |game, _, _| {
+        game.hero_mut(hero_id)?.draw_cards(count);
+        Ok(())
+    })
+    .await?;
+    Ok(redirect(
+        &format!("/heroes/{hero_id}/draw_cards_screen"),
+        None,
+    ))
+}
+
+/// `GET /heroes/{hero_id}/draw_cards_finished`.
+///
+/// # Errors
+/// Rule and database errors.
+pub async fn draw_cards_finished(
+    State(state): State<AppState>,
+    access: HeroAccess,
+) -> Result<Response, AppError> {
+    let hero_id = access.hero_id;
+    change_game(&state, access.board_id, |game, data, rng| {
+        game.draw_cards_finished(hero_id, data, rng)
+    })
+    .await?;
+    Ok(redirect("/boards", None))
+}

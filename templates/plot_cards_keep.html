@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h3>Choisissez les cartes intrigue à garder</h3>
+  {% for card in cards %}<img src="{{ card.pic }}" class="medium-card selectable-card-selection-multiple" data-card-id="{{ card.id }}" alt="">{% endfor %}
+  <form method="post" action="/sauron/{{ sauron_id }}/plot_cards/keep" class="ml-3">
+    <input type="hidden" id="selected_cards" name="selected_cards">
+    <button type="submit" class="btn btn-secondary" id="validate_multiple" disabled>Garder</button>
+  </form>
+</div>
+{% endblock %}

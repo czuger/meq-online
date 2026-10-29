@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h3>Monstres sur le plateau</h3>
+  <hr>
+  {% for mob in mobs %}
+  <div class="row mt-2">
+    <div class="col-md-3">{{ mob.location }}</div>
+    <div class="col-md-3">{{ mob.name }}</div>
+    <div class="col-md-3"><a class="btn btn-secondary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_mobs/{{ mob.id }}/edit">Déplacer</a></div>
+    <div class="col-md-3">{% if let Some(label) = mob.heal %}<a class="btn btn-secondary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_mobs/{{ mob.id }}/heal">{{ label }}</a>{% endif %}</div>
+  </div>
+  {% endfor %}
+  <div class="row"><div class="col-md-3 mt-2"><a class="btn btn-primary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_actions/edit">Retour aux actions</a></div></div>
+</div>
+{% endblock %}

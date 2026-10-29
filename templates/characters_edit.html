@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <form method="post" action="/characters/{{ sauron_id }}">
+    {% for character in characters %}
+    <div class="row mb-2">
+      <label class="col-md-2 col-form-label" for="character-{{ character.code }}">{{ character.name }}</label>
+      <div class="col-md-4">
+        <select class="form-control" id="character-{{ character.code }}" name="characters[{{ character.code }}]">
+          <option value=""></option>
+          {% for option in character.options %}
+          <option value="{{ option.code }}"{% if option.selected %} selected{% endif %}>{{ option.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-secondary">Valider</button>
+  </form>
+</div>
+{% endblock %}

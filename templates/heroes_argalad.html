@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h3>Pouvoir d'Argalad</h3>
+  <div class="alert alert-secondary"><ul class="mt-3"><li>Une fois par tour, Argalad peut voir les monstres qui l'entourent.</li></ul></div>
+  <hr>
+  {% for (location, name) in monsters %}
+  <div class="row mb-2"><div class="col-4">{{ location }}</div><div class="col-4">{{ name }}</div></div>
+  {% endfor %}
+  <div class="row my-4">
+    <div class="col-md-4"><a class="btn btn-primary btn-block" role="button" href="/heroes/{{ hero_id }}/movement_screen">Retour au déplacement</a></div>
+  </div>
+</div>
+{% endblock %}

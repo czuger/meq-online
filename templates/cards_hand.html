@@ -1,0 +1,6 @@
+<h3>Main</h3>
+<div class="d-flex flex-wrap">
+  {% for card in hand %}
+  <div class="mb-3"><img src="{{ card.pic }}" class="{{ card_class }}" data-card-id="{{ card.id }}" alt=""></div>
+  {% endfor %}
+</div>

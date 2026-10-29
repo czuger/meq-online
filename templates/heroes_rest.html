@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h3>Repos</h3>
+  <div class="alert alert-secondary">
+    <ul class="mt-3">
+      <li>À cette étape, vous pouvez vous reposer si vous n'êtes pas dans une forteresse des Ténèbres.</li>
+      <li>Si vous êtes dans un refuge, vous pouvez aussi vous soigner.</li>
+    </ul>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-md-3"><a class="btn btn-primary btn-block" role="button" href="/heroes/{{ hero_id }}/rest_rest">Se reposer</a></div>
+    <div class="col-md-3">{% if can_heal %}<a class="btn btn-primary btn-block" role="button" href="/heroes/{{ hero_id }}/rest_heal">Se soigner</a>{% endif %}</div>
+    <div class="col-md-3">{% if can_discard %}<a class="btn btn-primary btn-block" role="button" href="/heroes/{{ hero_id }}/discard_corruption_card_screen">Défausser une corruption</a>{% endif %}</div>
+    <div class="col-md-3"><a class="btn btn-primary btn-block" role="button" href="/heroes/{{ hero_id }}/rest_skip">Passer</a></div>
+  </div>
+</div>
+{% endblock %}

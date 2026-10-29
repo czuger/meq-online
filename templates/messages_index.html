@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h3>Mes messages</h3>
+  <a class="btn btn-primary my-3" href="{{ base_url }}/new">Nouveau message</a>
+  {% for message in messages %}
+  <p>{{ message.header }}</p>
+  <div class="{% if message.sent %}alert alert-info{% else %}alert alert-success{% endif %}">{{ message.text }}</div>
+  <hr>
+  {% endfor %}
+</div>
+{% endblock %}

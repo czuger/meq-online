@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h3>Piste d'histoire</h3>
+  <div class="row my-4">
+    {% for counter in markers %}
+    <div class="col-md-3"><button class="btn btn-primary btn-block" type="button" disabled>{{ counter.label }} <span class="badge badge-light">{{ counter.value }}</span></button></div>
+    {% endfor %}
+  </div>
+  <div class="row my-4">
+    {% for counter in distances %}
+    <div class="col-md-3"><button class="btn btn-primary btn-block" type="button" disabled>{{ counter.label }} <span class="badge badge-light">{{ counter.value }}</span></button></div>
+    {% endfor %}
+  </div>
+  <div class="row my-4">
+    <div class="col-md-3"><button class="btn btn-primary btn-block" type="button" disabled>Étape de l'histoire <span class="badge badge-light">{{ stage }}</span></button></div>
+  </div>
+</div>
+{% endblock %}

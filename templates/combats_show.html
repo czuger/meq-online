@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h3>Combat en cours</h3>
+  <div class="row">{% let fighter = hero %}{% include "fighter_stats.html" %}</div>
+  <div class="row mt-2">{% let fighter = mob %}{% include "fighter_stats.html" %}</div>
+
+  {% if result.hero_defeated %}
+  <div class="row mt-2">
+    <div class="col-md-6"><h3>Le héros a été vaincu !</h3></div>
+    <div class="col-md-3"><a class="btn btn-primary btn-block" role="button" href="/boards/{{ board_id }}/combats/terminate">Finir le tour</a></div>
+  </div>
+  {% else if result.mob_defeated %}
+  <div class="row mt-2">
+    <div class="col-md-6"><h3>Le héros a gagné le combat !</h3></div>
+    <div class="col-md-3"><a class="btn btn-primary btn-block" role="button" href="/boards/{{ board_id }}/combats/terminate">Continuer le déplacement</a></div>
+  </div>
+  {% else if result.mob_exhausted && result.hero_exhausted %}
+  <div class="row mt-2">
+    <div class="col-md-6"><h3>Le héros et le monstre sont tous deux épuisés.</h3></div>
+    <div class="col-md-3"><a class="btn btn-primary btn-block" role="button" href="/boards/{{ board_id }}/combats/terminate">Finir le tour</a></div>
+  </div>
+  {% else %}
+  <div class="row mt-2">
+    <div class="col-md-3"></div>
+    <div class="col-md-3">{% if hero_can_play %}<a class="btn btn-primary btn-block" role="button" href="/boards/{{ board_id }}/combats/hero/play_combat_card_screen">Jouer une carte héros</a>{% endif %}</div>
+    <div class="col-md-3">{% if sauron_can_play %}<a class="btn btn-primary btn-block" role="button" href="/boards/{{ board_id }}/combats/sauron/play_combat_card_screen">Jouer une carte monstre</a>{% endif %}</div>
+  </div>
+  {% endif %}
+
+  <hr>
+  <div class="row mb-3">{% for pic in hero_history %}<div class="col-md-2"><img src="{{ pic }}" class="small-card" alt=""></div>{% endfor %}</div>
+  <div class="row mb-3">{% for pic in mob_history %}<div class="col-md-2"><img src="{{ pic }}" class="small-card" alt=""></div>{% endfor %}</div>
+</div>
+{% endblock %}

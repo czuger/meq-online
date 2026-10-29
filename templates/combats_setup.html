@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h3>Choisissez comment utiliser votre agilité</h3>
+  {% include "hero_info.html" %}
+  <hr>
+  {% include "cards_hand.html" %}
+  <form method="post" action="/boards/{{ board_id }}/combats/combat_setup">
+    <div class="form-group">
+      <div class="row">
+        <div class="col-md-3"><button type="submit" name="button" value="draw" class="btn btn-secondary btn-block">Piocher des cartes</button></div>
+        <div class="col-md-3"><button type="submit" name="button" value="increase" class="btn btn-secondary btn-block">Augmenter la force</button></div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

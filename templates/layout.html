@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MEQ Online</title>
+  <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/static/css/app.css">
+</head>
+<body>
+  <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3 flex-wrap">
+      <ul class="navbar-nav mr-auto">
+        {% if layout.user_name.is_some() %}
+        <li class="nav-item"><a class="nav-link" href="/boards?all=true">Toutes les parties</a></li>
+        <li class="nav-item"><a class="nav-link" href="/boards">Mes parties</a></li>
+        <li class="nav-item"><a class="nav-link" href="/boards/new">Nouvelle partie</a></li>
+        {% endif %}
+        {% if let Some(board) = layout.board %}
+        <li class="nav-item"><a class="nav-link" href="/boards/{{ board.id }}/story_screen">Histoire</a></li>
+        <li class="nav-item"><a class="nav-link" href="/boards/{{ board.id }}/logs">Journal</a></li>
+        {% endif %}
+      </ul>
+      {% if let Some(actor) = layout.actor %}
+      <a class="btn btn-info ml-2" role="button" href="{{ actor.map_url }}" target="_blank">Carte</a>
+      <a class="btn btn-info ml-2" role="button" href="{{ actor.messages_url }}">Messages</a>
+      <a class="btn btn-info ml-2" role="button" href="{{ actor.url }}">
+        {{ actor.name }}
+        {% if let Some(turn) = actor.turn_badge %}<span class="badge badge-light">{{ turn }}</span>{% endif %}
+      </a>
+      {% endif %}
+      {% if let Some(board) = layout.board %}
+      <button class="btn btn-info ml-2" type="button" disabled>Tour <span class="badge badge-light">{{ board.turn }}</span></button>
+      {% endif %}
+      {% if let Some(name) = layout.user_name %}
+      <button class="btn btn-info ml-2" type="button" disabled>Connecté en tant que <span class="badge badge-light">{{ name }}</span></button>
+      <form method="post" action="/sessions" class="d-inline">
+        <button class="btn btn-info ml-2" type="submit">Déconnexion</button>
+      </form>
+      {% endif %}
+    </nav>
+  </div>
+
+  <div class="container">
+    {% if let Some(flash) = layout.flash %}
+    <div class="{{ flash.css_class() }} alert-dismissible" role="alert">
+      <b>{{ flash.text }}</b>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Fermer"><span aria-hidden="true">&times;</span></button>
+    </div>
+    {% endif %}
+  </div>
+
+  {% block content %}{% endblock %}
+
+  <script src="/static/js/app.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

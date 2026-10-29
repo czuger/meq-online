@@ -1,0 +1,153 @@
+//! Sauron drawing and keeping plot and shadow cards.
+
+use rand::rngs::StdRng;
+use rand::seq::SliceRandom;
+use serde_json::json;
+
+use crate::engine::engine_error::EngineError;
+use crate::game_data::combat_card_def::CardNumber;
+use crate::model::actor_ref::ActorRef;
+use crate::model::board::Pile;
+use crate::model::game::Game;
+
+/// Which of Sauron's decks is used.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum SauronDeck {
+    /// Plot cards: cards not kept go back under the deck.
+    Plot,
+    /// Shadow cards: cards not kept are discarded; the discard refills the deck.
+    Shadow,
+}
+
+impl SauronDeck {
+    fn name(self) -> &'static str {
+        match self {
+            Self::Plot => "plot",
+            Self::Shadow => "shadow",
+        }
+    }
+}
+
+impl Game {
+    /// Draws `count` cards into Sauron's drawn area.
+    ///
+    /// # Arguments
+    /// * `deck` - which deck.
+    /// * `count` - number of cards.
+    /// * `rng` - random source, for refilling the shadow deck.
+    pub fn draw_sauron_cards(&mut self, deck: SauronDeck, count: usize, rng: &mut StdRng) {
+        let (pile, drawn) = self.sauron_piles(deck);
+        if deck == SauronDeck::Shadow && count > pile.draw.len() {
+            pile.draw.append(&mut pile.discard);
+            pile.draw.shuffle(rng);
+        }
+        let count = count.min(pile.draw.len());
+        let cards: Vec<CardNumber> = pile.draw.drain(..count).collect();
+        drawn.extend_from_slice(&cards);
+        let action = format!("{}_cards.draw", deck.name());
+        self.log(ActorRef::Sauron, &action, &[("count", json!(cards.len()))]);
+    }
+
+    /// Moves the selected drawn cards to Sauron's hand; the others are returned or discarded.
+    ///
+    /// # Errors
+    /// [`EngineError::Refused`] when nothing is selected,
+    /// [`EngineError::CardNotAvailable`] when a selected card wasn't drawn.
+    pub fn keep_sauron_cards(
+        &mut self,
+        deck: SauronDeck,
+        selected: &[CardNumber],
+    ) -> Result<(), EngineError> {
+        if selected.is_empty() {
+            return Err(EngineError::Refused("no card selected".to_owned()));
+        }
+        let (pile, drawn) = self.sauron_piles(deck);
+        if let Some(card) = selected.iter().find(|c| !drawn.contains(c)) {
+            return Err(EngineError::CardNotAvailable {
+                card: *card,
+                pile: "drawn cards",
+            });
+        }
+        drawn.retain(|c| !selected.contains(c));
+        let rest: Vec<CardNumber> = std::mem::take(drawn);
+        let rest_count = rest.len();
+        match deck {
+            SauronDeck::Plot => pile.draw.extend(rest),
+            SauronDeck::Shadow => pile.discard.extend(rest),
+        }
+        let hand = match deck {
+            SauronDeck::Plot => &mut self.sauron.plot_hand,
+            SauronDeck::Shadow => &mut self.sauron.shadow_hand,
+        };
+        hand.extend_from_slice(selected);
+
+        let name = deck.name();
+        let returned = match deck {
+            SauronDeck::Plot => "back_to_bottom",
+            SauronDeck::Shadow => "discard",
+        };
+        self.log(
+            ActorRef::Sauron,
+            &format!("{name}_cards.{returned}"),
+            &[("count", json!(rest_count))],
+        );
+        self.log(
+            ActorRef::Sauron,
+            &format!("{name}_cards.keep"),
+            &[("count", json!(selected.len()))],
+        );
+        Ok(())
+    }
+
+    fn sauron_piles(&mut self, deck: SauronDeck) -> (&mut Pile, &mut Vec<CardNumber>) {
+        match deck {
+            SauronDeck::Plot => (&mut self.board.decks.plot, &mut self.sauron.drawn_plot),
+            SauronDeck::Shadow => (&mut self.board.decks.shadow, &mut self.sauron.drawn_shadow),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::engine::test_support::{game, rng};
+
+    // Port of game_engine_deck_test.rb.
+    #[test]
+    fn refills_shadow_deck_when_near_empty() {
+        let mut g = game();
+        g.board.decks.shadow = Pile {
+            draw: vec![4],
+            discard: vec![10, 9, 8, 7, 6, 5],
+        };
+        g.sauron.drawn_shadow = vec![];
+        g.draw_sauron_cards(SauronDeck::Shadow, 3, &mut rng());
+
+        let all = [10, 9, 8, 7, 6, 5, 4];
+        assert_eq!(g.sauron.drawn_shadow.len(), 3);
+        assert!(g.sauron.drawn_shadow.iter().all(|c| all.contains(c)));
+        assert_eq!(g.board.decks.shadow.draw.len(), 4);
+        assert!(g.board.decks.shadow.discard.is_empty());
+    }
+
+    #[test]
+    fn kept_plot_cards_go_to_hand_and_others_back_under_the_deck() {
+        let mut g = game();
+        g.sauron.plot_hand = vec![];
+        g.sauron.drawn_plot = vec![];
+        g.board.decks.plot.draw = vec![3, 4, 5, 6];
+        g.draw_sauron_cards(SauronDeck::Plot, 3, &mut rng());
+        g.keep_sauron_cards(SauronDeck::Plot, &[4]).unwrap();
+        assert_eq!(g.sauron.plot_hand, vec![4]);
+        assert!(g.sauron.drawn_plot.is_empty());
+        assert_eq!(g.board.decks.plot.draw, vec![6, 3, 5]);
+    }
+
+    #[test]
+    fn refuses_cards_not_drawn() {
+        let mut g = game();
+        g.sauron.drawn_plot = vec![3];
+        assert!(g.keep_sauron_cards(SauronDeck::Plot, &[9]).is_err());
+        assert!(g.keep_sauron_cards(SauronDeck::Plot, &[]).is_err());
+    }
+}

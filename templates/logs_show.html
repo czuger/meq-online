@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h1>Journal</h1>
+  <table class="table">
+    <thead><tr><th>Utilisateur</th><th>Acteur</th><th>Action</th><th>Carte</th></tr></thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        {% if let Some((user, actor)) = row.actor %}
+        <td>{{ user }}</td><td>{{ actor }}</td>
+        {% else %}
+        <td colspan="2">Système</td>
+        {% endif %}
+        <td>{{ row.text }}</td>
+        <td>{% if let Some(pic) = row.card_pic %}<img class="log-card" src="{{ pic }}" alt="">{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

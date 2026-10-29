@@ -1,2 +1,0 @@
-class Computer < Actor
-end

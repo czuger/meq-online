@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h3>Exploration</h3>
+  <div class="alert alert-secondary"><ul class="mt-3"><li>À cette étape, vous pouvez explorer le lieu où vous vous trouvez.</li></ul></div>
+  <form method="post" action="/heroes/{{ hero_id }}/exploration">
+    {% for choice in choices %}
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="{{ choice.field }}" value="{{ choice.value }}" id="token_check_{{ loop.index }}"{% if !choice.enabled %} disabled{% endif %}>
+      <label class="form-check-label" for="token_check_{{ loop.index }}">{{ choice.text }}</label>
+    </div>
+    {% endfor %}
+    <hr>
+    <div class="form-group">
+      <div class="row">
+        {% if any_enabled %}
+        <div class="col-md-3"><button type="submit" class="btn btn-secondary btn-block">Explorer</button></div>
+        {% endif %}
+        <div class="col-md-3"><a class="btn btn-secondary btn-block" role="button" href="/heroes/{{ hero_id }}/exploration/next_movement">Continuer le déplacement</a></div>
+        <div class="col-md-3"><a class="btn btn-primary btn-block" role="button" href="/heroes/{{ hero_id }}/exploration/next_step">Finir le tour</a></div>
+      </div>
+    </div>
+  </form>
+</div>
+{% endblock %}

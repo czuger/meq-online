@@ -1,2 +1,0 @@
-class CombatCardPlayedHero < CombatCardPlayed
-end

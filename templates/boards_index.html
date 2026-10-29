@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h1>Liste des parties</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Joueurs</th><th>Tour</th><th>Résultat</th><th></th><th></th>
+        <th></th><th></th><th></th><th></th><th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr>
+        <td>{{ row.players }}</td>
+        <td>{{ row.turn }}</td>
+        <td>{{ row.status }}</td>
+        <td>{% if row.can_join %}<a href="/boards/{{ row.id }}/join">Rejoindre</a>{% endif %}</td>
+        <td>
+          {% if let Some(cell) = row.sauron %}
+            {% if let Some(url) = cell.url %}<a href="{{ url }}">{{ cell.name }}</a>{% else %}{{ cell.name }}{% endif %}
+          {% endif %}
+        </td>
+        {% for hero in row.heroes %}
+        <td>
+          {% if let Some(cell) = hero %}
+            {% if let Some(url) = cell.url %}<a href="{{ url }}">{{ cell.name }}</a>{% else %}{{ cell.name }}{% endif %}
+          {% endif %}
+        </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

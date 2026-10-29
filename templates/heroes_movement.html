@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h3>Déplacement</h3>
+  <div class="alert alert-secondary"><ul class="mt-3"><li>À cette étape, vous pouvez avancer d'un lieu : choisissez les cartes à utiliser, puis la destination.</li></ul></div>
+  {% include "cards_hand.html" %}
+  <hr>
+  <form method="post" action="/heroes/{{ hero_id }}/move">
+    <div class="row">
+      {% for destination in destinations %}
+      <div class="col-md-4 mt-2"><button type="submit" name="button" value="{{ destination.code }}" class="btn btn-secondary btn-block">{{ destination.label }}</button></div>
+      {% endfor %}
+    </div>
+    <input type="hidden" id="selected_cards" name="selected_cards">
+  </form>
+  <div class="row my-2">
+    <div class="col-md-4"><a class="btn btn-primary btn-block" role="button" href="/heroes/{{ hero_id }}/movement_finished">Fin du déplacement</a></div>
+    {% if argalad_can_use_power %}
+    <div class="col-md-4"><a class="btn btn-primary btn-block" role="button" href="/heroes/{{ hero_id }}/argalad_power_screen">Utiliser le pouvoir d'Argalad</a></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
