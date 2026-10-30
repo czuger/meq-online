@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS boards (
     current_event        TEXT,                -- JSON EventRef, card in play
     held_event           TEXT,                -- JSON HeldEvent
     pending_choice       TEXT,                -- JSON PendingChoice
+    turn_effects         TEXT    NOT NULL DEFAULT '{}', -- JSON TurnEffects
     heroes_objective     INTEGER,
     sauron_objective     INTEGER,
     created_at           TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -125,6 +126,7 @@ CREATE TABLE IF NOT EXISTS combats (
     hero_id            INTEGER NOT NULL REFERENCES heroes (id) ON DELETE CASCADE,
     mob_id             INTEGER NOT NULL REFERENCES mobs (id) ON DELETE CASCADE,
     origin             TEXT    NOT NULL,      -- JSON CombatOrigin
+    modifiers          TEXT    NOT NULL DEFAULT '{}', -- JSON CombatModifiers
     hero_strength      INTEGER,
     hero_secret_card   INTEGER,
     mob_secret_card    INTEGER,

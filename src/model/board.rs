@@ -9,6 +9,7 @@ use crate::game_data::combat_card_def::CardNumber;
 use crate::game_data::monster_pool_color::MonsterPoolColor;
 use crate::model::choice::PendingChoice;
 use crate::model::sauron_action::{ActionInProgress, ActionToken, InfluenceBudget};
+use crate::model::turn_effects::TurnEffects;
 
 /// Plot slot number (1 to 3).
 pub type PlotSlot = u8;
@@ -145,6 +146,8 @@ pub struct Board {
     pub held_event: Option<HeldEvent>,
     /// Decision the game waits for.
     pub pending_choice: Option<PendingChoice>,
+    /// Card effects lasting beyond the moment they were played.
+    pub turn_effects: TurnEffects,
     /// Secret objective card of the heroes.
     pub heroes_objective: Option<u32>,
     /// Secret objective card of Sauron.

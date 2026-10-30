@@ -13,6 +13,9 @@ use crate::model::game::Game;
 /// Space of the story track where a side wins.
 const FINAL_SPACE: i32 = 18;
 
+/// Spaces the heroes' marker advances at each Story step (§ 5.3).
+const HEROES_STORY_ADVANCE: i32 = 2;
+
 /// Side closer to its goal.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Dominance {
@@ -107,16 +110,20 @@ impl StoryMarkers {
 }
 
 impl Game {
-    /// End-of-round story advance: heroes +2, then each plot in play advances its track.
+    /// End-of-round story advance: heroes +2 (less after "Grievous Loss"), then each
+    /// plot in play advances its track.
     ///
     /// # Errors
     /// Fails when a plot in play is unknown or the game can't be finished now.
     pub fn advance_stories_markers(&mut self, data: &GameData) -> Result<(), EngineError> {
-        self.board.story.heroes += 2;
+        // "Grievous Loss" holds the green marker back.
+        let malus = std::mem::take(&mut self.board.turn_effects.heroes_story_malus);
+        let spaces = (HEROES_STORY_ADVANCE - malus).max(0);
+        self.board.story.heroes += spaces;
         self.log(
             ActorRef::System,
             "story.advance",
-            &[("marker_name", json!("heroes")), ("count", json!(2))],
+            &[("marker_name", json!("heroes")), ("count", json!(spaces))],
         );
 
         let plots: Vec<u32> = self.board.plots.values().copied().collect();

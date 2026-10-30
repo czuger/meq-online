@@ -130,13 +130,8 @@ fn choice(
         TokenKind::Character => None,
         TokenKind::Plot => {
             let hero = game.hero(hero_id).ok()?;
-            let cost = game
-                .board
-                .plots
-                .values()
-                .filter_map(|card| data.plot(*card).ok())
-                .find(|p| p.affect.as_deref() == Some(hero.location.as_str()))?
-                .favor_to_discard;
+            let (_, card) = game.plot_at(&hero.location, data)?;
+            let cost = data.plot(card).ok()?.favor_to_discard;
             let enabled = cost <= hero.favor;
             let text = if enabled {
                 "Dépenser des faveurs pour retirer l'intrigue locale"

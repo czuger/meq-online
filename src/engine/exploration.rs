@@ -310,15 +310,7 @@ impl Game {
         data: &GameData,
     ) -> Result<(), EngineError> {
         let location = self.hero(hero_id)?.location.clone();
-        let found = self
-            .board
-            .plots
-            .iter()
-            .find(|(_, card)| {
-                data.plot(**card)
-                    .is_ok_and(|p| p.affect.as_deref() == Some(location.as_str()))
-            })
-            .map(|(slot, card)| (*slot, *card));
+        let found = self.plot_at(&location, data);
         let (slot, card) = found.ok_or_else(|| EngineError::Refused("no plot here".to_owned()))?;
         let cost = data.plot(card)?.favor_to_discard;
         let hero = self.hero_mut(hero_id)?;
@@ -327,6 +319,7 @@ impl Game {
         }
         hero.favor -= cost;
         self.board.plots.remove(&slot);
+        self.forget_plot_location(slot);
         self.board.decks.plot.discard.push(card);
         let params = [("location_name", json!(data.locations.name(&location)))];
         self.log(ActorRef::Hero(hero_id), "exploration.plot.remove", &params);

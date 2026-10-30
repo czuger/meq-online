@@ -28,6 +28,18 @@
     </div>
   </div>
   {% endfor %}
+  {% if !shadow_cards.is_empty() %}
+  <hr>
+  <h5>Cartes des Ténèbres jouables (une seule par tour de joueur)</h5>
+  <div class="d-flex flex-wrap">
+    {% for shadow in shadow_cards %}
+    <form method="post" action="/sauron/{{ sauron_id }}/shadow_cards/play" class="m-1 text-center">
+      <img src="{{ shadow.pic }}" class="medium-card d-block mb-1" alt="">
+      <button type="submit" name="card" value="{{ shadow.card }}" class="btn btn-secondary">Jouer</button>
+    </form>
+    {% endfor %}
+  </div>
+  {% endif %}
   <hr>
   {% if can_terminate %}
   <div class="row">

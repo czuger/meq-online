@@ -4,12 +4,14 @@ use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 use serde_json::json;
 
+use crate::engine::choices::target_option;
 use crate::engine::engine_error::EngineError;
 use crate::game_data::GameData;
 use crate::game_data::mob_def::MobKind;
 use crate::game_data::plot::PlotRequirement;
 use crate::model::actor_ref::ActorRef;
 use crate::model::board::PlotSlot;
+use crate::model::choice::{ChoiceSource, Chooser, PendingChoice, Resume};
 use crate::model::game::Game;
 
 /// The two Gollum plots exclude each other.
@@ -21,6 +23,9 @@ const SMEAGOL_ESCAPES: u32 = 13;
 /// Plot that also satisfies the Edoras requirement.
 const SARUMAN_FALLS: u32 = 6;
 
+/// Option code of Sauron picking a plot's location.
+pub const PLOT_LOCATION: &str = "plot_location";
+
 /// Number of plot slots on the board.
 pub const PLOT_SLOTS: PlotSlot = 3;
 
@@ -31,6 +36,8 @@ pub enum PlotPlayed {
     Finished,
     /// Sauron must pick a Gollum card first.
     LookForGollum,
+    /// Sauron picks the plot's location on the choice screen.
+    ChooseLocation,
 }
 
 impl Game {
@@ -41,7 +48,10 @@ impl Game {
     pub fn plot_playable(&self, card: u32, data: &GameData) -> Result<bool, EngineError> {
         let plot = data.plot(card)?;
         let specific = plot.require.is_none_or(|r| self.requirement_met(r));
-        Ok(self.board.shadow_pool >= plot.required_influence && specific)
+        let located = plot
+            .choose_location
+            .is_none_or(|rule| !self.plot_location_targets(rule, data).is_empty());
+        Ok(self.board.shadow_pool >= plot.required_influence && specific && located)
     }
 
     fn requirement_met(&self, requirement: PlotRequirement) -> bool {
@@ -92,7 +102,8 @@ impl Game {
             .collect()
     }
 
-    /// Sauron plays a plot card from his hand into a free slot.
+    /// Sauron plays a plot card from his hand into a free slot. A card that doesn't
+    /// print its affected location first asks Sauron to pick one.
     ///
     /// Requirements aren't checked here: the play screen only offers playable cards.
     ///
@@ -106,6 +117,35 @@ impl Game {
         data: &GameData,
         rng: &mut StdRng,
     ) -> Result<PlotPlayed, EngineError> {
+        self.check_plot_play(card, slot)?;
+        if let Some(rule) = data.plot(card)?.choose_location {
+            let options = vec![target_option(
+                PLOT_LOCATION,
+                self.plot_location_targets(rule, data),
+                1,
+                1,
+            )];
+            self.ask(PendingChoice {
+                chooser: Chooser::Sauron,
+                source: ChoiceSource::PlotLocation { card, slot },
+                options,
+                resume: Resume::EventStep,
+            })?;
+            return Ok(PlotPlayed::ChooseLocation);
+        }
+        self.take_plot_from_hand(card, slot)?;
+        self.activate_plot(card, slot);
+
+        if card == SMEAGOL_ESCAPES {
+            // The original engine never saved this transition, so the board stays on
+            // the play screen until a Gollum card is picked.
+            return Ok(PlotPlayed::LookForGollum);
+        }
+        self.plot_play_finished(data, rng)?;
+        Ok(PlotPlayed::Finished)
+    }
+
+    fn check_plot_play(&self, card: u32, slot: PlotSlot) -> Result<(), EngineError> {
         if !self.sauron.plot_hand.contains(&card) {
             return Err(EngineError::CardNotAvailable {
                 card,
@@ -117,22 +157,33 @@ impl Game {
                 "plot slot {slot} is not available"
             )));
         }
-        self.board.plots.insert(slot, card);
+        Ok(())
+    }
+
+    /// Takes a plot card Sauron plays out of his hand.
+    ///
+    /// # Errors
+    /// [`EngineError::CardNotAvailable`] when the card isn't in hand,
+    /// [`EngineError::Refused`] when the slot is invalid or used.
+    pub(crate) fn take_plot_from_hand(
+        &mut self,
+        card: u32,
+        slot: PlotSlot,
+    ) -> Result<(), EngineError> {
+        self.check_plot_play(card, slot)?;
         self.sauron.plot_hand.retain(|c| *c != card);
+        Ok(())
+    }
+
+    /// Puts a plot card on the Active Plot Track.
+    pub fn activate_plot(&mut self, card: u32, slot: PlotSlot) {
+        self.board.plots.insert(slot, card);
         self.log(
             ActorRef::Sauron,
             "plot_cards.play",
             &[("plot_card", json!(card))],
         );
         self.remove_other_gollum_card(card);
-
-        if card == SMEAGOL_ESCAPES {
-            // The original engine never saved this transition, so the board stays on
-            // the play screen until a Gollum card is picked.
-            return Ok(PlotPlayed::LookForGollum);
-        }
-        self.plot_play_finished(data, rng)?;
-        Ok(PlotPlayed::Finished)
     }
 
     /// Ends Sauron's Plot step: the Event step follows.
@@ -188,6 +239,7 @@ impl Game {
     /// Sauron removes the plot of a slot; the card goes to the discard pile (§ 5.4).
     pub fn discard_plot(&mut self, slot: PlotSlot) {
         if let Some(card) = self.board.plots.remove(&slot) {
+            self.forget_plot_location(slot);
             self.board.decks.plot.discard.push(card);
             self.log(
                 ActorRef::Sauron,
@@ -257,11 +309,14 @@ mod tests {
         g
     }
 
+    /// Plots with a printed location that can't be played (those whose location
+    /// Sauron picks are tested in `plot_locations`).
     fn unplayable(g: &Game) -> Vec<u32> {
         g.sauron
             .plot_hand
             .iter()
             .copied()
+            .filter(|c| data().plot(*c).unwrap().choose_location.is_none())
             .filter(|c| !g.plot_playable(*c, data()).unwrap())
             .collect()
     }

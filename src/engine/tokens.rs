@@ -104,7 +104,8 @@ fn plot_tokens<'a>(
     data: &'a GameData,
 ) -> impl Iterator<Item = (String, Token)> + 'a {
     game.board.plots.iter().filter_map(|(slot, card)| {
-        let location = data.plot(*card).ok()?.affect.clone()?;
+        data.plot(*card).ok()?;
+        let location = game.plot_location(*slot, data)?;
         let name = format!("Intrigue {slot}");
         Some((
             location,

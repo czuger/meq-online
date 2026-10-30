@@ -8,9 +8,11 @@ use serde::Deserialize;
 
 use crate::app_state::AppState;
 use crate::engine::combat::flow::{CardPlayed, CombatEnd, CombatResult, CombatSide};
+use crate::engine::route::{RouteActor, route_for};
 use crate::engine::turn::TurnEnd;
 use crate::game_data::GameData;
 use crate::game_data::mob_def::MobKind;
+use crate::model::combat::CombatModifiers;
 use crate::model::game::Game;
 use crate::model::played_card::PlayedCard;
 use crate::web::access::BoardAccess;
@@ -57,6 +59,26 @@ struct SetupPage {
     info: HeroInfo,
     hand: Vec<CardView>,
     card_class: &'static str,
+    /// Agility the hero may spend in this combat.
+    agility: i32,
+    /// Shadow card changes to the hero's attributes, explained.
+    modifiers: Option<String>,
+}
+
+/// French explanation of the changes Shadow cards made to the hero for this combat.
+fn modifiers_note(modifiers: CombatModifiers) -> Option<String> {
+    if modifiers == CombatModifiers::default() {
+        return None;
+    }
+    let agility = if modifiers.no_agility {
+        "agilité réduite à 0".to_owned()
+    } else {
+        format!("agilité {:+}", modifiers.agility)
+    };
+    Some(format!(
+        "Carte des Ténèbres : {agility}, force {:+} pour ce combat.",
+        modifiers.strength
+    ))
 }
 
 #[derive(Template)]
@@ -188,6 +210,8 @@ pub async fn combat_setup_screen(
         info: HeroInfo::new(hero, &state.data),
         hand: hero_hand(&state.data, &hero.code, &hero.hand),
         card_class: "small-card",
+        agility: combat.modifiers.agility(hero.agility),
+        modifiers: modifiers_note(combat.modifiers),
     };
     render(&page, &page.layout)
 }
@@ -404,13 +428,17 @@ pub async fn terminate(
     State(state): State<AppState>,
     access: BoardAccess,
 ) -> Result<Response, AppError> {
-    let (_, (end, hero_id)) = change_game(&state, access.board_id, |game, data, rng| {
+    let (game, (end, hero_id)) = change_game(&state, access.board_id, |game, data, rng| {
         let hero_id = game.combat.as_ref().map(|c| c.hero_id).unwrap_or_default();
         Ok((game.terminate_combat(data, rng)?, hero_id))
     })
     .await?;
     Ok(match end {
         CombatEnd::Movement => redirect(&format!("/heroes/{hero_id}/movement_screen"), None),
+        CombatEnd::Rest => redirect(
+            &route_for(game.board.state, access.board_id, RouteActor::Hero(hero_id)),
+            None,
+        ),
         CombatEnd::Exploration => redirect(&format!("/heroes/{hero_id}/exploration"), None),
         CombatEnd::Choice => redirect(
             &format!("/boards/{}/choices/choice_screen", access.board_id),

@@ -3,7 +3,7 @@
 use crate::engine::choices::parse_target;
 use crate::game_data::GameData;
 use crate::model::game::Game;
-use crate::web::views::pictures::{corruption_card, hero_card, image};
+use crate::web::views::pictures::{corruption_card, hero_card, image, plot_card, shadow_card};
 
 /// Label of an option code.
 pub fn option_label(code: &str) -> &'static str {
@@ -54,6 +54,32 @@ fn threat_label(code: &str) -> &'static str {
         "place_monster" => "Placer un jeton monstre",
         "draw_plot" => "Piocher 1 carte Intrigue",
         "send_to_haven" => "Envoyer le héros au refuge le plus proche",
+        other => shadow_label(other),
+    }
+}
+
+/// Labels of Shadow card and plot decisions.
+fn shadow_label(code: &str) -> &'static str {
+    match code {
+        "play_shadow" => "Jouer une carte des Ténèbres",
+        "damage_per_corruption" => "Infliger 5 dégâts par carte de corruption du héros",
+        "damage_and_corruption" => "Infliger 3 dégâts et donner 1 carte de corruption",
+        "move_hero" => "Déplacer un héros vers un lieu adjacent",
+        "influence_on_hero" => "Choisir un héros et placer 1 influence sur son lieu",
+        "mordor_influence" => "Placer 2 influences sur chaque lieu du Mordor",
+        "plot_top" => "Laisser la carte sur la pioche Intrigue",
+        "plot_bottom" => "Mettre la carte sous la pioche Intrigue",
+        "take_card" => "Prendre cette carte en main",
+        "take_plot" => "Prendre l'intrigue en main",
+        "play_plot" => "Jouer l'intrigue immédiatement",
+        "pick_minion" => "Choisir le serviteur",
+        "place_minion" => "Placer le serviteur sur ce lieu",
+        "choose_heroes" => "Choisir deux héros",
+        "redistribute" => {
+            "Cartes de corruption données au premier héros (les autres vont au second)"
+        }
+        "corrupt_hero" => "Donner 1 carte de corruption à ce héros",
+        "plot_location" => "Choisir le lieu affecté par l'intrigue",
         other => reward_label(other),
     }
 }
@@ -150,6 +176,29 @@ pub fn target_label(code: &str, game: &Game, data: &GameData, sauron: bool) -> S
             let name = mob(first).map_or_else(String::new, |m| m.name.clone());
             format!("{name} vers {}", location(second))
         }
+        _ => shadow_target_label(code, game, data, sauron),
+    }
+}
+
+/// Labels of the targets of Shadow card decisions.
+fn shadow_target_label(code: &str, game: &Game, data: &GameData, sauron: bool) -> String {
+    let (kind, values) = parse_target(code);
+    let first = values.first().copied().unwrap_or_default();
+    match kind {
+        "hero_to" => {
+            let hero = target_label(&format!("hero:{first}"), game, data, sauron);
+            let to = values.get(1).copied().unwrap_or_default();
+            format!("{hero} vers {}", data.locations.name(to))
+        }
+        "defeated_minion" => data
+            .mob(first)
+            .map_or_else(|_| first.to_owned(), |m| format!("{} (vaincu)", m.name)),
+        "shadow" => first
+            .parse()
+            .ok()
+            .and_then(|c| data.shadow(c).ok())
+            .map_or_else(String::new, |c| format!("{} : {}", c.name_fr, c.text_fr)),
+        "plot_card" => "Carte Intrigue".to_owned(),
         _ => code.to_owned(),
     }
 }
@@ -177,6 +226,8 @@ pub fn target_picture(code: &str, game: &Game, data: &GameData) -> Option<String
             .get(&card)
             .map(|s| image(&format!("hero_cards/actions/{}", s.pic_path))),
         "corruption" => Some(corruption_card(card).pic),
+        "shadow" => Some(shadow_card(card).pic),
+        "plot_card" => Some(plot_card(card).pic),
         _ => None,
     }
 }

@@ -19,7 +19,7 @@ pub enum TurnEnd {
 }
 
 /// Minions entering the map when the story reaches a stage: `(stage, mob, location)`.
-const STAGE_SPAWNS: [(i32, &str, &str); 3] = [
+pub(crate) const STAGE_SPAWNS: [(i32, &str, &str); 3] = [
     (2, "gothmog", "mount_gundabad"),
     (2, "ringwraiths", "minas_morgul"),
     (3, "witch_king", "minas_morgul"),
@@ -142,6 +142,7 @@ impl Game {
         }
 
         if self.board.winner.is_none() {
+            self.board.turn_effects.start_turn();
             self.fire(BoardEvent::NextToPlayScreenSauronPlotCards)?;
             self.switch_to_sauron()?;
             self.board.turn += 1;

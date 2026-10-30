@@ -19,6 +19,7 @@ pub mod mob_def;
 pub mod monster_pool_color;
 pub mod peril;
 pub mod plot;
+pub mod shadow;
 pub mod terrain;
 pub mod yaml_loader;
 

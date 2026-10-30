@@ -186,6 +186,10 @@ pub async fn play(
             ),
             None,
         ),
+        PlotPlayed::ChooseLocation => redirect(
+            &format!("/boards/{}/choices/choice_screen", access.board_id),
+            None,
+        ),
     })
 }
 

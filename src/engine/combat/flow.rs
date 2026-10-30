@@ -6,6 +6,7 @@ use serde_json::json;
 
 use crate::engine::board_state::BoardEvent;
 use crate::engine::combat::reveal::reveal_secretly_played_cards;
+use crate::engine::deck::SauronDeck;
 use crate::engine::defeat::DefeatOutcome;
 use crate::engine::engine_error::EngineError;
 use crate::engine::mobs::RINGWRAITHS;
@@ -15,6 +16,7 @@ use crate::game_data::GameData;
 use crate::game_data::combat_card_def::CardNumber;
 use crate::game_data::corruption_card::Flaw;
 use crate::game_data::mob_def::MobKind;
+use crate::game_data::shadow::ShadowEffect;
 use crate::model::actor_ref::ActorRef;
 use crate::model::combat::{Combat, CombatOrigin};
 use crate::model::game::Game;
@@ -60,6 +62,8 @@ pub struct CombatResult {
 pub enum CombatEnd {
     /// The hero survived an ambush and travels.
     Movement,
+    /// The hero survived a Shadow card's combat and goes to his Rest step.
+    Rest,
     /// The hero survived a combat met while travelling and explores.
     Exploration,
     /// The hero's reward asks a choice (training).
@@ -96,7 +100,8 @@ impl Game {
         rng: &mut StdRng,
     ) -> Result<(), EngineError> {
         let (hero_id, _) = self.combat_ids()?;
-        let agility = self.hero(hero_id)?.agility.max(0);
+        let modifiers = self.combat_ref()?.modifiers;
+        let agility = modifiers.agility(self.hero(hero_id)?.agility);
         if !(0..=agility).contains(&agility_to_draw) {
             return Err(EngineError::Refused(format!(
                 "agility to spend must be between 0 and {agility}"
@@ -112,7 +117,7 @@ impl Game {
 
         let hero = self.hero_mut(hero_id)?;
         let code = hero.code.clone();
-        let base_strength = hero.strength;
+        let base_strength = hero.strength + modifiers.strength;
         let strength = base_strength + agility - agility_to_draw;
         let wanted = usize::try_from(agility_to_draw).unwrap_or(0);
         let drawn = hero.draw_cards(wanted.min(hero.room_in_hand(data)));
@@ -327,6 +332,7 @@ impl Game {
             self.grant_undefeated_mob_influence(combat.mob_id, data)?;
         }
         self.remove_fought_mob(combat.mob_id)?;
+        self.after_shadow_combat(combat.origin, combat.hero_id, data, rng)?;
 
         if result.hero_defeated {
             return Ok(match self.start_hero_defeat(combat.hero_id, data, rng)? {
@@ -345,9 +351,11 @@ impl Game {
     }
 
     /// The hero survived: a Peril combat won gives its reward. The turn ends when a mob
-    /// met while travelling survived (§ 6.5), except after an ambush (§ 6.4), for
-    /// Thálin (Iron Will) and for the Peril cards saying so. Otherwise the hero travels
-    /// after an ambush and explores after a combat met while travelling.
+    /// met while travelling survived (§ 6.5), except after an ambush (§ 6.4) or a
+    /// Shadow card's combat, for Thálin (Iron Will) and for the Peril cards saying so.
+    /// Otherwise the hero travels after an ambush, goes to his Rest step after a Shadow
+    /// card's combat (it replaced the Ambush step) and explores after a combat met while
+    /// travelling.
     fn after_combat(
         &mut self,
         hero_id: i64,
@@ -358,10 +366,11 @@ impl Game {
     ) -> Result<CombatEnd, EngineError> {
         let peril = match origin {
             CombatOrigin::Peril { card } => Some(data.peril(card)?.effect),
-            CombatOrigin::Ambush | CombatOrigin::Travel => None,
+            CombatOrigin::Ambush | CombatOrigin::Travel | CombatOrigin::Shadow { .. } => None,
         };
+        let turn_start = matches!(origin, CombatOrigin::Ambush | CombatOrigin::Shadow { .. });
         let goes_on = mob_defeated
-            || origin == CombatOrigin::Ambush
+            || turn_start
             || self.hero(hero_id)?.code == IRON_WILL_HERO
             || peril.is_some_and(peril_combat_continues);
         if !goes_on {
@@ -375,6 +384,11 @@ impl Game {
                 return Ok(CombatEnd::Choice);
             }
         }
+        if let CombatOrigin::Shadow { .. } = origin {
+            self.activate_current_hero()?;
+            self.enter_rest_step(data)?;
+            return Ok(CombatEnd::Rest);
+        }
         if origin == CombatOrigin::Ambush {
             self.fire(BoardEvent::NextToHeroMovementScreen)?;
             self.activate_current_hero()?;
@@ -383,6 +397,25 @@ impl Game {
         self.fire(BoardEvent::NextToHeroExploration)?;
         self.activate_current_hero()?;
         Ok(CombatEnd::Exploration)
+    }
+
+    /// "Seem Fairer, Feel Fouler": after the combat, Sauron draws a Plot card when the
+    /// hero holds a Corruption card.
+    fn after_shadow_combat(
+        &mut self,
+        origin: CombatOrigin,
+        hero_id: i64,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<(), EngineError> {
+        let CombatOrigin::Shadow { card } = origin else {
+            return Ok(());
+        };
+        let corrupted = !self.hero(hero_id)?.corruption_cards.is_empty();
+        if corrupted && data.shadow(card)?.effect == ShadowEffect::SeemFairer {
+            self.draw_to_sauron_hand(SauronDeck::Plot, 1, rng);
+        }
+        Ok(())
     }
 
     /// Sauron may place influence equal to the wisdom of an undefeated mob (§ 8.3).

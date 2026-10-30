@@ -243,6 +243,7 @@ impl BoardEvent {
             ),
             Self::NextToHeroRestScreen => (
                 &[
+                    S::PlayCombatCardScreenBoardCombats,
                     S::HeroDrawCardsScreen,
                     S::HeroExploration,
                     S::AfterRestAdvanceStoryMarker,
@@ -330,6 +331,9 @@ impl BoardEvent {
                     S::HeroDrawCardsScreen,
                     S::HeroRestScreen,
                     S::PlayCombatCardScreenBoardCombats,
+                    S::EditSauronSauronActions,
+                    S::HeroDefeatScreen,
+                    S::SauronHavenScreen,
                 ],
                 S::ChoiceScreenBoardChoices,
             ),

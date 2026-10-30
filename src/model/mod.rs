@@ -12,4 +12,5 @@ pub mod mob;
 pub mod played_card;
 pub mod sauron;
 pub mod sauron_action;
+pub mod turn_effects;
 pub mod user;

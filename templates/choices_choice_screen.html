@@ -4,6 +4,7 @@
   <h3>Décision : {{ chooser }}</h3>
   {% if let Some(pic) = card_pic %}<img src="{{ pic }}" class="medium-card mb-3" alt="">{% endif %}
   {% if let Some(text) = context %}<div class="alert alert-secondary">{{ text }}</div>{% endif %}
+  {% if let Some(pic) = seen_pic %}<p>Carte du dessus de la pioche Intrigue :</p><img src="{{ pic }}" class="medium-card mb-3" alt="">{% endif %}
   {% if can_answer %}
   <form method="post" action="/boards/{{ board_id }}/choices/choose">
     {% for option in options %}

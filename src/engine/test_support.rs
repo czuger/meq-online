@@ -16,6 +16,7 @@ use crate::model::game::Game;
 use crate::model::hero::Hero;
 use crate::model::mob::Mob;
 use crate::model::sauron::Sauron;
+use crate::model::turn_effects::TurnEffects;
 
 pub fn data() -> &'static GameData {
     static DATA: OnceLock<GameData> = OnceLock::new();
@@ -204,6 +205,7 @@ pub fn game() -> Game {
         current_event: None,
         held_event: None,
         pending_choice: None,
+        turn_effects: TurnEffects::default(),
         heroes_objective: None,
         sauron_objective: None,
     };

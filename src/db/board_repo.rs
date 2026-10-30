@@ -12,7 +12,8 @@ use crate::model::board::{Board, StoryMarkers};
 const COLUMNS: &str = "id, state, max_heroes, waiting_heroes, turn, current_hero_id, winner, story_heroes, story_ring, \
     story_conquest, story_corruption, shadow_pool, influence, characters, favors, plots, sauron_actions, \
     sauron_actions_count, current_action, decks, monster_pools, monster_discards, ringwraiths_return, \
-    influence_budget, last_event, current_event, held_event, pending_choice, heroes_objective, sauron_objective";
+    influence_budget, last_event, current_event, held_event, pending_choice, turn_effects, heroes_objective, \
+    sauron_objective";
 
 /// Loads a board.
 ///
@@ -69,8 +70,8 @@ pub async fn update(conn: &mut SqliteConnection, board: &Board) -> Result<(), Db
         "UPDATE boards SET state = ?, max_heroes = ?, waiting_heroes = ?, turn = ?, current_hero_id = ?, winner = ?, \
          story_heroes = ?, story_ring = ?, story_conquest = ?, story_corruption = ?, shadow_pool = ?, \
          influence = ?, characters = ?, favors = ?, plots = ?, sauron_actions = ?, sauron_actions_count = ?, \
-         current_action = ?,          decks = ?, monster_pools = ?, monster_discards = ?, ringwraiths_return = ?, influence_budget = ?, \
-         last_event = ?, current_event = ?, held_event = ?, pending_choice = ?, heroes_objective = ?, sauron_objective = ?, \
+         current_action = ?, decks = ?, monster_pools = ?, monster_discards = ?, ringwraiths_return = ?, influence_budget = ?, \
+         last_event = ?, current_event = ?, held_event = ?, pending_choice = ?, turn_effects = ?, heroes_objective = ?, sauron_objective = ?, \
          updated_at = CURRENT_TIMESTAMP WHERE id = ?",
     )
     .bind(board.state.as_str())
@@ -100,6 +101,7 @@ pub async fn update(conn: &mut SqliteConnection, board: &Board) -> Result<(), Db
     .bind(optional_json(&board.current_event)?)
     .bind(optional_json(&board.held_event)?)
     .bind(optional_json(&board.pending_choice)?)
+    .bind(to_json(&board.turn_effects)?)
     .bind(board.heroes_objective)
     .bind(board.sauron_objective)
     .bind(id)
@@ -141,6 +143,7 @@ fn board_from_row(row: &SqliteRow) -> Result<Board, DbError> {
         current_event: optional_from_json(row, "current_event")?,
         held_event: optional_from_json(row, "held_event")?,
         pending_choice: optional_from_json(row, "pending_choice")?,
+        turn_effects: from_json(row.try_get("turn_effects")?)?,
         heroes_objective: row.try_get("heroes_objective")?,
         sauron_objective: row.try_get("sauron_objective")?,
     })

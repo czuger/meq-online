@@ -1,0 +1,207 @@
+---
+# The 24 Shadow cards (§ 5.9), numbered like the pictures of static/images/sauron/shadows. The text comes from
+# work/data_and_rules/MEQ_Mission_Corruption_Peril_Shadow_Cards_Fulltext.xls (21 different cards); three cards exist
+# twice: Storms of Mordor (10, 12), His Arm Has Grown Long (1, 21) and Dark Promises (9, 23).
+# `name_fr` and `text_fr` are shown to players.
+# `requirement` is the influence needed in the Shadow Pool; `timing` the window when Sauron may play the card;
+# `outside_haven` and `against_minion` narrow that window; `effect` names the card's effect, interpreted in
+# src/engine/shadows/.
+0:
+  :name: "Flocks of Crebain"
+  :text: "Play at the start of a hero's turn, if he is not in a Haven. The hero must immediately combat a Crebain. Until the end of the battle, his Agility is reduced to 0. The hero skips his Ambush step this turn."
+  :name_fr: "Nuées de Crebain"
+  :text_fr: "À jouer au début du tour d'un héros qui n'est pas dans un refuge. Le héros doit immédiatement combattre des Crebain. Jusqu'à la fin du combat, son agilité est réduite à 0. Le héros saute son étape d'embuscade ce tour-ci."
+  :requirement: 2
+  :timing: "hero_turn_start"
+  :outside_haven: true
+  :effect: "flocks_of_crebain"
+1:
+  :name: "His Arm Has Grown Long"
+  :text: "Play after a hero enters a non-Haven location. The location is treated as if perilous until the end of the hero's turn."
+  :name_fr: "Son bras s'est allongé"
+  :text_fr: "À jouer après qu'un héros est entré dans un lieu qui n'est pas un refuge. Le lieu est considéré comme périlleux jusqu'à la fin du tour du héros."
+  :requirement: 2
+  :timing: "entered_location"
+  :outside_haven: true
+  :effect: "arm_grown_long"
+2:
+  :name: "Saruman's Lies"
+  :text: "Play during your Action step. Look at the top card of the Plot deck and return it either to the top or the bottom of the Plot deck. Then, if any hero has a number of Corruption cards equal to or greater than his wisdom, advance the black story marker 1 space on the Story Track."
+  :name_fr: "Les mensonges de Saroumane"
+  :text_fr: "À jouer pendant l'étape d'action. Regardez la carte du dessus de la pioche Intrigue et remettez-la au-dessus ou en dessous de la pioche. Ensuite, si un héros a au moins autant de cartes de corruption que sa sagesse, le marqueur noir avance d'une case sur la piste de l'histoire."
+  :requirement: 5
+  :timing: "action_step"
+  :effect: "sarumans_lies"
+3:
+  :name: "An Evil Fog"
+  :text: "Play during your Action step. Choose a hero. You may move him to an adjacent location. He must then discard 1 random card from his hand for each Corruption card on him."
+  :name_fr: "Un brouillard maléfique"
+  :text_fr: "À jouer pendant l'étape d'action. Choisissez un héros. Vous pouvez le déplacer vers un lieu adjacent. Il doit ensuite défausser 1 carte au hasard de sa main par carte de corruption qu'il possède."
+  :requirement: 1
+  :timing: "action_step"
+  :effect: "evil_fog"
+4:
+  :name: "The Lidless Eye"
+  :text: "Play during your Action step. Choose any two heroes, and redistribute Corruption cards between them. Then choose any one hero and give him 1 Corruption card."
+  :name_fr: "L'Œil sans paupière"
+  :text_fr: "À jouer pendant l'étape d'action. Choisissez deux héros et répartissez à nouveau leurs cartes de corruption entre eux. Choisissez ensuite un héros et donnez-lui 1 carte de corruption."
+  :requirement: 8
+  :timing: "action_step"
+  :effect: "lidless_eye"
+5:
+  :name: "The Black Breath"
+  :text: "Play at the start of a combat involving a minion. The hero receives 1 Corruption card. Until the end of the battle, the hero has -1 strength and -1 agility for each Corruption card on him."
+  :name_fr: "Le Souffle noir"
+  :text_fr: "À jouer au début d'un combat contre un serviteur. Le héros reçoit 1 carte de corruption. Jusqu'à la fin du combat, le héros a -1 en force et -1 en agilité par carte de corruption qu'il possède."
+  :requirement: 8
+  :timing: "combat_start"
+  :against_minion: true
+  :effect: "black_breath"
+6:
+  :name: "They Are Terrible"
+  :text: "Play during your Action step. Choose a minion that is on the game board, or one that has been defeated. Remove all damage tokens from that minion, and place it on any location that contains influence."
+  :name_fr: "Ils sont terribles"
+  :text_fr: "À jouer pendant l'étape d'action. Choisissez un serviteur sur le plateau, ou un serviteur vaincu. Retirez tous ses dégâts et placez-le sur n'importe quel lieu contenant de l'influence."
+  :requirement: 8
+  :timing: "action_step"
+  :effect: "they_are_terrible"
+7:
+  :name: "Creatures of the Wild"
+  :text: "Play at the start of a hero's turn, if he is not in a Haven. The hero must combat a Giant Spider. If the hero has at least 2 Corruption cards, he instead must combat a Cave Troll. The hero skips his Ambush step this turn."
+  :name_fr: "Créatures sauvages"
+  :text_fr: "À jouer au début du tour d'un héros qui n'est pas dans un refuge. Le héros doit combattre une Araignée géante ; s'il a au moins 2 cartes de corruption, il doit combattre un Troll des cavernes à la place. Le héros saute son étape d'embuscade ce tour-ci."
+  :requirement: 7
+  :timing: "hero_turn_start"
+  :outside_haven: true
+  :effect: "creatures_of_the_wild"
+8:
+  :name: "The Ithil-stone"
+  :text: "Play during your Action step. Search the Plot deck or discard pile for the \"Denethor Succumbs to Madness\" or the \"Saruman Falls to Corruption\" Plot card. Place it in your hand, or immediately play it (if able)."
+  :name_fr: "La pierre d'Ithil"
+  :text_fr: "À jouer pendant l'étape d'action. Cherchez dans la pioche ou la défausse Intrigue la carte « Denethor sombre dans la folie » ou « Saroumane succombe à la corruption ». Prenez-la en main, ou jouez-la immédiatement (si possible)."
+  :requirement: 8
+  :timing: "action_step"
+  :effect: "ithil_stone"
+9:
+  :name: "Dark Promises"
+  :text: "Play at the start of combat. The hero must choose to either receive 1 Corruption card or be dealt 5 damage."
+  :name_fr: "Sombres promesses"
+  :text_fr: "À jouer au début d'un combat. Le héros doit choisir : recevoir 1 carte de corruption, ou subir 5 dégâts."
+  :requirement: 3
+  :timing: "combat_start"
+  :effect: "dark_promises"
+10:
+  :name: "Storms of Mordor"
+  :text: "Play during your Action step. Each hero must choose and discard cards from his hand, until he has 5 or less cards in his hand. Each hero must then discard 1 random card from his hand for each Corruption card on him."
+  :name_fr: "Tempêtes du Mordor"
+  :text_fr: "À jouer pendant l'étape d'action. Chaque héros choisit et défausse des cartes de sa main jusqu'à en avoir 5 ou moins. Chaque héros défausse ensuite 1 carte au hasard de sa main par carte de corruption qu'il possède."
+  :requirement: 4
+  :timing: "action_step"
+  :effect: "storms_of_mordor"
+11:
+  :name: "A New Power Is Rising"
+  :text: "Play during your Action step. Place 2 influence in each location of Mordor, or place up to 2 monster tokens (using normal placement rules)."
+  :name_fr: "Un nouveau pouvoir s'élève"
+  :text_fr: "À jouer pendant l'étape d'action. Placez 2 influences sur chaque lieu du Mordor, ou placez jusqu'à 2 jetons monstre (selon les règles normales de placement)."
+  :requirement: 4
+  :timing: "action_step"
+  :effect: "new_power_rising"
+12:
+  :name: "Storms of Mordor"
+  :text: "Play during your Action step. Each hero must choose and discard cards from his hand, until he has 5 or less cards in his hand. Each hero must then discard 1 random card from his hand for each Corruption card on him."
+  :name_fr: "Tempêtes du Mordor"
+  :text_fr: "À jouer pendant l'étape d'action. Chaque héros choisit et défausse des cartes de sa main jusqu'à en avoir 5 ou moins. Chaque héros défausse ensuite 1 carte au hasard de sa main par carte de corruption qu'il possède."
+  :requirement: 4
+  :timing: "action_step"
+  :effect: "storms_of_mordor"
+13:
+  :name: "Lord of the Rings"
+  :text: "Play during your Action step. Choose a Plot or Shadow card in the discard pile, show it to the heroes, and place it in your hand. Then, if the \"A Dark Messenger\" Plot card is active, advance the yellow story marker 1 space on the Story Track."
+  :name_fr: "Le Seigneur des Anneaux"
+  :text_fr: "À jouer pendant l'étape d'action. Choisissez une carte Intrigue ou des Ténèbres dans la défausse, montrez-la aux héros et prenez-la en main. Ensuite, si l'intrigue « Un sombre messager » est active, le marqueur jaune avance d'une case sur la piste de l'histoire."
+  :requirement: 6
+  :timing: "action_step"
+  :effect: "lord_of_the_rings"
+14:
+  :name: "Shire, Baggins"
+  :text: "Play during your Action step. Place 1 influence in the Shadow Pool and 1 influence in The Shire. Then, if you have at least 3 influence or a minion in The Shire, advance the yellow story marker 2 spaces on the Story Track."
+  :name_fr: "La Comté, Sacquet"
+  :text_fr: "À jouer pendant l'étape d'action. Placez 1 influence dans la réserve des Ténèbres et 1 influence dans la Comté. Ensuite, si vous avez au moins 3 influences ou un serviteur dans la Comté, le marqueur jaune avance de 2 cases sur la piste de l'histoire."
+  :requirement: 7
+  :timing: "action_step"
+  :effect: "shire_baggins"
+15:
+  :name: "Do Not Tempt Me!"
+  :text: "Play during your Action step. Choose a hero. You may place 1 influence in his location. He must then discard 1 favor for each of his Corruption cards."
+  :name_fr: "Ne me tentez pas !"
+  :text_fr: "À jouer pendant l'étape d'action. Choisissez un héros. Vous pouvez placer 1 influence sur son lieu. Il doit ensuite défausser 1 faveur par carte de corruption qu'il possède."
+  :requirement: 4
+  :timing: "action_step"
+  :effect: "do_not_tempt_me"
+16:
+  :name: "Morgul-blade"
+  :text: "Play at the start of a combat involving a minion. Deal the hero 5 damage for each Corruption card on him, or deal the hero 3 damage and give him 1 Corruption card."
+  :name_fr: "Lame de Morgul"
+  :text_fr: "À jouer au début d'un combat contre un serviteur. Infligez au héros 5 dégâts par carte de corruption qu'il possède, ou infligez-lui 3 dégâts et donnez-lui 1 carte de corruption."
+  :requirement: 6
+  :timing: "combat_start"
+  :against_minion: true
+  :effect: "morgul_blade"
+17:
+  :name: "Grievous Loss"
+  :text: "Play after a hero is defeated. For each Corruption card on the defeated hero, place 1 influence in extension of a Shadow Stronghold or into the Shadow Pool. The green story marker advances 1 fewer space during the next Story step."
+  :name_fr: "Perte cruelle"
+  :text_fr: "À jouer après la défaite d'un héros. Pour chaque carte de corruption du héros vaincu, placez 1 influence en extension d'une forteresse des Ténèbres ou dans la réserve des Ténèbres. Le marqueur vert avance d'une case de moins lors de la prochaine étape de l'histoire."
+  :requirement: 12
+  :timing: "hero_defeated"
+  :effect: "grievous_loss"
+18:
+  :name: "Evil Wound"
+  :text: "Play after a hero is defeated. After placing all of his cards in his life pool, the hero is dealt 4 damage. Then, for each Corruption card on the hero, he is dealt 2 additional damage."
+  :name_fr: "Blessure maléfique"
+  :text_fr: "À jouer après la défaite d'un héros. Une fois toutes ses cartes replacées dans sa réserve de vie, le héros subit 4 dégâts, plus 2 dégâts par carte de corruption qu'il possède."
+  :requirement: 7
+  :timing: "hero_defeated"
+  :effect: "evil_wound"
+19:
+  :name: "Winter Storm"
+  :text: "Play at the start of a hero's turn. The current hero may not move more than once during his next Travel step."
+  :name_fr: "Tempête d'hiver"
+  :text_fr: "À jouer au début du tour d'un héros. Le héros ne peut pas se déplacer plus d'une fois lors de sa prochaine étape de voyage."
+  :requirement: 10
+  :timing: "hero_turn_start"
+  :effect: "winter_storm"
+20:
+  :name: "Seem Fairer, Feel Fouler"
+  :text: "Play at the start of a hero's turn, if he is not in a Haven. The hero must combat an Agent. Then, if the hero has at least 1 Corruption card, Sauron draws 1 Plot card. The hero skips his Ambush step this turn."
+  :name_fr: "Paraître plus beau, sentir plus mauvais"
+  :text_fr: "À jouer au début du tour d'un héros qui n'est pas dans un refuge. Le héros doit combattre un Agent. Ensuite, si le héros a au moins 1 carte de corruption, Sauron pioche 1 carte Intrigue. Le héros saute son étape d'embuscade ce tour-ci."
+  :requirement: 3
+  :timing: "hero_turn_start"
+  :outside_haven: true
+  :effect: "seem_fairer"
+21:
+  :name: "His Arm Has Grown Long"
+  :text: "Play after a hero enters a non-Haven location. The location is treated as if perilous until the end of the hero's turn."
+  :name_fr: "Son bras s'est allongé"
+  :text_fr: "À jouer après qu'un héros est entré dans un lieu qui n'est pas un refuge. Le lieu est considéré comme périlleux jusqu'à la fin du tour du héros."
+  :requirement: 2
+  :timing: "entered_location"
+  :outside_haven: true
+  :effect: "arm_grown_long"
+22:
+  :name: "Betrayed"
+  :text: "Play at the start of combat. The hero must discard 2 random cards from his hand. Until the end of combat, the hero's strength is reduced by 1 for each Corruption card on him."
+  :name_fr: "Trahi"
+  :text_fr: "À jouer au début d'un combat. Le héros doit défausser 2 cartes au hasard de sa main. Jusqu'à la fin du combat, sa force est réduite de 1 par carte de corruption qu'il possède."
+  :requirement: 1
+  :timing: "combat_start"
+  :effect: "betrayed"
+23:
+  :name: "Dark Promises"
+  :text: "Play at the start of combat. The hero must choose to either receive 1 Corruption card or be dealt 5 damage."
+  :name_fr: "Sombres promesses"
+  :text_fr: "À jouer au début d'un combat. Le héros doit choisir : recevoir 1 carte de corruption, ou subir 5 dégâts."
+  :requirement: 3
+  :timing: "combat_start"
+  :effect: "dark_promises"

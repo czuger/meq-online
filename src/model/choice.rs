@@ -5,6 +5,9 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::game_data::shadow::{ShadowCode, ShadowTiming};
+use crate::model::board::PlotSlot;
+
 /// Who answers a choice.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -112,6 +115,34 @@ pub enum ChoiceSource {
         /// The hero.
         hero_id: i64,
     },
+    /// Sauron may play a Shadow card now, or pass (§ 5.9).
+    ShadowWindow {
+        /// The moment of the hero's turn.
+        timing: ShadowTiming,
+        /// The hero whose turn it is.
+        hero_id: i64,
+    },
+    /// A decision within a Shadow card's effect.
+    Shadow {
+        /// The Shadow card.
+        card: ShadowCode,
+        /// The hero the card is played against, if any.
+        #[serde(default)]
+        hero_id: Option<i64>,
+        /// Heroes still concerned by the next steps, in order.
+        #[serde(default)]
+        heroes: Vec<i64>,
+        /// Targets picked or cards seen in the previous steps.
+        #[serde(default)]
+        picked: Vec<String>,
+    },
+    /// Sauron picks the affected location of the Plot card he plays (§ 5.4).
+    PlotLocation {
+        /// The Plot card.
+        card: u32,
+        /// The Active Plot Track slot.
+        slot: PlotSlot,
+    },
 }
 
 /// Where play goes on once the choices are answered.
@@ -130,6 +161,16 @@ pub enum Resume {
     AfterRest,
     /// The current hero's turn ends.
     EndTurn,
+    /// Sauron's Action step goes on, between two actions.
+    SauronActions,
+    /// The current hero's Ambush step, then his Rest step.
+    Ambush,
+    /// The monster, minion or Peril threatening the hero who just moved.
+    TravelThreats,
+    /// The preparation of the combat in progress.
+    CombatSetup,
+    /// Sauron's Event step, after his Plot step.
+    EventStep,
 }
 
 /// A decision waiting for its answer.

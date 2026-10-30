@@ -7,12 +7,13 @@
       <li>Chaque point d'agilité dépensé vous fait piocher une carte ; chaque point non dépensé ajoute 1 à votre force pour ce combat.</li>
     </ul>
   </div>
+  {% if let Some(note) = modifiers %}<div class="alert alert-warning">{{ note }}</div>{% endif %}
   {% include "hero_info.html" %}
   <hr>
   {% include "cards_hand.html" %}
   <form method="post" action="/boards/{{ board_id }}/combats/combat_setup" class="form-inline mt-3">
     <div class="mx-2"><label for="draw">Agilité dépensée pour piocher</label></div>
-    <div class="mx-2"><input class="form-control" type="number" id="draw" name="draw" value="0" min="0" max="{{ info.agility }}"></div>
+    <div class="mx-2"><input class="form-control" type="number" id="draw" name="draw" value="0" min="0" max="{{ agility }}"></div>
     <div class="mx-2"><button type="submit" class="btn btn-primary">Valider</button></div>
   </form>
 </div>

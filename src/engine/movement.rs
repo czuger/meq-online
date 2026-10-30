@@ -4,11 +4,14 @@ use rand::rngs::StdRng;
 
 use crate::engine::board_state::BoardEvent;
 use crate::engine::engine_error::EngineError;
+use crate::engine::shadows::shadow_window::ShadowWindow;
 use crate::engine::threats::Threat;
 use crate::game_data::GameData;
 use crate::game_data::combat_card_def::CardNumber;
 use crate::game_data::corruption_card::Flaw;
 use crate::game_data::location_paths::Destination;
+use crate::game_data::shadow::ShadowTiming;
+use crate::model::choice::Resume;
 use crate::model::game::Game;
 use crate::model::hero::Hero;
 use crate::model::mob::Mob;
@@ -23,6 +26,8 @@ pub enum MoveOutcome {
     InvalidCards,
     /// A hopeless hero already took his 3 Travel steps; nothing changed.
     Hopeless,
+    /// "Winter Storm": the hero already moved this turn; nothing changed.
+    SingleMove,
     /// A combat starts.
     Combat,
     /// Sauron (or the hero, in a Haven) decides what threatens the hero.
@@ -87,6 +92,9 @@ impl Game {
         if hero.has_flaw(Flaw::Hopeless, data) && hero.turn_record.travels >= HOPELESS_TRAVELS {
             return Ok(MoveOutcome::Hopeless);
         }
+        if self.board.turn_effects.single_move && hero.turn_record.travels >= 1 {
+            return Ok(MoveOutcome::SingleMove);
+        }
         if !validate_movement(hero, destination, cards, data)? {
             return Ok(MoveOutcome::InvalidCards);
         }
@@ -95,14 +103,36 @@ impl Game {
         hero.location = destination.to_owned();
         hero.turn_record.travels += 1;
 
-        match self.face_location_threats(hero_id, false, data, rng)? {
-            Threat::None => {
-                self.fire(BoardEvent::NextToHeroExploration)?;
-                Ok(MoveOutcome::Exploration)
-            }
+        let window = ShadowWindow {
+            timing: ShadowTiming::EnteredLocation,
+            hero_id,
+        };
+        if self.open_shadow_window(window, Resume::TravelThreats, data)? {
+            return Ok(MoveOutcome::Choice);
+        }
+        match self.travel_threats(hero_id, data, rng)? {
+            Threat::None => Ok(MoveOutcome::Exploration),
             Threat::Combat => Ok(MoveOutcome::Combat),
             Threat::Choice => Ok(MoveOutcome::Choice),
         }
+    }
+
+    /// Combat or Peril on the location the hero just entered (§ 6.5); the hero
+    /// explores when nothing threatens him.
+    ///
+    /// # Errors
+    /// Lookup and transition errors.
+    pub fn travel_threats(
+        &mut self,
+        hero_id: i64,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<Threat, EngineError> {
+        let threat = self.face_location_threats(hero_id, false, data, rng)?;
+        if threat == Threat::None {
+            self.fire(BoardEvent::NextToHeroExploration)?;
+        }
+        Ok(threat)
     }
 
     /// The hero stops moving and explores its location.

@@ -4,10 +4,12 @@ use rand::rngs::StdRng;
 
 use crate::engine::board_state::BoardEvent;
 use crate::engine::engine_error::EngineError;
+use crate::engine::shadows::shadow_window::ShadowWindow;
 use crate::engine::threats::Threat;
 use crate::game_data::GameData;
 use crate::game_data::corruption_card::CorruptionCode;
 use crate::game_data::plot::StoryType;
+use crate::game_data::shadow::ShadowTiming;
 use crate::model::choice::Resume;
 use crate::model::game::Game;
 use crate::model::hero::TurnRecord;
@@ -64,11 +66,29 @@ impl Game {
         self.check_rest(data, rng)
     }
 
-    /// The current hero's turn starts: monsters and minions on its location ambush it
-    /// (§ 6.4), then it may rest.
+    /// The current hero's turn starts: Sauron may play a Shadow card (§ 5.9), then
+    /// monsters and minions on its location ambush it (§ 6.4), then it may rest.
     fn check_rest(&mut self, data: &GameData, rng: &mut StdRng) -> Result<(), EngineError> {
         let hero_id = self.current_hero_id()?;
         self.hero_mut(hero_id)?.turn_record = TurnRecord::default();
+        self.board.turn_effects.start_turn();
+        let window = ShadowWindow {
+            timing: ShadowTiming::HeroTurnStart,
+            hero_id,
+        };
+        if self.open_shadow_window(window, Resume::Ambush, data)? {
+            return Ok(());
+        }
+        self.ambush_step(data, rng)
+    }
+
+    /// The current hero's Ambush step (§ 6.4), then his Rest step when nothing
+    /// attacked him.
+    ///
+    /// # Errors
+    /// Lookup and transition errors.
+    pub fn ambush_step(&mut self, data: &GameData, rng: &mut StdRng) -> Result<(), EngineError> {
+        let hero_id = self.current_hero_id()?;
         if self.face_location_threats(hero_id, true, data, rng)? == Threat::None {
             self.enter_rest_step(data)?;
         }
@@ -76,8 +96,8 @@ impl Game {
     }
 
     /// Opens the Rest step, or goes straight to movement when the current hero can't
-    /// rest: a monster or minion stays on its location, or it stands on a Shadow
-    /// Stronghold (§ 6.1).
+    /// rest: a monster or minion stays on its location, an active plot forbids resting
+    /// there, or it stands on a Shadow Stronghold (§ 6.1).
     ///
     /// # Errors
     /// Lookup and transition errors.
@@ -85,7 +105,7 @@ impl Game {
         let hero_id = self.current_hero_id()?;
         let location = self.hero(hero_id)?.location.clone();
         let mob_here = self.mobs.iter().any(|m| m.location == location);
-        if mob_here {
+        if mob_here || self.rest_forbidden_by_plot(&location, data) {
             return self.fire(BoardEvent::NextToHeroMovementScreen);
         }
         self.fire(BoardEvent::NextToHeroRestScreen)?;

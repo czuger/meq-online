@@ -64,6 +64,24 @@ pub enum PlotRequirement {
     RequireMobNearWoddenLand,
 }
 
+/// How Sauron picks the affected location of a plot that doesn't print one.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PlotLocationRule {
+    /// "A Broken Line of Kings": a Haven without another plot marker and with at least
+    /// 6 influence on its adjacent locations; heroes may not rest there.
+    BrokenLineOfKings,
+    /// "Loss of an Heir": Edoras or Minas Tirith, with a monster token or minion within
+    /// 1 space.
+    LossOfAnHeir,
+    /// "A Promise of Rings": a location with a character token and a monster token or
+    /// minion.
+    PromiseOfRings,
+    /// "Urgent Summons": a location with a character token and no other plot marker;
+    /// its character tokens leave the board.
+    UrgentSummons,
+}
+
 /// A plot card.
 #[derive(Debug, Clone, Deserialize)]
 pub struct Plot {
@@ -83,6 +101,9 @@ pub struct Plot {
     /// Location where the plot token is placed.
     #[serde(default)]
     pub affect: Option<String>,
+    /// How Sauron picks the location when the card doesn't print one.
+    #[serde(default)]
+    pub choose_location: Option<PlotLocationRule>,
     /// Shadow pool required to play it.
     pub required_influence: i32,
     /// Extra condition.

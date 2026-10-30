@@ -16,3 +16,4 @@ pub mod sauron;
 pub mod sauron_actions;
 pub mod sauron_mobs;
 pub mod sessions;
+pub mod shadow_cards;

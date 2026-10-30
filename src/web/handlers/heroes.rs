@@ -389,6 +389,12 @@ pub async fn move_hero(
                 "La corruption Sans espoir vous interdit plus de 3 déplacements par tour.",
             )),
         ),
+        MoveOutcome::SingleMove => redirect(
+            &movement,
+            Some(Flash::alert(
+                "Tempête d'hiver : vous ne pouvez vous déplacer qu'une fois pendant ce tour.",
+            )),
+        ),
         MoveOutcome::Choice => redirect(&format!("/boards/{board_id}/choices/choice_screen"), None),
         MoveOutcome::Combat => redirect(
             &format!("/boards/{board_id}/combats/combat_setup_screen"),

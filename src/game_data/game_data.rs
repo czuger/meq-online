@@ -18,6 +18,7 @@ use crate::game_data::mob_def::MobDef;
 use crate::game_data::monster_pool_color::MonsterPoolColor;
 use crate::game_data::peril::{PerilCard, PerilCode};
 use crate::game_data::plot::Plot;
+use crate::game_data::shadow::{ShadowCard, ShadowCode};
 use crate::game_data::yaml_loader::{load, load_map};
 
 /// Name of the event set of a stage deck, as in `data/events.yaml` and the pictures.
@@ -61,6 +62,8 @@ pub struct GameData {
     pub monster_pools: BTreeMap<MonsterPoolColor, Vec<String>>,
     /// Peril cards by number.
     pub perils: BTreeMap<PerilCode, PerilCard>,
+    /// Shadow cards by number.
+    pub shadows: BTreeMap<ShadowCode, ShadowCard>,
 }
 
 impl GameData {
@@ -83,6 +86,7 @@ impl GameData {
             skills: load(dir, "skills")?,
             monster_pools: load(dir, "locations_monsters")?,
             perils: load(dir, "perils")?,
+            shadows: load(dir, "shadows")?,
         })
     }
 
@@ -198,6 +202,16 @@ impl GameData {
             .ok_or_else(|| GameDataError::unknown("peril card", code))
     }
 
+    /// Looks up a Shadow card.
+    ///
+    /// # Errors
+    /// [`GameDataError::UnknownCode`] when the card doesn't exist.
+    pub fn shadow(&self, code: ShadowCode) -> Result<&ShadowCard, GameDataError> {
+        self.shadows
+            .get(&code)
+            .ok_or_else(|| GameDataError::unknown("shadow card", code))
+    }
+
     /// Looks up a corruption card.
     ///
     /// # Errors
@@ -267,6 +281,10 @@ mod tests {
                 .all(|c| data.corruption_card(*c).is_ok())
         );
         assert_eq!(data.perils.len(), 15);
+        assert_eq!(
+            data.shadows.keys().copied().collect::<Vec<_>>(),
+            (0..24).collect::<Vec<_>>()
+        );
         assert_eq!(data.monster_pools[&MonsterPoolColor::Orange].len(), 10);
         assert!(data.skills.contains_key(&100));
     }

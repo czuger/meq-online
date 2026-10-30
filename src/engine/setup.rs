@@ -20,18 +20,13 @@ use crate::model::board::{Board, Decks, Pile, StoryMarkers};
 use crate::model::game::Game;
 use crate::model::hero::{Hero, HeroItems};
 use crate::model::sauron::Sauron;
+use crate::model::turn_effects::TurnEffects;
 
 /// Most heroes in a game (§ 1: one Sauron and up to three heroes).
 pub const MAX_HEROES: usize = 3;
 
-/// Plot cards left out of the deck (their effects aren't implemented).
-const EXCLUDED_PLOTS: [u32; 5] = [10, 11, 14, 15, 17];
-
-/// Shadow cards left out of the deck (played during hero movement, not implemented).
-const EXCLUDED_SHADOW_CARDS: [u32; 2] = [1, 21];
-
 /// Minions on the map from the start: `(mob, location)`.
-const STARTING_MINIONS: [(&str, &str); 2] = [
+pub(crate) const STARTING_MINIONS: [(&str, &str); 2] = [
     ("mouth_of_sauron", "dol_guldur"),
     ("black_serpent", "near_harad"),
 ];
@@ -156,17 +151,17 @@ fn new_board(starting_plot: u32, data: &GameData, rng: &mut StdRng) -> Result<Bo
         current_event: None,
         held_event: None,
         pending_choice: None,
+        turn_effects: TurnEffects::default(),
         heroes_objective: None,
         sauron_objective: None,
     })
 }
 
 fn shuffled_decks(data: &GameData, rng: &mut StdRng) -> Decks {
-    let mut plot: Vec<u32> = (3..=17).filter(|c| !EXCLUDED_PLOTS.contains(c)).collect();
+    // Plots 0 to 2 are the starting plots.
+    let mut plot: Vec<u32> = data.plots.keys().copied().filter(|c| *c >= 3).collect();
     plot.shuffle(rng);
-    let mut shadow: Vec<u32> = (0..=23)
-        .filter(|c| !EXCLUDED_SHADOW_CARDS.contains(c))
-        .collect();
+    let mut shadow: Vec<u32> = data.shadows.keys().copied().collect();
     shadow.shuffle(rng);
     let mut corruption = data.corruption.deck.clone();
     corruption.shuffle(rng);
@@ -405,13 +400,13 @@ mod tests {
         assert_eq!(game.board.plots.len(), 1);
         assert_eq!(game.mobs.len(), 2);
         let plots = game.board.decks.plot.draw.len() + game.sauron.drawn_plot.len();
-        assert_eq!(plots, 10);
+        assert_eq!(plots, 15);
         assert!(
             !game.sauron.drawn_plot.is_empty(),
             "§ 3: the starting plot draws"
         );
         assert!(game.board.influence_budget.tokens > 0);
-        assert_eq!(game.board.decks.shadow.draw.len(), 22);
+        assert_eq!(game.board.decks.shadow.draw.len(), 24);
         assert!(
             game.heroes
                 .iter()

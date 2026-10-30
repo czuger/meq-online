@@ -180,6 +180,41 @@ impl Game {
         Ok(())
     }
 
+    /// A Corruption card passes from one hero to another ("The Lidless Eye"), with its
+    /// attribute malus.
+    ///
+    /// # Errors
+    /// [`EngineError::CardNotAvailable`] when `from` doesn't hold the card; lookup
+    /// errors.
+    pub fn move_corruption_card(
+        &mut self,
+        from: i64,
+        to: i64,
+        card: CorruptionCode,
+        data: &GameData,
+    ) -> Result<(), EngineError> {
+        let modification = data.corruption_card(card)?.modification;
+        let giver = self.hero_mut(from)?;
+        let position = giver
+            .corruption_cards
+            .iter()
+            .position(|c| *c == card)
+            .ok_or(EngineError::CardNotAvailable {
+                card,
+                pile: "corruption cards",
+            })?;
+        giver.corruption_cards.remove(position);
+        if let Some(modification) = modification {
+            giver.undo_modification(modification);
+        }
+        let receiver = self.hero_mut(to)?;
+        receiver.corruption_cards.push(card);
+        if let Some(modification) = modification {
+            receiver.apply_modification(modification);
+        }
+        Ok(())
+    }
+
     /// A resting hero discards one of its corruption cards by spending the favor shown
     /// on it (§ 6.1); the card's attribute malus ends.
     ///

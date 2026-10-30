@@ -10,6 +10,9 @@ use crate::app_state::AppState;
 use crate::engine::influence::InfluenceRefusal;
 use crate::engine::route::{RouteActor, route_for};
 use crate::engine::sauron_actions::space_values;
+use crate::game_data::GameData;
+use crate::game_data::shadow::ShadowTiming;
+use crate::model::game::Game;
 use crate::model::sauron_action::SauronAction;
 use crate::web::access::SauronAccess;
 use crate::web::app_error::AppError;
@@ -19,6 +22,7 @@ use crate::web::game_tx::{change_game, read_game};
 use crate::web::handlers::maps::sauron_map_page;
 use crate::web::page::render;
 use crate::web::views::layout::Layout;
+use crate::web::views::pictures::shadow_card;
 
 /// One space of a track.
 struct Space {
@@ -44,6 +48,14 @@ struct EditPage {
     tracks: Vec<Track>,
     action_in_progress: Option<String>,
     can_terminate: bool,
+    /// Shadow cards Sauron may play now.
+    shadow_cards: Vec<ShadowView>,
+}
+
+/// A playable Shadow card.
+struct ShadowView {
+    card: u32,
+    pic: String,
 }
 
 /// Chosen action track.
@@ -111,6 +123,21 @@ fn refusal_message(refusal: InfluenceRefusal, name: &str) -> String {
     }
 }
 
+/// Shadow cards of the Action step Sauron may play now, between two actions.
+fn playable_shadows(game: &Game, data: &GameData) -> Result<Vec<ShadowView>, AppError> {
+    if game.board.current_action.is_some() {
+        return Ok(vec![]);
+    }
+    let cards = game.playable_shadow_cards(ShadowTiming::ActionStep, None, data)?;
+    Ok(cards
+        .into_iter()
+        .map(|card| ShadowView {
+            card,
+            pic: shadow_card(card).pic,
+        })
+        .collect())
+}
+
 /// `GET /sauron/{sauron_id}/sauron_actions/edit`: the action tracks.
 ///
 /// # Errors
@@ -155,6 +182,7 @@ pub async fn edit(
             )
         }),
         can_terminate: game.sauron_actions_left() == 0,
+        shadow_cards: playable_shadows(&game, &state.data)?,
     };
     render(&page, &page.layout)
 }

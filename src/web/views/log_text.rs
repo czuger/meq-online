@@ -93,6 +93,25 @@ pub fn log_text(entry: &LogEntry, data: &GameData) -> String {
         ),
         "exploration.dark_path" => "Choisit la voie des Ténèbres et gagne une faveur.".to_owned(),
         "exploration.plot.remove" => format!("Retire une intrigue à {}.", p("location_name")),
+        _ => shadow_log_text(entry, data),
+    }
+}
+
+fn shadow_log_text(entry: &LogEntry, data: &GameData) -> String {
+    let p = |name: &str| param(entry, name, data);
+    let tokens = plural(count(entry), "jeton d'influence", "jetons d'influence");
+    match entry.action.as_str() {
+        "shadow.play" => format!("Sauron joue la carte des Ténèbres « {} ».", p("shadow")),
+        "shadow.moved" => format!("Est déplacé vers {} par Sauron.", p("location")),
+        "shadow.mordor_influence" => format!("Sauron place {tokens} sur chaque lieu du Mordor."),
+        "shadow.take_card" => "Sauron reprend cette carte de la défausse.".to_owned(),
+        "shadow.minion" => format!("Sauron place {} à {}.", p("name"), p("location")),
+        "shadow.redistribute" => "Sauron répartit à nouveau les cartes de corruption.".to_owned(),
+        "shadow.grievous_loss" => format!(
+            "Perte cruelle : Sauron peut placer {tokens}, le marqueur des héros avancera d'une case de moins."
+        ),
+        "corruption.greedy" => "Avide : Sauron pioche une carte des Ténèbres.".to_owned(),
+        "plot_cards.location" => format!("L'intrigue affecte {}.", p("location")),
         _ => peril_log_text(entry, data),
     }
 }

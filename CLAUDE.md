@@ -108,8 +108,8 @@ eometh) and make the creator Sauron; board members play the computer seats. Shad
 
 The engine is being brought to the official rules following `docs/finalization-plan.md` (rules in `docs/rules.md`,
 gap analysis in `docs/rules-gaps.md`, open questions in `docs/open-questions.md`: add new ones there). D1 and D3
-are decided: follow the official rules, the engine enforces the action track. Phases 1–4 are committed (9934d42);
-Phase 5 is not.
+are decided: follow the official rules, the engine enforces the action track. Phases 1–5 are committed (1765f01);
+Phase 6 is not.
 
 **Done (Phases 1–3, green when finished):** every Phase 1, 2 and 3 item of the plan. Highlights: defeat screens
 (`engine/defeat.rs`, `HeroDefeatScreen`, `SauronHavenScreen`); game creation with 1–3 chosen heroes, open or computer
@@ -143,8 +143,19 @@ asks Sauron for the Haven, `Wretched` choice); Beravor, Eleanor and Thálin abil
 `EndTurn`; `answer_choice` only resumes while the board is still on the choice screen. A travel combat won now
 leads to exploration. Schema changed again (`heroes.turn_record`, `combats.origin`).
 
+**Phase 6 (Shadow cards), done, green:** the 24 pictured cards in `data/shadows.yaml` (21 texts, 3 duplicates; the
+rules' 26 cards lack 2, Q2), `game_data/shadow.rs` (`ShadowTiming`, `ShadowEffect`), `engine/shadows/`
+(`shadow_window.rs`: playable cards, one per player turn, the `ShadowWindow` choice at the start of a hero turn, after
+entering a location, at the start of a combat and after a defeat; `effects.rs`, `answers.rs`: the `Shadow` choice;
+tests in `shadows/tests.rs`). Action step cards are played from the actions screen (`web/handlers/shadow_cards.rs`).
+Effects outliving their card: `model/turn_effects.rs` (`boards.turn_effects`: card played this turn, perilous
+location, single move, green marker malus, plot locations) and `CombatModifiers` (`combats.modifiers`). New resume
+points `SauronActions`, `Ambush`, `TravelThreats`, `CombatSetup`, `EventStep`; `CombatOrigin::Shadow` leads to the
+Rest step. The 5 plots without a printed location are back: Sauron picks it (`engine/plot_locations.rs`,
+`PlotLocation` choice); always go through `Game::plot_location`/`plot_at`, not `Plot::affect`. Greedy is enforced.
+Schema changed again: an existing database must be recreated. Interpretations to confirm: Q28.
+
 **Next:** Phase 5 leftovers: quests (text readable on `static/images/hero_cards/quests/standard`: Starting and
 Advanced quests), trading between heroes, Argalad's peek limited to one adjacent location. Encounter step and Items
-blocked on missing text (and water paths missing from `data/locations_paths.yaml`). Phase 6 Shadow cards (text in
-the xls; map it to the 24 pictures in `static/images/sauron/shadows`). Phase 7 missions and Finale. Phase 8 optional
-rules and end-to-end tests.
+blocked on missing text (and water paths missing from `data/locations_paths.yaml`). Phase 7 missions and Finale.
+Phase 8 optional rules and end-to-end tests.

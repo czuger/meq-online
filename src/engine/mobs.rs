@@ -5,6 +5,8 @@ use rand::seq::SliceRandom;
 use serde_json::json;
 
 use crate::engine::engine_error::EngineError;
+use crate::engine::setup::STARTING_MINIONS;
+use crate::engine::turn::STAGE_SPAWNS;
 use crate::game_data::GameData;
 use crate::game_data::mob_def::MobKind;
 use crate::game_data::monster_pool_color::MonsterPoolColor;
@@ -110,6 +112,22 @@ impl Game {
                 .push(mob.code);
         }
         Ok(())
+    }
+
+    /// Minions that entered play and were defeated: those of the stages reached (or
+    /// starting in play) that aren't on the board.
+    pub fn defeated_minions(&self) -> Vec<String> {
+        let stage = self.board.story.stage();
+        let starting = STARTING_MINIONS.iter().map(|(code, _)| *code);
+        let spawned = STAGE_SPAWNS
+            .iter()
+            .filter(|(at, _, _)| *at <= stage)
+            .map(|(_, code, _)| *code);
+        starting
+            .chain(spawned)
+            .filter(|code| !self.mobs.iter().any(|m| m.code == *code))
+            .map(str::to_owned)
+            .collect()
     }
 
     /// Defeated Ringwraiths come back on Minas Morgul, at full life, at the start of

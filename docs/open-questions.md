@@ -27,13 +27,14 @@ names and codes seem swapped.
   location on the board, then check the other region codes the same way (`rhoan`, `rhuadur` and `endwith` are
   spelled oddly but look consistent).
 
-### Q2. How many Shadow cards are there? — Open
+### Q2. How many Shadow cards are there? — Blocked
 
-The plan says 26 Shadow cards, the xls has the text of 21, `static/images/sauron/shadows` has 24 pictures, and
-`setup.rs` builds the deck from cards 0–23 minus `EXCLUDED_SHADOW_CARDS` (1, 21).
+The rules say 26 Shadow cards. The 24 pictures of `static/images/sauron/shadows` match the 21 texts of the xls, three
+cards existing twice (Storms of Mordor 10 and 12, His Arm Has Grown Long 1 and 21, Dark Promises 9 and 23). The deck
+holds these 24 cards (`data/shadows.yaml`).
 
-- **Needed before Phase 6**: the real card count, and which pictures go with the 21 texts. Cards with no text can't
-  be implemented.
+- **Needed**: the 2 missing cards (pictures or text), if the count of 26 is right. The colored dot at the bottom of "A
+  New Power Is Rising" (red) and "Shire, Baggins" (yellow) is not used.
 
 ### Q3. Character favor values — Blocked
 
@@ -100,14 +101,26 @@ location at once (`movement.rs` `surrounding_monsters`).
 
 - **Recommendation**: let Argalad pick one adjacent location first.
 
-### Q24. Excluded plots — Open
+### Q25. Indifferent — Blocked
 
-Five plot cards (`setup.rs` `EXCLUDED_PLOTS`: 10, 11, 14, 15, 17) are left out of the deck, together with the Shadow
-deck. Planned for Phase 6; it needs their requirements and effects checked against the pictures.
+The corruption card sits in the deck without effect until Encounter cards (Q4) exist. Greedy is enforced since
+Phase 6. "A Broken Line of Kings" also forbids drawing Encounter cards on its Haven: that part waits as well.
 
-### Q25. Greedy and Indifferent — Blocked
+### Q28. Shadow cards: interpretations made in Phase 6 — To confirm
 
-Both corruption cards sit in the deck without effect until Shadow cards (Phase 6) and Encounter cards (Q4) exist.
+| # | Topic | What the engine does | Source |
+|---|---|---|---|
+| a | Play windows | Sauron is asked only when he holds a card he may play now; the heroes see that a decision is pending, not the cards. | `shadows/shadow_window.rs` |
+| b | Turn start combats (Crebain, Agent, Spider/Troll) | The monster isn't taken from a pool and leaves after the combat. Like an ambush, the turn goes on whatever the result; the hero then reaches his Rest step (the engine runs the Ambush step before the Rest step, the rules the other way round). | `combat/flow.rs` `after_combat` |
+| c | "Seem Fairer, Feel Fouler" | The plot card is drawn after the combat, even when the hero was defeated. | `combat/flow.rs` |
+| d | "An Evil Fog", "Do Not Tempt Me!" | The move costs nothing and triggers nothing; the influence ignores the extension rule (never in a Haven). | `shadows/answers.rs` |
+| e | "A New Power Is Rising" | Mordor influence is trimmed to what the strongholds support (§ 5.8); the 2 monster tokens go on 2 different locations. | `shadows/answers.rs` |
+| f | "The Ithil-stone" | The plot found may be played if Sauron could play it now; it goes on the first free slot. The plot deck is shuffled after the search. | `shadows/answers.rs` |
+| g | "They Are Terrible" | Defeated minions are those of the stages reached that aren't on the board; any influenced location, hero locations included. | `mobs.rs` `defeated_minions` |
+| h | "The Lidless Eye" | With one hero, only the new Corruption card is given. Moved cards carry their attribute malus. | `shadows/effects.rs` |
+| i | "Grievous Loss" | The influence is given as a budget placed from the map, all of it allowed in the Shadow Pool. | `shadows/effects.rs` |
+| j | Wretched drawn from a combat start card | The combat is dropped and the turn ends; drawn during Sauron's turn ("The Lidless Eye") the card only goes back (Q7). | `shadows/effects.rs` `shadow_corruption` |
+| k | Defeat by a combat start card's damage | The combat is dropped before the defeat. | `shadows/effects.rs` `shadow_damage` |
 
 ## 5. Project questions
 
@@ -132,3 +145,5 @@ in encounters wait on Q4, and some Starting quests refer to the Encounter step.
 - **D1** (2026-10-29): follow the official rules rather than the behavior kept from the Rails app.
 - **D2** (2026-10-30): the peril die is replaced by the 15 Peril cards.
 - **D3** (2026-10-29): the engine enforces Sauron's action track.
+- **Q24** (2026-10-30): the 5 excluded plots (10, 11, 14, 15, 17) are in the deck; Sauron picks their location among
+  those matching the card (`engine/plot_locations.rs`).

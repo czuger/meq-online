@@ -5,11 +5,14 @@ use serde_json::json;
 
 use crate::engine::board_state::BoardEvent;
 use crate::engine::engine_error::EngineError;
+use crate::engine::shadows::shadow_window::ShadowWindow;
 use crate::engine::turn::TurnEnd;
 use crate::game_data::GameData;
 use crate::game_data::corruption_card::Flaw;
 use crate::game_data::plot::StoryType;
+use crate::game_data::shadow::ShadowTiming;
 use crate::model::actor_ref::ActorRef;
+use crate::model::choice::Resume;
 use crate::model::game::Game;
 use crate::model::hero::{Hero, Item};
 
@@ -213,6 +216,8 @@ impl Game {
         Ok(())
     }
 
+    /// The defeated hero recovers in the Haven; Sauron may then play a Shadow card
+    /// (§ 5.9) before the hero's turn ends.
     fn send_to_haven(
         &mut self,
         hero_id: i64,
@@ -225,6 +230,13 @@ impl Game {
         hero.heal(rng);
         let params = [("location", json!(data.locations.name(haven)))];
         self.log(ActorRef::Hero(hero_id), "defeat.haven", &params);
+        let window = ShadowWindow {
+            timing: ShadowTiming::HeroDefeated,
+            hero_id,
+        };
+        if self.open_shadow_window(window, Resume::EndTurn, data)? {
+            return Ok(TurnEnd::Boards);
+        }
         self.finish_heroes_turn(hero_id, data)
     }
 }

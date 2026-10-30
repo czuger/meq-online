@@ -10,7 +10,7 @@ use tower_http::services::{ServeDir, ServeFile};
 use crate::app_state::AppState;
 use crate::web::handlers::{
     boards, characters, choices, combats, defeat, events, explorations, heroes, logs, maps,
-    messages, plot_cards, sauron, sauron_actions, sauron_mobs, sessions,
+    messages, plot_cards, sauron, sauron_actions, sauron_mobs, sessions, shadow_cards,
 };
 
 /// Builds the application router.
@@ -204,6 +204,10 @@ fn sauron_action_routes() -> Router<AppState> {
         .route(
             "/sauron/{sauron_id}/sauron_actions/set_influence",
             post(sauron_actions::set_influence),
+        )
+        .route(
+            "/sauron/{sauron_id}/shadow_cards/play",
+            post(shadow_cards::play),
         )
         .route("/shadow_pools/{sauron_id}/update_from_map", pool)
         .route(

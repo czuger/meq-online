@@ -11,6 +11,7 @@ use crate::engine::EngineError;
 use crate::engine::events::event_step::event_pic_path;
 use crate::engine::route::{RouteActor, route_for};
 use crate::game_data::GameData;
+use crate::game_data::shadow::ShadowTiming;
 use crate::model::board::EventRef;
 use crate::model::choice::{ChoiceOption, ChoiceSource, Chooser, PendingChoice};
 use crate::model::game::Game;
@@ -21,7 +22,7 @@ use crate::web::game_tx::{change_game, read_game};
 use crate::web::page::render;
 use crate::web::views::choice_label::{option_label, target_label, target_picture};
 use crate::web::views::layout::Layout;
-use crate::web::views::pictures::image;
+use crate::web::views::pictures::{image, plot_card, shadow_card};
 
 /// Separates the option code from the target code in a `targets` field.
 const TARGET_SEPARATOR: char = '|';
@@ -54,6 +55,8 @@ struct ChoicePage {
     context: Option<String>,
     options: Vec<OptionView>,
     can_answer: bool,
+    /// Card only the chooser may look at.
+    seen_pic: Option<String>,
 }
 
 /// Heroes the user plays: their own and the computer seats.
@@ -102,8 +105,8 @@ fn layout(access: &BoardAccess, chooser: Chooser, game: &Game, data: &GameData) 
     }
 }
 
-/// Picture of the event card the choice belongs to; other choices show their cards
-/// as targets or explain themselves with [`choice_context`].
+/// Picture of the event, Shadow or Plot card the choice belongs to; other choices
+/// show their cards as targets or explain themselves with [`choice_context`].
 fn card_picture(source: &ChoiceSource) -> Option<String> {
     match *source {
         ChoiceSource::Event { stage, card, .. }
@@ -111,16 +114,64 @@ fn card_picture(source: &ChoiceSource) -> Option<String> {
             "events/{}",
             event_pic_path(EventRef { stage, card })
         ))),
+        ChoiceSource::Shadow { card, .. } => Some(shadow_card(card).pic),
+        ChoiceSource::PlotLocation { card, .. } => Some(plot_card(card).pic),
         _ => None,
     }
 }
 
+/// Card a Shadow card let Sauron look at ("Saruman's Lies"), shown to him only.
+fn seen_picture(source: &ChoiceSource) -> Option<String> {
+    let ChoiceSource::Shadow { picked, .. } = source else {
+        return None;
+    };
+    let card = picked.iter().find_map(|t| t.strip_prefix("plot_card:"))?;
+    Some(plot_card(card.parse().ok()?).pic)
+}
+
+/// French name of the moment a Shadow card may be played.
+fn timing_name(timing: ShadowTiming) -> &'static str {
+    match timing {
+        ShadowTiming::ActionStep => "pendant l'étape d'action",
+        ShadowTiming::HeroTurnStart => "au début du tour du héros",
+        ShadowTiming::CombatStart => "au début du combat",
+        ShadowTiming::EnteredLocation => "après l'entrée du héros dans un lieu",
+        ShadowTiming::HeroDefeated => "après la défaite du héros",
+    }
+}
+
+/// French text explaining a Shadow card decision.
+fn shadow_context(source: &ChoiceSource, game: &Game, data: &GameData) -> Option<String> {
+    let ChoiceSource::Shadow { card, heroes, .. } = source else {
+        return None;
+    };
+    let shadow = data.shadow(*card).ok()?;
+    let mut text = format!("{} : {}", shadow.name_fr, shadow.text_fr);
+    if let [first, second] = heroes.as_slice() {
+        let name = |id: &i64| chooser_name(Chooser::Hero(*id), game, data);
+        text.push_str(&format!(
+            " Les cartes cochées vont à {}, les autres à {}.",
+            name(first),
+            name(second)
+        ));
+    }
+    Some(text)
+}
+
 /// French text explaining a choice without card picture.
-fn choice_context(source: &ChoiceSource, data: &GameData) -> Option<String> {
+fn choice_context(source: &ChoiceSource, game: &Game, data: &GameData) -> Option<String> {
     let text = match source {
         ChoiceSource::Event { .. }
         | ChoiceSource::ExploreEvent { .. }
         | ChoiceSource::Training { .. } => return None,
+        ChoiceSource::Shadow { .. } => return shadow_context(source, game, data),
+        ChoiceSource::ShadowWindow { timing, .. } => format!(
+            "Sauron peut jouer une carte des Ténèbres {} (une seule par tour de joueur), ou passer.",
+            timing_name(*timing)
+        ),
+        ChoiceSource::PlotLocation { .. } => {
+            "Sauron choisit le lieu affecté par l'intrigue qu'il joue.".to_owned()
+        }
         ChoiceSource::Threat { ambush: true, .. } => {
             "Embuscade : Sauron choisit le monstre ou le serviteur qui attaque le héros.".to_owned()
         }
@@ -196,13 +247,14 @@ pub async fn choice_screen(
         board_id: access.board_id,
         chooser: chooser_name(choice.chooser, &game, &state.data),
         card_pic: card_picture(&choice.source),
-        context: choice_context(&choice.source, &state.data),
+        context: choice_context(&choice.source, &game, &state.data),
         options: choice
             .options
             .iter()
             .map(|o| option_view(o, &game, &state.data, sauron))
             .collect(),
         can_answer: may_answer(choice, &game, me, &played),
+        seen_pic: seen_picture(&choice.source).filter(|_| sauron),
     };
     render(&page, &page.layout)
 }

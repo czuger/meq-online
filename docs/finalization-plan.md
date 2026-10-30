@@ -101,6 +101,9 @@ Rule deviations:
   Schema changes (`heroes.turn_record`, `combats.origin`): an existing database must be recreated. Left: quests and
   trading; Encounters and Items stay blocked.
 
+- Phase 6 (session 4, 2026-10-30): Shadow cards and the plots choosing their location. Schema changes
+  (`boards.turn_effects`, `combats.modifiers`): an existing database must be recreated.
+
 ## Phase 4 — Events
 
 - [x] Use the stage II and III decks from `data/events.yaml`; the current stage picks the deck (§ 5.3).
@@ -138,10 +141,15 @@ Rule deviations:
 
 ## Phase 6 — Shadow cards
 
-- [ ] 26 cards: Shadow Pool requirement, timing, effect; at most one per player turn (§ 5.9).
-- [ ] Interrupt windows in the state machine (start of a hero turn, start of combat, after a move…): Sauron gets a
-  "play a shadow card or pass" step, skipped automatically when he holds no playable card.
-- [ ] Re-enable the shadow deck (`setup.rs` `EXCLUDED_SHADOW_CARDS`) and the 5 excluded plots (`EXCLUDED_PLOTS`).
+- [x] The 24 pictured cards (21 different texts; Storms of Mordor, His Arm Has Grown Long and Dark Promises exist
+  twice) in `data/shadows.yaml`: Shadow Pool requirement, timing, `ShadowEffect`; at most one per player turn
+  (§ 5.9, `TurnEffects::shadow_played`). The rules count 26 cards: 2 have neither picture nor text (Q2).
+- [x] Interrupt windows (`engine/shadows/shadow_window.rs`): start of a hero turn, after entering a location, start
+  of a combat, after a defeat. Sauron gets a "play a Shadow card or pass" choice (`ShadowWindow`), skipped when he
+  holds no playable card. Action step cards are played from the actions screen between two actions.
+- [x] Re-enable the shadow deck and the 5 excluded plots: "A Broken Line of Kings" (×2), "Loss of an Heir", "A Promise
+  of Rings" and "Urgent Summons" let Sauron pick their location (`engine/plot_locations.rs`, `PlotLocation`
+  choice). Greedy is enforced.
 
 ## Phase 7 — Finale and missions
 

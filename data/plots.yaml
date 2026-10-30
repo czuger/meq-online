@@ -130,6 +130,7 @@
   :required_influence: 0
 
 10:
+  :choose_location: broken_line_of_kings
   :min_shadow_pool: 0
   :favor_to_discard: 4
   :story:
@@ -139,6 +140,7 @@
   :required_influence: 0
 
 11:
+  :choose_location: broken_line_of_kings
   :min_shadow_pool: 0
   :favor_to_discard: 4
   :story:
@@ -167,6 +169,7 @@
   :required_influence: 0
 
 14:
+  :choose_location: loss_of_an_heir
   :min_shadow_pool: 0
   :favor_to_discard: 3
   :story:
@@ -176,6 +179,7 @@
   :required_influence: 0
 
 15:
+  :choose_location: promise_of_rings
   :min_shadow_pool: 0
   :favor_to_discard: 3
   :story:
@@ -195,6 +199,7 @@
   :required_influence: 5
 
 17:
+  :choose_location: urgent_summons
   :min_shadow_pool: 4
   :favor_to_discard: 3
   :story:

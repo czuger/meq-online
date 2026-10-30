@@ -5,6 +5,8 @@ use rand::rngs::StdRng;
 use crate::engine::board_state::{BoardEvent, BoardState};
 use crate::engine::engine_error::EngineError;
 use crate::engine::perils::answers::PerilAnswer;
+use crate::engine::shadows::answers::ShadowAnswer;
+use crate::engine::shadows::shadow_window::ShadowWindow;
 use crate::game_data::GameData;
 use crate::model::board::EventRef;
 use crate::model::choice::{ChoiceOption, ChoiceSource, Chooser, PendingChoice, Resume};
@@ -109,7 +111,7 @@ impl Game {
         {
             return Ok(());
         }
-        self.resume(resume, data)
+        self.resume(resume, data, rng)
     }
 
     /// Applies an answer to what its choice belongs to.
@@ -164,8 +166,53 @@ impl Game {
             ChoiceSource::Wretched { hero_id } => {
                 self.apply_wretched_choice(hero_id, option, targets, data)?;
             }
+            ChoiceSource::ShadowWindow { .. }
+            | ChoiceSource::Shadow { .. }
+            | ChoiceSource::PlotLocation { .. } => {
+                return self.apply_shadow_answer(source, option, targets, resume, data, rng);
+            }
         }
         Ok(resume)
+    }
+
+    /// Applies an answer about a Shadow card or the location of a Plot card.
+    fn apply_shadow_answer(
+        &mut self,
+        source: ChoiceSource,
+        option: &str,
+        targets: &[String],
+        resume: Resume,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<Resume, EngineError> {
+        match source {
+            ChoiceSource::ShadowWindow { timing, hero_id } => {
+                let window = ShadowWindow { timing, hero_id };
+                self.apply_shadow_window(window, option, targets, resume, data, rng)
+            }
+            ChoiceSource::Shadow {
+                card,
+                hero_id,
+                heroes,
+                picked,
+            } => {
+                let answer = ShadowAnswer {
+                    card,
+                    hero_id,
+                    heroes: &heroes,
+                    picked: &picked,
+                    option,
+                    targets,
+                    resume,
+                };
+                self.apply_shadow_choice(&answer, data, rng)
+            }
+            ChoiceSource::PlotLocation { card, slot } => {
+                self.apply_plot_location(card, slot, targets, data)?;
+                Ok(resume)
+            }
+            _ => Ok(resume),
+        }
     }
 
     /// Applies an answer about an event card.
@@ -200,12 +247,15 @@ impl Game {
     }
 
     /// Plays on after the last choice.
-    fn resume(&mut self, resume: Resume, data: &GameData) -> Result<(), EngineError> {
+    fn resume(
+        &mut self,
+        resume: Resume,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<(), EngineError> {
         match resume {
-            Resume::ActionStep => {
-                self.set_heroes_active(false);
-                self.sauron.active = true;
-                self.start_action_step(data)
+            Resume::ActionStep | Resume::SauronActions | Resume::EventStep => {
+                self.resume_sauron(resume, data, rng)
             }
             Resume::Exploration => {
                 self.fire(BoardEvent::NextToHeroExploration)?;
@@ -228,6 +278,35 @@ impl Game {
                 let hero_id = self.current_hero_id()?;
                 self.finish_heroes_turn(hero_id, data).map(|_| ())
             }
+            Resume::Ambush => {
+                self.activate_current_hero()?;
+                self.ambush_step(data, rng)
+            }
+            Resume::TravelThreats => {
+                self.activate_current_hero()?;
+                let hero_id = self.current_hero_id()?;
+                self.travel_threats(hero_id, data, rng).map(|_| ())
+            }
+            Resume::CombatSetup => {
+                self.fire(BoardEvent::NextToCombatSetupScreenBoardCombats)?;
+                self.activate_current_hero()
+            }
+        }
+    }
+
+    /// Plays on in Sauron's turn: the Event step, the Action step or between actions.
+    fn resume_sauron(
+        &mut self,
+        resume: Resume,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<(), EngineError> {
+        self.set_heroes_active(false);
+        self.sauron.active = true;
+        match resume {
+            Resume::EventStep => self.plot_play_finished(data, rng),
+            Resume::SauronActions => self.fire(BoardEvent::NextToEditSauronSauronActions),
+            _ => self.start_action_step(data),
         }
     }
 }

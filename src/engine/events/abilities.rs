@@ -313,7 +313,8 @@ impl Game {
         self.ask_event(event, chooser, vec![], options)
     }
 
-    fn hero_targets(&self) -> Vec<String> {
+    /// Every hero, in playing order, as choice targets.
+    pub(crate) fn hero_targets(&self) -> Vec<String> {
         self.heroes_in_order()
             .into_iter()
             .map(|id| target("hero", id))
@@ -338,11 +339,9 @@ impl Game {
 
     /// Plots affecting a Haven, with each hero able to pay (`plot:<slot>:<hero>`).
     fn haven_plot_targets(&self, cost: i32, data: &GameData) -> Vec<String> {
-        let plots = self.board.plots.iter().filter(|(_, card)| {
-            data.plot(**card)
-                .ok()
-                .and_then(|p| p.affect.as_deref())
-                .and_then(|l| data.locations.get(l).ok())
+        let plots = self.board.plots.iter().filter(|(slot, _)| {
+            self.plot_location(**slot, data)
+                .and_then(|l| data.locations.get(&l).ok())
                 .is_some_and(|l| l.haven)
         });
         plots
@@ -649,6 +648,7 @@ impl Game {
         };
         self.hero_mut(hero_id)?.favor -= cost;
         if let Some(card) = self.board.plots.remove(&slot) {
+            self.forget_plot_location(slot);
             self.board.decks.plot.discard.push(card);
         }
         Ok(())

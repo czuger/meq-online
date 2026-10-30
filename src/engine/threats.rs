@@ -8,8 +8,10 @@ use crate::engine::board_state::BoardEvent;
 use crate::engine::choices::{PASS, parse_target, plain_option, target_option};
 use crate::engine::combat::start::start_combat;
 use crate::engine::engine_error::EngineError;
+use crate::engine::shadows::shadow_window::ShadowWindow;
 use crate::game_data::GameData;
 use crate::game_data::mob_def::MobKind;
+use crate::game_data::shadow::ShadowTiming;
 use crate::model::actor_ref::ActorRef;
 use crate::model::choice::{ChoiceSource, Chooser, PendingChoice, Resume};
 use crate::model::combat::CombatOrigin;
@@ -35,8 +37,9 @@ pub enum Threat {
 }
 
 impl Game {
-    /// Tells whether the hero's location is perilous for him: printed so, or holding
-    /// more influence than his wisdom (§ 6.2, § 6.5).
+    /// Tells whether the hero's location is perilous for him: printed so, holding
+    /// more influence than his wisdom (§ 6.2, § 6.5), or made so by "His Arm Has Grown
+    /// Long".
     ///
     /// # Errors
     /// Lookup errors.
@@ -48,7 +51,8 @@ impl Game {
             .get(&hero.location)
             .copied()
             .unwrap_or(0);
-        Ok(data.locations.get(&hero.location)?.perilous || influence > hero.wisdom)
+        let shadowed = self.board.turn_effects.perilous_location.as_ref() == Some(&hero.location);
+        Ok(data.locations.get(&hero.location)?.perilous || influence > hero.wisdom || shadowed)
     }
 
     /// Monster tokens and minions on the hero's location, as choice targets.
@@ -129,7 +133,8 @@ impl Game {
     }
 
     /// A monster or minion attacks the hero. A blank monster token is discarded
-    /// instead and the hero goes on (§ 6.5).
+    /// instead and the hero goes on (§ 6.5). Sauron may play a Shadow card before the
+    /// combat (§ 5.9).
     ///
     /// # Errors
     /// [`EngineError::CombatInProgress`]; lookup and transition errors.
@@ -169,6 +174,13 @@ impl Game {
         let mut combat = start_combat(hero, mob, data, rng)?;
         combat.origin = origin;
         self.combat = Some(combat);
+        let window = ShadowWindow {
+            timing: ShadowTiming::CombatStart,
+            hero_id,
+        };
+        if self.open_shadow_window(window, Resume::CombatSetup, data)? {
+            return Ok(Threat::Choice);
+        }
         self.fire(BoardEvent::NextToCombatSetupScreenBoardCombats)?;
         self.activate_current_hero()?;
         Ok(Threat::Combat)
