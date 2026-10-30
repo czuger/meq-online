@@ -74,7 +74,8 @@ functions and loops get the same; never log session tokens or e-mails.
   banner when the player has started filling the screen. No server-sent events: one long-lived connection per tab
   exhausted the browser's 6 HTTP/1.1 connections per host and froze the interface with several tabs open.
 - `templates/` (askama, French text), `static/` (pictures, `css/app.css` (own stylesheet, no Bootstrap), vanilla
-  JS: `app.js` card selection, `game.js` map fit/zoom/drag, influence clicks and polling the board; served under
+  JS: `app.js` card selection and the French text of a hovered card (`static/data/cards_fr.json`, keyed by picture
+  path, combat cards by code), `game.js` map fit/zoom/drag, influence clicks and polling the board; served under
   `/static`). The map picture is drawn at its natural size (2934 × 2017) and scaled with a CSS transform.
 
 Notable behavior kept from the original: new games seat four computer-controlled heroes (beravor, eleanor, thalin,

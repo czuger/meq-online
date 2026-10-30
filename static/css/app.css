@@ -211,8 +211,17 @@ textarea { width: 100%; min-height: 7em; }
 .map-scroll.dragging { cursor: grabbing; }
 .map-sizer { position: relative; }
 #map { position: absolute; top: 0; left: 0; width: 2934px; height: 2017px; transform-origin: 0 0; user-select: none; }
-#map-picture { display: block; width: 2934px; max-width: none; }
+/* The global img max-width would shrink token pictures to their zero-width boxes. */
+#map img { max-width: none; }
+#map-picture { display: block; width: 2934px; }
 .token-on-map { position: absolute; z-index: 1; cursor: help; }
+.token-on-map:hover { z-index: 27; }
+/* Names of the stacked tokens, shown under them on hover (large: the map is scaled down). */
+.token-label {
+  display: none; position: absolute; top: 84px; left: 36px; transform: translateX(-50%); white-space: nowrap;
+  background: var(--ink); color: var(--surface); font: 600 34px var(--font-body); padding: 4px 14px; border-radius: 8px;
+}
+.token-on-map:hover .token-label { display: block; }
 .token-on-map-pic { width: 67px; position: absolute; }
 .token-on-map-pic-minion { width: 77px; position: absolute; }
 .token-on-map-pic-favor { width: 60px; position: absolute; }
@@ -326,3 +335,14 @@ a.seat-viewing:hover { background: var(--primary-hover); color: var(--primary-in
   .track { grid-template-columns: 1fr; }
   .hero-sheet img { max-width: 100%; }
 }
+
+/* French text of the hovered card (app.js). */
+.card-tip {
+  position: fixed; z-index: 100; max-width: 320px; padding: 10px 12px; pointer-events: none;
+  background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-radius: var(--radius);
+  box-shadow: 0 4px 14px rgba(43, 33, 24, 0.3); font-size: 0.92rem; line-height: 1.4;
+}
+.card-tip strong { display: block; font-family: var(--font-title); font-size: 1.05rem; }
+.card-tip-en { display: block; color: var(--muted); font-style: italic; font-size: 0.85rem; }
+.card-tip-kind { display: block; color: var(--gold); font-weight: 600; font-size: 0.85rem; margin-top: 2px; }
+.card-tip p { margin: 6px 0 0; white-space: pre-line; }

@@ -18,9 +18,10 @@
         {% endfor %}
 
         {% for token in table.map.tokens %}
-        <div class="token-on-map" style="{{ token.style }}" title="{{ token.title }}">
-          <img src="{{ token.pic }}" class="{{ token.class }}" alt="" draggable="false">
+        <div class="token-on-map" style="{{ token.style }}">
+          <img src="{{ token.pic }}" class="{{ token.class }}" alt="{{ token.title }}" draggable="false">
           {% if token.count > 1 %}<div class="tokens-count" style="{{ token.count_style }}">{{ token.count }}</div>{% endif %}
+          <span class="token-label">{{ token.title }}</span>
         </div>
         {% endfor %}
 

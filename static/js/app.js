@@ -1,4 +1,4 @@
-// Page behaviours shared by every screen: card selection, agility preview and alerts.
+// Page behaviours shared by every screen: card selection, agility preview, French card texts and alerts.
 "use strict";
 
 // Cards with the class selectable-card-selection-unique: one card at a time, stored
@@ -60,6 +60,86 @@ function setupAgilityPreview() {
   update();
 }
 
+// Hovering a card picture shows its French text from /static/data/cards_fr.json,
+// loaded on the first hover. Combat cards are found by their code, whatever the deck.
+const CARD_PICTURE = /^\/static\/images\/(.+)$/;
+const COMBAT_PICTURE = /^(?:hero_cards\/actions|monsters)\/[a-z_]+\/([a-z_]+)\.jpg$/;
+let cardTexts = null;
+
+function loadCardTexts() {
+  if (!cardTexts) {
+    cardTexts = fetch("/static/data/cards_fr.json")
+      .then((response) => (response.ok ? response.json() : { combat: {}, cards: {} }))
+      .catch(() => ({ combat: {}, cards: {} }));
+  }
+  return cardTexts;
+}
+
+function cardText(texts, src) {
+  const picture = (src || "").match(CARD_PICTURE);
+  if (!picture) return null;
+  const path = decodeURIComponent(picture[1]);
+  if (texts.cards[path]) return texts.cards[path];
+  const combat = path.match(COMBAT_PICTURE);
+  return combat ? texts.combat[combat[1]] || null : null;
+}
+
+function fillCardTip(tip, card) {
+  tip.replaceChildren();
+  const title = document.createElement("strong");
+  title.textContent = card.name;
+  tip.append(title);
+  if (card.en && card.en !== card.name) {
+    const english = document.createElement("span");
+    english.className = "card-tip-en";
+    english.textContent = card.en;
+    tip.append(english);
+  }
+  if (card.kind) {
+    const kind = document.createElement("span");
+    kind.className = "card-tip-kind";
+    kind.textContent = card.kind;
+    tip.append(kind);
+  }
+  const text = document.createElement("p");
+  text.textContent = card.text;
+  tip.append(text);
+}
+
+// Beside the picture, on the side with room, kept inside the window.
+function placeCardTip(tip, picture) {
+  const rect = picture.getBoundingClientRect();
+  const margin = 10;
+  let left = rect.right + margin;
+  if (left + tip.offsetWidth > window.innerWidth - margin) left = rect.left - tip.offsetWidth - margin;
+  const top = Math.min(rect.top, window.innerHeight - tip.offsetHeight - margin);
+  tip.style.left = `${Math.max(margin, left)}px`;
+  tip.style.top = `${Math.max(margin, top)}px`;
+}
+
+function setupCardTexts() {
+  const tip = document.createElement("div");
+  tip.className = "card-tip";
+  tip.hidden = true;
+  document.body.append(tip);
+  let hovered = null;
+  document.addEventListener("mouseover", async (event) => {
+    const picture = event.target.closest("img");
+    if (!picture || picture === hovered || !CARD_PICTURE.test(picture.getAttribute("src") || "")) return;
+    hovered = picture;
+    const card = cardText(await loadCardTexts(), picture.getAttribute("src"));
+    if (hovered !== picture || !card) return;
+    fillCardTip(tip, card);
+    tip.hidden = false;
+    placeCardTip(tip, picture);
+  });
+  document.addEventListener("mouseout", (event) => {
+    if (event.target !== hovered) return;
+    hovered = null;
+    tip.hidden = true;
+  });
+}
+
 function setupAlerts() {
   document.querySelectorAll("[data-dismiss='alert']").forEach((button) => {
     button.addEventListener("click", () => button.closest(".flash").remove());
@@ -70,5 +150,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupUniqueSelection();
   setupMultipleSelection();
   setupAgilityPreview();
+  setupCardTexts();
   setupAlerts();
 });

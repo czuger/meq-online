@@ -1,0 +1,1129 @@
+{
+ "_comment": "French text of the cards, shown when hovering their picture (static/js/app.js). 'combat' is keyed by the picture name of a combat card (hero_cards/actions/<deck>/<code>.jpg, monsters/<deck>/<code>.jpg); 'cards' by the picture path under static/images. English sources: work/data_and_rules/*.xls, data/events.yaml, the card pictures.",
+ "combat": {
+  "aimed_shot": {
+   "name": "Tir ajusté",
+   "en": "Aimed Shot",
+   "kind": "Distance",
+   "text": "Gagnez +3 en attaque si la carte de votre adversaire est du même type que celle qu'il a jouée au round précédent."
+  },
+  "anticipate": {
+   "name": "Anticipation",
+   "en": "Anticipate",
+   "kind": "Mêlée",
+   "text": "Au prochain round, votre adversaire doit jouer sa carte de combat en premier, face visible."
+  },
+  "attack_of_opportunity": {
+   "name": "Attaque d'opportunité",
+   "en": "Attack of Opportunity",
+   "kind": "Mêlée",
+   "text": "Gagnez +5 en attaque si la défense imprimée de votre adversaire est de 0."
+  },
+  "block": {
+   "name": "Blocage",
+   "en": "Block",
+   "kind": "Mêlée",
+   "text": "Cette carte ne peut pas être annulée, et sa défense ne peut pas être réduite en dessous de 2."
+  },
+  "charge": {
+   "name": "Charge",
+   "en": "Charge",
+   "kind": "Mêlée",
+   "text": "Annulez la carte Distance de votre adversaire."
+  },
+  "concentrate": {
+   "name": "Concentration",
+   "en": "Concentrate",
+   "kind": "Distance",
+   "text": "Au prochain round, gagnez +2 en attaque et +2 en défense."
+  },
+  "crush": {
+   "name": "Broyage",
+   "en": "Crush",
+   "kind": "Mêlée",
+   "text": "Gagnez +3 en attaque si votre adversaire joue une carte Mêlée."
+  },
+  "deadly_finesse": {
+   "name": "Finesse mortelle",
+   "en": "Deadly Finesse",
+   "kind": "Mêlée",
+   "text": "Réduisez à 1 l'attaque imprimée et la défense imprimée de votre adversaire."
+  },
+  "dodge": {
+   "name": "Dérobade",
+   "en": "Dodge",
+   "kind": "Distance",
+   "text": "Au prochain round, gagnez +2 en défense."
+  },
+  "earthquake": {
+   "name": "Séisme",
+   "en": "Earthquake",
+   "kind": "Distance",
+   "text": "Annulez la carte de votre adversaire."
+  },
+  "enraged": {
+   "name": "Enragé",
+   "en": "Enraged",
+   "kind": "Mêlée",
+   "text": "Vous ne pouvez pas subir plus de 1 dégât ce round."
+  },
+  "evade": {
+   "name": "Esquive",
+   "en": "Evade",
+   "kind": "Distance",
+   "text": "Annulez la carte Mêlée de votre adversaire."
+  },
+  "eviscerate": {
+   "name": "Éventration",
+   "en": "Eviscerate",
+   "kind": "Mêlée",
+   "text": "Si vous infligez au moins 1 dégât ce round, infligez 2 dégâts supplémentaires."
+  },
+  "fall_back": {
+   "name": "Repli",
+   "en": "Fall Back",
+   "kind": "Distance",
+   "text": "Au prochain round, si votre adversaire joue une carte Mêlée, elle est annulée."
+  },
+  "hack": {
+   "name": "Taille",
+   "en": "Hack",
+   "kind": "Mêlée",
+   "text": "Gagnez +1 en attaque si votre adversaire joue une carte Mêlée."
+  },
+  "hide": {
+   "name": "Dissimulation",
+   "en": "Hide",
+   "kind": "Distance",
+   "text": "Au prochain round, gagnez +2 en défense si vous jouez une carte Distance."
+  },
+  "overdraw": {
+   "name": "Corde tendue",
+   "en": "Overdraw",
+   "kind": "Distance",
+   "text": "Gagnez +2 en attaque si votre adversaire joue une carte Distance."
+  },
+  "overpower": {
+   "name": "Force brute",
+   "en": "Overpower",
+   "kind": "Mêlée",
+   "text": "Au prochain round, gagnez +2 en attaque si vous jouez une carte Mêlée."
+  },
+  "parry": {
+   "name": "Parade",
+   "en": "Parry",
+   "kind": "Mêlée",
+   "text": "Gagnez +2 en défense si votre adversaire joue une carte Mêlée."
+  },
+  "poison_arrow": {
+   "name": "Flèche empoisonnée",
+   "en": "Poison Arrow",
+   "kind": "Distance",
+   "text": "Si vous infligez au moins 1 dégât ce round, infligez 2 dégâts supplémentaires."
+  },
+  "precision": {
+   "name": "Précision",
+   "en": "Precision",
+   "kind": "Distance",
+   "text": "Réduisez à 0 la défense imprimée de votre adversaire."
+  },
+  "quick_shot": {
+   "name": "Tir rapide",
+   "en": "Quick Shot",
+   "kind": "Distance",
+   "text": "Cette carte ne peut pas être annulée."
+  },
+  "ranged_strike": {
+   "name": "Frappe à distance",
+   "en": "Ranged Strike",
+   "kind": "Distance",
+   "text": "Gagnez +2 en attaque si votre adversaire joue une carte Distance."
+  },
+  "reckless": {
+   "name": "Téméraire",
+   "en": "Reckless",
+   "kind": "Mêlée",
+   "text": "Si vous subissez au moins 1 dégât ce round, vous subissez 2 dégâts supplémentaires."
+  },
+  "rest": {
+   "name": "Repos",
+   "en": "Rest",
+   "kind": "Mêlée",
+   "text": "Piochez jusqu'à 2 cartes du dessus de votre réserve de repos ou de votre réserve de vie."
+  },
+  "retreat": {
+   "name": "Retraite",
+   "en": "Retreat",
+   "kind": "Distance",
+   "text": "Si vous ne subissez aucun dégât ce round, vous pouvez mettre fin au combat, vous déplacer vers un lieu adjacent, puis continuer votre tour."
+  },
+  "rush": {
+   "name": "Ruée",
+   "en": "Rush",
+   "kind": "Mêlée",
+   "text": "Au prochain round, si votre adversaire joue une carte Distance, elle est annulée."
+  },
+  "smash": {
+   "name": "Fracas",
+   "en": "Smash",
+   "kind": "Mêlée",
+   "text": "Réduisez à 0 la défense imprimée de votre adversaire."
+  },
+  "sneak_attack": {
+   "name": "Attaque sournoise",
+   "en": "Sneak Attack",
+   "kind": "Distance",
+   "text": "Gagnez +3 en attaque si la défense imprimée de votre adversaire est de 0."
+  },
+  "strategize": {
+   "name": "Stratégie",
+   "en": "Strategize",
+   "kind": "Distance",
+   "text": "Votre adversaire doit vous dire combien de cartes Distance et de cartes Mêlée il a en main."
+  },
+  "sweep": {
+   "name": "Balayage",
+   "en": "Sweep",
+   "kind": "Mêlée",
+   "text": "Cette carte ne peut pas être annulée."
+  },
+  "trample": {
+   "name": "Piétinement",
+   "en": "Trample",
+   "kind": "Mêlée",
+   "text": "Votre adversaire doit défausser 1 carte au hasard de sa main."
+  },
+  "volley": {
+   "name": "Volée",
+   "en": "Volley",
+   "kind": "Distance",
+   "text": "Au prochain round, gagnez +2 en attaque si vous jouez une carte Distance."
+  },
+  "brutal_finisher": {
+   "name": "Coup de grâce brutal",
+   "en": "Brutal Finisher",
+   "kind": "Compétence · Mêlée",
+   "text": "Gagnez +1 en attaque pour chaque autre carte de votre pile de combat."
+  },
+  "concussive_shot": {
+   "name": "Tir assommant",
+   "en": "Concussive Shot",
+   "kind": "Compétence · Distance",
+   "text": "Au prochain round, si votre adversaire joue une carte de défense imprimée 2 ou plus, sa carte est annulée."
+  },
+  "crossbow_shot": {
+   "name": "Tir d'arbalète",
+   "en": "Crossbow Shot",
+   "kind": "Compétence · Distance",
+   "text": "Cette carte ne peut pas être annulée."
+  },
+  "crushing_blow": {
+   "name": "Coup écrasant",
+   "en": "Crushing Blow",
+   "kind": "Compétence · Mêlée",
+   "text": "Si la défense imprimée de votre adversaire est de 1 ou moins, gagnez +2 en attaque et annulez sa carte."
+  },
+  "endure": {
+   "name": "Endurer",
+   "en": "Endure",
+   "kind": "Compétence · Distance",
+   "text": "Si votre adversaire est vaincu ce round, mélangez votre réserve de repos et votre pile de combat dans votre réserve de vie."
+  },
+  "execute": {
+   "name": "Exécution",
+   "en": "Execute",
+   "kind": "Compétence · Mêlée",
+   "text": "Si la défense imprimée de votre adversaire est de 0, il est vaincu."
+  },
+  "expose_weakness": {
+   "name": "Faille exposée",
+   "en": "Expose Weakness",
+   "kind": "Compétence · Distance",
+   "text": "Au prochain round, gagnez +2 en attaque."
+  },
+  "flaming_arrow": {
+   "name": "Flèche enflammée",
+   "en": "Flaming Arrow",
+   "kind": "Compétence · Distance",
+   "text": "Au prochain round, réduisez à 0 la défense imprimée de votre adversaire."
+  },
+  "focused_assault": {
+   "name": "Assaut concentré",
+   "en": "Focused Assault",
+   "kind": "Compétence · Mêlée",
+   "text": "Gagnez +1 en attaque et +1 en défense pour chaque autre carte Mêlée de votre pile de combat."
+  },
+  "hamstring": {
+   "name": "Jarret tranché",
+   "en": "Hamstring",
+   "kind": "Compétence · Mêlée",
+   "text": "Si vous infligez au moins 1 dégât, placez la carte du dessus de la pioche de votre adversaire sous sa pile de combat."
+  },
+  "heightened_senses": {
+   "name": "Sens aiguisés",
+   "en": "Heightened Senses",
+   "kind": "Compétence · Distance",
+   "text": "Votre adversaire doit annoncer Distance ou Mêlée. Au prochain round, si sa carte n'est pas de ce type, elle est annulée."
+  },
+  "outmaneuver": {
+   "name": "Déborder",
+   "en": "Outmaneuver",
+   "kind": "Compétence · Distance",
+   "text": "Choisissez un type de carte. Au prochain round, si votre adversaire ne joue pas ce type, sa carte est annulée."
+  },
+  "overhead_swing": {
+   "name": "Frappe plongeante",
+   "en": "Overhead Swing",
+   "kind": "Compétence · Mêlée",
+   "text": "Votre adversaire doit défausser 2 cartes au hasard de sa main."
+  },
+  "ready": {
+   "name": "En garde",
+   "en": "Ready",
+   "kind": "Compétence · Distance",
+   "text": "Au prochain round, si vous jouez une carte Distance, son coût en force passe à 0 et vous la défaussez à la fin du round."
+  },
+  "retaliate": {
+   "name": "Riposte",
+   "en": "Retaliate",
+   "kind": "Compétence · Mêlée",
+   "text": "Infligez à votre adversaire 1 dégât pour chaque dégât que vous subissez ce round."
+  },
+  "reversal": {
+   "name": "Renversement",
+   "en": "Reversal",
+   "kind": "Compétence · Mêlée",
+   "text": "Si votre adversaire joue une carte Mêlée, gagnez autant d'attaque que l'attaque de sa carte, puis annulez sa carte."
+  },
+  "set_trap": {
+   "name": "Piège",
+   "en": "Set Trap",
+   "kind": "Compétence · Distance",
+   "text": "Au prochain round, si votre adversaire joue une carte Mêlée, il subit 2 dégâts."
+  },
+  "shield_smash": {
+   "name": "Coup de bouclier",
+   "en": "Shield Smash",
+   "kind": "Compétence · Mêlée",
+   "text": "Au prochain round, si votre adversaire joue une carte coûtant 2 en force ou plus, sa carte est annulée."
+  },
+  "shrewd_planning": {
+   "name": "Planification habile",
+   "en": "Shrewd Planning",
+   "kind": "Compétence · Distance",
+   "text": "Reprenez en main 1 carte de votre pile de combat."
+  },
+  "wear_down": {
+   "name": "Usure",
+   "en": "Wear Down",
+   "kind": "Compétence · Mêlée",
+   "text": "Votre adversaire doit défausser 1 carte au hasard de sa main. Il subit autant de dégâts que l'attaque de cette carte."
+  }
+ },
+ "cards": {
+  "heroes/argalad.jpg": {
+   "name": "Argalad",
+   "en": "Argalad",
+   "kind": "Capacité",
+   "text": "Une fois par tour, vous pouvez regarder la face de tous les jetons monstre d'un lieu adjacent."
+  },
+  "heroes/beravor.jpg": {
+   "name": "Beravor",
+   "en": "Beravor",
+   "kind": "Capacité",
+   "text": "Quand vous vous reposez dans un lieu qui n'est pas un refuge, vous pouvez vous soigner ou recevoir un entraînement."
+  },
+  "heroes/eleanor.jpg": {
+   "name": "Eleanor",
+   "en": "Eleanor",
+   "kind": "Capacité",
+   "text": "Une fois par tour, gagnez 1 faveur quand vous accomplissez une quête ou consultez un personnage."
+  },
+  "heroes/eometh.jpg": {
+   "name": "Eometh",
+   "en": "Eometh",
+   "kind": "Capacité",
+   "text": "Vous commencez la partie avec une carte Objet « Cheval »."
+  },
+  "heroes/thalin.jpg": {
+   "name": "Thálin",
+   "en": "Thálin",
+   "kind": "Capacité",
+   "text": "Votre tour ne se termine pas quand vous échouez à vaincre un adversaire en combat."
+  },
+  "monsters/monsters/crebain.jpg": {
+   "name": "Crebain",
+   "en": "Crebain",
+   "kind": "Monstre · Espion",
+   "text": "Pour chaque dégât que vous infligeriez avec une carte Distance, placez à la place 1 influence en extension d'une forteresse des Ténèbres."
+  },
+  "monsters/monsters/agent.jpg": {
+   "name": "Agent",
+   "en": "Agent",
+   "kind": "Monstre · Propagation de mensonges",
+   "text": "Une fois par combat, après avoir infligé des dégâts avec une carte Distance, votre adversaire reçoit 1 carte de corruption."
+  },
+  "monsters/monsters/snaga.jpg": {
+   "name": "Snaga",
+   "en": "Snaga",
+   "kind": "Monstre · Précision",
+   "text": "Vos cartes Distance gagnent +1 en attaque."
+  },
+  "monsters/monsters/orc.jpg": {
+   "name": "Orque",
+   "en": "Orc",
+   "kind": "Monstre · Fanatique",
+   "text": "Si vous et votre adversaire jouez tous deux une carte Mêlée, infligez 1 dégât à votre adversaire."
+  },
+  "monsters/monsters/barrow_wight.jpg": {
+   "name": "Être des Galgals",
+   "en": "Barrow Wight",
+   "kind": "Monstre · Régénération",
+   "text": "À la fin d'un round de combat, si vous n'avez pas été vaincu et avez joué une carte Distance, soignez 1 dégât."
+  },
+  "monsters/monsters/southron.jpg": {
+   "name": "Suderon",
+   "en": "Southron",
+   "kind": "Monstre · Tactique supérieure",
+   "text": "Réduisez de 1 le coût en force de vos cartes Mêlée (minimum 0)."
+  },
+  "monsters/monsters/dunlending.jpg": {
+   "name": "Dunlendais",
+   "en": "Dunlending",
+   "kind": "Monstre · Contre-attaque",
+   "text": "Quand vous évitez au moins 1 dégât grâce à la défense de votre carte Mêlée, infligez 1 dégât à votre adversaire."
+  },
+  "monsters/monsters/uruk_hai.jpg": {
+   "name": "Uruk-hai",
+   "en": "Uruk-Hai",
+   "kind": "Monstre · Furie sanguinaire",
+   "text": "Quand vous infligez des dégâts avec une carte Mêlée, vous pouvez piocher une carte de combat."
+  },
+  "monsters/monsters/warg_rider.jpg": {
+   "name": "Chevaucheur de Warg",
+   "en": "Warg Rider",
+   "kind": "Monstre · Assaut surprise",
+   "text": "Si la carte du dessous de votre pile de combat est une carte Mêlée, son coût en force passe à 0."
+  },
+  "monsters/monsters/giant_spider.jpg": {
+   "name": "Araignée géante",
+   "en": "Giant Spider",
+   "kind": "Monstre · Venin paralysant",
+   "text": "Quand vous infligez au moins 2 dégâts avec une carte Mêlée, votre adversaire doit défausser une carte au hasard de sa main."
+  },
+  "monsters/monsters/huorn.jpg": {
+   "name": "Huorn",
+   "en": "Huorn",
+   "kind": "Monstre · Force écrasante",
+   "text": "Vos cartes Mêlée gagnent +1 en attaque."
+  },
+  "monsters/monsters/cave_troll.jpg": {
+   "name": "Troll des cavernes",
+   "en": "Cave Troll",
+   "kind": "Monstre · Rugissement",
+   "text": "Quand vous jouez une carte Distance, la carte Mêlée de votre adversaire est annulée."
+  },
+  "monsters/monsters/oliphaunt.jpg": {
+   "name": "Oliphant",
+   "en": "Oliphaunt",
+   "kind": "Monstre · Débandade",
+   "text": "Quand vous infligez des dégâts avec une carte Mêlée, au moins 1 de ces dégâts doit être défaussé de la main de votre adversaire."
+  },
+  "monsters/monsters/balrog.jpg": {
+   "name": "Balrog",
+   "en": "Balrog",
+   "kind": "Monstre · Terreur",
+   "text": "Quand vous infligez au moins 3 dégâts avec une carte Mêlée, votre adversaire doit jouer une carte de combat au hasard au prochain round."
+  },
+  "corruption/0.png": {
+   "name": "Abattu",
+   "en": "Despondent",
+   "kind": "Corruption",
+   "text": "Quand vous vous reposez ou êtes vaincu, le marqueur de victoire de Sauron le plus à gauche avance de 2 cases (au lieu de 1)."
+  },
+  "corruption/1.png": {
+   "name": "Sans espoir",
+   "en": "Hopeless",
+   "kind": "Corruption",
+   "text": "Vous ne pouvez pas faire plus de 3 étapes de voyage lors de chacun de vos prochains tours."
+  },
+  "corruption/2.png": {
+   "name": "Impuissant",
+   "en": "Helpless",
+   "kind": "Corruption",
+   "text": "Votre agilité est réduite de 1."
+  },
+  "corruption/3.png": {
+   "name": "Éperdu",
+   "en": "Distraught",
+   "kind": "Corruption",
+   "text": "Vous ne pouvez jamais avoir plus de 7 cartes héros en main."
+  },
+  "corruption/4.png": {
+   "name": "Misérable",
+   "en": "Wretched",
+   "kind": "Corruption",
+   "text": "Votre tour se termine immédiatement ; Sauron peut alors choisir de vous déplacer vers le refuge le plus proche. Mélangez ensuite cette carte et la défausse dans la pioche de corruption."
+  },
+  "corruption/5.png": {
+   "name": "Lâche",
+   "en": "Cowardly",
+   "kind": "Corruption",
+   "text": "Au début de chacun de vos prochains combats, vous devez défausser 1 carte héros au hasard."
+  },
+  "corruption/6.png": {
+   "name": "Avide",
+   "en": "Greedy",
+   "kind": "Corruption",
+   "text": "Quand Sauron joue une carte des Ténèbres pendant votre tour, il peut ensuite piocher une nouvelle carte des Ténèbres."
+  },
+  "corruption/7.png": {
+   "name": "Las",
+   "en": "Weary",
+   "kind": "Corruption",
+   "text": "Votre endurance est réduite de 1."
+  },
+  "corruption/8.png": {
+   "name": "Égaré",
+   "en": "Deranged",
+   "kind": "Corruption",
+   "text": "Votre sagesse est réduite de 1."
+  },
+  "corruption/9.png": {
+   "name": "Désespéré",
+   "en": "Despairing",
+   "kind": "Corruption",
+   "text": "Vous ne pouvez jamais avoir plus de 3 faveurs sur votre fiche de héros."
+  },
+  "corruption/10.png": {
+   "name": "Négligent",
+   "en": "Careless",
+   "kind": "Corruption",
+   "text": "Défaussez immédiatement 2 faveurs de votre fiche de héros. Mélangez ensuite cette carte et la défausse dans la pioche de corruption."
+  },
+  "corruption/11.png": {
+   "name": "Isolé",
+   "en": "Isolated",
+   "kind": "Corruption",
+   "text": "Vous ne pouvez pas consulter de personnages ni faire d'échanges avec les autres héros."
+  },
+  "corruption/12.png": {
+   "name": "Suspect",
+   "en": "Mistrusted",
+   "kind": "Corruption",
+   "text": "Vous ne pouvez pas gagner plus de 1 faveur lors de chacun de vos prochains tours."
+  },
+  "corruption/13.png": {
+   "name": "Imprudent",
+   "en": "Reckless",
+   "kind": "Corruption",
+   "text": "Quand Sauron pioche des cartes Péril pendant votre tour, il peut piocher 1 carte supplémentaire."
+  },
+  "corruption/14.png": {
+   "name": "Faible",
+   "en": "Weak",
+   "kind": "Corruption",
+   "text": "Votre force est réduite de 1."
+  },
+  "corruption/15.png": {
+   "name": "Indifférent",
+   "en": "Indifferent",
+   "kind": "Corruption",
+   "text": "Quand vous piochez des cartes Rencontre, piochez-en 2 au lieu de 3."
+  },
+  "sauron/plots/0.png": {
+   "name": "Sauron traque l'Anneau",
+   "en": "Sauron Hunts for the Ring",
+   "kind": "Intrigue de départ",
+   "text": "Mise en place :\n• Placez 2 influences sur chaque forteresse des Ténèbres, 7 en extension des forteresses et 1 dans la réserve des Ténèbres.\n• Piochez 2 cartes des Ténèbres, gardez-en 1 et défaussez l'autre.\n• Piochez 5 cartes Intrigue, gardez-en 2 et placez les autres sous la pioche Intrigue.\nAffecte Gladden Fields."
+  },
+  "sauron/plots/1.png": {
+   "name": "Des monstres à l'Est",
+   "en": "Monsters in the East",
+   "kind": "Intrigue de départ",
+   "text": "Mise en place :\n• Placez 2 influences sur chaque forteresse des Ténèbres et 9 en extension des forteresses.\n• Piochez 3 cartes des Ténèbres, gardez-en 1 et défaussez les autres.\n• Piochez 3 cartes Intrigue, gardez-en 2 et placez l'autre sous la pioche.\nAffecte Sea of Udûn."
+  },
+  "sauron/plots/2.png": {
+   "name": "Saroumane avide de pouvoir",
+   "en": "Saruman Hungry for Power",
+   "kind": "Intrigue de départ",
+   "text": "Mise en place :\n• Placez 3 influences sur chaque forteresse des Ténèbres, 3 en extension des forteresses et 2 dans la réserve des Ténèbres.\n• Piochez 3 cartes des Ténèbres, gardez-en 2 et défaussez l'autre.\n• Piochez 4 cartes Intrigue, gardez-en 2 et placez les autres sous la pioche Intrigue.\nAffecte Isengard."
+  },
+  "sauron/plots/3.png": {
+   "name": "Un sombre messager",
+   "en": "A Dark Messenger",
+   "kind": "Intrigue",
+   "text": "Requiert un serviteur à Erebor.\nAffecte Erebor.\nQuand un héros consulte Dáin II, il reçoit 1 carte de corruption."
+  },
+  "sauron/plots/4.png": {
+   "name": "Osgiliath envahie",
+   "en": "Osgiliath Invaded",
+   "kind": "Intrigue",
+   "text": "Requiert 1 jeton monstre à Osgiliath.\nAffecte Osgiliath."
+  },
+  "sauron/plots/5.png": {
+   "name": "Gollum est capturé",
+   "en": "Gollum Is Captured",
+   "kind": "Intrigue",
+   "text": "Affecte Sea of Udûn.\nDéfaussez toutes les autres cartes Intrigue actives dont le titre contient « Gollum »."
+  },
+  "sauron/plots/6.png": {
+   "name": "Saroumane succombe à la corruption",
+   "en": "Saruman Falls to Corruption",
+   "kind": "Intrigue",
+   "text": "Affecte Isengard.\nIsengard est désormais périlleux. Quand un héros consulte Saroumane, il reçoit 1 carte de corruption."
+  },
+  "sauron/plots/7.png": {
+   "name": "Langue de Serpent corrompt Théoden",
+   "en": "Wormtongue Taints Théoden",
+   "kind": "Intrigue",
+   "text": "Requiert 6 influences à 1 case ou moins d'Edoras, ou que l'intrigue « Saroumane succombe à la corruption » soit active.\nAffecte Edoras.\nQuand un héros consulte Théoden, il reçoit 1 carte de corruption."
+  },
+  "sauron/plots/8.png": {
+   "name": "Denethor sombre dans la folie",
+   "en": "Denethor Falls into Madness",
+   "kind": "Intrigue",
+   "text": "Affecte Minas Tirith.\nQuand un héros consulte Denethor, il reçoit 1 carte de corruption."
+  },
+  "sauron/plots/9.png": {
+   "name": "Des orques dans les montagnes",
+   "en": "Orcs in the Mountains",
+   "kind": "Intrigue",
+   "text": "Requiert 8 influences à 1 case ou moins de Mount Gundabad.\nAffecte Mount Gundabad."
+  },
+  "sauron/plots/10.png": {
+   "name": "Une lignée de rois brisée",
+   "en": "A Broken Line of Kings",
+   "kind": "Intrigue",
+   "text": "Affecte un refuge (au choix de Sauron) qui ne contient pas d'autre marqueur d'intrigue et qui a au moins 6 influences sur des lieux adjacents.\nLes héros ne peuvent ni se reposer ni piocher de cartes Rencontre dans ce lieu."
+  },
+  "sauron/plots/11.png": {
+   "name": "Une lignée de rois brisée",
+   "en": "A Broken Line of Kings",
+   "kind": "Intrigue",
+   "text": "Affecte un refuge (au choix de Sauron) qui ne contient pas d'autre marqueur d'intrigue et qui a au moins 6 influences sur des lieux adjacents.\nLes héros ne peuvent ni se reposer ni piocher de cartes Rencontre dans ce lieu."
+  },
+  "sauron/plots/12.png": {
+   "name": "Gollum est torturé",
+   "en": "Gollum Is Tortured",
+   "kind": "Intrigue",
+   "text": "Affecte Barad-dûr.\nDéfaussez toutes les autres cartes Intrigue actives dont le titre contient « Gollum »."
+  },
+  "sauron/plots/13.png": {
+   "name": "Sméagol s'échappe",
+   "en": "Sméagol Escapes",
+   "kind": "Intrigue",
+   "text": "Requiert un jeton monstre ou un serviteur à 1 case ou moins de Woodland Realm.\nAffecte Woodland Realm. Quand cette intrigue devient active, prenez 1 carte Intrigue dont le titre contient « Gollum » dans votre pioche Intrigue ou votre défausse. Mélangez ensuite votre pioche Intrigue."
+  },
+  "sauron/plots/14.png": {
+   "name": "La perte d'un héritier",
+   "en": "Loss of an Heir",
+   "kind": "Intrigue",
+   "text": "Requiert un jeton monstre ou un serviteur à 1 case ou moins du lieu affecté.\nAffecte Edoras ou Minas Tirith."
+  },
+  "sauron/plots/15.png": {
+   "name": "Une promesse d'anneaux",
+   "en": "A Promise of Rings",
+   "kind": "Intrigue",
+   "text": "Affecte un lieu (au choix de Sauron) contenant un jeton personnage et au moins 1 jeton monstre ou serviteur."
+  },
+  "sauron/plots/16.png": {
+   "name": "L'essor des Uruk-hai",
+   "en": "Rise of the Uruk-hai",
+   "kind": "Intrigue",
+   "text": "Requiert 3 influences à Isengard, ou que l'intrigue « Saroumane succombe à la corruption » soit active.\nAffecte Isengard. Sauron peut considérer tout jeton monstre non vierge de la région du Rohan comme des « Uruk-hai »."
+  },
+  "sauron/plots/17.png": {
+   "name": "Convocation urgente",
+   "en": "Urgent Summons",
+   "kind": "Intrigue",
+   "text": "Affecte un lieu (au choix de Sauron) contenant un jeton personnage et ne contenant pas d'autre marqueur d'intrigue. Quand cette intrigue devient active, renvoyez tous les jetons personnage de ce lieu dans la zone des faveurs et des personnages du plateau."
+  },
+  "objectives/original/heroes/heroes_0.png": {
+   "name": "La Lance de l'Ouest",
+   "en": "The Spear of the West",
+   "kind": "Mission des héros",
+   "text": "Les héros gagnent si chaque héros a accompli sa quête de départ et sa quête avancée."
+  },
+  "objectives/original/heroes/heroes_1.png": {
+   "name": "Sang noble",
+   "en": "Noble Blood",
+   "kind": "Mission des héros",
+   "text": "Les héros gagnent s'ils ont en tout 1 carte de corruption ou moins."
+  },
+  "objectives/original/heroes/heroes_2.png": {
+   "name": "Minas Morgul tenue en respect",
+   "en": "Minas Morgul Kept at Bay",
+   "kind": "Mission des héros",
+   "text": "Les héros gagnent s'il y a 2 serviteurs ou moins en jeu."
+  },
+  "objectives/original/heroes/heroes_3.png": {
+   "name": "Contre l'Ombre",
+   "en": "Against the Shadow",
+   "kind": "Mission des héros",
+   "text": "Les héros gagnent s'il n'y a pas plus de 2 jetons monstre en jeu."
+  },
+  "objectives/original/heroes/heroes_4.png": {
+   "name": "Le Secret d'Isildur",
+   "en": "Isildur's Secret",
+   "kind": "Mission des héros",
+   "text": "Les héros gagnent s'ils ont en tout au moins 5 faveurs."
+  },
+  "objectives/original/sauron/sauron_0.png": {
+   "name": "Son trône ténébreux",
+   "en": "His Dark Throne",
+   "kind": "Mission de Sauron",
+   "text": "Sauron gagne s'il y a 3 cartes Intrigue actives en jeu."
+  },
+  "objectives/original/sauron/sauron_1.png": {
+   "name": "Où s'étendent les Ombres",
+   "en": "Where the Shadows Lie",
+   "kind": "Mission de Sauron",
+   "text": "Sauron gagne si son marqueur noir a atteint l'étape III de la piste de l'histoire."
+  },
+  "objectives/original/sauron/sauron_2.png": {
+   "name": "Et dans les Ténèbres les lier",
+   "en": "In Darkness Bind Them",
+   "kind": "Mission de Sauron",
+   "text": "Sauron gagne si son marqueur jaune a atteint l'étape III de la piste de l'histoire."
+  },
+  "objectives/original/sauron/sauron_3.png": {
+   "name": "Pour les gouverner tous",
+   "en": "To Rule Them All",
+   "kind": "Mission de Sauron",
+   "text": "Sauron gagne si son marqueur rouge a atteint l'étape III de la piste de l'histoire."
+  },
+  "objectives/original/sauron/sauron_4.png": {
+   "name": "Pour les trouver",
+   "en": "To Find Them All",
+   "kind": "Mission de Sauron",
+   "text": "Sauron gagne s'il a les Nazgûl ou 6 influences sur la Comté."
+  },
+  "events/I/0.png": {
+   "name": "Les Messagers du Corbeau-Tempête",
+   "en": "Messengers of the Stormcrow",
+   "kind": "Événement I",
+   "text": "Chaque héros qui a de la faveur doit immédiatement dépenser 1 faveur ou recevoir 1 carte de corruption."
+  },
+  "events/I/1.png": {
+   "name": "Les Beornides, changeurs de peau",
+   "en": "Beornings, the Skin Changers",
+   "kind": "Événement I",
+   "text": "Les héros peuvent retirer jusqu'à 2 jetons monstre d'un lieu de la région de Mirkwood, ou infliger 2 dégâts à un serviteur qui s'y trouve."
+  },
+  "events/I/2.png": {
+   "name": "Les voleurs de Tharbad",
+   "en": "The Thieves of Tharbad",
+   "kind": "Événement I",
+   "text": "Sauron doit choisir un personnage. Placez ou déplacez ce personnage à Mouth of the Greyflood."
+  },
+  "events/I/3.png": {
+   "name": "Confiance dans l'amitié",
+   "en": "Trust in Friendship",
+   "kind": "Événement I",
+   "text": "Chaque héros perd 1 faveur et la place sur cette carte. Sauron donne ensuite cette carte à un héros de son choix. Quand ce héros explore un lieu contenant un personnage ou un autre héros, il gagne ces faveurs puis défausse cette carte."
+  },
+  "events/I/4.png": {
+   "name": "De l'Argonath à la mer",
+   "en": "From Argonath to the Sea",
+   "kind": "Événement I",
+   "text": "Affecte Minas Tirith. Quand un héros explore ce lieu, il peut retirer 1 influence de chaque lieu adjacent. Défaussez ensuite cette carte."
+  },
+  "events/I/5.png": {
+   "name": "Gandalf rend visite à Frodon",
+   "en": "Gandalf Visits Frodo",
+   "kind": "Événement I",
+   "text": "Affecte la Comté. Quand un héros explore ce lieu, il peut dépenser 3 faveurs pour faire avancer d'une case le marqueur des héros sur la piste de l'histoire. Défaussez ensuite cette carte."
+  },
+  "events/I/6.png": {
+   "name": "Tenté par le pouvoir",
+   "en": "Tempted by Power",
+   "kind": "Événement I",
+   "text": "Sauron choisit un héros. Celui-ci doit choisir : recevoir 1 carte de corruption et un entraînement, ou laisser Sauron piocher 1 carte Intrigue."
+  },
+  "events/I/7.png": {
+   "name": "Imladris",
+   "en": "Imladris",
+   "kind": "Événement I",
+   "text": "Affecte Rivendell. Quand un héros explore ce lieu, il peut défausser 1 de ses cartes de corruption ou gagner 1 niveau d'endurance. Défaussez ensuite cette carte."
+  },
+  "events/I/8.png": {
+   "name": "Le Dúnadan garde la Comté",
+   "en": "The Dúnadan Guards the Shire",
+   "kind": "Événement I",
+   "text": "Les héros peuvent retirer 3 influences ou jetons monstre de n'importe quels lieux d'Eriador, ou placer 1 faveur dans la Comté."
+  },
+  "events/I/9.png": {
+   "name": "Le message d'Arwen à son bien-aimé",
+   "en": "Arwen's Message to Her Beloved",
+   "kind": "Événement I",
+   "text": "Affecte Weathertop. Quand un héros explore ce lieu, il gagne 1 faveur ou reçoit un entraînement. Défaussez ensuite cette carte."
+  },
+  "events/I/10.png": {
+   "name": "Le courage d'Erkenbrand",
+   "en": "The Courage of Erkenbrand",
+   "kind": "Événement I",
+   "text": "Les héros peuvent retirer jusqu'à 3 influences ou jetons monstre du Rohan, ou placer 1 faveur à Helm's Deep."
+  },
+  "events/I/11.png": {
+   "name": "Éomer et Éowyn deviennent orphelins",
+   "en": "Éomer and Éowyn Are Orphaned",
+   "kind": "Événement I",
+   "text": "Sauron peut retirer 1 personnage ou 1 faveur d'un lieu du Rohan."
+  },
+  "events/I/12.png": {
+   "name": "La Dame du Bois Doré",
+   "en": "Lady of the Golden Wood",
+   "kind": "Événement I",
+   "text": "Affecte Lothlórien. Quand un héros explore ce lieu, il peut gagner une carte Objet « Bateau » ou retirer 1 influence de la réserve des Ténèbres. Défaussez ensuite cette carte."
+  },
+  "events/I/13.png": {
+   "name": "Tous ceux qui errent ne sont pas perdus",
+   "en": "Not All Those Who Wander Are Lost",
+   "kind": "Événement I",
+   "text": "Affecte Rhûn. Quand un héros explore ce lieu, il peut se déplacer vers n'importe quel lieu. Défaussez ensuite cette carte."
+  },
+  "events/II/0.png": {
+   "name": "Athelas, feuille-des-rois",
+   "en": "Athelas, Kingsfoil",
+   "kind": "Événement II",
+   "text": "Affecte Rhosgobel. Quand un héros explore ce lieu, il peut défausser 1 de ses cartes de corruption ou mélanger sa réserve de blessures dans sa réserve de repos. Défaussez ensuite cette carte."
+  },
+  "events/II/1.png": {
+   "name": "Les clairières d'Orthanc s'assombrissent",
+   "en": "The Glades of Orthanc Darken",
+   "kind": "Événement II",
+   "text": "Affecte Gap of Rohan. Quand un héros explore ce lieu, défaussez cette carte. Tant qu'elle est en jeu, le marqueur rouge avance d'une case sur la piste de l'histoire à chaque étape de l'histoire."
+  },
+  "events/II/2.png": {
+   "name": "Aragorn traque Gollum",
+   "en": "Aragorn Hunts Gollum",
+   "kind": "Événement II",
+   "text": "Affecte Dead Marshes. Quand un héros explore ce lieu, il peut dépenser 3 faveurs pour faire avancer d'une case le marqueur des héros sur la piste de l'histoire. Défaussez ensuite cette carte."
+  },
+  "events/II/3.png": {
+   "name": "Brand devient roi de Dale",
+   "en": "Brand Becomes King of Dale",
+   "kind": "Événement II",
+   "text": "Les héros peuvent retirer jusqu'à 2 jetons monstre ou influences à 1 case ou moins de Lake Esgaroth, ou placer 1 faveur à Lake Esgaroth."
+  },
+  "events/II/4.png": {
+   "name": "Il reste encore de la force",
+   "en": "There Is Strength Yet",
+   "kind": "Événement II",
+   "text": "Les héros peuvent déplacer 1 personnage vers un lieu adjacent qui n'est pas une forteresse des Ténèbres. Retirez toutes les influences et tous les jetons monstre de ce lieu."
+  },
+  "events/II/5.png": {
+   "name": "Sous l'Ombre",
+   "en": "Under the Shadow",
+   "kind": "Événement II",
+   "text": "Sauron choisit un héros. Celui-ci doit choisir : recevoir 1 carte de corruption puis se déplacer vers n'importe quel lieu, ou laisser Sauron piocher 1 carte des Ténèbres."
+  },
+  "events/II/6.png": {
+   "name": "Commandant d'Edoras",
+   "en": "Commander of Edoras",
+   "kind": "Événement II",
+   "text": "Les héros peuvent retirer 1 jeton monstre et 1 influence à 1 case ou moins d'Edoras, ou placer 1 faveur à Edoras."
+  },
+  "events/II/7.png": {
+   "name": "Iarwain Ben-adar",
+   "en": "Iarwain Ben-adar",
+   "kind": "Événement II",
+   "text": "Affecte Old Forest. Quand un héros explore ce lieu, il peut défausser 1 de ses cartes de corruption ou mélanger sa réserve de blessures dans sa réserve de repos. Défaussez ensuite cette carte."
+  },
+  "events/II/8.png": {
+   "name": "Les statues de pierre des Trollshaws",
+   "en": "Stone Figures in the Trollshaws",
+   "kind": "Événement II",
+   "text": "Sauron peut placer un jeton monstre sur 2 lieux de son choix du Rhudaur (l'influence n'y est pas nécessaire)."
+  },
+  "events/II/9.png": {
+   "name": "Le Marteau-des-Ennemis",
+   "en": "The Foe-hammer",
+   "kind": "Événement II",
+   "text": "Affecte Trollshaws. Quand un héros explore ce lieu, il peut placer Gandalf sur n'importe quel lieu contenant de l'influence. Retirez ensuite tous les jetons monstre du lieu de Gandalf et défaussez cette carte."
+  },
+  "events/II/10.png": {
+   "name": "Aragorn rencontre Gandalf",
+   "en": "Aragorn Meets with Gandalf",
+   "kind": "Événement II",
+   "text": "Placez ou déplacez Aragorn et Gandalf à Bree."
+  },
+  "events/II/11.png": {
+   "name": "Beregond, garde de la Citadelle",
+   "en": "Beregond, Guard of the Citadel",
+   "kind": "Événement II",
+   "text": "Un héros peut dépenser 3 faveurs pour défausser une carte Intrigue active qui affecte un refuge."
+  },
+  "events/II/12.png": {
+   "name": "Círdan le Charpentier",
+   "en": "Círdan the Shipwright",
+   "kind": "Événement II",
+   "text": "Affecte Grey Havens. Quand un héros explore ce lieu, il gagne une carte Objet « Bateau » et peut se déplacer à Belfalas. Défaussez ensuite cette carte."
+  },
+  "events/II/13.png": {
+   "name": "Des serpents et du sable",
+   "en": "Of Serpents and Sand",
+   "kind": "Événement II",
+   "text": "Affecte Near Harad. Quand un héros explore ce lieu, défaussez cette carte. Tant qu'elle est en jeu, le marqueur rouge avance d'une case sur la piste de l'histoire à chaque étape de l'histoire."
+  },
+  "events/III/0.png": {
+   "name": "Radagast le Brun",
+   "en": "Radagast the Brown",
+   "kind": "Événement III",
+   "text": "Chaque héros ayant 4 faveurs ou plus doit défausser 1 faveur. Ensuite, si Gandalf est en jeu, déplacez-le à Isengard."
+  },
+  "events/III/1.png": {
+   "name": "Le rêve de Boromir",
+   "en": "Boromir's Dream",
+   "kind": "Événement III",
+   "text": "Chaque héros sans faveur gagne 1 faveur. Ensuite, si le marqueur jaune de Sauron est le plus proche de la case de départ, faites-le avancer d'une case sur la piste de l'histoire."
+  },
+  "events/III/2.png": {
+   "name": "Éowyn, fille-de-sœur",
+   "en": "Éowyn, Sister-daughter",
+   "kind": "Événement III",
+   "text": "Placez ou déplacez Théoden à Edoras et retirez 1 influence de chaque lieu adjacent à Edoras."
+  },
+  "events/III/3.png": {
+   "name": "Guerrier de l'Œil sans paupière",
+   "en": "Warrior of the Lidless Eye",
+   "kind": "Événement III",
+   "text": "Sauron peut placer 1 influence et 1 jeton monstre sur chaque lieu adjacent à Gothmog de Gorgoroth."
+  },
+  "events/III/4.png": {
+   "name": "Elladan et Elrohir",
+   "en": "Elladan and Elrohir",
+   "kind": "Événement III",
+   "text": "Affecte Ettenmoors. Quand un héros explore ce lieu, il gagne 2 faveurs et peut retirer 1 jeton monstre de son choix du plateau. Défaussez ensuite cette carte."
+  },
+  "events/III/5.png": {
+   "name": "Gandalf Corbeau-Tempête",
+   "en": "Gandalf Stormcrow",
+   "kind": "Événement III",
+   "text": "Affecte Plains of Rohan. Quand un héros explore ce lieu, il peut placer ou déplacer Gandalf sur n'importe quel lieu situé à au moins 4 cases. Retirez ensuite 1 influence de la réserve des Ténèbres et défaussez cette carte."
+  },
+  "events/III/6.png": {
+   "name": "Théoden averti au sujet de Saroumane",
+   "en": "Théoden Warned of Saruman",
+   "kind": "Événement III",
+   "text": "Affecte Edoras. Quand un héros explore ce lieu, il peut dépenser 2 faveurs pour faire reculer d'une case vers la gauche le marqueur noir sur la piste de l'histoire. Défaussez ensuite cette carte."
+  },
+  "events/III/7.png": {
+   "name": "L'Argonath",
+   "en": "The Argonath",
+   "kind": "Événement III",
+   "text": "Affecte Amon Hen. Quand un héros explore ce lieu, il peut défausser 1 de ses cartes de corruption ou gagner 1 niveau d'endurance. Défaussez ensuite cette carte."
+  },
+  "events/III/8.png": {
+   "name": "Sombres nouvelles d'Erebor",
+   "en": "Dark News From Erebor",
+   "kind": "Événement III",
+   "text": "Affecte Erebor. Quand un héros explore ce lieu, défaussez cette carte. Tant qu'elle est en jeu, le marqueur noir avance d'une case sur la piste de l'histoire à chaque étape de l'histoire."
+  },
+  "events/III/9.png": {
+   "name": "Le sang du Rhûn",
+   "en": "The Blood of Rhûn",
+   "kind": "Événement III",
+   "text": "Affecte Dagorlad. Quand un héros explore ce lieu, défaussez cette carte. Tant qu'elle est en jeu, le marqueur rouge avance d'une case sur la piste de l'histoire à chaque étape de l'histoire."
+  },
+  "events/III/10.png": {
+   "name": "Les arbres de Fangorn",
+   "en": "The Trees of Fangorn",
+   "kind": "Événement III",
+   "text": "Affecte Fangorn. Quand un héros explore ce lieu, il gagne 1 faveur et retire tous les jetons monstre à 1 case ou moins de Fangorn. Défaussez ensuite cette carte."
+  },
+  "events/III/11.png": {
+   "name": "L'Arnor d'autrefois",
+   "en": "Arnor, That Was of Old",
+   "kind": "Événement III",
+   "text": "Les héros peuvent retirer toutes les influences et tous les jetons monstre à 1 case ou moins de Fornost, ou placer 1 faveur à Fornost."
+  },
+  "events/III/12.png": {
+   "name": "Le récit d'Isildur",
+   "en": "The Account of Isildur",
+   "kind": "Événement III",
+   "text": "Affecte Minas Tirith. Quand un héros explore ce lieu, il peut dépenser 3 faveurs pour faire avancer d'une case le marqueur des héros sur la piste de l'histoire. Défaussez ensuite cette carte."
+  },
+  "events/III/13.png": {
+   "name": "Il a enfin entendu",
+   "en": "He Has at Last Heard",
+   "kind": "Événement III",
+   "text": "Placez 1 influence sur chaque lieu à 1 case ou moins de la Comté. Sauron peut ensuite déplacer un serviteur dans la Comté."
+  },
+  "sauron/shadows/0.png": {
+   "name": "Nuées de Crebain",
+   "en": "Flocks of Crebain",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 2 requise",
+   "text": "À jouer au début du tour d'un héros qui n'est pas dans un refuge. Le héros doit immédiatement combattre des Crebain. Jusqu'à la fin du combat, son agilité est réduite à 0. Le héros saute son étape d'embuscade ce tour-ci."
+  },
+  "sauron/shadows/1.png": {
+   "name": "Son bras s'est allongé",
+   "en": "His Arm Has Grown Long",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 2 requise",
+   "text": "À jouer après qu'un héros est entré dans un lieu qui n'est pas un refuge. Le lieu est considéré comme périlleux jusqu'à la fin du tour du héros."
+  },
+  "sauron/shadows/2.png": {
+   "name": "Les mensonges de Saroumane",
+   "en": "Saruman's Lies",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 5 requise",
+   "text": "À jouer pendant l'étape d'action. Regardez la carte du dessus de la pioche Intrigue et remettez-la au-dessus ou en dessous de la pioche. Ensuite, si un héros a au moins autant de cartes de corruption que sa sagesse, le marqueur noir avance d'une case sur la piste de l'histoire."
+  },
+  "sauron/shadows/3.png": {
+   "name": "Un brouillard maléfique",
+   "en": "An Evil Fog",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 1 requise",
+   "text": "À jouer pendant l'étape d'action. Choisissez un héros. Vous pouvez le déplacer vers un lieu adjacent. Il doit ensuite défausser 1 carte au hasard de sa main par carte de corruption qu'il possède."
+  },
+  "sauron/shadows/4.png": {
+   "name": "L'Œil sans paupière",
+   "en": "The Lidless Eye",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 8 requise",
+   "text": "À jouer pendant l'étape d'action. Choisissez deux héros et répartissez à nouveau leurs cartes de corruption entre eux. Choisissez ensuite un héros et donnez-lui 1 carte de corruption."
+  },
+  "sauron/shadows/5.png": {
+   "name": "Le Souffle noir",
+   "en": "The Black Breath",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 8 requise",
+   "text": "À jouer au début d'un combat contre un serviteur. Le héros reçoit 1 carte de corruption. Jusqu'à la fin du combat, le héros a -1 en force et -1 en agilité par carte de corruption qu'il possède."
+  },
+  "sauron/shadows/6.png": {
+   "name": "Ils sont terribles",
+   "en": "They Are Terrible",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 8 requise",
+   "text": "À jouer pendant l'étape d'action. Choisissez un serviteur sur le plateau, ou un serviteur vaincu. Retirez tous ses dégâts et placez-le sur n'importe quel lieu contenant de l'influence."
+  },
+  "sauron/shadows/7.png": {
+   "name": "Créatures sauvages",
+   "en": "Creatures of the Wild",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 7 requise",
+   "text": "À jouer au début du tour d'un héros qui n'est pas dans un refuge. Le héros doit combattre une Araignée géante ; s'il a au moins 2 cartes de corruption, il doit combattre un Troll des cavernes à la place. Le héros saute son étape d'embuscade ce tour-ci."
+  },
+  "sauron/shadows/8.png": {
+   "name": "La pierre d'Ithil",
+   "en": "The Ithil-stone",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 8 requise",
+   "text": "À jouer pendant l'étape d'action. Cherchez dans la pioche ou la défausse Intrigue la carte « Denethor sombre dans la folie » ou « Saroumane succombe à la corruption ». Prenez-la en main, ou jouez-la immédiatement (si possible)."
+  },
+  "sauron/shadows/9.png": {
+   "name": "Sombres promesses",
+   "en": "Dark Promises",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 3 requise",
+   "text": "À jouer au début d'un combat. Le héros doit choisir : recevoir 1 carte de corruption, ou subir 5 dégâts."
+  },
+  "sauron/shadows/10.png": {
+   "name": "Tempêtes du Mordor",
+   "en": "Storms of Mordor",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 4 requise",
+   "text": "À jouer pendant l'étape d'action. Chaque héros choisit et défausse des cartes de sa main jusqu'à en avoir 5 ou moins. Chaque héros défausse ensuite 1 carte au hasard de sa main par carte de corruption qu'il possède."
+  },
+  "sauron/shadows/11.png": {
+   "name": "Un nouveau pouvoir s'élève",
+   "en": "A New Power Is Rising",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 4 requise",
+   "text": "À jouer pendant l'étape d'action. Placez 2 influences sur chaque lieu du Mordor, ou placez jusqu'à 2 jetons monstre (selon les règles normales de placement)."
+  },
+  "sauron/shadows/12.png": {
+   "name": "Tempêtes du Mordor",
+   "en": "Storms of Mordor",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 4 requise",
+   "text": "À jouer pendant l'étape d'action. Chaque héros choisit et défausse des cartes de sa main jusqu'à en avoir 5 ou moins. Chaque héros défausse ensuite 1 carte au hasard de sa main par carte de corruption qu'il possède."
+  },
+  "sauron/shadows/13.png": {
+   "name": "Le Seigneur des Anneaux",
+   "en": "Lord of the Rings",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 6 requise",
+   "text": "À jouer pendant l'étape d'action. Choisissez une carte Intrigue ou des Ténèbres dans la défausse, montrez-la aux héros et prenez-la en main. Ensuite, si l'intrigue « Un sombre messager » est active, le marqueur jaune avance d'une case sur la piste de l'histoire."
+  },
+  "sauron/shadows/14.png": {
+   "name": "La Comté, Sacquet",
+   "en": "Shire, Baggins",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 7 requise",
+   "text": "À jouer pendant l'étape d'action. Placez 1 influence dans la réserve des Ténèbres et 1 influence dans la Comté. Ensuite, si vous avez au moins 3 influences ou un serviteur dans la Comté, le marqueur jaune avance de 2 cases sur la piste de l'histoire."
+  },
+  "sauron/shadows/15.png": {
+   "name": "Ne me tentez pas !",
+   "en": "Do Not Tempt Me!",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 4 requise",
+   "text": "À jouer pendant l'étape d'action. Choisissez un héros. Vous pouvez placer 1 influence sur son lieu. Il doit ensuite défausser 1 faveur par carte de corruption qu'il possède."
+  },
+  "sauron/shadows/16.png": {
+   "name": "Lame de Morgul",
+   "en": "Morgul-blade",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 6 requise",
+   "text": "À jouer au début d'un combat contre un serviteur. Infligez au héros 5 dégâts par carte de corruption qu'il possède, ou infligez-lui 3 dégâts et donnez-lui 1 carte de corruption."
+  },
+  "sauron/shadows/17.png": {
+   "name": "Perte cruelle",
+   "en": "Grievous Loss",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 12 requise",
+   "text": "À jouer après la défaite d'un héros. Pour chaque carte de corruption du héros vaincu, placez 1 influence en extension d'une forteresse des Ténèbres ou dans la réserve des Ténèbres. Le marqueur vert avance d'une case de moins lors de la prochaine étape de l'histoire."
+  },
+  "sauron/shadows/18.png": {
+   "name": "Blessure maléfique",
+   "en": "Evil Wound",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 7 requise",
+   "text": "À jouer après la défaite d'un héros. Une fois toutes ses cartes replacées dans sa réserve de vie, le héros subit 4 dégâts, plus 2 dégâts par carte de corruption qu'il possède."
+  },
+  "sauron/shadows/19.png": {
+   "name": "Tempête d'hiver",
+   "en": "Winter Storm",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 10 requise",
+   "text": "À jouer au début du tour d'un héros. Le héros ne peut pas se déplacer plus d'une fois lors de sa prochaine étape de voyage."
+  },
+  "sauron/shadows/20.png": {
+   "name": "Paraître plus beau, sentir plus mauvais",
+   "en": "Seem Fairer, Feel Fouler",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 3 requise",
+   "text": "À jouer au début du tour d'un héros qui n'est pas dans un refuge. Le héros doit combattre un Agent. Ensuite, si le héros a au moins 1 carte de corruption, Sauron pioche 1 carte Intrigue. Le héros saute son étape d'embuscade ce tour-ci."
+  },
+  "sauron/shadows/21.png": {
+   "name": "Son bras s'est allongé",
+   "en": "His Arm Has Grown Long",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 2 requise",
+   "text": "À jouer après qu'un héros est entré dans un lieu qui n'est pas un refuge. Le lieu est considéré comme périlleux jusqu'à la fin du tour du héros."
+  },
+  "sauron/shadows/22.png": {
+   "name": "Trahi",
+   "en": "Betrayed",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 1 requise",
+   "text": "À jouer au début d'un combat. Le héros doit défausser 2 cartes au hasard de sa main. Jusqu'à la fin du combat, sa force est réduite de 1 par carte de corruption qu'il possède."
+  },
+  "sauron/shadows/23.png": {
+   "name": "Sombres promesses",
+   "en": "Dark Promises",
+   "kind": "Carte des Ténèbres · réserve des Ténèbres 3 requise",
+   "text": "À jouer au début d'un combat. Le héros doit choisir : recevoir 1 carte de corruption, ou subir 5 dégâts."
+  },
+  "hero_cards/actions/heros/argalad.jpg": {
+   "name": "Argalad",
+   "en": "Argalad",
+   "kind": "Capacité",
+   "text": "Une fois par tour, vous pouvez regarder la face de tous les jetons monstre d'un lieu adjacent."
+  },
+  "hero_cards/actions/heros/beravor.jpg": {
+   "name": "Beravor",
+   "en": "Beravor",
+   "kind": "Capacité",
+   "text": "Quand vous vous reposez dans un lieu qui n'est pas un refuge, vous pouvez vous soigner ou recevoir un entraînement."
+  },
+  "hero_cards/actions/heros/eleanor.jpg": {
+   "name": "Eleanor",
+   "en": "Eleanor",
+   "kind": "Capacité",
+   "text": "Une fois par tour, gagnez 1 faveur quand vous accomplissez une quête ou consultez un personnage."
+  },
+  "hero_cards/actions/heros/eometh.jpg": {
+   "name": "Eometh",
+   "en": "Eometh",
+   "kind": "Capacité",
+   "text": "Vous commencez la partie avec une carte Objet « Cheval »."
+  },
+  "hero_cards/actions/heros/thalin.jpg": {
+   "name": "Thálin",
+   "en": "Thálin",
+   "kind": "Capacité",
+   "text": "Votre tour ne se termine pas quand vous échouez à vaincre un adversaire en combat."
+  }
+ }
+}
