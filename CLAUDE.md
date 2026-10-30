@@ -48,12 +48,19 @@ functions and loops get the same; never log session tokens or e-mails.
   - `threats.rs`: Ambush step and "Combat or Peril" (Sauron's choice, Haven consent); `perils/`: the Peril deck and
     the 15 card effects.
   - `turn.rs`, `rest.rs`, `movement.rs`, `exploration.rs`, `sauron_turn.rs`, `plots.rs`, `story.rs`… one area each.
+  - `ai/`: the computer heroes. `waiting_hero.rs` finds the computer hero the game waits on, `candidates.rs`
+    lists a few `HeroMove`s per screen (random order wherever a strategy would get complex), and
+    `Game::play_computer_heroes` (`hero_ai.rs`) applies each candidate to a copy and keeps the first one the rules
+    accept that changed something besides the log. It never reimplements legality: the engine refuses illegal
+    moves. When nothing is accepted it stops and the board members play the seat by hand.
 - **`db/`**: sqlx persistence. Requests load the whole `Game`, let the engine change it and save it in one transaction
   (`game_repo`). Decks, hands, pools and influence are JSON text columns; monsters and minions share `mobs` with a
   `kind`.
 - **`web/`**: axum router, handlers (one file per area), askama page structs (private to their handler) and views.
   `access.rs` extractors check that the user is a member of the board in the URL (the only ownership rule).
-  `game_tx::change_game` wraps load → change → save → board version raised (only when the game changed, so a
+  `game_tx::change_game` wraps load → change → computer heroes play (unless
+  `GameOptions::computer_heroes_by_hand`, the new game form's "seats=computer"; "seats=ai" lets the AI play) → save
+  → board version raised (only when the game changed, so a
   screen that saves on display doesn't reload itself). Flash messages use a cookie. State-changing actions are POST
   forms.
   - **Game table**: every screen of a seat is framed by `views/table_view.rs` (`TableView`: seats, turn steps, map,
@@ -78,8 +85,8 @@ functions and loops get the same; never log session tokens or e-mails.
   path, combat cards by code), `game.js` map fit/zoom/drag, influence clicks and polling the board; served under
   `/static`). The map picture is drawn at its natural size (2934 × 2017) and scaled with a CSS transform.
 
-Notable behavior kept from the original: new games seat four computer-controlled heroes (beravor, eleanor, thalin,
-eometh) and make the creator Sauron; board members play the computer seats. Shadow cards are disabled.
+Notable behavior kept from the original: new games seat computer-controlled heroes and make the creator Sauron;
+the AI plays the computer seats, or the board members do when the game was created that way. Shadow cards are disabled.
 
 ## Coding conventions
 
@@ -197,6 +204,11 @@ Story steps), not `StoryMarkers::data().dominance`. High stakes stage III in `en
 the defeated hero's marker (`DefeatMarker` choice, kept in `TurnEffects::defeat_marker`), a minion defeated in
 combat advances the heroes' marker. `tests/common/driver.rs` plays whole rounds over HTTP (one per player count in
 `http_flow.rs`). Interpretations to confirm: Q30.
+
+**Computer heroes (AI), done, green:** `engine/ai/`, hooked in `change_game` and the play page; tests in
+`engine/ai/tests.rs` (100 seeded games of three rounds against a passive Sauron) and `computer_plays_*` in
+`http_flow.rs` (the driver only plays Sauron, `Driver::heroes_by_ai`). Not played by the AI: training, corruption
+discard, Dark Path, Argalad's power, returning to movement after exploring.
 
 **Next:** Phase 5 leftovers: quests (text readable on `static/images/hero_cards/quests/standard`: Starting and
 Advanced quests), trading between heroes, Argalad's peek limited to one adjacent location. Encounter step and Items

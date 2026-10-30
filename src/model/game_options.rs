@@ -14,4 +14,8 @@ pub struct GameOptions {
     /// each minion they defeat while Sauron is.
     #[serde(default)]
     pub high_stakes: bool,
+    /// The board members play the computer heroes by hand; otherwise the AI plays
+    /// them (`engine::ai`).
+    #[serde(default)]
+    pub computer_heroes_by_hand: bool,
 }

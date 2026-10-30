@@ -299,8 +299,8 @@ pub async fn new(State(state): State<AppState>, session: Session) -> Result<Resp
 }
 
 /// `POST /boards`: creates a game where the user plays Sauron. The chosen heroes are
-/// open seats for players to join (`seats=open`), or computer seats played by the
-/// board members.
+/// open seats for players to join (`seats=open`), or computer seats played by the AI
+/// (`seats=ai`) or by the board members.
 ///
 /// # Errors
 /// [`AppError::Engine`] for a wrong choice of heroes; database errors.
@@ -314,11 +314,13 @@ pub async fn create(
         .into_iter()
         .filter(|code| fields.iter().any(|(k, v)| k == "heroes" && v == code))
         .collect();
-    let open = fields.iter().any(|(k, v)| k == "seats" && v == "open");
+    let seats = |value: &str| fields.iter().any(|(k, v)| k == "seats" && v == value);
+    let open = seats("open");
     let checked = |name: &str| fields.iter().any(|(k, _)| k == name);
     let options = GameOptions {
         advanced_dominance: checked("advanced_dominance"),
         high_stakes: checked("high_stakes"),
+        computer_heroes_by_hand: seats("computer"),
     };
     if codes.is_empty() || codes.len() > MAX_HEROES {
         return Ok(redirect(

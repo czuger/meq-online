@@ -842,6 +842,42 @@ async fn full_round<'a>(app: &'a TestApp, heroes: &[&str], options: &str) -> (Dr
     (driver, game)
 }
 
+/// Creates a board with `heroes` played by the AI; the driver only plays Sauron, through
+/// his setup, first turn and second turn.
+async fn computer_round(app: &TestApp, heroes: &[&str]) -> Game {
+    let me = app.login("sauron").await;
+    let seats: Vec<String> = heroes.iter().map(|h| format!("heroes={h}")).collect();
+    let form = format!("{}&seats=ai", seats.join("&"));
+    assert_eq!(
+        app.post("/boards", &me, &form).await.status,
+        StatusCode::SEE_OTHER
+    );
+    let game = app.game(1).await;
+    assert!(!game.board.options.computer_heroes_by_hand);
+    let mut driver = Driver::new(app, &me, &game);
+    driver.heroes_by_ai = true;
+    let game = driver
+        .play_until(|g| g.board.turn == 2 && g.board.state == BoardState::EditSauronSauronActions)
+        .await;
+    assert!(game.board.story.heroes >= 2, "{:?}", game.board.story);
+    assert!(driver.hero_turns.is_empty(), "the driver played a hero");
+    game
+}
+
+// The AI plays one computer hero through its two turns of the round.
+#[tokio::test]
+async fn computer_plays_one_hero() {
+    let app = TestApp::new().await;
+    computer_round(&app, &["beravor"]).await;
+}
+
+// The AI plays three computer heroes through the round.
+#[tokio::test]
+async fn computer_plays_three_heroes() {
+    let app = TestApp::new().await;
+    computer_round(&app, &["eleanor", "thalin", "argalad"]).await;
+}
+
 // § 4: one hero plays two turns per Sauron turn.
 #[tokio::test]
 async fn full_round_with_one_hero() {

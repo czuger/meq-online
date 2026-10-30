@@ -4,6 +4,7 @@
 use std::collections::BTreeSet;
 
 use axum::http::StatusCode;
+use meq_online::engine::ai::waiting_hero::waiting_computer_hero;
 use meq_online::engine::board_state::BoardState;
 use meq_online::engine::choices::PASS;
 use meq_online::engine::deck::SauronDeck;
@@ -29,6 +30,8 @@ pub struct Driver<'a> {
     pub hero_turns: BTreeSet<(i64, i32)>,
     /// `(hero id, hero turn)` of the hero turns where the hero moved.
     pub moves: BTreeSet<(i64, i32)>,
+    /// The AI plays the heroes: the driver only plays Sauron.
+    pub heroes_by_ai: bool,
 }
 
 impl<'a> Driver<'a> {
@@ -40,6 +43,7 @@ impl<'a> Driver<'a> {
             sauron: game.sauron.id.unwrap(),
             hero_turns: BTreeSet::new(),
             moves: BTreeSet::new(),
+            heroes_by_ai: false,
         }
     }
 
@@ -61,6 +65,11 @@ impl<'a> Driver<'a> {
     /// Takes one action for the current board state.
     async fn step(&mut self, game: &Game) {
         let state = game.board.state;
+        if self.heroes_by_ai {
+            let heroes: Vec<i64> = game.heroes.iter().filter_map(|h| h.id).collect();
+            let waiting = waiting_computer_hero(game, &heroes);
+            assert_eq!(waiting, None, "the AI left hero {waiting:?} in {state:?}");
+        }
         // Every screen of the state renders for the player it waits on.
         let drawing = game
             .heroes
@@ -290,6 +299,7 @@ impl<'a> Driver<'a> {
             .find(|m| m.id == Some(combat.mob_id))
             .and_then(|m| m.hand.first().copied());
         let mut moves = vec![("combats/terminate".to_owned(), String::new())];
+        let hero_card = hero_card.filter(|_| !self.heroes_by_ai);
         if let Some(card) = hero_card {
             let form = format!("selected_card={card}");
             moves.push(("combats/play_combat_card_hero".to_owned(), form));
@@ -298,7 +308,12 @@ impl<'a> Driver<'a> {
             let form = format!("selected_card={card}");
             moves.push(("combats/play_combat_card_mob".to_owned(), form));
         }
-        for side in ["hero", "mob"] {
+        let sides: &[&str] = if self.heroes_by_ai {
+            &["mob"]
+        } else {
+            &["hero", "mob"]
+        };
+        for side in sides {
             moves.push((format!("combats/declare_exhaustion_{side}"), String::new()));
         }
         for (path, form) in moves {

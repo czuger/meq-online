@@ -80,6 +80,19 @@ pub async fn ai_users(conn: &mut SqliteConnection, count: usize) -> Result<Vec<i
     Ok(ids)
 }
 
+/// Ids of every computer-seat user.
+///
+/// # Errors
+/// Database errors.
+#[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
+pub async fn computer_user_ids(conn: &mut SqliteConnection) -> Result<Vec<i64>, DbError> {
+    Ok(
+        sqlx::query_scalar("SELECT id FROM users WHERE ai_index IS NOT NULL")
+            .fetch_all(conn)
+            .await?,
+    )
+}
+
 /// Opens a session for a user.
 ///
 /// # Returns

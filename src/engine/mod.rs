@@ -1,6 +1,7 @@
 //! Game rules, free of HTTP and database code.
 
 pub mod activation;
+pub mod ai;
 pub mod board_state;
 pub mod characters;
 pub mod choices;

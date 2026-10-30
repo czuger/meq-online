@@ -16,7 +16,7 @@ use crate::web::access::BoardAccess;
 use crate::web::app_error::AppError;
 use crate::web::flash::redirect;
 use crate::web::game_layout::{board_players, my_screen, viewer_layout};
-use crate::web::game_tx::read_game;
+use crate::web::game_tx::{change_game, read_game};
 use crate::web::page::render;
 use crate::web::views::layout::Layout;
 use crate::web::views::state_label::state_label;
@@ -52,7 +52,8 @@ pub struct StatusQuery {
 }
 
 /// `GET /boards/{board_id}/play`: the screen of the user's seat the game waits on, or
-/// the waiting page.
+/// the waiting page. A game left waiting on a computer hero (after a server restart)
+/// lets the AI play first.
 ///
 /// # Errors
 /// Database and rendering errors.
@@ -61,7 +62,7 @@ pub async fn play(
     State(state): State<AppState>,
     access: BoardAccess,
 ) -> Result<Response, AppError> {
-    let game = read_game(&state, access.board_id).await?;
+    let (game, ()) = change_game(&state, access.board_id, |_, _, _| Ok(())).await?;
     let players = board_players(&state, &game).await?;
     if let Some(url) = my_screen(&game, &players, &access.session) {
         return Ok(redirect(&url, None));
