@@ -138,6 +138,11 @@ pub enum ChoiceSource {
     },
     /// The heroes pick the champion who fights the Ringwraiths in the Finale (§ 9).
     Champion,
+    /// Sauron picks the marker a defeated hero advances (High stakes stage III, § 10.4).
+    DefeatMarker {
+        /// The defeated hero.
+        hero_id: i64,
+    },
     /// Sauron picks the affected location of the Plot card he plays (§ 5.4).
     PlotLocation {
         /// The Plot card.

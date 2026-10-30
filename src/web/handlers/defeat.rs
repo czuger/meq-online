@@ -101,16 +101,12 @@ pub async fn defeat_screen(
 ) -> Result<Response, AppError> {
     let game = read_game(&state, access.board_id).await?;
     let hero = game.hero(access.hero_id)?;
-    let markers = game.board.story.lowest_sauron_markers();
+    let markers = game.defeat_marker_choices();
     let losses = defeat_losses(hero);
     let page = DefeatPage {
         layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
         hero_id: access.hero_id,
-        markers: if markers.len() > 1 {
-            markers.into_iter().map(marker_choice).collect()
-        } else {
-            vec![]
-        },
+        markers: markers.into_iter().map(marker_choice).collect(),
         losses: if losses.len() > 1 {
             losses.into_iter().map(loss_choice).collect()
         } else {

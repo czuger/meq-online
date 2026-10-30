@@ -334,7 +334,9 @@ impl Game {
         }
         let played: Vec<CardNumber> = combat.hero_cards.iter().filter_map(|c| c.card).collect();
         self.hero_mut(combat.hero_id)?.rest_pool.extend(played);
-        if !result.mob_defeated {
+        if result.mob_defeated {
+            self.high_stakes_mob_defeated(combat.hero_id, combat.mob_id, data)?;
+        } else {
             self.grant_undefeated_mob_influence(combat.mob_id, data)?;
         }
         self.remove_fought_mob(combat.mob_id)?;

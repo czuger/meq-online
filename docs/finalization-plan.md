@@ -108,6 +108,10 @@ Rule deviations:
   finished board stored as a draw no longer loads. "The Spear of the West" waits on quests (Q27); interpretations in
   Q29.
 
+- Phase 8 (session 6, 2026-10-30): optional rules and full-round HTTP tests. Schema change: `boards.options`
+  (`ALTER TABLE boards ADD COLUMN options TEXT NOT NULL DEFAULT '{}'` upgrades an existing database).
+  Interpretations in Q30.
+
 ## Phase 4 — Events
 
 - [x] Use the stage II and III decks from `data/events.yaml`; the current stage picks the deck (§ 5.3).
@@ -168,8 +172,12 @@ Rule deviations:
 
 ## Phase 8 — Optional rules and polish
 
-- [ ] Per-game options: Advanced dominance, High stakes stage III (§ 10.4).
-- [ ] End-to-end HTTP flow tests (`tests/http_flow.rs`) covering a full round for each player count.
+- [x] Per-game options: Advanced dominance, High stakes stage III (§ 10.4). `GameOptions` (`boards.options`),
+  chosen on the new game form and listed on the story screen; `Game::dominance` (`engine/dominance.rs`) replaces
+  `StoryMarkers::data().dominance` in the rules; `engine/high_stakes.rs` (`DefeatMarker` choice, minion defeat).
+- [x] End-to-end HTTP flow tests (`tests/http_flow.rs`) covering a full round for each player count: a driver
+  (`tests/common/driver.rs`) plays every screen over HTTP (setup, actions, hero draws, one move per hero turn,
+  threats, combats, choices, defeats) until Sauron's second turn ends.
 
 ## Card effect modelling (phases 4–7)
 

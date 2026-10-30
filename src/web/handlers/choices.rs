@@ -196,6 +196,11 @@ fn choice_context(source: &ChoiceSource, game: &Game, data: &GameData) -> Option
              le reste est pris sur la réserve de vie."
         ),
         ChoiceSource::Champion => champion_context(game)?,
+        ChoiceSource::DefeatMarker { hero_id } => format!(
+            "Enjeux élevés : {} est vaincu alors que les héros dominent l'étape III. Sauron \
+             choisit lequel de ses marqueurs avance.",
+            chooser_name(Chooser::Hero(*hero_id), game, data)
+        ),
         ChoiceSource::Wretched { .. } => "Carte de corruption Misérable : le tour du héros \
             se termine. Sauron peut l'envoyer au refuge le plus proche."
             .to_owned(),

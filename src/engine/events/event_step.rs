@@ -50,7 +50,7 @@ impl Game {
         let stage = u8::try_from(self.board.story.stage())
             .unwrap_or(3)
             .clamp(1, 3);
-        let dominance = self.board.story.data().dominance;
+        let dominance = self.dominance(data)?;
         let count = if dominance == Dominance::Nobody {
             1
         } else {

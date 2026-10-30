@@ -8,6 +8,7 @@ use crate::engine::board_state::BoardState;
 use crate::game_data::combat_card_def::CardNumber;
 use crate::game_data::monster_pool_color::MonsterPoolColor;
 use crate::model::choice::PendingChoice;
+use crate::model::game_options::GameOptions;
 use crate::model::sauron_action::{ActionInProgress, ActionToken, InfluenceBudget};
 use crate::model::turn_effects::TurnEffects;
 
@@ -150,4 +151,6 @@ pub struct Board {
     pub heroes_objective: Option<u32>,
     /// Secret objective card of Sauron.
     pub sauron_objective: Option<u32>,
+    /// Optional rules in use.
+    pub options: GameOptions,
 }

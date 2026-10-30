@@ -15,6 +15,9 @@
   <div class="row my-4">
     <div class="col-md-3"><button class="btn btn-primary btn-block" type="button" disabled>Étape de l'histoire <span class="badge badge-light">{{ stage }}</span></button></div>
   </div>
+  {% if !options.is_empty() %}
+  <p>Règles optionnelles : {{ options|join(", ") }}.</p>
+  {% endif %}
   {% if let Some(winner) = winner %}
   <div class="alert alert-success">{{ winner }}</div>
   {% endif %}

@@ -17,6 +17,7 @@ use crate::engine::setup::{HeroSeat, MAX_HEROES, new_game};
 use crate::engine::story::Dominance;
 use crate::model::board::Winner;
 use crate::model::game::Game;
+use crate::model::game_options::GameOptions;
 use crate::model::user::User;
 use crate::web::access::BoardAccess;
 use crate::web::app_error::AppError;
@@ -104,6 +105,7 @@ struct StoryPage {
     stage: i32,
     winner: Option<&'static str>,
     missions: Vec<MissionView>,
+    options: Vec<&'static str>,
 }
 
 /// Query of the board list.
@@ -315,6 +317,11 @@ pub async fn create(
         .filter(|code| fields.iter().any(|(k, v)| k == "heroes" && v == code))
         .collect();
     let open = fields.iter().any(|(k, v)| k == "seats" && v == "open");
+    let checked = |name: &str| fields.iter().any(|(k, _)| k == name);
+    let options = GameOptions {
+        advanced_dominance: checked("advanced_dominance"),
+        high_stakes: checked("high_stakes"),
+    };
     if codes.is_empty() || codes.len() > MAX_HEROES {
         return Ok(redirect(
             "/boards/new",
@@ -334,6 +341,7 @@ pub async fn create(
         .collect();
     let mut rng: rand::rngs::StdRng = rand::make_rng();
     let mut game = new_game(session.user.id, &seats, &state.data, &mut rng)?;
+    game.board.options = options;
     game_repo::save(&mut tx, &mut game).await?;
     let board_id = game.board.id.ok_or(AppError::NotFound)?;
     user_repo::add_member(&mut tx, board_id, session.user.id).await?;
@@ -434,7 +442,7 @@ pub async fn story_screen(
         label,
         value: value.to_string(),
     };
-    let dominance = match data.dominance {
+    let dominance = match game.dominance(&state.data)? {
         Dominance::Heroes => "Héros",
         Dominance::Sauron => "Sauron",
         Dominance::Nobody => "Personne",
@@ -459,6 +467,18 @@ pub async fn story_screen(
         stage: story.stage(),
         winner: winner_label(&game),
         missions: visible_missions(&game, access.session.user.id),
+        options: option_labels(game.board.options),
     };
     render(&page, &page.layout)
+}
+
+/// French names of the optional rules in use (§ 10.4).
+fn option_labels(options: GameOptions) -> Vec<&'static str> {
+    [
+        (options.advanced_dominance, "Domination avancée"),
+        (options.high_stakes, "Enjeux élevés à l'étape III"),
+    ]
+    .into_iter()
+    .filter_map(|(used, label)| used.then_some(label))
+    .collect()
 }

@@ -13,7 +13,7 @@ const COLUMNS: &str = "id, state, max_heroes, waiting_heroes, turn, current_hero
     story_conquest, story_corruption, shadow_pool, influence, characters, favors, plots, sauron_actions, \
     sauron_actions_count, current_action, decks, monster_pools, monster_discards, ringwraiths_return, \
     influence_budget, last_event, current_event, held_event, pending_choice, turn_effects, heroes_objective, \
-    sauron_objective";
+    sauron_objective, options";
 
 /// Loads a board.
 ///
@@ -71,7 +71,7 @@ pub async fn update(conn: &mut SqliteConnection, board: &Board) -> Result<(), Db
          story_heroes = ?, story_ring = ?, story_conquest = ?, story_corruption = ?, shadow_pool = ?, \
          influence = ?, characters = ?, favors = ?, plots = ?, sauron_actions = ?, sauron_actions_count = ?, \
          current_action = ?, decks = ?, monster_pools = ?, monster_discards = ?, ringwraiths_return = ?, influence_budget = ?, \
-         last_event = ?, current_event = ?, held_event = ?, pending_choice = ?, turn_effects = ?, heroes_objective = ?, sauron_objective = ?, \
+         last_event = ?, current_event = ?, held_event = ?, pending_choice = ?, turn_effects = ?, heroes_objective = ?, sauron_objective = ?, options = ?, \
          updated_at = CURRENT_TIMESTAMP WHERE id = ?",
     )
     .bind(board.state.as_str())
@@ -104,6 +104,7 @@ pub async fn update(conn: &mut SqliteConnection, board: &Board) -> Result<(), Db
     .bind(to_json(&board.turn_effects)?)
     .bind(board.heroes_objective)
     .bind(board.sauron_objective)
+    .bind(to_json(&board.options)?)
     .bind(id)
     .execute(conn)
     .await?;
@@ -146,6 +147,7 @@ fn board_from_row(row: &SqliteRow) -> Result<Board, DbError> {
         turn_effects: from_json(row.try_get("turn_effects")?)?,
         heroes_objective: row.try_get("heroes_objective")?,
         sauron_objective: row.try_get("sauron_objective")?,
+        options: from_json(row.try_get("options")?)?,
     })
 }
 

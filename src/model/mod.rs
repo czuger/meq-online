@@ -5,6 +5,7 @@ pub mod board;
 pub mod choice;
 pub mod combat;
 pub mod game;
+pub mod game_options;
 pub mod hero;
 pub mod log_entry;
 pub mod message;

@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS boards (
     turn_effects         TEXT    NOT NULL DEFAULT '{}', -- JSON TurnEffects
     heroes_objective     INTEGER,
     sauron_objective     INTEGER,
+    options              TEXT    NOT NULL DEFAULT '{}', -- JSON GameOptions, optional rules
     created_at           TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at           TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

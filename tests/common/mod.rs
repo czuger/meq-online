@@ -17,6 +17,8 @@ use meq_online::refresh::RefreshHub;
 use meq_online::web::router::router;
 use tower::ServiceExt;
 
+pub mod driver;
+
 pub struct TestApp {
     pub router: Router,
     pub state: AppState,

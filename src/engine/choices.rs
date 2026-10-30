@@ -167,6 +167,9 @@ impl Game {
                 self.apply_wretched_choice(hero_id, option, targets, data)?;
             }
             ChoiceSource::Champion => self.apply_champion(targets, data, rng)?,
+            ChoiceSource::DefeatMarker { hero_id } => {
+                self.apply_defeat_marker(hero_id, targets, data, rng)?;
+            }
             ChoiceSource::ShadowWindow { .. }
             | ChoiceSource::Shadow { .. }
             | ChoiceSource::PlotLocation { .. } => {

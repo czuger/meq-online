@@ -108,8 +108,8 @@ eometh) and make the creator Sauron; board members play the computer seats. Shad
 
 The engine is being brought to the official rules following `docs/finalization-plan.md` (rules in `docs/rules.md`,
 gap analysis in `docs/rules-gaps.md`, open questions in `docs/open-questions.md`: add new ones there). D1 and D3
-are decided: follow the official rules, the engine enforces the action track. Phases 1–6 are committed (66951be);
-Phase 7 is not.
+are decided: follow the official rules, the engine enforces the action track. Phases 1–7 are committed (b965361);
+Phase 8 is not.
 
 **Done (Phases 1–3, green when finished):** every Phase 1, 2 and 3 item of the plan. Highlights: defeat screens
 (`engine/defeat.rs`, `HeroDefeatScreen`, `SauronHavenScreen`); game creation with 1–3 chosen heroes, open or computer
@@ -163,7 +163,14 @@ Ringwraiths adjustment, the `Champion` choice (`Chooser::Heroes`) and the final 
 `CombatEnd::GameOver`; no Shadow window, no defeat steps). `finish_heroes_turn` now takes the rng. `Winner::Draw` is
 gone. The story screen shows each side its Mission (`web/views/mission_label.rs`). Interpretations to confirm: Q29.
 
+**Phase 8 (optional rules, end-to-end tests), done, green:** `model/game_options.rs` (`boards.options`, JSON;
+`ALTER TABLE boards ADD COLUMN options TEXT NOT NULL DEFAULT '{}'` upgrades a database), chosen on the new game
+form. Always read dominance through `Game::dominance(data)` (`engine/dominance.rs`, Advanced dominance by simulated
+Story steps), not `StoryMarkers::data().dominance`. High stakes stage III in `engine/high_stakes.rs`: Sauron picks
+the defeated hero's marker (`DefeatMarker` choice, kept in `TurnEffects::defeat_marker`), a minion defeated in
+combat advances the heroes' marker. `tests/common/driver.rs` plays whole rounds over HTTP (one per player count in
+`http_flow.rs`). Interpretations to confirm: Q30.
+
 **Next:** Phase 5 leftovers: quests (text readable on `static/images/hero_cards/quests/standard`: Starting and
 Advanced quests), trading between heroes, Argalad's peek limited to one adjacent location. Encounter step and Items
-blocked on missing text (and water paths missing from `data/locations_paths.yaml`). Phase 7 missions and Finale.
-Phase 8 optional rules and end-to-end tests.
+blocked on missing text (and water paths missing from `data/locations_paths.yaml`).

@@ -444,7 +444,11 @@ pub async fn terminate(
             &format!("/boards/{}/choices/choice_screen", access.board_id),
             None,
         ),
-        CombatEnd::Defeat => redirect(&format!("/heroes/{hero_id}/defeat_screen"), None),
+        // The defeat screen, or Sauron's choice of marker first (High stakes stage III).
+        CombatEnd::Defeat => redirect(
+            &route_for(game.board.state, access.board_id, RouteActor::Hero(hero_id)),
+            None,
+        ),
         CombatEnd::ChooseHaven => redirect("/boards", None),
         CombatEnd::TurnEnded(TurnEnd::HeroDrawCards) => {
             redirect(&format!("/heroes/{hero_id}/draw_cards_screen"), None)

@@ -139,6 +139,16 @@ Phase 6. "A Broken Line of Kings" also forbids drawing Encounter cards on its Ha
 | k | Mission secrecy | Sauron's user sees Sauron's Mission; every other member sees the heroes'. Computer seats are played by members, so a Sauron player who also plays them doesn't see the heroes' Mission until the end. | `web/handlers/boards.rs` |
 | l | French Mission names | Translated for the game (« Sang noble », « Le Secret d'Isildur »…), not taken from the French edition. | `web/views/mission_label.rs` |
 
+### Q30. Optional rules: interpretations made in Phase 8 — To confirm
+
+| # | Topic | What the engine does | Source |
+|---|---|---|---|
+| a | Advanced dominance: heroes' Story steps | 2 spaces per Story step, rounded up; "Grievous Loss" is not simulated. | `dominance.rs` |
+| b | Advanced dominance: Sauron's Story steps | His active Plot cards advance their markers each simulated step; the Finale is reached when a marker reaches the Finale space or all three reach The Shadow Falls. Without plots he never gets there: the heroes are dominant. | `dominance.rs` |
+| c | Advanced dominance everywhere | Replaces § 5.5 for the Event step, the Finale (steps 1 and 4: the adjustment keeps the § 9 distances, only the dominant side changes), High stakes and the story screen. | `dominance.rs` |
+| d | High stakes: "each time he defeats a hero" | Every hero defeat counts (combat, damage outside combat), not only combats. Sauron may pick any of his three markers, the Despondent hero still advancing it 2 spaces. | `high_stakes.rs` |
+| e | High stakes: "defeat a minion" | A minion reduced to 0 health in a combat; dominance and stage are read when the combat ends. The Finale combat ends the game and gives nothing. | `high_stakes.rs`, `combat/flow.rs` |
+
 ## 5. Project questions
 
 ### Q26. `rules-gaps.md` is out of date — Open

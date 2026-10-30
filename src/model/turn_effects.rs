@@ -4,6 +4,7 @@ use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
 
+use crate::game_data::plot::StoryType;
 use crate::model::board::PlotSlot;
 
 /// Effects of Shadow and Plot cards that outlive the moment they were played.
@@ -26,6 +27,9 @@ pub struct TurnEffects {
     /// Location picked by Sauron for the active plots that let him choose it.
     #[serde(default)]
     pub plot_locations: BTreeMap<PlotSlot, String>,
+    /// Marker Sauron picked for the hero being defeated (High stakes stage III).
+    #[serde(default)]
+    pub defeat_marker: Option<StoryType>,
 }
 
 impl TurnEffects {

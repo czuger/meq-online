@@ -44,19 +44,24 @@ impl Game {
         self.log(ActorRef::System, "finale.start", &[]);
         let sauron = self.sauron_mission_fulfilled();
         let heroes = self.heroes_mission_fulfilled();
-        if let Some(winner) = self.reveal_missions(sauron, heroes) {
+        let dominance = self.dominance(data)?;
+        if let Some(winner) = self.reveal_missions(dominance, sauron, heroes) {
             return self.end_game(winner);
         }
         self.advance_for_missions(sauron, heroes);
         self.prepare_finale(data, rng)?;
-        self.adjust_ringwraiths()?;
+        self.adjust_ringwraiths(data)?;
         self.ask_champion()
     }
 
     /// Step 1: the dominant side reveals its Mission and wins if it is fulfilled; with
     /// no dominant side both reveal, and only a single fulfilled Mission wins.
-    fn reveal_missions(&mut self, sauron: bool, heroes: bool) -> Option<Winner> {
-        let dominance = self.board.story.data().dominance;
+    fn reveal_missions(
+        &mut self,
+        dominance: Dominance,
+        sauron: bool,
+        heroes: bool,
+    ) -> Option<Winner> {
         if dominance != Dominance::Heroes {
             let params = [
                 ("mission", json!(self.sauron_mission())),
@@ -126,9 +131,9 @@ impl Game {
     /// to the Finale when Sauron is dominant; they lose Sauron's distance (the lower of
     /// his closest marker to the Finale and his markers to The Shadow Falls) when the
     /// heroes are.
-    fn adjust_ringwraiths(&mut self) -> Result<(), EngineError> {
+    fn adjust_ringwraiths(&mut self, data: &GameData) -> Result<(), EngineError> {
         let story = self.board.story.data();
-        let change = match story.dominance {
+        let change = match self.dominance(data)? {
             Dominance::Sauron => story.heroes_to_final.max(0),
             Dominance::Heroes => -story.sauron_to_final.min(story.sauron_to_shadowfall).max(0),
             Dominance::Nobody => 0,

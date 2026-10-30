@@ -4,9 +4,11 @@ mod common;
 
 use axum::http::StatusCode;
 use common::TestApp;
+use common::driver::Driver;
 use meq_online::engine::board_state::BoardState;
 use meq_online::engine::deck::SauronDeck;
 use meq_online::game_data::mob_def::MobKind;
+use meq_online::model::game::Game;
 use meq_online::model::sauron_action::{ActionInProgress, SauronAction};
 
 #[tokio::test]
@@ -715,4 +717,151 @@ async fn finale_flow() {
     let story = app.get(&format!("/boards/{board}/story_screen"), &me).await;
     assert!(story.body.contains("Victoire des héros"), "{}", story.body);
     assert!(story.body.contains("heroes_0.png"), "{}", story.body);
+}
+
+/// Creates a board with `heroes` on computer seats and the optional rules in `options`,
+/// then plays Sauron's setup and first turn, every hero turn and Sauron's second turn
+/// through HTTP only.
+async fn full_round<'a>(app: &'a TestApp, heroes: &[&str], options: &str) -> (Driver<'a>, Game) {
+    let me = app.login("sauron").await;
+    let seats: Vec<String> = heroes.iter().map(|h| format!("heroes={h}")).collect();
+    let form = format!("{}&seats=computer{options}", seats.join("&"));
+    assert_eq!(
+        app.post("/boards", &me, &form).await.status,
+        StatusCode::SEE_OTHER
+    );
+    let game = app.game(1).await;
+    let mut driver = Driver::new(app, &me, &game);
+
+    // § 4: Sauron's first turn has no Story nor Plot step; the heroes draw next.
+    let game = driver
+        .play_until(|g| g.board.state == BoardState::HeroDrawCardsScreen)
+        .await;
+    assert_eq!(game.board.turn, 1);
+    assert!(game.board.sauron_objective.is_some() && game.board.heroes_objective.is_some());
+    assert!(game.board.last_event.is_some());
+    assert!(game.heroes.iter().all(|h| h.active));
+
+    // § 5.3: the heroes' turns end the round; Sauron's second turn advances the story.
+    let game = driver
+        .play_until(|g| g.board.turn == 2 && g.board.state == BoardState::HeroDrawCardsScreen)
+        .await;
+    assert!(game.board.story.heroes >= 2, "{:?}", game.board.story);
+    assert!(game.board.winner.is_none());
+    (driver, game)
+}
+
+// § 4: one hero plays two turns per Sauron turn.
+#[tokio::test]
+async fn full_round_with_one_hero() {
+    let app = TestApp::new().await;
+    let (driver, _) = full_round(&app, &["beravor"], "").await;
+    let turns: Vec<i32> = driver.hero_turns.iter().map(|(_, turn)| *turn).collect();
+    assert_eq!(turns, [1, 2]);
+}
+
+// § 4: two heroes, one turn each.
+#[tokio::test]
+async fn full_round_with_two_heroes() {
+    let app = TestApp::new().await;
+    let (driver, game) = full_round(&app, &["eleanor", "thalin"], "").await;
+    let played: Vec<i64> = driver.hero_turns.iter().map(|(id, _)| *id).collect();
+    let mut seated: Vec<i64> = game.heroes.iter().map(|h| h.id.unwrap()).collect();
+    seated.sort_unstable();
+    assert_eq!(played, seated);
+}
+
+// § 4, § 10.4: three heroes and both optional rules, shown on the story screen.
+#[tokio::test]
+async fn full_round_with_three_heroes_and_optional_rules() {
+    let options = "&advanced_dominance=1&high_stakes=1";
+    let app = TestApp::new().await;
+    let (driver, game) = full_round(&app, &["beravor", "eometh", "argalad"], options).await;
+    assert_eq!(driver.hero_turns.len(), 3);
+    assert!(game.board.options.advanced_dominance && game.board.options.high_stakes);
+    let story = driver
+        .app
+        .get(
+            &format!("/boards/{}/story_screen", driver.board),
+            &driver.cookie,
+        )
+        .await;
+    assert!(
+        story.body.contains("Domination avancée") && story.body.contains("Enjeux élevés"),
+        "{}",
+        story.body
+    );
+}
+
+// § 10.4: High stakes stage III, the heroes dominant: a hero defeated in combat sends
+// Sauron to the choice screen to pick the marker that advances.
+#[tokio::test]
+async fn high_stakes_defeat_flow() {
+    use meq_online::model::board::StoryMarkers;
+
+    let app = TestApp::new().await;
+    let me = app.login("gandalf").await;
+    let mut game = app.create_board(&me).await;
+    let board = game.board.id.unwrap();
+    let hero = game.heroes[0].id.unwrap();
+    game.board.options.high_stakes = true;
+    game.board.story = StoryMarkers {
+        heroes: 14,
+        ring: 13,
+        conquest: 0,
+        corruption: 1,
+    };
+    game.board.current_hero_id = Some(hero);
+    game.board.state = BoardState::HeroMovementScreen;
+    game.heroes[0].location = "bree".to_owned();
+    game.create_mob("orc", "bree", None, &app.state.data)
+        .unwrap();
+    // The orc gets its id.
+    app.save(&mut game).await;
+    let mut rng: rand::rngs::StdRng = rand::make_rng();
+    game.face_location_threats(hero, false, &app.state.data, &mut rng)
+        .unwrap();
+    // No Shadow card to play at the start of the combat.
+    game.sauron.shadow_hand.clear();
+    game.board.state = BoardState::CombatSetupScreenBoardCombats;
+    app.save(&mut game).await;
+    app.post(
+        &format!("/boards/{board}/combats/combat_setup"),
+        &me,
+        "draw=0",
+    )
+    .await;
+    // The hero has no card left: the combat is lost.
+    let mut game = app.game(board).await;
+    game.heroes[0].hand.clear();
+    game.heroes[0].life_pool.clear();
+    app.save(&mut game).await;
+
+    let end = app
+        .get(&format!("/boards/{board}/combats/terminate"), &me)
+        .await;
+    let screen = format!("/boards/{board}/choices/choice_screen");
+    assert_eq!(
+        end.location.as_deref(),
+        Some(screen.as_str()),
+        "{}",
+        end.body
+    );
+    let page = app.get(&screen, &me).await;
+    assert!(
+        page.body.contains("Enjeux élevés") && page.body.contains("Marqueur de la conquête"),
+        "{}",
+        page.body
+    );
+    let answer = app
+        .post(
+            &format!("/boards/{board}/choices/choose"),
+            &me,
+            "option=advance_marker&targets=advance_marker%7Cmarker%3Aring",
+        )
+        .await;
+    assert_eq!(answer.status, StatusCode::SEE_OTHER, "{}", answer.body);
+    let game = app.game(board).await;
+    assert_eq!((game.board.story.ring, game.board.story.conquest), (14, 0));
+    assert_eq!(game.heroes[0].location, "fornost");
 }

@@ -74,7 +74,8 @@ impl Game {
     /// decisions to make, otherwise the defeat resolves at once.
     ///
     /// # Returns
-    /// `None` when the hero must choose on the defeat screen.
+    /// `None` when the hero must choose on the defeat screen, or Sauron on the choice
+    /// screen (High stakes stage III).
     ///
     /// # Errors
     /// Lookup and transition errors.
@@ -86,6 +87,10 @@ impl Game {
     ) -> Result<Option<DefeatOutcome>, EngineError> {
         self.fire(BoardEvent::NextToHeroDefeatScreen)?;
         self.activate_current_hero()?;
+        if self.sauron_picks_defeat_marker(data)? {
+            self.ask_defeat_marker(hero_id)?;
+            return Ok(None);
+        }
         if self.defeat_needs_choice(hero_id)? {
             return Ok(None);
         }
@@ -109,11 +114,23 @@ impl Game {
     /// # Errors
     /// [`EngineError::NotFound`] when the hero is unknown.
     pub fn defeat_needs_choice(&self, hero_id: i64) -> Result<bool, EngineError> {
-        let tied = self.board.story.lowest_sauron_markers().len() > 1;
+        let tied = !self.defeat_marker_choices().is_empty();
         Ok(tied || defeat_losses(self.hero(hero_id)?).len() > 1)
     }
 
-    /// Resolves the steps of a defeat: advance the lowest Sauron marker, lose a favor
+    /// Markers the defeated hero chooses among: the lowest ones when tied, none when
+    /// there is a single lowest marker or Sauron picked it.
+    pub fn defeat_marker_choices(&self) -> Vec<StoryType> {
+        let lowest = self.board.story.lowest_sauron_markers();
+        if lowest.len() > 1 && self.board.turn_effects.defeat_marker.is_none() {
+            lowest
+        } else {
+            vec![]
+        }
+    }
+
+    /// Resolves the steps of a defeat: advance the lowest Sauron marker (or the one
+    /// Sauron picked, High stakes stage III), lose a favor
     /// or an Item, then go to the closest Haven, recover and end the turn.
     ///
     /// # Errors
@@ -128,6 +145,7 @@ impl Game {
     ) -> Result<DefeatOutcome, EngineError> {
         let marker = self.defeat_marker(choice.marker)?;
         let loss = self.defeat_loss(hero_id, choice.loss)?;
+        self.board.turn_effects.defeat_marker = None;
         let spaces = self.story_penalty(hero_id, data)?;
         self.board.story.advance(marker, spaces);
         self.log(
@@ -174,6 +192,9 @@ impl Game {
     }
 
     fn defeat_marker(&self, chosen: Option<StoryType>) -> Result<StoryType, EngineError> {
+        if let Some(picked) = self.board.turn_effects.defeat_marker {
+            return Ok(picked);
+        }
         let lowest = self.board.story.lowest_sauron_markers();
         match (lowest.as_slice(), chosen) {
             ([only], _) => Ok(*only),

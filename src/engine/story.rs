@@ -19,7 +19,7 @@ const SHADOW_FALLS_SPACE: i32 = 10;
 const STAGE_SPACES: i32 = 6;
 
 /// Spaces the heroes' marker advances at each Story step (§ 5.3).
-const HEROES_STORY_ADVANCE: i32 = 2;
+pub(crate) const HEROES_STORY_ADVANCE: i32 = 2;
 
 /// Side closer to its goal.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

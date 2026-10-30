@@ -81,6 +81,7 @@ fn shadow_label(code: &str) -> &'static str {
         "corrupt_hero" => "Donner 1 carte de corruption à ce héros",
         "plot_location" => "Choisir le lieu affecté par l'intrigue",
         "champion" => "Choisir le champion",
+        "advance_marker" => "Choisir le marqueur de Sauron qui avance (héros vaincu)",
         other => reward_label(other),
     }
 }
@@ -181,7 +182,7 @@ pub fn target_label(code: &str, game: &Game, data: &GameData, sauron: bool) -> S
     }
 }
 
-/// Labels of the targets of Shadow card decisions.
+/// Labels of the targets of Shadow card decisions and of story markers.
 fn shadow_target_label(code: &str, game: &Game, data: &GameData, sauron: bool) -> String {
     let (kind, values) = parse_target(code);
     let first = values.first().copied().unwrap_or_default();
@@ -200,6 +201,13 @@ fn shadow_target_label(code: &str, game: &Game, data: &GameData, sauron: bool) -
             .and_then(|c| data.shadow(c).ok())
             .map_or_else(String::new, |c| format!("{} : {}", c.name_fr, c.text_fr)),
         "plot_card" => "Carte Intrigue".to_owned(),
+        "marker" => match first {
+            "ring" => "Marqueur de l'Anneau",
+            "conquest" => "Marqueur de la conquête",
+            "corruption" => "Marqueur de la corruption",
+            _ => "Marqueur inconnu",
+        }
+        .to_owned(),
         _ => code.to_owned(),
     }
 }

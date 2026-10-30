@@ -13,6 +13,7 @@ use crate::game_data::mob_def::MobKind;
 use crate::game_data::monster_pool_color::MonsterPoolColor;
 use crate::model::board::{Board, Decks, Pile, StoryMarkers};
 use crate::model::game::Game;
+use crate::model::game_options::GameOptions;
 use crate::model::hero::Hero;
 use crate::model::mob::Mob;
 use crate::model::sauron::Sauron;
@@ -208,6 +209,7 @@ pub fn game() -> Game {
         turn_effects: TurnEffects::default(),
         heroes_objective: None,
         sauron_objective: None,
+        options: GameOptions::default(),
     };
     let sauron = Sauron {
         id: Some(1),

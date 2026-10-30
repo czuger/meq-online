@@ -18,6 +18,7 @@ use crate::game_data::monster_pool_color::MonsterPoolColor;
 use crate::model::actor_ref::ActorRef;
 use crate::model::board::{Board, Decks, Pile, StoryMarkers};
 use crate::model::game::Game;
+use crate::model::game_options::GameOptions;
 use crate::model::hero::{Hero, HeroItems};
 use crate::model::sauron::Sauron;
 use crate::model::turn_effects::TurnEffects;
@@ -154,6 +155,7 @@ fn new_board(starting_plot: u32, data: &GameData, rng: &mut StdRng) -> Result<Bo
         turn_effects: TurnEffects::default(),
         heroes_objective: None,
         sauron_objective: None,
+        options: GameOptions::default(),
     })
 }
 
