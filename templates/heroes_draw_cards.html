@@ -3,6 +3,10 @@
 <div class="page">
   <h1>Pioche</h1>
   <p class="lead">Vous pouvez piocher autant de cartes que votre endurance, ou moins.</p>
+  <p>Déjà pioché ce tour-ci : <b>{{ drawn }}</b> / {{ fortitude }} (endurance) · réserve de vie : {{ life_pool }} carte(s) · encore <b>{{ left_to_draw }}</b> à piocher.</p>
+  {% if let Some(reason) = blocked %}
+  <p>{{ reason }} Cliquez sur « Terminer ».</p>
+  {% endif %}
   {% if left_to_draw > 0 %}
   <form method="post" action="/heroes/{{ hero_id }}/draw_cards" class="field-inline">
     <label for="nb_cards">Nombre de cartes</label>

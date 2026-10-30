@@ -3,6 +3,17 @@
 <div class="page">
   <h1>Déplacement</h1>
   <p class="lead">Choisissez les cartes à défausser dans votre main, puis la destination.</p>
+  <details class="rules">
+    <summary>Règles</summary>
+    <ul>
+      <li>Chaque chemin porte une icône de déplacement et un nombre. Pour l'emprunter, défaussez une carte portant la même icône, ou autant de cartes que le nombre indiqué. Exemple : un chemin « colline (3) » coûte une carte colline ou trois cartes quelconques.</li>
+      <li>Un chemin « toute carte » coûte une carte quelconque. Avec l'objet Bateau, un chemin d'eau coûte aussi une carte quelconque.</li>
+      <li>Les cartes défaussées vont, face visible, dans votre réserve de repos.</li>
+      <li>Vous pouvez vous déplacer autant de fois que vous le voulez ou le pouvez, puis cliquez sur « Fin du déplacement ».</li>
+      <li>Si le lieu d'arrivée est périlleux (cadre de péril, ou plus d'influence que votre sagesse) ou contient des monstres ou des sbires, Sauron choisit une attaque ou un Péril. Si vous ne battez pas le monstre ou le sbire, votre tour s'arrête aussitôt.</li>
+      {% if argalad_can_use_power %}<li>Argalad : une fois par tour, il peut voir les monstres qui l'entourent avant de se déplacer.</li>{% endif %}
+    </ul>
+  </details>
   {% include "cards_hand.html" %}
   <p class="selection-count" data-selection-count>Aucune carte choisie.</p>
   <form method="post" action="/heroes/{{ hero_id }}/move" id="move-form">

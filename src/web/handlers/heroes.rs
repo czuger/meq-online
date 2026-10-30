@@ -9,6 +9,7 @@ use serde::Deserialize;
 use crate::app_state::AppState;
 use crate::engine::movement::{MoveOutcome, path_difficulty};
 use crate::engine::rest::{Rest, RestOutcome};
+use crate::game_data::GameData;
 use crate::game_data::plot::StoryType;
 use crate::model::game::Game;
 use crate::model::hero::Hero;
@@ -85,6 +86,11 @@ struct DrawCardsPage {
     layout: Layout,
     hero_id: i64,
     left_to_draw: i32,
+    drawn: i32,
+    fortitude: i32,
+    life_pool: usize,
+    /// Why nothing more can be drawn, once `left_to_draw` is 0.
+    blocked: Option<&'static str>,
 }
 
 /// Movement form: the destination is the clicked button.
@@ -494,8 +500,25 @@ pub async fn draw_cards_screen(
         layout: hero_layout(&state, &access.session, &game, access.hero_id).await?,
         hero_id: access.hero_id,
         left_to_draw: hero.cards_left_to_draw(&state.data),
+        drawn: hero.cards_drawn_this_round,
+        fortitude: hero.fortitude,
+        life_pool: hero.life_pool.len(),
+        blocked: draw_blocked(hero, &state.data),
     };
     render(&page, &page.layout)
+}
+
+/// Why the hero can't draw anymore this step, in the order `cards_left_to_draw` caps it.
+fn draw_blocked(hero: &Hero, data: &GameData) -> Option<&'static str> {
+    if hero.cards_left_to_draw(data) > 0 {
+        None
+    } else if hero.cards_drawn_this_round >= hero.fortitude {
+        Some("Vous avez déjà pioché autant de cartes que votre endurance ce tour-ci.")
+    } else if hero.life_pool.is_empty() {
+        Some("Votre réserve de vie est vide.")
+    } else {
+        Some("Votre main est pleine : un héros désemparé ne garde pas plus de 7 cartes.")
+    }
 }
 
 /// `POST /heroes/{hero_id}/draw_cards`.
