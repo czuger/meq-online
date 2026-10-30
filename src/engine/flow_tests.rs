@@ -83,9 +83,9 @@ fn fight_at(mob_code: &str, ambush: bool) -> Game {
     m.location = "the_shire".to_owned();
     g.mobs.push(m);
     let encounter = g
-        .check_location_encounters(1, ambush, data(), &mut rng())
+        .face_location_threats(1, ambush, data(), &mut rng())
         .unwrap();
-    assert_eq!(encounter, crate::engine::encounters::Encounter::Monster);
+    assert_eq!(encounter, crate::engine::threats::Threat::Combat);
     g.board.state = BoardState::CombatSetupScreenBoardCombats;
     g.combat_setup(0, data(), &mut rng()).unwrap();
     g
@@ -99,7 +99,7 @@ fn preparation_splits_agility() {
     let mut m = mob("orc");
     m.location = "the_shire".to_owned();
     g.mobs.push(m);
-    g.check_location_encounters(1, false, data(), &mut rng())
+    g.face_location_threats(1, false, data(), &mut rng())
         .unwrap();
     g.board.state = BoardState::CombatSetupScreenBoardCombats;
     let hand = g.heroes[0].hand.len();
@@ -162,8 +162,9 @@ fn both_sides_declaring_ends_the_combat() {
     assert!(result.hero_exhausted && result.mob_exhausted);
 }
 
+// § 6.5: a monster met while travelling and defeated lets the hero explore.
 #[test]
-fn defeated_monster_leaves_and_hero_moves_on() {
+fn defeated_monster_leaves_and_hero_explores() {
     let mut g = fight("orc");
     g.mobs[0].life = 0;
     g.combat
@@ -173,7 +174,7 @@ fn defeated_monster_leaves_and_hero_moves_on() {
         .push(crate::model::played_card::PlayedCard::exhausted());
     assert_eq!(
         g.terminate_combat(data(), &mut rng()).unwrap(),
-        CombatEnd::Movement
+        CombatEnd::Exploration
     );
     assert!(g.mobs.is_empty());
     assert_eq!(
@@ -182,7 +183,7 @@ fn defeated_monster_leaves_and_hero_moves_on() {
         "§ 8.3: the monster token is discarded"
     );
     assert!(g.combat.is_none());
-    assert_eq!(g.board.state, BoardState::HeroMovementScreen);
+    assert_eq!(g.board.state, BoardState::HeroExploration);
     assert!(
         g.heroes[0].rest_pool.is_empty(),
         "exhausted placeholders are not cards"
@@ -215,6 +216,25 @@ fn surviving_mob_ends_the_turn_when_travelling() {
     assert!(g.mobs.is_empty(), "the token is discarded anyway");
 }
 
+// Thálin (Iron Will): his turn doesn't end after failing to defeat an opponent.
+#[test]
+fn thalin_goes_on_after_a_lost_combat() {
+    let mut g = game();
+    g.heroes[0] = crate::engine::test_support::hero("thalin");
+    g.board.state = BoardState::HeroMovementScreen;
+    let mut m = mob("orc");
+    m.location = "the_shire".to_owned();
+    g.mobs.push(m);
+    g.face_location_threats(1, false, data(), &mut rng())
+        .unwrap();
+    g.board.state = BoardState::PlayCombatCardScreenBoardCombats;
+    both_exhausted(&mut g);
+    assert_eq!(
+        g.terminate_combat(data(), &mut rng()).unwrap(),
+        CombatEnd::Exploration
+    );
+}
+
 // § 6.4: after an ambush the turn goes on unless the hero is defeated.
 #[test]
 fn surviving_mob_doesnt_end_the_turn_after_an_ambush() {
@@ -236,7 +256,7 @@ fn ringwraiths_come_back_at_the_next_action_step() {
     g.create_mob("ringwraiths", "the_shire", None, data())
         .unwrap();
     g.mobs[0].id = Some(1);
-    g.check_location_encounters(1, false, data(), &mut rng())
+    g.face_location_threats(1, false, data(), &mut rng())
         .unwrap();
     g.board.state = BoardState::PlayCombatCardScreenBoardCombats;
     g.combat.as_mut().unwrap().hero_strength = Some(5);
@@ -244,7 +264,7 @@ fn ringwraiths_come_back_at_the_next_action_step() {
     g.heroes[0].turn = 2;
     assert_eq!(
         g.terminate_combat(data(), &mut rng()).unwrap(),
-        CombatEnd::Movement
+        CombatEnd::Exploration
     );
     assert!(g.mobs.is_empty());
     assert!(g.board.ringwraiths_return);

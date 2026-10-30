@@ -16,6 +16,7 @@ use crate::game_data::location_paths::LocationPaths;
 use crate::game_data::locations::Locations;
 use crate::game_data::mob_def::MobDef;
 use crate::game_data::monster_pool_color::MonsterPoolColor;
+use crate::game_data::peril::{PerilCard, PerilCode};
 use crate::game_data::plot::Plot;
 use crate::game_data::yaml_loader::{load, load_map};
 
@@ -58,6 +59,8 @@ pub struct GameData {
     pub skills: BTreeMap<CardNumber, CombatCardDef>,
     /// Starting content of each monster pool.
     pub monster_pools: BTreeMap<MonsterPoolColor, Vec<String>>,
+    /// Peril cards by number.
+    pub perils: BTreeMap<PerilCode, PerilCard>,
 }
 
 impl GameData {
@@ -79,6 +82,7 @@ impl GameData {
             hero_quests: load(dir, "heroes_quests")?,
             skills: load(dir, "skills")?,
             monster_pools: load(dir, "locations_monsters")?,
+            perils: load(dir, "perils")?,
         })
     }
 
@@ -184,6 +188,16 @@ impl GameData {
             .ok_or_else(|| GameDataError::unknown("character", code))
     }
 
+    /// Looks up a Peril card.
+    ///
+    /// # Errors
+    /// [`GameDataError::UnknownCode`] when the card doesn't exist.
+    pub fn peril(&self, code: PerilCode) -> Result<&PerilCard, GameDataError> {
+        self.perils
+            .get(&code)
+            .ok_or_else(|| GameDataError::unknown("peril card", code))
+    }
+
     /// Looks up a corruption card.
     ///
     /// # Errors
@@ -245,7 +259,14 @@ mod tests {
                 .difficulty,
             2
         );
-        assert_eq!(data.corruption.deck, vec![2, 3, 5, 8, 9, 10, 14]);
+        assert_eq!(data.corruption.deck, (0..16).collect::<Vec<_>>());
+        assert!(
+            data.corruption
+                .deck
+                .iter()
+                .all(|c| data.corruption_card(*c).is_ok())
+        );
+        assert_eq!(data.perils.len(), 15);
         assert_eq!(data.monster_pools[&MonsterPoolColor::Orange].len(), 10);
         assert!(data.skills.contains_key(&100));
     }

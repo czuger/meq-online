@@ -6,17 +6,21 @@ use serde_json::json;
 
 use crate::engine::board_state::BoardEvent;
 use crate::engine::combat::reveal::reveal_secretly_played_cards;
-use crate::engine::defeat::{DefeatChoice, DefeatOutcome};
+use crate::engine::defeat::DefeatOutcome;
 use crate::engine::engine_error::EngineError;
 use crate::engine::mobs::RINGWRAITHS;
+use crate::engine::perils::effects::peril_combat_continues;
 use crate::engine::turn::TurnEnd;
 use crate::game_data::GameData;
 use crate::game_data::combat_card_def::CardNumber;
 use crate::game_data::corruption_card::Flaw;
 use crate::game_data::mob_def::MobKind;
 use crate::model::actor_ref::ActorRef;
-use crate::model::combat::Combat;
+use crate::model::combat::{Combat, CombatOrigin};
 use crate::model::game::Game;
+
+/// Hero whose turn doesn't end after failing to defeat an opponent (Iron Will).
+const IRON_WILL_HERO: &str = "thalin";
 
 /// Side of a combat.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -54,8 +58,12 @@ pub struct CombatResult {
 /// Where the hero goes after a combat.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CombatEnd {
-    /// The hero survived and its turn goes on.
+    /// The hero survived an ambush and travels.
     Movement,
+    /// The hero survived a combat met while travelling and explores.
+    Exploration,
+    /// The hero's reward asks a choice (training).
+    Choice,
     /// The hero was defeated and has choices to make.
     Defeat,
     /// The hero was defeated; Sauron picks its Haven.
@@ -106,7 +114,8 @@ impl Game {
         let code = hero.code.clone();
         let base_strength = hero.strength;
         let strength = base_strength + agility - agility_to_draw;
-        let drawn = hero.draw_cards(usize::try_from(agility_to_draw).unwrap_or(0));
+        let wanted = usize::try_from(agility_to_draw).unwrap_or(0);
+        let drawn = hero.draw_cards(wanted.min(hero.room_in_hand(data)));
         let left = hero.life_pool.len();
         let params = [
             ("name", json!(code)),
@@ -296,8 +305,8 @@ impl Game {
 
     /// Ends the combat (§ 8.3 Resolution): played cards go to the rest pool, the
     /// monster token is discarded, an undefeated mob lets Sauron place influence equal
-    /// to its wisdom. A defeated hero resolves its defeat (§ 8.9); otherwise the turn
-    /// ends only when a mob met while travelling survived (§ 6.4, § 6.5).
+    /// to its wisdom. A defeated hero resolves its defeat (§ 8.9); otherwise see
+    /// [`Game::after_combat`].
     ///
     /// # Errors
     /// [`EngineError::Refused`] when the combat isn't over; lookup and transition errors.
@@ -320,35 +329,60 @@ impl Game {
         self.remove_fought_mob(combat.mob_id)?;
 
         if result.hero_defeated {
-            return self.start_hero_defeat(combat.hero_id, data, rng);
+            return Ok(match self.start_hero_defeat(combat.hero_id, data, rng)? {
+                None => CombatEnd::Defeat,
+                Some(DefeatOutcome::ChooseHaven) => CombatEnd::ChooseHaven,
+                Some(DefeatOutcome::TurnEnded(end)) => CombatEnd::TurnEnded(end),
+            });
         }
-        if result.mob_defeated || combat.ambush {
+        self.after_combat(
+            combat.hero_id,
+            combat.origin,
+            result.mob_defeated,
+            data,
+            rng,
+        )
+    }
+
+    /// The hero survived: a Peril combat won gives its reward. The turn ends when a mob
+    /// met while travelling survived (§ 6.5), except after an ambush (§ 6.4), for
+    /// Thálin (Iron Will) and for the Peril cards saying so. Otherwise the hero travels
+    /// after an ambush and explores after a combat met while travelling.
+    fn after_combat(
+        &mut self,
+        hero_id: i64,
+        origin: CombatOrigin,
+        mob_defeated: bool,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<CombatEnd, EngineError> {
+        let peril = match origin {
+            CombatOrigin::Peril { card } => Some(data.peril(card)?.effect),
+            CombatOrigin::Ambush | CombatOrigin::Travel => None,
+        };
+        let goes_on = mob_defeated
+            || origin == CombatOrigin::Ambush
+            || self.hero(hero_id)?.code == IRON_WILL_HERO
+            || peril.is_some_and(peril_combat_continues);
+        if !goes_on {
+            return Ok(CombatEnd::TurnEnded(
+                self.finish_heroes_turn(hero_id, data)?,
+            ));
+        }
+        if let (true, CombatOrigin::Peril { card }) = (mob_defeated, origin) {
+            self.reward_peril_victory(hero_id, card, data, rng)?;
+            if self.board.pending_choice.is_some() {
+                return Ok(CombatEnd::Choice);
+            }
+        }
+        if origin == CombatOrigin::Ambush {
             self.fire(BoardEvent::NextToHeroMovementScreen)?;
             self.activate_current_hero()?;
             return Ok(CombatEnd::Movement);
         }
-        Ok(CombatEnd::TurnEnded(
-            self.finish_heroes_turn(combat.hero_id, data)?,
-        ))
-    }
-
-    fn start_hero_defeat(
-        &mut self,
-        hero_id: i64,
-        data: &GameData,
-        rng: &mut StdRng,
-    ) -> Result<CombatEnd, EngineError> {
-        self.fire(BoardEvent::NextToHeroDefeatScreen)?;
+        self.fire(BoardEvent::NextToHeroExploration)?;
         self.activate_current_hero()?;
-        if self.defeat_needs_choice(hero_id)? {
-            return Ok(CombatEnd::Defeat);
-        }
-        Ok(
-            match self.resolve_hero_defeat(hero_id, DefeatChoice::default(), data, rng)? {
-                DefeatOutcome::ChooseHaven => CombatEnd::ChooseHaven,
-                DefeatOutcome::TurnEnded(end) => CombatEnd::TurnEnded(end),
-            },
-        )
+        Ok(CombatEnd::Exploration)
     }
 
     /// Sauron may place influence equal to the wisdom of an undefeated mob (§ 8.3).

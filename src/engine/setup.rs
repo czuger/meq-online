@@ -172,6 +172,8 @@ fn shuffled_decks(data: &GameData, rng: &mut StdRng) -> Decks {
     corruption.shuffle(rng);
     let mut skills: Vec<u32> = data.skills.keys().copied().collect();
     skills.shuffle(rng);
+    let mut peril: Vec<u32> = data.perils.keys().copied().collect();
+    peril.shuffle(rng);
     let [event, event_ii, event_iii] = starting_event_decks(data, rng);
     Decks {
         plot: Pile {
@@ -200,6 +202,10 @@ fn shuffled_decks(data: &GameData, rng: &mut StdRng) -> Decks {
         },
         corruption: Pile {
             draw: corruption,
+            discard: vec![],
+        },
+        peril: Pile {
+            draw: peril,
             discard: vec![],
         },
     }
@@ -256,7 +262,7 @@ fn new_hero(
             boat: false,
         },
         levels: Default::default(),
-        used_powers: Default::default(),
+        turn_record: Default::default(),
         corruption_cards: vec![],
     })
 }

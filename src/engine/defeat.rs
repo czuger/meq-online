@@ -1,4 +1,4 @@
-//! A hero defeated in combat (§ 8.9).
+//! A defeated hero (§ 8.9).
 
 use rand::rngs::StdRng;
 use serde_json::json;
@@ -7,6 +7,7 @@ use crate::engine::board_state::BoardEvent;
 use crate::engine::engine_error::EngineError;
 use crate::engine::turn::TurnEnd;
 use crate::game_data::GameData;
+use crate::game_data::corruption_card::Flaw;
 use crate::game_data::plot::StoryType;
 use crate::model::actor_ref::ActorRef;
 use crate::model::game::Game;
@@ -66,6 +67,39 @@ pub fn closest_havens<'d>(location: &str, data: &'d GameData) -> Vec<&'d str> {
 }
 
 impl Game {
+    /// A hero is defeated, in combat or not: the defeat screen opens when he has
+    /// decisions to make, otherwise the defeat resolves at once.
+    ///
+    /// # Returns
+    /// `None` when the hero must choose on the defeat screen.
+    ///
+    /// # Errors
+    /// Lookup and transition errors.
+    pub fn start_hero_defeat(
+        &mut self,
+        hero_id: i64,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<Option<DefeatOutcome>, EngineError> {
+        self.fire(BoardEvent::NextToHeroDefeatScreen)?;
+        self.activate_current_hero()?;
+        if self.defeat_needs_choice(hero_id)? {
+            return Ok(None);
+        }
+        self.resolve_hero_defeat(hero_id, DefeatChoice::default(), data, rng)
+            .map(Some)
+    }
+
+    /// Spaces the lowest Sauron marker advances when the hero rests or is defeated:
+    /// 2 for a despondent hero, 1 otherwise.
+    ///
+    /// # Errors
+    /// [`EngineError::NotFound`] when the hero is unknown.
+    pub fn story_penalty(&self, hero_id: i64, data: &GameData) -> Result<i32, EngineError> {
+        let despondent = self.hero(hero_id)?.has_flaw(Flaw::Despondent, data);
+        Ok(if despondent { 2 } else { 1 })
+    }
+
     /// Tells whether the defeated hero has a decision to make: tied story markers, or
     /// several things it could lose.
     ///
@@ -91,11 +125,12 @@ impl Game {
     ) -> Result<DefeatOutcome, EngineError> {
         let marker = self.defeat_marker(choice.marker)?;
         let loss = self.defeat_loss(hero_id, choice.loss)?;
-        self.board.story.advance(marker, 1);
+        let spaces = self.story_penalty(hero_id, data)?;
+        self.board.story.advance(marker, spaces);
         self.log(
             ActorRef::Hero(hero_id),
             "story.advance",
-            &[("marker_name", json!(marker)), ("count", json!(1))],
+            &[("marker_name", json!(marker)), ("count", json!(spaces))],
         );
         if let Some(loss) = loss {
             self.lose_to_defeat(hero_id, loss)?;

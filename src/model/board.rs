@@ -55,6 +55,9 @@ pub struct Decks {
     pub skill: Pile,
     /// Corruption cards.
     pub corruption: Pile,
+    /// Peril cards.
+    #[serde(default)]
+    pub peril: Pile,
 }
 
 /// An event card: its stage deck and number.

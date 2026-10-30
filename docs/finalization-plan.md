@@ -5,6 +5,7 @@ Plan for bringing the engine to the official *Middle-earth Quest* rules. Written
 
 - Official rules: [`rules.md`](rules.md) (section numbers § below refer to it).
 - Rule-by-rule status of the engine: [`rules-gaps.md`](rules-gaps.md).
+- Open questions, missing card text and interpretations to confirm: [`open-questions.md`](open-questions.md).
 
 Each phase ends green (`cargo test`, `cargo clippy --all-targets`, `cargo fmt`). Each new rule gets engine unit tests
 whose name or comment cites the `rules.md` section it covers. Tick the boxes as items land.
@@ -15,8 +16,8 @@ whose name or comment cites the `rules.md` section it covers. Tick the boxes as 
   4 computer heroes seated in every game, tied Sauron markers all advancing, no shuffle on rest/heal, free corruption
   discard, combat exhaustion at `>=` instead of "exceeds". Recommendation: follow the official rules (phase 2) and
   rewrite the affected tests. *Decided 2026-10-29: follow the official rules.*
-- [ ] **D2. Homebrew peril die** (`engine/hero/peril.rs`). Replace it with the 15 Peril cards, or keep it as a
-  stopgap until their text is entered.
+- [x] **D2. Homebrew peril die** (`engine/hero/peril.rs`). Replace it with the 15 Peril cards, or keep it as a
+  stopgap until their text is entered. *Done 2026-10-30: the die is gone, the 15 cards are in `data/perils.yaml`.*
 - [x] **D3. Enforcement level.** Sauron's turn is an honor system (free action checkboxes, free influence and Shadow
   Pool edits on the map). Recommendation: have the engine enforce the action track (phase 3); every Sauron rule
   depends on it. *Decided 2026-10-29: the engine enforces the action track.*
@@ -96,6 +97,10 @@ Rule deviations:
 - Phase 4 is done (session 2): event step, abilities, card in play, pending choice and its screen, training and
   level tokens, Boat item.
 
+- Phase 5 (session 3, 2026-10-30): threats, Peril cards, consult, Dark Path, corruption effects, hero abilities.
+  Schema changes (`heroes.turn_record`, `combats.origin`): an existing database must be recreated. Left: quests and
+  trading; Encounters and Items stay blocked.
+
 ## Phase 4 — Events
 
 - [x] Use the stage II and III decks from `data/events.yaml`; the current stage picks the deck (§ 5.3).
@@ -109,21 +114,27 @@ Rule deviations:
 
 ## Phase 5 — Hero turn content
 
-- [ ] Sauron chooses which monster or minion ambushes or attacks (§ 6.4, § 6.5); today the strongest is picked
-  automatically.
-- [ ] Combat **or** Peril, Sauron's choice (§ 6.5); today both are applied.
-- [ ] No combat in a Haven unless the hero accepts (§ 8).
-- [ ] Peril deck: draw 3, Sauron picks one matching the location or region; `PerilEffect` enum (after D2).
+- [x] Sauron chooses which monster or minion ambushes or attacks (§ 6.4, § 6.5) (`engine/threats.rs`).
+- [x] Combat **or** Peril, Sauron's choice (§ 6.5).
+- [x] No combat in a Haven unless the hero accepts (§ 8).
+- [x] Peril deck: draw 3 (4 against Reckless), Sauron picks one matching the location or region; `PerilEffect`
+  enum (`game_data/peril.rs`, `engine/perils/`). Damage outside combat with the hero's choice of hand cards
+  (`engine/hero/damage.rs`), defeat outside combat.
 - [ ] Encounter step: 5 region decks + Haven deck, draw 3, resolve the lowest matching priority, quests go to the
-  play area; none on perilous locations (§ 6.6).
-- [ ] Explore: consult a character for its favor **or** its ability (8 characters, `data/characters.yaml`); today it
-  always gives 2 favor.
-- [ ] Explore: Dark Path (≤ 3 corruption cards: +1 favor, +1 corruption card; once per turn).
-- [ ] Explore: complete quests; trade favor, items and quests with heroes on the same location.
-- [ ] Items (9, one per title; Boat makes water paths cost any one card), Skills and training (`data/skills.yaml`),
-  level tokens with at most two increases per attribute (§ 7).
-- [ ] Hero abilities of the five heroes; today only Argalad's monster peek and Eometh's starting Horse exist.
-- [ ] Remaining corruption card effects; corruption gained from Event, Encounter and Shadow cards.
+  play area; none on perilous locations (§ 6.6). **Blocked: no Encounter card text.**
+- [x] Explore: consult a character for its favor **or** its ability (8 characters, `data/characters.yaml`; favor
+  values unreadable, 2 for all).
+- [x] Explore: Dark Path (≤ 3 corruption cards: +1 favor, +1 corruption card; once per turn).
+- [ ] Explore: complete quests; trade favor, items and quests with heroes on the same location. Quest text is
+  readable on `static/images/hero_cards/quests/standard` (Starting and Advanced quests only).
+- [ ] Items (9, one per title; Boat makes water paths cost any one card). **Blocked: no Item card text, and the path
+  data has no water paths.** Skills, training and level tokens are done (Phase 4).
+- [x] Hero abilities: Beravor (heal or train when resting outside a Haven), Eleanor (+1 favor once per turn when
+  consulting; quests later), Thálin (turn goes on after a lost combat), Eometh (Horse). Argalad still sees every
+  adjacent location instead of one.
+- [x] Remaining corruption card effects: all 16 cards in the deck; Despondent, Hopeless, Mistrusted, Reckless,
+  Distraught, Wretched enforced. Indifferent and Greedy wait for Encounter and Shadow cards. Wretched only ends the
+  turn when drawn during the hero's turn (Peril, Dark Path).
 
 ## Phase 6 — Shadow cards
 

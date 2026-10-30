@@ -3,6 +3,7 @@
 <div class="container">
   <h3>Décision : {{ chooser }}</h3>
   {% if let Some(pic) = card_pic %}<img src="{{ pic }}" class="medium-card mb-3" alt="">{% endif %}
+  {% if let Some(text) = context %}<div class="alert alert-secondary">{{ text }}</div>{% endif %}
   {% if can_answer %}
   <form method="post" action="/boards/{{ board_id }}/choices/choose">
     {% for option in options %}

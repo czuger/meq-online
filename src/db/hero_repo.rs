@@ -43,7 +43,7 @@ pub async fn save(
     if hero.id.is_none() {
         let result = sqlx::query(
             "INSERT INTO heroes (board_id, user_id, code, location, fortitude, strength, agility, wisdom, \
-             playing_order, life_pool, hand, rest_pool, damage_pool, items, used_powers, corruption_cards) \
+             playing_order, life_pool, hand, rest_pool, damage_pool, items, turn_record, corruption_cards) \
              VALUES (?, ?, ?, '', 0, 0, 0, 0, 0, '[]', '[]', '[]', '[]', '{}', '{}', '[]')",
         )
         .bind(board_id)
@@ -61,7 +61,7 @@ async fn update(conn: &mut SqliteConnection, hero: &Hero) -> Result<(), DbError>
         "UPDATE heroes SET user_id = ?, code = ?, location = ?, fortitude = ?, strength = ?, agility = ?, \
          wisdom = ?, favor = ?, quest = ?, advanced_quest = ?, playing_order = ?, turn = ?, active = ?, turn_finished = ?, \
          damages_taken_this_turn = ?, temporary_damages = ?, \
-         cards_drawn_this_round = ?, life_pool = ?, hand = ?, rest_pool = ?, damage_pool = ?, items = ?, levels = ?, used_powers = ?, \
+         cards_drawn_this_round = ?, life_pool = ?, hand = ?, rest_pool = ?, damage_pool = ?, items = ?, levels = ?, turn_record = ?, \
          corruption_cards = ? WHERE id = ?",
     )
     .bind(hero.user_id)
@@ -87,7 +87,7 @@ async fn update(conn: &mut SqliteConnection, hero: &Hero) -> Result<(), DbError>
     .bind(to_json(&hero.damage_pool)?)
     .bind(to_json(&hero.items)?)
     .bind(to_json(&hero.levels)?)
-    .bind(to_json(&hero.used_powers)?)
+    .bind(to_json(&hero.turn_record)?)
     .bind(to_json(&hero.corruption_cards)?)
     .bind(hero.id)
     .execute(conn)
@@ -121,7 +121,7 @@ fn hero_from_row(row: &SqliteRow) -> Result<Hero, DbError> {
         damage_pool: from_json(row.try_get("damage_pool")?)?,
         items: from_json(row.try_get("items")?)?,
         levels: from_json(row.try_get("levels")?)?,
-        used_powers: from_json(row.try_get("used_powers")?)?,
+        turn_record: from_json(row.try_get("turn_record")?)?,
         corruption_cards: from_json(row.try_get("corruption_cards")?)?,
     })
 }

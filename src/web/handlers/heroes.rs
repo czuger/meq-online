@@ -7,7 +7,6 @@ use axum::response::Response;
 use serde::Deserialize;
 
 use crate::app_state::AppState;
-use crate::engine::hero::peril::PerilOutcome;
 use crate::engine::movement::{MoveOutcome, path_difficulty};
 use crate::engine::rest::{Rest, RestOutcome};
 use crate::game_data::plot::StoryType;
@@ -41,6 +40,8 @@ struct RestPage {
     layout: Layout,
     hero_id: i64,
     can_heal: bool,
+    /// Beravor outside a Haven may train instead of healing.
+    can_train: bool,
     corruptions: Vec<CardView>,
 }
 
@@ -155,14 +156,17 @@ pub async fn rest_screen(
 ) -> Result<Response, AppError> {
     let game = read_game(&state, access.board_id).await?;
     let hero = hero(&game, access.hero_id)?;
+    let haven = state
+        .data
+        .locations
+        .get(&hero.location)
+        .is_ok_and(|l| l.haven);
+    let survivalist = game.survivalist_rest(access.hero_id, &state.data)?;
     let page = RestPage {
         layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
         hero_id: access.hero_id,
-        can_heal: state
-            .data
-            .locations
-            .get(&hero.location)
-            .is_ok_and(|l| l.haven),
+        can_heal: haven || survivalist,
+        can_train: survivalist,
         corruptions: hero
             .discardable_corruption_cards(&state.data)
             .into_iter()
@@ -172,10 +176,18 @@ pub async fn rest_screen(
     render(&page, &page.layout)
 }
 
+/// How the hero rests: plain rest, heal, or train (Beravor).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum RestKind {
+    Rest,
+    Heal,
+    Train,
+}
+
 async fn rest(
     state: AppState,
     access: HeroAccess,
-    heal: bool,
+    kind: RestKind,
     query: RestQuery,
 ) -> Result<Response, AppError> {
     let discard = query
@@ -185,7 +197,11 @@ async fn rest(
         .map(|c| number(c, "corruption card"))
         .transpose()?;
     let hero_id = access.hero_id;
-    let rest = Rest { heal, discard };
+    let rest = Rest {
+        heal: kind == RestKind::Heal,
+        train: kind == RestKind::Train,
+        discard,
+    };
     let (_, outcome) = change_game(&state, access.board_id, |game, data, rng| {
         game.rest_hero(hero_id, rest, data, rng)
     })
@@ -194,6 +210,10 @@ async fn rest(
         RestOutcome::Movement => redirect(&format!("/heroes/{hero_id}/movement_screen"), None),
         RestOutcome::ChooseStoryMarker => redirect(
             &format!("/heroes/{hero_id}/after_rest_advance_story_marker_screen"),
+            None,
+        ),
+        RestOutcome::Choice => redirect(
+            &format!("/boards/{}/choices/choice_screen", access.board_id),
             None,
         ),
     })
@@ -208,7 +228,7 @@ pub async fn rest_rest(
     access: HeroAccess,
     Query(query): Query<RestQuery>,
 ) -> Result<Response, AppError> {
-    rest(state, access, false, query).await
+    rest(state, access, RestKind::Rest, query).await
 }
 
 /// `GET /heroes/{hero_id}/rest_heal?corruption=14` (the card to discard is optional).
@@ -220,7 +240,20 @@ pub async fn rest_heal(
     access: HeroAccess,
     Query(query): Query<RestQuery>,
 ) -> Result<Response, AppError> {
-    rest(state, access, true, query).await
+    rest(state, access, RestKind::Heal, query).await
+}
+
+/// `GET /heroes/{hero_id}/rest_train?corruption=14`: Beravor rests outside a Haven and
+/// receives training.
+///
+/// # Errors
+/// Rule and database errors.
+pub async fn rest_train(
+    State(state): State<AppState>,
+    access: HeroAccess,
+    Query(query): Query<RestQuery>,
+) -> Result<Response, AppError> {
+    rest(state, access, RestKind::Train, query).await
 }
 
 /// `GET /heroes/{hero_id}/rest_skip`.
@@ -281,8 +314,8 @@ pub async fn after_rest_advance_story_marker(
         "corruption" => StoryType::Corruption,
         _ => return Err(AppError::BadRequest("unknown story marker".to_owned())),
     };
-    change_game(&state, access.board_id, |game, _, _| {
-        game.advance_chosen_story_marker(marker)
+    change_game(&state, access.board_id, |game, data, _| {
+        game.advance_chosen_story_marker(marker, data)
     })
     .await?;
     Ok(redirect(
@@ -350,19 +383,13 @@ pub async fn move_hero(
                 "Les cartes choisies ne permettent pas d'emprunter ce chemin.",
             )),
         ),
-        MoveOutcome::Empty(PerilOutcome::Suffered) => redirect(
+        MoveOutcome::Hopeless => redirect(
             &movement,
-            Some(Flash::notice(
-                "Vous êtes entré dans un lieu périlleux et en subissez les conséquences.",
+            Some(Flash::alert(
+                "La corruption Sans espoir vous interdit plus de 3 déplacements par tour.",
             )),
         ),
-        MoveOutcome::Empty(PerilOutcome::Lucky) => redirect(
-            &movement,
-            Some(Flash::notice(
-                "Vous êtes entré dans un lieu périlleux mais la chance vous a souri.",
-            )),
-        ),
-        MoveOutcome::Empty(PerilOutcome::Safe) => redirect(&movement, None),
+        MoveOutcome::Choice => redirect(&format!("/boards/{board_id}/choices/choice_screen"), None),
         MoveOutcome::Combat => redirect(
             &format!("/boards/{board_id}/combats/combat_setup_screen"),
             None,
@@ -436,7 +463,7 @@ pub async fn draw_cards_screen(
         hero_id: access.hero_id,
         hand: hero_hand(&state.data, &hero.code, &hero.hand),
         card_class: "small-card",
-        left_to_draw: hero.cards_left_to_draw(),
+        left_to_draw: hero.cards_left_to_draw(&state.data),
     };
     render(&page, &page.layout)
 }
@@ -452,8 +479,8 @@ pub async fn draw_cards(
 ) -> Result<Response, AppError> {
     let count: usize = number(&form.nb_cards, "card count")?;
     let hero_id = access.hero_id;
-    change_game(&state, access.board_id, |game, _, _| {
-        game.hero_mut(hero_id)?.draw_step_cards(count);
+    change_game(&state, access.board_id, |game, data, _| {
+        game.hero_mut(hero_id)?.draw_step_cards(count, data);
         Ok(())
     })
     .await?;

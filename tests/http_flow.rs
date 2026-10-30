@@ -418,18 +418,17 @@ async fn combat_flow() {
     game.board.current_hero_id = Some(hero);
     game.board.state = BoardState::HeroMovementScreen;
     game.heroes[0].hand = vec![game.heroes[0].life_pool[0]];
+    // A plain location: no Haven consent, no Peril to choose.
+    game.heroes[0].location = "bree".to_owned();
     let location = game.heroes[0].location.clone();
     game.create_mob("orc", &location, None, &app.state.data)
         .unwrap();
     app.save(&mut game).await;
     let mut rng: rand::rngs::StdRng = rand::make_rng();
     let encounter = game
-        .check_location_encounters(hero, false, &app.state.data, &mut rng)
+        .face_location_threats(hero, false, &app.state.data, &mut rng)
         .unwrap();
-    assert_eq!(
-        encounter,
-        meq_online::engine::encounters::Encounter::Monster
-    );
+    assert_eq!(encounter, meq_online::engine::threats::Threat::Combat);
     game.board.state = BoardState::CombatSetupScreenBoardCombats;
     app.save(&mut game).await;
 

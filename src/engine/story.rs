@@ -82,14 +82,14 @@ impl StoryMarkers {
         .collect()
     }
 
-    /// Advances the lowest of Sauron's markers by one space (§ 6.1, § 8.9).
+    /// Advances the lowest of Sauron's markers by `spaces` (§ 6.1, § 8.9).
     ///
     /// # Returns
     /// `false` when several markers are tied: nothing moves and the hero chooses.
-    pub fn advance_lowest(&mut self) -> bool {
+    pub fn advance_lowest(&mut self, spaces: i32) -> bool {
         match self.lowest_sauron_markers().as_slice() {
             [track] => {
-                self.advance(*track, 1);
+                self.advance(*track, spaces);
                 true
             }
             _ => false,
@@ -179,7 +179,7 @@ mod tests {
     #[test]
     fn lowest_marker_advances() {
         let mut m = markers(0, 2, 1, 3);
-        assert!(m.advance_lowest());
+        assert!(m.advance_lowest(1));
         assert_eq!(m, markers(0, 2, 2, 3));
     }
 
@@ -187,7 +187,7 @@ mod tests {
     #[test]
     fn tied_markers_need_a_choice() {
         let mut m = markers(0, 1, 1, 3);
-        assert!(!m.advance_lowest());
+        assert!(!m.advance_lowest(1));
         assert_eq!(m, markers(0, 1, 1, 3));
         assert_eq!(
             m.lowest_sauron_markers(),

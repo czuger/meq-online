@@ -246,23 +246,31 @@ impl BoardEvent {
                     S::HeroDrawCardsScreen,
                     S::HeroExploration,
                     S::AfterRestAdvanceStoryMarker,
+                    S::ChoiceScreenBoardChoices,
                 ],
                 S::HeroRestScreen,
             ),
-            Self::NextToAfterRestAdvanceStoryMarker => {
-                (&[S::HeroRestScreen], S::AfterRestAdvanceStoryMarker)
-            }
+            Self::NextToAfterRestAdvanceStoryMarker => (
+                &[S::HeroRestScreen, S::ChoiceScreenBoardChoices],
+                S::AfterRestAdvanceStoryMarker,
+            ),
             Self::NextToHeroMovementScreen => (
                 &[
                     S::PlayCombatCardScreenBoardCombats,
                     S::HeroExploration,
                     S::HeroRestScreen,
                     S::AfterRestAdvanceStoryMarker,
+                    S::ChoiceScreenBoardChoices,
+                    S::HeroDrawCardsScreen,
                 ],
                 S::HeroMovementScreen,
             ),
             Self::NextToCombatSetupScreenBoardCombats => (
-                &[S::HeroMovementScreen, S::HeroDrawCardsScreen],
+                &[
+                    S::HeroMovementScreen,
+                    S::HeroDrawCardsScreen,
+                    S::ChoiceScreenBoardChoices,
+                ],
                 S::CombatSetupScreenBoardCombats,
             ),
             Self::NextToPlayCombatCardScreenBoardCombats => (
@@ -276,12 +284,20 @@ impl BoardEvent {
                 &[S::PlayCombatCardScreenBoardCombats],
                 S::CardsLossScreenBoardCombats,
             ),
-            Self::NextToHeroDefeatScreen => {
-                (&[S::PlayCombatCardScreenBoardCombats], S::HeroDefeatScreen)
-            }
+            Self::NextToHeroDefeatScreen => (
+                &[
+                    S::PlayCombatCardScreenBoardCombats,
+                    S::ChoiceScreenBoardChoices,
+                ],
+                S::HeroDefeatScreen,
+            ),
             Self::NextToSauronHavenScreen => (&[S::HeroDefeatScreen], S::SauronHavenScreen),
             Self::NextToHeroExploration => (
-                &[S::HeroMovementScreen, S::ChoiceScreenBoardChoices],
+                &[
+                    S::HeroMovementScreen,
+                    S::ChoiceScreenBoardChoices,
+                    S::PlayCombatCardScreenBoardCombats,
+                ],
                 S::HeroExploration,
             ),
             Self::NextToLookForGollumCardsSauronPlotCards => (
@@ -298,6 +314,7 @@ impl BoardEvent {
                     S::SauronHavenScreen,
                     S::HeroExploration,
                     S::PlayCombatCardScreenBoardCombats,
+                    S::ChoiceScreenBoardChoices,
                 ],
                 S::FinishHeroTurn,
             ),
@@ -309,6 +326,10 @@ impl BoardEvent {
                     S::SauronSetupScreen,
                     S::LookForGollumCardsSauronPlotCards,
                     S::HeroExploration,
+                    S::HeroMovementScreen,
+                    S::HeroDrawCardsScreen,
+                    S::HeroRestScreen,
+                    S::PlayCombatCardScreenBoardCombats,
                 ],
                 S::ChoiceScreenBoardChoices,
             ),

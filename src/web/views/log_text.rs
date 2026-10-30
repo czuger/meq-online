@@ -80,30 +80,44 @@ pub fn log_text(entry: &LogEntry, data: &GameData) -> String {
             plural(n, "case", "cases")
         ),
         "exploration.get_favor" => format!("Obtient une faveur à {}.", p("location_name")),
-        "exploration.encounter_character" => {
-            format!(
-                "Rencontre {} à {} et obtient 2 faveurs.",
-                p("character_name"),
-                p("location_name")
-            )
-        }
+        "exploration.encounter_character" => format!(
+            "Consulte {} à {} et obtient {}.",
+            p("character_name"),
+            p("location_name"),
+            plural(n, "faveur", "faveurs")
+        ),
+        "exploration.character_ability" => format!(
+            "Consulte {} à {} et utilise sa capacité.",
+            p("character_name"),
+            p("location_name")
+        ),
+        "exploration.dark_path" => "Choisit la voie des Ténèbres et gagne une faveur.".to_owned(),
         "exploration.plot.remove" => format!("Retire une intrigue à {}.", p("location_name")),
-        "peril.pass_trough" => format!(
-            "Entre dans un lieu périlleux à {}. Une impression étrange, mais rien ne se passe.",
+        _ => peril_log_text(entry, data),
+    }
+}
+
+fn peril_log_text(entry: &LogEntry, data: &GameData) -> String {
+    let p = |name: &str| param(entry, name, data);
+    let n = count(entry);
+    let tokens = plural(n, "jeton d'influence", "jetons d'influence");
+    match entry.action.as_str() {
+        "peril.draw" => format!(
+            "Sauron pioche {} à {}.",
+            plural(n, "carte Péril", "cartes Péril"),
             p("location")
         ),
-        "peril.encounter_orcs_couts" => {
-            format!(
-                "Croise des éclaireurs orques à {} et reçoit la carte de corruption {}.",
-                p("location"),
-                p("corruption")
-            )
+        "peril.none_matching" => {
+            "Aucune carte Péril n'affecte ce lieu : elles sont défaussées sans effet.".to_owned()
         }
-        "peril.shadow_background_memories" => format!(
-            "Est hanté par les ombres du passé à {}. Perd une faveur et reçoit la carte de corruption {}.",
-            p("location"),
-            p("corruption")
-        ),
+        "peril.resolve" => format!("Subit le péril « {} ».", p("peril")),
+        "peril.influence" => format!("Sauron place une influence à {}.", p("location")),
+        "damage.dealt" => format!("Subit {}.", plural(n, "dégât", "dégâts")),
+        "corruption.gain" => format!("Reçoit la carte de corruption {}.", p("corruption")),
+        "corruption.wretched" => format!("Misérable : est envoyé à {}.", p("location")),
+        "corruption.favor_limit" => {
+            "N'a pas pu prendre toutes les faveurs à cause d'une carte de corruption.".to_owned()
+        }
         "defeat.lose_favor" => "Vaincu, perd une faveur.".to_owned(),
         "defeat.lose_item" => "Vaincu, perd un objet.".to_owned(),
         "defeat.haven" => format!("Vaincu, est transporté à {} et récupère.", p("location")),

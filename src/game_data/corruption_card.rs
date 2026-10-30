@@ -19,6 +19,18 @@ pub enum Flaw {
     Cowardly,
     /// Can't meet characters.
     Isolated,
+    /// Resting or defeat advances Sauron's lowest marker 2 spaces.
+    Despondent,
+    /// At most 3 Travel steps per turn.
+    Hopeless,
+    /// Sauron may draw a Shadow card after playing one on the hero's turn.
+    Greedy,
+    /// At most 1 favor gained per turn.
+    Mistrusted,
+    /// Sauron draws 1 more Peril card on the hero's turn.
+    Reckless,
+    /// Draw 2 Encounter cards instead of 3.
+    Indifferent,
 }
 
 /// Stat change given by a corruption card while the hero holds it.
@@ -45,6 +57,9 @@ pub enum Modification {
 pub enum Immediate {
     /// Lose 2 favor, then shuffle the card and the discard back into the deck.
     Careless,
+    /// The hero's turn ends and Sauron may send him to the nearest Haven, then shuffle
+    /// the card and the discard back into the deck.
+    Wretched,
 }
 
 /// A corruption card.

@@ -411,6 +411,11 @@ pub async fn terminate(
     .await?;
     Ok(match end {
         CombatEnd::Movement => redirect(&format!("/heroes/{hero_id}/movement_screen"), None),
+        CombatEnd::Exploration => redirect(&format!("/heroes/{hero_id}/exploration"), None),
+        CombatEnd::Choice => redirect(
+            &format!("/boards/{}/choices/choice_screen", access.board_id),
+            None,
+        ),
         CombatEnd::Defeat => redirect(&format!("/heroes/{hero_id}/defeat_screen"), None),
         CombatEnd::ChooseHaven => redirect("/boards", None),
         CombatEnd::TurnEnded(TurnEnd::HeroDrawCards) => {

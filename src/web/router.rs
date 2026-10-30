@@ -76,6 +76,7 @@ fn hero_routes() -> Router<AppState> {
         .route(&hero("rest_screen"), get(heroes::rest_screen))
         .route(&hero("rest_rest"), get(heroes::rest_rest))
         .route(&hero("rest_heal"), get(heroes::rest_heal))
+        .route(&hero("rest_train"), get(heroes::rest_train))
         .route(&hero("rest_skip"), get(heroes::rest_skip))
         .route(
             &hero("after_rest_advance_story_marker_screen"),

@@ -7,6 +7,7 @@ use crate::engine::engine_error::EngineError;
 use crate::game_data::GameData;
 use crate::model::actor_ref::ActorRef;
 use crate::model::game::Game;
+use crate::model::hero::TurnRecord;
 
 /// Where the hero who ended its turn goes next.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -67,13 +68,12 @@ impl Game {
         }
     }
 
-    /// Resets the per-turn counters of a hero.
+    /// Resets the per-turn record of a hero.
     ///
     /// # Errors
     /// [`EngineError::NotFound`] when the hero is unknown.
     pub fn hero_end_turn_operations(&mut self, hero_id: i64) -> Result<(), EngineError> {
-        let hero = self.hero_mut(hero_id)?;
-        hero.used_powers.argalad = false;
+        self.hero_mut(hero_id)?.turn_record = TurnRecord::default();
         Ok(())
     }
 

@@ -62,12 +62,24 @@ pub struct HeroLevels {
     pub wisdom: u8,
 }
 
-/// Once-per-turn hero powers already used this turn.
+/// What a hero did during its current turn, for once-per-turn rules and per-turn limits.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
-pub struct UsedPowers {
+pub struct TurnRecord {
     /// Argalad looked at the surrounding monsters.
     #[serde(default)]
     pub argalad: bool,
+    /// Travel steps (moves) taken.
+    #[serde(default)]
+    pub travels: u8,
+    /// Favor gained.
+    #[serde(default)]
+    pub favor_gained: i32,
+    /// The hero chose a Dark Path.
+    #[serde(default)]
+    pub dark_path: bool,
+    /// Eleanor's Noble Bloodline gave its favor.
+    #[serde(default)]
+    pub noble_bloodline: bool,
 }
 
 /// A hero and its game state.
@@ -121,8 +133,8 @@ pub struct Hero {
     pub items: HeroItems,
     /// Level tokens.
     pub levels: HeroLevels,
-    /// Powers used this turn.
-    pub used_powers: UsedPowers,
+    /// What the hero did this turn.
+    pub turn_record: TurnRecord,
     /// Corruption cards held.
     pub corruption_cards: Vec<CorruptionCode>,
 }

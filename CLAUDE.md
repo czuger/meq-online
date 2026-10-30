@@ -36,7 +36,10 @@ schema change on an existing database needs a manual `ALTER TABLE` or a fresh da
     ones). Each screen state is named after its GET route; `route.rs` maps state → URL in one `match`. Rename both
     together.
   - `combat/`: round resolution (`reveal.rs`, card and mob powers) and the combat flow. The `combat/tests/` are ports
-    of the Rails `combat_*_test.rb` specs and define the combat rules.
+    of the Rails `combat_*_test.rb` specs and define the combat rules. `CombatOrigin` (ambush, travel, peril)
+    decides how the turn goes on after a combat (`flow.rs` `after_combat`).
+  - `threats.rs`: Ambush step and "Combat or Peril" (Sauron's choice, Haven consent); `perils/`: the Peril deck and
+    the 15 card effects.
   - `turn.rs`, `rest.rs`, `movement.rs`, `exploration.rs`, `sauron_turn.rs`, `plots.rs`, `story.rs`… one area each.
 - **`db/`**: sqlx persistence. Requests load the whole `Game`, let the engine change it and save it in one transaction
   (`game_repo`). Decks, hands, pools and influence are JSON text columns; monsters and minions share `mobs` with a
@@ -101,11 +104,12 @@ eometh) and make the creator Sauron; board members play the computer seats. Shad
 - User-facing text is French (UTF-8, accents kept): templates, labels, error messages shown to players. Don't
   translate existing French text; write new text in French.
 
-## Finalization status (work in progress, 2026-10-29)
+## Finalization status (work in progress, 2026-10-30)
 
 The engine is being brought to the official rules following `docs/finalization-plan.md` (rules in `docs/rules.md`,
-gap analysis in `docs/rules-gaps.md`). D1 and D3 are decided: follow the official rules, the engine enforces the
-action track. Nothing of this work is committed yet.
+gap analysis in `docs/rules-gaps.md`, open questions in `docs/open-questions.md`: add new ones there). D1 and D3
+are decided: follow the official rules, the engine enforces the action track. Phases 1–4 are committed (9934d42);
+Phase 5 is not.
 
 **Done (Phases 1–3, green when finished):** every Phase 1, 2 and 3 item of the plan. Highlights: defeat screens
 (`engine/defeat.rs`, `HeroDefeatScreen`, `SauronHavenScreen`); game creation with 1–3 chosen heroes, open or computer
@@ -129,8 +133,18 @@ green-flag cards, `story` for marker cards); `game_data/event.rs`; generic pendi
 `targets=<option>|<code>`; only the chooser may answer: Sauron's user, or for heroes the hero's user or a computer
 seat), labels in `web/views/choice_label.rs`, template `choices_choice_screen.html`.
 
-**Next phases:** Phase 5 (Peril cards replacing the die, using the choice mechanism; Sauron chooses the ambushing
-mob and combat or peril; character favor or ability; Dark Path; quests from the quest card pictures; skills powers;
-hero abilities from the hero sheets; remaining corruption effects); Encounter step and Items blocked on missing text.
-Phase 6 Shadow cards (text in the xls; map it to the 24 pictures in `static/images/sauron/shadows`). Phase 7 missions
-and Finale. Phase 8 optional rules and end-to-end tests.
+**Phase 5 (hero turn), mostly done, green:** Sauron picks the attacking mob or a Peril (`engine/threats.rs`,
+choice sources `Threat`, `HavenCombat`); the 15 Peril cards (`data/perils.yaml` with French `name_fr`/`text_fr`,
+`game_data/peril.rs`, `engine/perils/`: `PerilDraw` and `Peril` choices); damage outside combat chosen by the hero
+(`engine/hero/damage.rs`, `Damage` choice) and defeat outside combat (`defeat.rs` `start_hero_defeat`); consult a
+character for favor or ability (`data/characters.yaml` `ability`), Dark Path; all 16 corruption cards (Wretched
+asks Sauron for the Haven, `Wretched` choice); Beravor, Eleanor and Thálin abilities; per-turn record
+`Hero::turn_record` (travels, favor gained, Dark Path, Eleanor). New resume points `Movement`, `Rest`, `AfterRest`,
+`EndTurn`; `answer_choice` only resumes while the board is still on the choice screen. A travel combat won now
+leads to exploration. Schema changed again (`heroes.turn_record`, `combats.origin`).
+
+**Next:** Phase 5 leftovers: quests (text readable on `static/images/hero_cards/quests/standard`: Starting and
+Advanced quests), trading between heroes, Argalad's peek limited to one adjacent location. Encounter step and Items
+blocked on missing text (and water paths missing from `data/locations_paths.yaml`). Phase 6 Shadow cards (text in
+the xls; map it to the 24 pictures in `static/images/sauron/shadows`). Phase 7 missions and Finale. Phase 8 optional
+rules and end-to-end tests.

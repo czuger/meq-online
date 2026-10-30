@@ -3,7 +3,7 @@
 use crate::engine::choices::parse_target;
 use crate::game_data::GameData;
 use crate::model::game::Game;
-use crate::web::views::pictures::{corruption_card, image};
+use crate::web::views::pictures::{corruption_card, hero_card, image};
 
 /// Label of an option code.
 pub fn option_label(code: &str) -> &'static str {
@@ -29,6 +29,31 @@ pub fn option_label(code: &str) -> &'static str {
         "discard_plot" => "Défausser une intrigue",
         "move_minion" => "Déplacer un serviteur",
         "keep_skill" => "Garder une carte de compétence",
+        other => threat_label(other),
+    }
+}
+
+/// Labels of threats, perils and damage.
+fn threat_label(code: &str) -> &'static str {
+    match code {
+        "attack" => "Attaquer le héros avec un monstre ou un serviteur",
+        "peril" => "Infliger un péril",
+        "allow_combat" => "Accepter le combat",
+        "pick_peril" => "Choisir la carte Péril",
+        "pay_damage" => "Perdre ces cartes de la main (le reste vient de la réserve de vie)",
+        "discard_shields" => "Défausser ces cartes pour réduire les dégâts",
+        "damage" => "Subir les dégâts",
+        "sauron_draws" => "Sauron pioche 1 carte Intrigue et 1 carte des Ténèbres",
+        "advance_corruption" => "Le marqueur de la corruption avance d'une case",
+        "lose_favor" => "Perdre 2 faveurs",
+        "give_corruption" => "Donner cette carte de corruption au héros",
+        "fight" => "Combattre",
+        "minion" => "Choisir le serviteur qui combat",
+        "discard_cards" => "Défausser ces cartes",
+        "place_influence" => "Placer 1 influence sur ces lieux",
+        "place_monster" => "Placer un jeton monstre",
+        "draw_plot" => "Piocher 1 carte Intrigue",
+        "send_to_haven" => "Envoyer le héros au refuge le plus proche",
         other => reward_label(other),
     }
 }
@@ -115,13 +140,36 @@ pub fn target_label(code: &str, game: &Game, data: &GameData, sauron: bool) -> S
             let hero = target_label(&format!("hero:{second}"), game, data, sauron);
             format!("Intrigue de l'emplacement {first}, payée par {hero}")
         }
+        "hand" => hand_card_name(first, second, game, data).unwrap_or_default(),
+        "peril" => first
+            .parse()
+            .ok()
+            .and_then(|c| data.peril(c).ok())
+            .map_or_else(String::new, |p| format!("{} : {}", p.name_fr, p.text_fr)),
+        "minion_to" => {
+            let name = mob(first).map_or_else(String::new, |m| m.name.clone());
+            format!("{name} vers {}", location(second))
+        }
         _ => code.to_owned(),
     }
 }
 
-/// Picture of a card target (a Skill or Corruption card), if it has one.
-pub fn target_picture(code: &str, data: &GameData) -> Option<String> {
+/// Name of the card at `index` in the hand of hero `hero_id`.
+fn hand_card_name(hero_id: &str, index: &str, game: &Game, data: &GameData) -> Option<String> {
+    let hero = game.hero(hero_id.parse().ok()?).ok()?;
+    let card = *hero.hand.get(index.parse::<usize>().ok()?)?;
+    let def = data.hero_card(&hero.code, card).ok()?;
+    Some(format!("{} (défense {})", def.name, def.defense))
+}
+
+/// Picture of a card target (a Skill, Corruption or hand card), if it has one.
+pub fn target_picture(code: &str, game: &Game, data: &GameData) -> Option<String> {
     let (kind, values) = parse_target(code);
+    if kind == "hand" {
+        let hero = game.hero(values.first()?.parse().ok()?).ok()?;
+        let card = *hero.hand.get(values.get(1)?.parse::<usize>().ok()?)?;
+        return Some(hero_card(data, &hero.code, card).pic);
+    }
     let card = values.first()?.parse().ok()?;
     match kind {
         "skill" => data

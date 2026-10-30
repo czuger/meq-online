@@ -4,8 +4,13 @@ use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 
 use crate::engine::engine_error::EngineError;
+use crate::game_data::GameData;
 use crate::game_data::combat_card_def::CardNumber;
+use crate::game_data::corruption_card::Flaw;
 use crate::model::hero::Hero;
+
+/// Most cards a distraught hero may hold.
+const DISTRAUGHT_HAND_LIMIT: usize = 7;
 
 impl Hero {
     /// Rest: the rest pool is shuffled into the life pool (§ 6.1).
@@ -95,21 +100,33 @@ impl Hero {
         Ok(())
     }
 
-    /// Hero Draw step: draws up to `count` cards, at most fortitude per step (§ 5.12).
+    /// Cards the hand may still take: a distraught hero never holds more than 7.
+    pub fn room_in_hand(&self, data: &GameData) -> usize {
+        if self.has_flaw(Flaw::Distraught, data) {
+            DISTRAUGHT_HAND_LIMIT.saturating_sub(self.hand.len())
+        } else {
+            usize::MAX
+        }
+    }
+
+    /// Hero Draw step: draws up to `count` cards, at most fortitude per step (§ 5.12)
+    /// and within the hand limit of a distraught hero.
     ///
     /// # Returns
     /// Number of cards actually drawn.
-    pub fn draw_step_cards(&mut self, count: usize) -> usize {
+    pub fn draw_step_cards(&mut self, count: usize, data: &GameData) -> usize {
         let allowed = usize::try_from(self.fortitude - self.cards_drawn_this_round).unwrap_or(0);
-        let drawn = self.draw_cards(count.min(allowed));
+        let drawn = self.draw_cards(count.min(allowed).min(self.room_in_hand(data)));
         self.cards_drawn_this_round += i32::try_from(drawn).unwrap_or(i32::MAX);
         drawn
     }
 
     /// Cards the hero may still draw during this Hero Draw step.
-    pub fn cards_left_to_draw(&self) -> i32 {
+    pub fn cards_left_to_draw(&self, data: &GameData) -> i32 {
+        let room = i32::try_from(self.room_in_hand(data)).unwrap_or(i32::MAX);
         (self.fortitude - self.cards_drawn_this_round)
             .min(i32::try_from(self.life_pool.len()).unwrap_or(i32::MAX))
+            .min(room)
             .max(0)
     }
 
@@ -121,7 +138,7 @@ impl Hero {
 
 #[cfg(test)]
 mod tests {
-    use crate::engine::test_support::{hero, rng};
+    use crate::engine::test_support::{data, hero, rng};
 
     #[test]
     fn removes_one_copy_per_card() {
@@ -158,10 +175,10 @@ mod tests {
         let mut h = hero("argalad");
         h.hand.clear();
         h.fortitude = 3;
-        assert_eq!(h.draw_step_cards(2), 2);
-        assert_eq!(h.cards_left_to_draw(), 1);
-        assert_eq!(h.draw_step_cards(5), 1);
-        assert_eq!(h.draw_step_cards(5), 0);
+        assert_eq!(h.draw_step_cards(2, data()), 2);
+        assert_eq!(h.cards_left_to_draw(data()), 1);
+        assert_eq!(h.draw_step_cards(5, data()), 1);
+        assert_eq!(h.draw_step_cards(5, data()), 0);
         assert_eq!(h.hand.len(), 3);
     }
 

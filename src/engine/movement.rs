@@ -3,25 +3,30 @@
 use rand::rngs::StdRng;
 
 use crate::engine::board_state::BoardEvent;
-use crate::engine::encounters::Encounter;
 use crate::engine::engine_error::EngineError;
-use crate::engine::hero::peril::PerilOutcome;
+use crate::engine::threats::Threat;
 use crate::game_data::GameData;
 use crate::game_data::combat_card_def::CardNumber;
+use crate::game_data::corruption_card::Flaw;
 use crate::game_data::location_paths::Destination;
 use crate::model::game::Game;
 use crate::model::hero::Hero;
 use crate::model::mob::Mob;
+
+/// Travel steps a hopeless hero may take per turn.
+const HOPELESS_TRAVELS: u8 = 3;
 
 /// Result of a move.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MoveOutcome {
     /// The selected cards can't pay for the path; nothing changed.
     InvalidCards,
-    /// Nothing to do on the new location; the hero may move again.
-    Empty(PerilOutcome),
+    /// A hopeless hero already took his 3 Travel steps; nothing changed.
+    Hopeless,
     /// A combat starts.
     Combat,
+    /// Sauron (or the hero, in a Haven) decides what threatens the hero.
+    Choice,
     /// The hero explores the new location.
     Exploration,
 }
@@ -64,7 +69,8 @@ pub fn validate_movement(
 }
 
 impl Game {
-    /// Moves a hero, paying with cards from its hand, then resolves peril and encounters.
+    /// Moves a hero, paying with cards from its hand, then resolves the monster or
+    /// minion attack or the Peril of its new location; the hero then explores (§ 6.5).
     ///
     /// # Errors
     /// [`EngineError::CardNotAvailable`] when a card isn't in hand; lookup and
@@ -77,24 +83,25 @@ impl Game {
         data: &GameData,
         rng: &mut StdRng,
     ) -> Result<MoveOutcome, EngineError> {
-        if !validate_movement(self.hero(hero_id)?, destination, cards, data)? {
+        let hero = self.hero(hero_id)?;
+        if hero.has_flaw(Flaw::Hopeless, data) && hero.turn_record.travels >= HOPELESS_TRAVELS {
+            return Ok(MoveOutcome::Hopeless);
+        }
+        if !validate_movement(hero, destination, cards, data)? {
             return Ok(MoveOutcome::InvalidCards);
         }
         let hero = self.hero_mut(hero_id)?;
         hero.hand_to_rest(cards)?;
         hero.location = destination.to_owned();
-        let peril = self.suffer_peril(hero_id, data, rng)?;
+        hero.turn_record.travels += 1;
 
-        match self.check_location_encounters(hero_id, false, data, rng)? {
-            Encounter::Empty => Ok(MoveOutcome::Empty(peril)),
-            Encounter::Monster => {
-                self.fire(BoardEvent::NextToCombatSetupScreenBoardCombats)?;
-                Ok(MoveOutcome::Combat)
-            }
-            Encounter::Exploration => {
+        match self.face_location_threats(hero_id, false, data, rng)? {
+            Threat::None => {
                 self.fire(BoardEvent::NextToHeroExploration)?;
                 Ok(MoveOutcome::Exploration)
             }
+            Threat::Combat => Ok(MoveOutcome::Combat),
+            Threat::Choice => Ok(MoveOutcome::Choice),
         }
     }
 
@@ -121,7 +128,7 @@ impl Game {
     /// Tells whether Argalad may look at the surrounding monsters now.
     pub fn argalad_can_use_power(&self, hero: &Hero, data: &GameData) -> bool {
         hero.code == "argalad"
-            && !hero.used_powers.argalad
+            && !hero.turn_record.argalad
             && !self.surrounding_monsters(hero, data).is_empty()
     }
 
@@ -136,7 +143,7 @@ impl Game {
                 "only Argalad has this power".to_owned(),
             ));
         }
-        hero.used_powers.argalad = true;
+        hero.turn_record.argalad = true;
         Ok(())
     }
 }
@@ -144,7 +151,21 @@ impl Game {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::engine::test_support::{data, hero};
+    use crate::engine::board_state::BoardState;
+    use crate::engine::test_support::{data, game, hero, rng};
+
+    // Hopeless: at most 3 Travel steps per turn.
+    #[test]
+    fn hopeless_hero_moves_three_times() {
+        let mut g = game();
+        g.heroes[0].corruption_cards = vec![1];
+        g.heroes[0].location = "barad_dur".to_owned();
+        g.heroes[0].turn_record.travels = 3;
+        g.board.state = BoardState::HeroMovementScreen;
+        let outcome = g.move_hero(1, "mount_doom", &[4], data(), &mut rng());
+        assert_eq!(outcome.unwrap(), MoveOutcome::Hopeless);
+        assert_eq!(g.heroes[0].location, "barad_dur");
+    }
 
     #[test]
     fn matching_terrain_or_enough_cards() {

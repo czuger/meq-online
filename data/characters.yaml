@@ -1,25 +1,58 @@
 ---
+# `favor` is the favor printed on the token (unreadable on the pictures: 2 for all);
+# `ability` is the alternative the hero may take instead (§ 6.5 Explore).
 thranduil:
   :name: Thranduil
   :power: Remove 2 influence from Shadow Pool
+  :favor: 2
+  :ability:
+    :type: shadow_pool_loss
+    :count: 2
 theoden:
   :name: Théoden
   :power: Gain a "Horse" item
+  :favor: 2
+  :ability:
+    :type: horse
 aragorn:
   :name: Aragorn
   :power: Gain 1 agility
+  :favor: 2
+  :ability:
+    :type: level
+    :attribute: agility
 gandalf:
   :name: Gandalf
   :power: Gain 1 wisdom
+  :favor: 2
+  :ability:
+    :type: level
+    :attribute: wisdom
 denethor:
   :name: Denethor
   :power: Pay 3 favor to advance story marker 1 space
+  :favor: 2
+  :ability:
+    :type: advance_heroes
+    :cost: 3
 dain:
   :name: Dain II
   :power: Train twice
+  :favor: 2
+  :ability:
+    :type: training
+    :times: 2
 boromir:
   :name: Boromir
   :power: Gain 1 strength
+  :favor: 2
+  :ability:
+    :type: level
+    :attribute: strength
 saruman:
   :name: Saruman
   :power: Sauron discards 2 random Shadow cards
+  :favor: 2
+  :ability:
+    :type: discard_shadows
+    :count: 2

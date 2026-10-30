@@ -1,0 +1,136 @@
+---
+# The 15 Peril cards (§ 6.5), transcribed from
+# work/data_and_rules/MEQ_Mission_Corruption_Peril_Shadow_Cards_Fulltext.xls.
+# `name_fr` and `text_fr` are shown to players.
+# `affects` is what the card matches: any location, one location, or regions (region codes of locations.yaml).
+# `effect` names the card's effect, interpreted in src/engine/perils/.
+0:
+  :name: "The Hounds of Sauron"
+  :text: "The hero is dealt 6 damage. He may discard any number of hero cards from his hand, reducing the damage by 1 for each shield icon discarded. If he reduces the damage to 0, he gains 1 favor or training."
+  :name_fr: "Les Chiens de Sauron"
+  :text_fr: "Le héros subit 6 dégâts. Il peut défausser autant de cartes héros de sa main qu'il le souhaite ; chaque icône de bouclier défaussée réduit les dégâts de 1. S'il les réduit à 0, il gagne 1 faveur ou un entraînement."
+  :affects:
+    :type: "any"
+  :effect: "hounds_of_sauron"
+1:
+  :name: "An Unexpected Betrayal"
+  :text: "The hero must choose to either be dealt 5 damage or allow Sauron to draw 1 Plot card and 1 Shadow card."
+  :name_fr: "Une trahison inattendue"
+  :text_fr: "Le héros doit choisir : subir 5 dégâts, ou laisser Sauron piocher 1 carte Intrigue et 1 carte des Ténèbres."
+  :affects:
+    :type: "any"
+  :effect: "unexpected_betrayal"
+2:
+  :name: "A Shadow in the Background of Their Memories"
+  :text: "If the hero's wisdom is less than or equal to the number of adjacent locations containing influence, he gains 1 Corruption card and loses 1 favor."
+  :name_fr: "Une ombre au fond de leur mémoire"
+  :text_fr: "Si la sagesse du héros est inférieure ou égale au nombre de lieux adjacents contenant de l'influence, il reçoit 1 carte de corruption et perd 1 faveur."
+  :affects:
+    :type: "any"
+  :effect: "shadow_in_memories"
+3:
+  :name: "Orc Scouts"
+  :text: "The hero gains 1 Corruption card. Then shuffle this card and the discard pile into the peril deck."
+  :name_fr: "Éclaireurs orques"
+  :text_fr: "Le héros reçoit 1 carte de corruption. Cette carte et la défausse sont ensuite mélangées dans la pioche des Périls."
+  :affects:
+    :type: "any"
+  :effect: "orc_scouts"
+4:
+  :name: "Ill-met Company"
+  :text: "The hero must choose to either lose 2 favor or have Sauron draw 2 Corruption cards and choose 1 for the hero to receive, discarding the other."
+  :name_fr: "Mauvaise compagnie"
+  :text_fr: "Le héros doit choisir : perdre 2 faveurs, ou laisser Sauron piocher 2 cartes de corruption et lui en donner une, l'autre étant défaussée."
+  :affects:
+    :type: "any"
+  :effect: "ill_met_company"
+5:
+  :name: "Armies Underground"
+  :text: "The hero must discard 1 random card from his hand for each Corruption card on him. He must then combat an Orc."
+  :name_fr: "Armées souterraines"
+  :text_fr: "Le héros défausse 1 carte au hasard de sa main par carte de corruption qu'il possède. Il doit ensuite combattre un Orque."
+  :affects:
+    :type: "location"
+    :location: "mount_gundabad"
+  :effect: "armies_underground"
+6:
+  :name: "The Hill of Black Magic"
+  :text: "If the hero's wisdom is less than or equal to the number of Plot cards in play, he is dealt 5 damage and his turn immediately ends."
+  :name_fr: "La Colline de la Sorcellerie"
+  :text_fr: "Si la sagesse du héros est inférieure ou égale au nombre de cartes Intrigue en jeu, il subit 5 dégâts et son tour se termine immédiatement."
+  :affects:
+    :type: "location"
+    :location: "dol_guldur"
+  :effect: "hill_of_black_magic"
+7:
+  :name: "The Dark Tower"
+  :text: "The minion immediately combats the hero. If the minion is defeated, the hero gains 2 favor. The hero may continue his turn even if he fails to defeat the minion."
+  :name_fr: "La Tour Sombre"
+  :text_fr: "Le serviteur présent combat immédiatement le héros. Si le serviteur est vaincu, le héros gagne 2 faveurs. Le héros peut continuer son tour même s'il ne le vainc pas."
+  :affects:
+    :type: "location"
+    :location: "barad_dur"
+  :effect: "dark_tower"
+8:
+  :name: "Khazad-dûm"
+  :text: "The hero must combat a Balrog. If he defeats the Balrog, he gains 2 favor and receives training."
+  :name_fr: "Khazad-dûm"
+  :text_fr: "Le héros doit combattre un Balrog. S'il le vainc, il gagne 2 faveurs et reçoit un entraînement."
+  :affects:
+    :type: "location"
+    :location: "moria"
+  :effect: "khazad_dum"
+9:
+  :name: "An Enduring Evil"
+  :text: "If there is at least 1 influence on this location, the hero receives 1 Corruption card, and his turn immediately ends."
+  :name_fr: "Un mal persistant"
+  :text_fr: "S'il y a au moins 1 influence sur ce lieu, le héros reçoit 1 carte de corruption et son tour se termine immédiatement."
+  :affects:
+    :type: "location"
+    :location: "the_ruins_of_angmar"
+  :effect: "enduring_evil"
+10:
+  :name: "Trapped"
+  :text: "Add 2 influence to the Shadow Pool. The hero must then discard 2 cards from his hand."
+  :name_fr: "Piégé"
+  :text_fr: "Ajoutez 2 influences à la réserve des Ténèbres. Le héros doit ensuite défausser 2 cartes de sa main."
+  :affects:
+    :type: "regions"
+    :regions: ["grey_mountains", "rhuadur"]
+  :effect: "trapped"
+11:
+  :name: "The Weakness of Men"
+  :text: "The hero must choose to either be dealt 5 damage or advance Sauron's black story marker 1 space up the track."
+  :name_fr: "La faiblesse des Hommes"
+  :text_fr: "Le héros doit choisir : subir 5 dégâts, ou faire avancer d'une case le marqueur noir (corruption) de Sauron."
+  :affects:
+    :type: "regions"
+    :regions: ["rhoan", "gondor"]
+  :effect: "weakness_of_men"
+12:
+  :name: "It's a Dangerous Business, Walking out your Front Door"
+  :text: "Add 2 influence to the Shadow Pool. Sauron may then place 1 influence token on any 3 locations in the hero's region."
+  :name_fr: "C'est une affaire dangereuse que de sortir de chez soi"
+  :text_fr: "Ajoutez 2 influences à la réserve des Ténèbres. Sauron peut ensuite placer 1 influence sur 3 lieux de la région du héros."
+  :affects:
+    :type: "regions"
+    :regions: ["eriador", "endwith"]
+  :effect: "dangerous_business"
+13:
+  :name: "Undying Regret"
+  :text: "Add 2 influence to the Shadow Pool. Sauron may then place 1 influence and monster token on any locations in the hero's current region (excluding the hero's current location)."
+  :name_fr: "Regret éternel"
+  :text_fr: "Ajoutez 2 influences à la réserve des Ténèbres. Sauron peut ensuite placer 1 influence et 1 jeton monstre sur des lieux de la région du héros (sauf le lieu du héros)."
+  :affects:
+    :type: "regions"
+    :regions: ["misty_mountains", "mirkwood"]
+  :effect: "undying_regret"
+14:
+  :name: "Nine for Mortal Men Doomed to Die"
+  :text: "The hero receives 1 Corruption card. Sauron may then either command 1 minion or draw 1 Plot card. If the minion is moved into the hero's location, he must immediately fight it. The hero's turn does not end if he fails to defeat the minion."
+  :name_fr: "Neuf aux Hommes mortels, destinés à mourir"
+  :text_fr: "Le héros reçoit 1 carte de corruption. Sauron peut ensuite commander 1 serviteur ou piocher 1 carte Intrigue. Si le serviteur entre dans le lieu du héros, celui-ci doit le combattre immédiatement ; son tour ne se termine pas s'il ne le vainc pas."
+  :affects:
+    :type: "regions"
+    :regions: ["brown_lands", "mordor"]
+  :effect: "nine_for_mortal_men"

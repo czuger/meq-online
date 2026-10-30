@@ -11,6 +11,7 @@ use crate::engine::exploration::{ExploreChoice, ExploreNotice};
 use crate::engine::tokens::TokenKind;
 use crate::engine::turn::TurnEnd;
 use crate::game_data::GameData;
+use crate::game_data::character::{CharacterAbility, CharacterAttribute};
 use crate::model::game::Game;
 use crate::web::access::HeroAccess;
 use crate::web::app_error::AppError;
@@ -27,12 +28,22 @@ struct Choice {
     enabled: bool,
 }
 
+/// A character the hero may consult for its favor or its ability.
+struct Consult {
+    code: String,
+    name: String,
+    favor: i32,
+    power: String,
+}
+
 #[derive(Template)]
 #[template(path = "explorations_show.html")]
 struct ShowPage {
     layout: Layout,
     hero_id: i64,
     choices: Vec<Choice>,
+    consults: Vec<Consult>,
+    dark_path: bool,
     any_enabled: bool,
 }
 
@@ -50,13 +61,54 @@ pub async fn show(State(state): State<AppState>, access: HeroAccess) -> Result<R
         .iter()
         .filter_map(|t| choice(t.kind, &t.code, &t.name, &game, hero_id, &state.data))
         .collect();
+    let consults: Vec<Consult> = tokens
+        .iter()
+        .filter(|t| t.kind == TokenKind::Character)
+        .filter_map(|t| {
+            let def = state.data.character(&t.code).ok()?;
+            Some(Consult {
+                code: t.code.clone(),
+                name: def.name.clone(),
+                favor: def.favor,
+                power: ability_label(def.ability),
+            })
+        })
+        .collect();
+    let dark_path = game.dark_path_allowed(hero_id)?;
     let page = ShowPage {
         layout: Layout::hero(&access.session, &game, hero_id, &state.data),
         hero_id,
-        any_enabled: choices.iter().any(|c| c.enabled),
+        any_enabled: choices.iter().any(|c| c.enabled) || !consults.is_empty() || dark_path,
         choices,
+        consults,
+        dark_path,
     };
     render(&page, &page.layout)
+}
+
+/// French text of a character's ability.
+fn ability_label(ability: CharacterAbility) -> String {
+    match ability {
+        CharacterAbility::ShadowPoolLoss { count } => {
+            format!("retirer {count} influences de la réserve des Ténèbres")
+        }
+        CharacterAbility::Horse => "gagner l'objet Cheval".to_owned(),
+        CharacterAbility::Level { attribute } => {
+            let name = match attribute {
+                CharacterAttribute::Strength => "force",
+                CharacterAttribute::Agility => "agilité",
+                CharacterAttribute::Wisdom => "sagesse",
+            };
+            format!("gagner 1 niveau de {name}")
+        }
+        CharacterAbility::AdvanceHeroes { cost } => {
+            format!("payer {cost} faveurs pour avancer le marqueur des héros d'une case")
+        }
+        CharacterAbility::Training { times } => format!("recevoir {times} entraînement(s)"),
+        CharacterAbility::DiscardShadows { count } => {
+            format!("Sauron défausse {count} cartes des Ténèbres au hasard")
+        }
+    }
 }
 
 fn choice(
@@ -74,12 +126,8 @@ fn choice(
             text: "Gagner une faveur".to_owned(),
             enabled: true,
         }),
-        TokenKind::Character => Some(Choice {
-            field: "tokens[character][]",
-            value: code.to_owned(),
-            text: format!("Rencontrer {name} et gagner 2 faveurs"),
-            enabled: true,
-        }),
+        // Characters are consulted with their own radio buttons.
+        TokenKind::Character => None,
         TokenKind::Plot => {
             let hero = game.hero(hero_id).ok()?;
             let cost = game
@@ -123,17 +171,28 @@ pub async fn update(
 ) -> Result<Response, AppError> {
     let mut choice = ExploreChoice::default();
     for (field, value) in fields {
+        if let Some(character) = field
+            .strip_prefix("consult[")
+            .and_then(|f| f.strip_suffix(']'))
+        {
+            match value.as_str() {
+                "favor" => choice.characters.push(character.to_owned()),
+                "ability" => choice.character_abilities.push(character.to_owned()),
+                _ => {}
+            }
+            continue;
+        }
         match field.as_str() {
-            "tokens[character][]" => choice.characters.push(value),
             "tokens[favor][]" => choice.favors += 1,
             "tokens[plot][]" => choice.plot = true,
             "tokens[event][]" => choice.event = true,
+            "dark_path" => choice.dark_path = true,
             _ => {}
         }
     }
     let hero_id = access.hero_id;
-    let (game, notice) = change_game(&state, access.board_id, |game, data, _| {
-        game.explore(hero_id, &choice, data)
+    let (game, notice) = change_game(&state, access.board_id, |game, data, rng| {
+        game.explore(hero_id, &choice, data, rng)
     })
     .await?;
     if game.board.state == BoardState::ChoiceScreenBoardChoices {
@@ -143,10 +202,11 @@ pub async fn update(
         ));
     }
     let text = notice.map(|n| match n {
-        ExploreNotice::CharacterEncountered => "Personnage rencontré.",
+        ExploreNotice::CharacterEncountered => "Personnage consulté.",
+        ExploreNotice::DarkPath => "Vous avez choisi la voie des Ténèbres.",
         ExploreNotice::FavorTaken => "Faveur obtenue.",
-        ExploreNotice::Dispairing => {
-            "Vous n'avez pas pu prendre toutes les faveurs à cause de la corruption Désespéré."
+        ExploreNotice::FavorLimit => {
+            "Vous n'avez pas pu prendre toutes les faveurs à cause d'une carte de corruption."
         }
         ExploreNotice::PlotRemoved => "Intrigue retirée.",
         ExploreNotice::EventActivated => "Carte événement activée.",

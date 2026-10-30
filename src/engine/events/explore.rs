@@ -218,7 +218,9 @@ impl Game {
             ExploreReward::GainFortitude => {
                 self.hero_mut(hero_id)?.gain_level(Attribute::Fortitude);
             }
-            ExploreReward::Favor { count } => self.hero_mut(hero_id)?.gain_favor(count, data),
+            ExploreReward::Favor { count } => {
+                self.hero_mut(hero_id)?.gain_favor(count, data);
+            }
             ExploreReward::Boat => self.hero_mut(hero_id)?.items.boat = true,
             ExploreReward::ShadowPoolLoss { count } => {
                 self.board.shadow_pool = (self.board.shadow_pool - count).max(0);

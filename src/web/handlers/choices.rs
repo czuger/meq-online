@@ -50,6 +50,8 @@ struct ChoicePage {
     board_id: i64,
     chooser: String,
     card_pic: Option<String>,
+    /// What the decision is about, when no card picture tells it.
+    context: Option<String>,
     options: Vec<OptionView>,
     can_answer: bool,
 }
@@ -100,7 +102,8 @@ fn layout(access: &BoardAccess, chooser: Chooser, game: &Game, data: &GameData) 
     }
 }
 
-/// Picture of the event card the choice belongs to; training shows its cards as targets.
+/// Picture of the event card the choice belongs to; other choices show their cards
+/// as targets or explain themselves with [`choice_context`].
 fn card_picture(source: &ChoiceSource) -> Option<String> {
     match *source {
         ChoiceSource::Event { stage, card, .. }
@@ -108,8 +111,43 @@ fn card_picture(source: &ChoiceSource) -> Option<String> {
             "events/{}",
             event_pic_path(EventRef { stage, card })
         ))),
-        ChoiceSource::Training { .. } => None,
+        _ => None,
     }
+}
+
+/// French text explaining a choice without card picture.
+fn choice_context(source: &ChoiceSource, data: &GameData) -> Option<String> {
+    let text = match source {
+        ChoiceSource::Event { .. }
+        | ChoiceSource::ExploreEvent { .. }
+        | ChoiceSource::Training { .. } => return None,
+        ChoiceSource::Threat { ambush: true, .. } => {
+            "Embuscade : Sauron choisit le monstre ou le serviteur qui attaque le héros.".to_owned()
+        }
+        ChoiceSource::Threat { .. } => "Le héros entre dans un lieu menacé : Sauron choisit \
+            le monstre ou le serviteur qui l'attaque, ou un péril si le lieu est périlleux."
+            .to_owned(),
+        ChoiceSource::HavenCombat { .. } => {
+            "Un monstre ou un serviteur se trouve dans ce refuge : aucun combat n'a lieu sans \
+             l'accord du héros."
+                .to_owned()
+        }
+        ChoiceSource::PerilDraw { .. } => "Sauron a pioché des cartes Péril et choisit celle \
+            que le héros doit résoudre, parmi celles qui affectent son lieu."
+            .to_owned(),
+        ChoiceSource::Peril { card, .. } => {
+            let peril = data.peril(*card).ok()?;
+            format!("{} : {}", peril.name_fr, peril.text_fr)
+        }
+        ChoiceSource::Damage { amount, .. } => format!(
+            "Le héros subit {amount} dégâts : choisissez les cartes de la main à perdre, \
+             le reste est pris sur la réserve de vie."
+        ),
+        ChoiceSource::Wretched { .. } => "Carte de corruption Misérable : le tour du héros \
+            se termine. Sauron peut l'envoyer au refuge le plus proche."
+            .to_owned(),
+    };
+    Some(text)
 }
 
 fn option_view(option: &ChoiceOption, game: &Game, data: &GameData, sauron: bool) -> OptionView {
@@ -119,7 +157,7 @@ fn option_view(option: &ChoiceOption, game: &Game, data: &GameData, sauron: bool
         .map(|code| TargetView {
             value: format!("{}{TARGET_SEPARATOR}{code}", option.code),
             label: target_label(code, game, data, sauron),
-            picture: target_picture(code, data),
+            picture: target_picture(code, game, data),
         })
         .collect();
     let hint = match (option.min, option.max) {
@@ -158,6 +196,7 @@ pub async fn choice_screen(
         board_id: access.board_id,
         chooser: chooser_name(choice.chooser, &game, &state.data),
         card_pic: card_picture(&choice.source),
+        context: choice_context(&choice.source, &state.data),
         options: choice
             .options
             .iter()

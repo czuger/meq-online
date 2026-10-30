@@ -10,6 +10,31 @@
       <label class="form-check-label" for="token_check_{{ loop.index }}">{{ choice.text }}</label>
     </div>
     {% endfor %}
+    {% for consult in consults %}
+    <div class="card my-2">
+      <div class="card-body">
+        <strong>{{ consult.name }}</strong>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="consult[{{ consult.code }}]" value="" id="consult_none_{{ consult.code }}" checked>
+          <label class="form-check-label" for="consult_none_{{ consult.code }}">Ne pas consulter</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="consult[{{ consult.code }}]" value="favor" id="consult_favor_{{ consult.code }}">
+          <label class="form-check-label" for="consult_favor_{{ consult.code }}">Gagner {{ consult.favor }} faveurs</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="consult[{{ consult.code }}]" value="ability" id="consult_ability_{{ consult.code }}">
+          <label class="form-check-label" for="consult_ability_{{ consult.code }}">Utiliser sa capacité : {{ consult.power }}</label>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% if dark_path %}
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="dark_path" value="1" id="dark_path">
+      <label class="form-check-label" for="dark_path">Choisir la voie des Ténèbres : gagner 1 faveur et recevoir 1 carte de corruption (une fois par tour)</label>
+    </div>
+    {% endif %}
     <hr>
     <div class="form-group">
       <div class="row">

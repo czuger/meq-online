@@ -4,6 +4,7 @@ use rand::rngs::StdRng;
 
 use crate::engine::board_state::{BoardEvent, BoardState};
 use crate::engine::engine_error::EngineError;
+use crate::engine::perils::answers::PerilAnswer;
 use crate::game_data::GameData;
 use crate::model::board::EventRef;
 use crate::model::choice::{ChoiceOption, ChoiceSource, Chooser, PendingChoice, Resume};
@@ -100,14 +101,91 @@ impl Game {
             .find(|o| o.code == option)
             .ok_or_else(|| EngineError::Refused(format!("unknown option {option}")))?;
         check_targets(picked, targets)?;
-        match choice.source {
+        let resume = self.apply_answer(choice.source, option, targets, choice.resume, data, rng)?;
+        // An answer may ask another choice, start a combat, defeat the hero or end his
+        // turn: play only resumes from a settled choice screen.
+        if self.board.pending_choice.is_some()
+            || self.board.state != BoardState::ChoiceScreenBoardChoices
+        {
+            return Ok(());
+        }
+        self.resume(resume, data)
+    }
+
+    /// Applies an answer to what its choice belongs to.
+    ///
+    /// # Returns
+    /// Where play goes on, usually `resume`.
+    fn apply_answer(
+        &mut self,
+        source: ChoiceSource,
+        option: &str,
+        targets: &[String],
+        resume: Resume,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<Resume, EngineError> {
+        match source {
+            ChoiceSource::Event { .. } | ChoiceSource::ExploreEvent { .. } => {
+                self.apply_event_answer(source, option, targets, resume, data, rng)?;
+            }
+            ChoiceSource::Training {
+                hero_id,
+                cards,
+                more,
+            } => {
+                self.apply_training(hero_id, &cards, targets)?;
+                self.train_times(hero_id, more, resume, rng)?;
+            }
+            ChoiceSource::Threat { hero_id, ambush } => {
+                self.apply_threat_choice(hero_id, ambush, option, targets, data, rng)?;
+            }
+            ChoiceSource::HavenCombat { hero_id, ambush } => {
+                self.apply_haven_choice(hero_id, ambush, option, data, rng)?;
+            }
+            ChoiceSource::PerilDraw { hero_id, cards } => {
+                return self.apply_peril_draw(hero_id, &cards, targets, data, rng);
+            }
+            ChoiceSource::Peril {
+                hero_id,
+                card,
+                drawn,
+            } => {
+                let answer = PerilAnswer {
+                    hero_id,
+                    card,
+                    drawn: &drawn,
+                    option,
+                    targets,
+                };
+                return self.apply_peril_choice(&answer, data, rng);
+            }
+            ChoiceSource::Damage { hero_id, .. } => self.apply_damage_choice(hero_id, targets)?,
+            ChoiceSource::Wretched { hero_id } => {
+                self.apply_wretched_choice(hero_id, option, targets, data)?;
+            }
+        }
+        Ok(resume)
+    }
+
+    /// Applies an answer about an event card.
+    fn apply_event_answer(
+        &mut self,
+        source: ChoiceSource,
+        option: &str,
+        targets: &[String],
+        resume: Resume,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<(), EngineError> {
+        match source {
             ChoiceSource::Event {
                 stage,
                 card,
                 heroes,
             } => {
                 let event = EventRef { stage, card };
-                self.apply_event_choice(event, &heroes, option, targets, choice.resume, data, rng)?;
+                self.apply_event_choice(event, &heroes, option, targets, resume, data, rng)
             }
             ChoiceSource::ExploreEvent {
                 stage,
@@ -115,24 +193,10 @@ impl Game {
                 hero_id,
             } => {
                 let event = EventRef { stage, card };
-                self.apply_explore_reward(
-                    event,
-                    hero_id,
-                    option,
-                    targets,
-                    choice.resume,
-                    data,
-                    rng,
-                )?;
+                self.apply_explore_reward(event, hero_id, option, targets, resume, data, rng)
             }
-            ChoiceSource::Training { hero_id, cards } => {
-                self.apply_training(hero_id, &cards, targets)?;
-            }
+            _ => Ok(()),
         }
-        if self.board.pending_choice.is_some() {
-            return Ok(());
-        }
-        self.resume(choice.resume, data)
     }
 
     /// Plays on after the last choice.
@@ -146,6 +210,23 @@ impl Game {
             Resume::Exploration => {
                 self.fire(BoardEvent::NextToHeroExploration)?;
                 self.activate_current_hero()
+            }
+            Resume::Movement => {
+                self.fire(BoardEvent::NextToHeroMovementScreen)?;
+                self.activate_current_hero()
+            }
+            Resume::Rest => {
+                self.activate_current_hero()?;
+                self.enter_rest_step(data)
+            }
+            Resume::AfterRest => {
+                self.activate_current_hero()?;
+                let hero_id = self.current_hero_id()?;
+                self.advance_story_after_rest(hero_id, data).map(|_| ())
+            }
+            Resume::EndTurn => {
+                let hero_id = self.current_hero_id()?;
+                self.finish_heroes_turn(hero_id, data).map(|_| ())
             }
         }
     }

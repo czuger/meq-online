@@ -140,6 +140,19 @@ impl Game {
         *self.board.influence.entry(location.to_owned()).or_default() += count;
     }
 
+    /// Adds influence to the Shadow Pool outside of a budget (card effects), up to its
+    /// capacity of 4 × the current stage (§ 5.8).
+    pub fn add_to_shadow_pool(&mut self, count: i32) {
+        let capacity = self.board.story.stage() * SHADOW_POOL_PER_STAGE;
+        let old = self.board.shadow_pool;
+        self.board.shadow_pool = (old + count).min(capacity).max(old);
+        let params = [
+            ("old_value", json!(old)),
+            ("new_value", json!(self.board.shadow_pool)),
+        ];
+        self.log(ActorRef::Sauron, "change_shadow_pool", &params);
+    }
+
     /// Removes up to `count` influence from a location.
     pub fn remove_influence(&mut self, location: &str, count: i32) {
         let left = self.board.influence.get(location).copied().unwrap_or(0) - count;

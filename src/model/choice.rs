@@ -65,6 +65,52 @@ pub enum ChoiceSource {
         hero_id: i64,
         /// The two Skill cards drawn.
         cards: Vec<u32>,
+        /// Trainings still to receive afterwards.
+        #[serde(default)]
+        more: u8,
+    },
+    /// Sauron picks the monster or minion attacking the hero, or a Peril (§ 6.4, § 6.5).
+    Threat {
+        /// The threatened hero.
+        hero_id: i64,
+        /// Ambush step (otherwise Travel step).
+        ambush: bool,
+    },
+    /// A hero in a Haven allows combat or not (§ 6.4, § 8).
+    HavenCombat {
+        /// The hero.
+        hero_id: i64,
+        /// Ambush step (otherwise Travel step).
+        ambush: bool,
+    },
+    /// Sauron picks the Peril card the hero resolves among those drawn (§ 6.5).
+    PerilDraw {
+        /// The hero.
+        hero_id: i64,
+        /// The Peril cards drawn.
+        cards: Vec<u32>,
+    },
+    /// A decision within a Peril card's effect.
+    Peril {
+        /// The hero resolving the card.
+        hero_id: i64,
+        /// The Peril card.
+        card: u32,
+        /// Cards drawn for the effect (Corruption cards of "Ill-met Company").
+        #[serde(default)]
+        drawn: Vec<u32>,
+    },
+    /// A hero pays damage dealt outside combat from hand and life pool (§ 6.3).
+    Damage {
+        /// The hero.
+        hero_id: i64,
+        /// Damage to pay.
+        amount: u32,
+    },
+    /// Sauron may send a hero who drew "Wretched" to the nearest Haven.
+    Wretched {
+        /// The hero.
+        hero_id: i64,
     },
 }
 
@@ -76,6 +122,14 @@ pub enum Resume {
     ActionStep,
     /// The current hero's exploration.
     Exploration,
+    /// The current hero's Travel step.
+    Movement,
+    /// The current hero's Rest step, after the Ambush step (movement when a mob stays).
+    Rest,
+    /// The story marker advance ending a rest.
+    AfterRest,
+    /// The current hero's turn ends.
+    EndTurn,
 }
 
 /// A decision waiting for its answer.

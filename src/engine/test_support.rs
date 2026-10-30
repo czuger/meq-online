@@ -56,7 +56,7 @@ pub fn hero(code: &str) -> Hero {
         damage_pool: vec![],
         items: Default::default(),
         levels: Default::default(),
-        used_powers: Default::default(),
+        turn_record: Default::default(),
         corruption_cards: vec![],
     }
 }
@@ -191,6 +191,10 @@ pub fn game() -> Game {
                 discard: vec![],
             },
             corruption: Pile::default(),
+            peril: Pile {
+                draw: (0..=14).collect(),
+                discard: vec![],
+            },
         },
         monster_pools: pools,
         monster_discards: BTreeMap::new(),

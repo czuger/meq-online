@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS heroes (
     damage_pool                    TEXT    NOT NULL,  -- JSON [card]
     items                          TEXT    NOT NULL,  -- JSON {horse, boat}
     levels                         TEXT    NOT NULL DEFAULT '{}', -- JSON {fortitude, strength, agility, wisdom}
-    used_powers                    TEXT    NOT NULL,  -- JSON {argalad}
+    turn_record                    TEXT    NOT NULL,  -- JSON TurnRecord
     corruption_cards               TEXT    NOT NULL,  -- JSON [corruption card]
     UNIQUE (board_id, code)
 );
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS combats (
     board_id           INTEGER PRIMARY KEY REFERENCES boards (id) ON DELETE CASCADE,
     hero_id            INTEGER NOT NULL REFERENCES heroes (id) ON DELETE CASCADE,
     mob_id             INTEGER NOT NULL REFERENCES mobs (id) ON DELETE CASCADE,
-    ambush             INTEGER NOT NULL DEFAULT 0,
+    origin             TEXT    NOT NULL,      -- JSON CombatOrigin
     hero_strength      INTEGER,
     hero_secret_card   INTEGER,
     mob_secret_card    INTEGER,

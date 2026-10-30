@@ -1,13 +1,58 @@
 ---
+# The 16 Corruption cards; codes match the pictures in static/images/corruption.
 :deck:
+- 0
+- 1
 - 2
 - 3
+- 4
 - 5
+- 6
+- 7
 - 8
 - 9
 - 10
+- 11
+- 12
+- 13
 - 14
+- 15
 :cards:
+  0:
+    :name: Despondent
+    :favor_cost: 3
+    :flaw: despondent
+    :desc: When you rest or are defeated, the left-most Sauron victory marker is advanced 2 spaces (instead of 1).
+  1:
+    :name: Hopeless
+    :favor_cost: 2
+    :flaw: hopeless
+    :desc: You may not take more than 3 Travel steps during each of your future turns.
+  4:
+    :name: Wretched
+    :immediate: wretched
+    :desc: Your turn immediately ends. Sauron may then choose to move you to the nearest Haven. Then shuffle this card and the discard pile back into the Corruption deck.
+  6:
+    :name: Greedy
+    :favor_cost: 2
+    :flaw: greedy
+    :desc: When Sauron plays a Shadow card on your turn, he may then draw a new Shadow card.
+  12:
+    :name: Mistrusted
+    :favor_cost: 2
+    :flaw: mistrusted
+    :desc: You may not gain more than 1 favor during each future turn.
+  13:
+    :name: Reckless
+    :favor_cost: 1
+    :flaw: reckless
+    :desc: When Sauron draws Peril cards on your turn, he may draw 1 additional card.
+  15:
+    :name: Indifferent
+    :favor_cost: 1
+    :flaw: indifferent
+    :desc: When you draw Encounter cards, draw 2 instead of 3.
+
   10:
     :name: Careless
     :immediate: careless

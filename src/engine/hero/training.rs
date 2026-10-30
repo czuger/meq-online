@@ -23,6 +23,9 @@ const TRAINING_DRAW: usize = 2;
 /// Most favor a despairing hero may hold.
 const DESPAIRING_FAVOR_LIMIT: i32 = 3;
 
+/// Most favor a mistrusted hero may gain per turn.
+const MISTRUSTED_FAVOR_LIMIT: i32 = 1;
+
 /// A hero attribute raised by level tokens.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Attribute {
@@ -56,12 +59,22 @@ impl Hero {
         true
     }
 
-    /// Gains favor; a despairing hero never holds more than 3.
-    pub fn gain_favor(&mut self, amount: i32, data: &GameData) {
-        self.favor += amount;
-        if self.has_flaw(Flaw::Dispairing, data) {
-            self.favor = self.favor.min(DESPAIRING_FAVOR_LIMIT);
+    /// Gains favor; a despairing hero never holds more than 3, a mistrusted one gains
+    /// at most 1 per turn.
+    ///
+    /// # Returns
+    /// The favor actually gained.
+    pub fn gain_favor(&mut self, amount: i32, data: &GameData) -> i32 {
+        let mut gained = amount.max(0);
+        if self.has_flaw(Flaw::Mistrusted, data) {
+            gained = gained.min((MISTRUSTED_FAVOR_LIMIT - self.turn_record.favor_gained).max(0));
         }
+        if self.has_flaw(Flaw::Dispairing, data) {
+            gained = gained.min((DESPAIRING_FAVOR_LIMIT - self.favor).max(0));
+        }
+        self.favor += gained;
+        self.turn_record.favor_gained += gained;
+        gained
     }
 }
 
@@ -76,24 +89,45 @@ impl Game {
         resume: Resume,
         rng: &mut StdRng,
     ) -> Result<(), EngineError> {
-        let pile = &mut self.board.decks.skill;
-        if pile.draw.len() < TRAINING_DRAW {
-            pile.draw.append(&mut pile.discard);
-            pile.draw.shuffle(rng);
+        self.train_times(hero_id, 1, resume, rng)
+    }
+
+    /// Receives training `times` times in a row, one choice after the other.
+    ///
+    /// # Errors
+    /// Lookup and transition errors.
+    pub fn train_times(
+        &mut self,
+        hero_id: i64,
+        times: u8,
+        resume: Resume,
+        rng: &mut StdRng,
+    ) -> Result<(), EngineError> {
+        for left in (0..times).rev() {
+            let pile = &mut self.board.decks.skill;
+            if pile.draw.len() < TRAINING_DRAW {
+                pile.draw.append(&mut pile.discard);
+                pile.draw.shuffle(rng);
+            }
+            let count = TRAINING_DRAW.min(pile.draw.len());
+            let cards: Vec<CardNumber> = pile.draw.drain(..count).collect();
+            if cards.len() <= 1 {
+                self.hero_mut(hero_id)?.hand.extend(cards);
+                continue;
+            }
+            let targets = cards.iter().map(|c| target("skill", c)).collect();
+            return self.ask(PendingChoice {
+                chooser: Chooser::Hero(hero_id),
+                source: ChoiceSource::Training {
+                    hero_id,
+                    cards,
+                    more: left,
+                },
+                options: vec![target_option("keep_skill", targets, 1, 1)],
+                resume,
+            });
         }
-        let count = TRAINING_DRAW.min(pile.draw.len());
-        let cards: Vec<CardNumber> = pile.draw.drain(..count).collect();
-        if cards.len() <= 1 {
-            self.hero_mut(hero_id)?.hand.extend(cards);
-            return Ok(());
-        }
-        let targets = cards.iter().map(|c| target("skill", c)).collect();
-        self.ask(PendingChoice {
-            chooser: Chooser::Hero(hero_id),
-            source: ChoiceSource::Training { hero_id, cards },
-            options: vec![target_option("keep_skill", targets, 1, 1)],
-            resume,
-        })
+        Ok(())
     }
 
     /// The hero keeps the chosen Skill card; the other is discarded faceup.
