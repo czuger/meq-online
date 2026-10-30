@@ -13,7 +13,7 @@ function showInfluenceAlert(pawn, message) {
   setTimeout(() => { alert.style.display = "none"; }, 2000);
 }
 
-// Click adds one influence; shift-click removes one.
+// Click places one influence; shift-click takes back one just placed.
 function setupInfluence(sauronId) {
   document.querySelectorAll(".influence-pawn-box").forEach((pawn) => {
     pawn.addEventListener("click", async () => {
@@ -30,15 +30,16 @@ function setupInfluence(sauronId) {
   });
 }
 
-// Clicking an empty slot adds one influence to the shadow pool, a filled one removes one.
+// Clicking an empty slot puts one influence in the shadow pool, a filled one takes it back.
 function setupShadowPool(sauronId) {
   document.querySelectorAll(".influence-pool-value").forEach((slot) => {
     slot.addEventListener("click", async () => {
       const body = new URLSearchParams({ current_val: slot.textContent.trim() });
       const response = await fetch(`/shadow_pools/${sauronId}/update_from_map`, { method: "PATCH", body });
       if (!response.ok) return;
-      const pool = await response.json();
-      document.querySelectorAll(".influence-pool-value").forEach((s, i) => { s.textContent = i < pool ? "1" : "0"; });
+      const data = await response.json();
+      if (data.message) showInfluenceAlert(slot, data.message);
+      document.querySelectorAll(".influence-pool-value").forEach((s, i) => { s.textContent = i < data.pool ? "1" : "0"; });
     });
   });
 }

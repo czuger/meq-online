@@ -40,3 +40,15 @@ fn mob_only_exhausted_aimed_shot_vs_reckless() {
     assert!(f.combat.mob_cards.last().unwrap().cancelled);
     assert!(f.combat.mob_exhausted);
 }
+
+// § 8.3 "Calculate strength": exhausted only when the spent strength exceeds strength.
+#[test]
+fn spending_exactly_the_strength_doesnt_exhaust() {
+    let mut f = fight(2, 0);
+    f.mob.strength = 50;
+    f.round(3, 10);
+    assert!(!f.combat.hero_exhausted);
+    assert_eq!(f.combat.hero_strength_used, 5);
+    f.round(3, 10);
+    assert!(f.combat.hero_exhausted);
+}

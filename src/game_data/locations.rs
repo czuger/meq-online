@@ -2,7 +2,7 @@
 
 use crate::game_data::code_map::CodeMap;
 use crate::game_data::game_data_error::GameDataError;
-use crate::game_data::location::{Color, Location};
+use crate::game_data::location::Location;
 
 /// Every location of the map, in file order, by code.
 #[derive(Debug, Clone)]
@@ -49,25 +49,5 @@ impl Locations {
         let mut list: Vec<_> = self.map.iter().collect();
         list.sort_by(|a, b| a.1.name.cmp(&b.1.name));
         list
-    }
-
-    /// Code of the haven of a region color.
-    ///
-    /// Some regions have no haven of their own and use a neighbour's.
-    ///
-    /// # Errors
-    /// [`GameDataError::UnknownCode`] when no haven matches the color.
-    pub fn haven_for_color(&self, color: Color) -> Result<&str, GameDataError> {
-        let color = match color {
-            Color::Yellow => Color::LightGreen,
-            Color::Purple => Color::Orange,
-            Color::Red | Color::Brown => Color::LightBlue,
-            other => other,
-        };
-        self.map
-            .iter()
-            .find(|(_, l)| l.color_code == color && l.haven)
-            .map(|(code, _)| code.as_str())
-            .ok_or_else(|| GameDataError::unknown("haven for color", format!("{color:?}")))
     }
 }

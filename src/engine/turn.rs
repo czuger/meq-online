@@ -4,7 +4,6 @@ use serde_json::json;
 
 use crate::engine::board_state::BoardEvent;
 use crate::engine::engine_error::EngineError;
-use crate::engine::influence_paths::InfluencePaths;
 use crate::game_data::GameData;
 use crate::model::actor_ref::ActorRef;
 use crate::model::game::Game;
@@ -74,12 +73,12 @@ impl Game {
     /// [`EngineError::NotFound`] when the hero is unknown.
     pub fn hero_end_turn_operations(&mut self, hero_id: i64) -> Result<(), EngineError> {
         let hero = self.hero_mut(hero_id)?;
-        hero.corruption_discarded_this_turn = false;
         hero.used_powers.argalad = false;
         Ok(())
     }
 
-    /// In a single-hero game the hero plays two turns per round.
+    /// In a single-hero game the hero plays two turns per round, with a special Hero
+    /// Rally step and Hero Draw step in between (§ 10.1).
     ///
     /// # Returns
     /// `true` when the second turn starts, `false` when the round ended.
@@ -95,6 +94,8 @@ impl Game {
             return Ok(false);
         }
         hero.turn = 2;
+        hero.cards_drawn_this_round = 0;
+        self.rally_step(data);
         self.activate_current_hero()?;
         self.fire(BoardEvent::NextToFinishHeroTurn)?;
         self.fire(BoardEvent::NextToHeroDrawCardsScreen)?;
@@ -148,12 +149,19 @@ impl Game {
         Ok(())
     }
 
-    /// Heroes remove the influence where they stand; influence cut from the
-    /// strongholds is reduced to what they can still support.
+    /// Heroes remove the influence where they stand, except on a Shadow Stronghold;
+    /// influence cut from the strongholds is reduced to what they can still support
+    /// (§ 5.2, § 5.8).
     fn rally_step(&mut self, data: &GameData) {
+        let on_stronghold = |location: &str| {
+            data.locations
+                .get(location)
+                .is_ok_and(|l| l.shadow_fortress)
+        };
         let hero_spots: Vec<(String, String)> = self
             .heroes
             .iter()
+            .filter(|h| !on_stronghold(&h.location))
             .map(|h| {
                 (
                     data.heroes
@@ -175,20 +183,6 @@ impl Game {
                 self.log(ActorRef::System, "rally.hero_remove", &params);
             }
         }
-
-        let locations: Vec<String> = self.board.influence.keys().cloned().collect();
-        for location in locations {
-            let max = InfluencePaths::new(&self.board.influence, &data.paths)
-                .max_for_existing_token(&location);
-            let count = self.board.influence.get(&location).copied().unwrap_or(0);
-            if max < count {
-                self.board.influence.insert(location.clone(), max);
-                let params = [
-                    ("location", json!(data.locations.name(&location))),
-                    ("count", json!(count - max)),
-                ];
-                self.log(ActorRef::System, "rally.auto_remove", &params);
-            }
-        }
+        self.trim_unsupported_influence(data);
     }
 }

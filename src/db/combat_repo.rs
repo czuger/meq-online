@@ -37,13 +37,14 @@ pub async fn replace(
         .await?;
     let Some(combat) = combat else { return Ok(()) };
     sqlx::query(
-        "INSERT INTO combats (board_id, hero_id, mob_id, hero_strength, hero_secret_card, mob_secret_card, \
+        "INSERT INTO combats (board_id, hero_id, mob_id, ambush, hero_strength, hero_secret_card, mob_secret_card, \
          hero_strength_used, mob_strength_used, hero_exhausted, mob_exhausted, hero_cards, mob_cards) \
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .bind(board_id)
     .bind(combat.hero_id)
     .bind(combat.mob_id)
+    .bind(combat.ambush)
     .bind(combat.hero_strength)
     .bind(combat.hero_secret_card)
     .bind(combat.mob_secret_card)
@@ -62,6 +63,7 @@ fn combat_from_row(row: &SqliteRow) -> Result<Combat, DbError> {
     Ok(Combat {
         hero_id: row.try_get("hero_id")?,
         mob_id: row.try_get("mob_id")?,
+        ambush: row.try_get("ambush")?,
         hero_strength: row.try_get("hero_strength")?,
         hero_secret_card: row.try_get("hero_secret_card")?,
         mob_secret_card: row.try_get("mob_secret_card")?,

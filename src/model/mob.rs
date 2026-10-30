@@ -36,4 +36,6 @@ pub struct Mob {
     pub hand: Vec<CardNumber>,
     /// Damage taken during the current combat round.
     pub damages_taken_this_turn: i32,
+    /// Received a command during Sauron's current action.
+    pub commanded: bool,
 }

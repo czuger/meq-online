@@ -3,7 +3,7 @@
 use std::path::Path;
 
 use meq_online::db::{game_repo, pool, user_repo};
-use meq_online::engine::setup::new_game;
+use meq_online::engine::setup::{HeroSeat, new_game};
 use meq_online::game_data::GameData;
 use meq_online::model::played_card::PlayedCard;
 use rand::SeedableRng;
@@ -18,14 +18,17 @@ async fn new_game_round_trip() {
     let creator = user_repo::find_or_create(&mut conn, "dev", "me", "Moi", "me@x")
         .await
         .unwrap();
-    let ai = user_repo::ai_users(&mut conn, 4).await.unwrap();
-    let mut game = new_game(
-        creator.id,
-        [ai[0], ai[1], ai[2], ai[3]],
-        &data,
-        &mut StdRng::seed_from_u64(1),
-    )
-    .unwrap();
+    let ai = user_repo::ai_users(&mut conn, 3).await.unwrap();
+    let seats: Vec<HeroSeat<'_>> = ["argalad", "eleanor", "thalin"]
+        .into_iter()
+        .zip(ai)
+        .map(|(code, user_id)| HeroSeat {
+            code,
+            user_id,
+            open: true,
+        })
+        .collect();
+    let mut game = new_game(creator.id, &seats, &data, &mut StdRng::seed_from_u64(1)).unwrap();
     game_repo::save(&mut conn, &mut game).await.unwrap();
     let board_id = game.board.id.unwrap();
     assert!(game.heroes.iter().all(|h| h.id.is_some()));

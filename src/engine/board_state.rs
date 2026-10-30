@@ -17,8 +17,14 @@ pub enum BoardState {
     WaitingForPlayers,
     /// Sauron reviews the starting plot.
     SauronSetupScreen,
-    /// Sauron places action markers and influence.
+    /// Sauron chooses his next action on the action tracks.
     EditSauronSauronActions,
+    /// Sauron places influence (Place Influence action).
+    PlaceInfluenceScreenSauronActions,
+    /// Sauron keeps one of the drawn plot cards (Draw Shadow and Plot Cards action).
+    KeepScreenSauronPlotCards,
+    /// Sauron commands monsters and minions (Command action).
+    CommandScreenSauronMobs,
     /// Heroes draw their cards.
     HeroDrawCardsScreen,
     /// The current hero rests or heals.
@@ -27,8 +33,10 @@ pub enum BoardState {
     FinishHeroTurn,
     /// Transient: Sauron's turn is over.
     FinishSauronTurn,
-    /// Transient: a defeated hero's turn ends.
-    AfterDefeatAdvanceStoryMarker,
+    /// A defeated hero picks the story marker to advance and what to lose.
+    HeroDefeatScreen,
+    /// Sauron picks the Haven a defeated hero goes to, between equally close ones.
+    SauronHavenScreen,
     /// The current hero moves.
     HeroMovementScreen,
     /// The current hero explores its location.
@@ -47,19 +55,25 @@ pub enum BoardState {
     Finished,
     /// The hero chooses cards to lose to damage.
     CardsLossScreenBoardCombats,
+    /// A player answers a card's choice.
+    ChoiceScreenBoardChoices,
 }
 
 /// Every state, for exhaustive checks.
-pub const ALL_STATES: [BoardState; 18] = [
+pub const ALL_STATES: [BoardState; 23] = [
     BoardState::Created,
     BoardState::WaitingForPlayers,
     BoardState::SauronSetupScreen,
     BoardState::EditSauronSauronActions,
+    BoardState::PlaceInfluenceScreenSauronActions,
+    BoardState::KeepScreenSauronPlotCards,
+    BoardState::CommandScreenSauronMobs,
     BoardState::HeroDrawCardsScreen,
     BoardState::HeroRestScreen,
     BoardState::FinishHeroTurn,
     BoardState::FinishSauronTurn,
-    BoardState::AfterDefeatAdvanceStoryMarker,
+    BoardState::HeroDefeatScreen,
+    BoardState::SauronHavenScreen,
     BoardState::HeroMovementScreen,
     BoardState::HeroExploration,
     BoardState::PlayScreenSauronPlotCards,
@@ -69,6 +83,7 @@ pub const ALL_STATES: [BoardState; 18] = [
     BoardState::LookForGollumCardsSauronPlotCards,
     BoardState::Finished,
     BoardState::CardsLossScreenBoardCombats,
+    BoardState::ChoiceScreenBoardChoices,
 ];
 
 impl BoardState {
@@ -79,11 +94,15 @@ impl BoardState {
             Self::WaitingForPlayers => "waiting_for_players",
             Self::SauronSetupScreen => "sauron_setup_screen",
             Self::EditSauronSauronActions => "edit_sauron_sauron_actions",
+            Self::PlaceInfluenceScreenSauronActions => "place_influence_screen_sauron_actions",
+            Self::KeepScreenSauronPlotCards => "keep_screen_sauron_plot_cards",
+            Self::CommandScreenSauronMobs => "command_screen_sauron_mobs",
             Self::HeroDrawCardsScreen => "hero_draw_cards_screen",
             Self::HeroRestScreen => "hero_rest_screen",
             Self::FinishHeroTurn => "finish_hero_turn",
             Self::FinishSauronTurn => "finish_sauron_turn",
-            Self::AfterDefeatAdvanceStoryMarker => "after_defeat_advance_story_marker",
+            Self::HeroDefeatScreen => "hero_defeat_screen",
+            Self::SauronHavenScreen => "sauron_haven_screen",
             Self::HeroMovementScreen => "hero_movement_screen",
             Self::HeroExploration => "hero_exploration",
             Self::PlayScreenSauronPlotCards => "play_screen_sauron_plot_cards",
@@ -93,6 +112,7 @@ impl BoardState {
             Self::LookForGollumCardsSauronPlotCards => "look_for_gollum_cards_sauron_plot_cards",
             Self::Finished => "finished",
             Self::CardsLossScreenBoardCombats => "cards_loss_screen_board_combats",
+            Self::ChoiceScreenBoardChoices => "choice_screen_board_choices",
         }
     }
 
@@ -147,6 +167,12 @@ pub enum BoardEvent {
     NextToSauronSetupScreen,
     /// Go to Sauron's actions.
     NextToEditSauronSauronActions,
+    /// Start a Place Influence action.
+    NextToPlaceInfluenceScreenSauronActions,
+    /// Start a Draw Shadow and Plot Cards action.
+    NextToKeepScreenSauronPlotCards,
+    /// Start a Command action.
+    NextToCommandScreenSauronMobs,
     /// Go to the heroes' draw.
     NextToHeroDrawCardsScreen,
     /// Go to the rest step.
@@ -161,8 +187,10 @@ pub enum BoardEvent {
     NextToPlayCombatCardScreenBoardCombats,
     /// Go to the card loss step.
     NextToCardsLossScreenBoardCombats,
-    /// End a defeated hero's turn.
-    NextToAfterDefeatAdvanceStoryMarker,
+    /// A hero was defeated.
+    NextToHeroDefeatScreen,
+    /// Sauron chooses the defeated hero's Haven.
+    NextToSauronHavenScreen,
     /// Go to exploration.
     NextToHeroExploration,
     /// Go to the Gollum card search.
@@ -175,6 +203,8 @@ pub enum BoardEvent {
     NextToFinishSauronTurn,
     /// End the game.
     FinishGame,
+    /// Wait for a player's choice.
+    NextToChoiceScreenBoardChoices,
 }
 
 impl BoardEvent {
@@ -187,9 +217,26 @@ impl BoardEvent {
                 (&[S::Created, S::WaitingForPlayers], S::SauronSetupScreen)
             }
             Self::NextToEditSauronSauronActions => (
-                &[S::PlayScreenSauronPlotCards, S::SauronSetupScreen],
+                &[
+                    S::PlayScreenSauronPlotCards,
+                    S::SauronSetupScreen,
+                    S::PlaceInfluenceScreenSauronActions,
+                    S::KeepScreenSauronPlotCards,
+                    S::CommandScreenSauronMobs,
+                    S::ChoiceScreenBoardChoices,
+                ],
                 S::EditSauronSauronActions,
             ),
+            Self::NextToPlaceInfluenceScreenSauronActions => (
+                &[S::EditSauronSauronActions],
+                S::PlaceInfluenceScreenSauronActions,
+            ),
+            Self::NextToKeepScreenSauronPlotCards => {
+                (&[S::EditSauronSauronActions], S::KeepScreenSauronPlotCards)
+            }
+            Self::NextToCommandScreenSauronMobs => {
+                (&[S::EditSauronSauronActions], S::CommandScreenSauronMobs)
+            }
             Self::NextToHeroDrawCardsScreen => (
                 &[S::FinishHeroTurn, S::FinishSauronTurn],
                 S::HeroDrawCardsScreen,
@@ -210,6 +257,7 @@ impl BoardEvent {
                     S::PlayCombatCardScreenBoardCombats,
                     S::HeroExploration,
                     S::HeroRestScreen,
+                    S::AfterRestAdvanceStoryMarker,
                 ],
                 S::HeroMovementScreen,
             ),
@@ -228,11 +276,14 @@ impl BoardEvent {
                 &[S::PlayCombatCardScreenBoardCombats],
                 S::CardsLossScreenBoardCombats,
             ),
-            Self::NextToAfterDefeatAdvanceStoryMarker => (
-                &[S::CardsLossScreenBoardCombats],
-                S::AfterDefeatAdvanceStoryMarker,
+            Self::NextToHeroDefeatScreen => {
+                (&[S::PlayCombatCardScreenBoardCombats], S::HeroDefeatScreen)
+            }
+            Self::NextToSauronHavenScreen => (&[S::HeroDefeatScreen], S::SauronHavenScreen),
+            Self::NextToHeroExploration => (
+                &[S::HeroMovementScreen, S::ChoiceScreenBoardChoices],
+                S::HeroExploration,
             ),
-            Self::NextToHeroExploration => (&[S::HeroMovementScreen], S::HeroExploration),
             Self::NextToLookForGollumCardsSauronPlotCards => (
                 &[S::PlayScreenSauronPlotCards],
                 S::LookForGollumCardsSauronPlotCards,
@@ -242,11 +293,25 @@ impl BoardEvent {
                 S::PlayScreenSauronPlotCards,
             ),
             Self::NextToFinishHeroTurn => (
-                &[S::AfterDefeatAdvanceStoryMarker, S::HeroExploration],
+                &[
+                    S::HeroDefeatScreen,
+                    S::SauronHavenScreen,
+                    S::HeroExploration,
+                    S::PlayCombatCardScreenBoardCombats,
+                ],
                 S::FinishHeroTurn,
             ),
             Self::NextToFinishSauronTurn => (&[S::EditSauronSauronActions], S::FinishSauronTurn),
             Self::FinishGame => (&[S::FinishHeroTurn], S::Finished),
+            Self::NextToChoiceScreenBoardChoices => (
+                &[
+                    S::PlayScreenSauronPlotCards,
+                    S::SauronSetupScreen,
+                    S::LookForGollumCardsSauronPlotCards,
+                    S::HeroExploration,
+                ],
+                S::ChoiceScreenBoardChoices,
+            ),
         }
     }
 
@@ -256,6 +321,11 @@ impl BoardEvent {
             Self::WaitForPlayers => "wait_for_players",
             Self::NextToSauronSetupScreen => "next_to_sauron_setup_screen",
             Self::NextToEditSauronSauronActions => "next_to_edit_sauron_sauron_actions",
+            Self::NextToPlaceInfluenceScreenSauronActions => {
+                "next_to_place_influence_screen_sauron_actions"
+            }
+            Self::NextToKeepScreenSauronPlotCards => "next_to_keep_screen_sauron_plot_cards",
+            Self::NextToCommandScreenSauronMobs => "next_to_command_screen_sauron_mobs",
             Self::NextToHeroDrawCardsScreen => "next_to_hero_draw_cards_screen",
             Self::NextToHeroRestScreen => "next_to_hero_rest_screen",
             Self::NextToAfterRestAdvanceStoryMarker => "next_to_after_rest_advance_story_marker",
@@ -267,9 +337,8 @@ impl BoardEvent {
                 "next_to_play_combat_card_screen_board_combats"
             }
             Self::NextToCardsLossScreenBoardCombats => "next_to_cards_loss_screen_board_combats",
-            Self::NextToAfterDefeatAdvanceStoryMarker => {
-                "next_to_after_defeat_advance_story_marker"
-            }
+            Self::NextToHeroDefeatScreen => "next_to_hero_defeat_screen",
+            Self::NextToSauronHavenScreen => "next_to_sauron_haven_screen",
             Self::NextToHeroExploration => "next_to_hero_exploration",
             Self::NextToLookForGollumCardsSauronPlotCards => {
                 "next_to_look_for_gollum_cards_sauron_plot_cards"
@@ -278,6 +347,7 @@ impl BoardEvent {
             Self::NextToFinishHeroTurn => "next_to_finish_hero_turn",
             Self::NextToFinishSauronTurn => "next_to_finish_sauron_turn",
             Self::FinishGame => "finish_game",
+            Self::NextToChoiceScreenBoardChoices => "next_to_choice_screen_board_choices",
         }
     }
 }

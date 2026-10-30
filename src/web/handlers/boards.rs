@@ -3,7 +3,8 @@
 use std::collections::BTreeMap;
 
 use askama::Template;
-use axum::extract::{Query, State};
+use axum::Form;
+use axum::extract::{Path, Query, State};
 use axum::response::Response;
 use serde::Deserialize;
 
@@ -11,7 +12,7 @@ use crate::app_state::AppState;
 use crate::db::{DbError, board_repo, game_repo, user_repo};
 use crate::engine::board_state::BoardState;
 use crate::engine::route::{RouteActor, route_for};
-use crate::engine::setup::new_game;
+use crate::engine::setup::{HeroSeat, MAX_HEROES, new_game};
 use crate::engine::story::Dominance;
 use crate::model::board::Winner;
 use crate::model::game::Game;
@@ -61,6 +62,7 @@ struct WelcomePage {
 #[template(path = "boards_new.html")]
 struct NewPage {
     layout: Layout,
+    heroes: Vec<(&'static str, String)>,
 }
 
 #[derive(Template)]
@@ -68,6 +70,7 @@ struct NewPage {
 struct JoinPage {
     layout: Layout,
     board_id: i64,
+    heroes: Vec<(String, String)>,
 }
 
 #[derive(Template)]
@@ -173,7 +176,7 @@ fn board_row(game: &Game, users: &BTreeMap<i64, User>, me: &User, state: &AppSta
         players: players.join(", "),
         turn: game.board.turn,
         status: status.to_owned(),
-        can_join: i32::try_from(game.heroes.len()).unwrap_or(i32::MAX) < game.board.max_heroes,
+        can_join: !game.board.waiting_heroes.is_empty(),
         sauron: sauron_cell(game, me),
         heroes: hero_cells(game, users, me, state),
     }
@@ -238,27 +241,56 @@ fn hero_cells(
 ///
 /// # Errors
 /// [`AppError::Template`] when rendering fails.
-pub async fn new(session: Session) -> Result<Response, AppError> {
+pub async fn new(State(state): State<AppState>, session: Session) -> Result<Response, AppError> {
     let layout = Layout::user(&session);
+    let heroes = HERO_COLUMNS
+        .iter()
+        .map(|code| (*code, hero_name(&state, code)))
+        .collect();
     render(
         &NewPage {
             layout: layout.clone(),
+            heroes,
         },
         &layout,
     )
 }
 
-/// `POST /boards`: creates a game where the user plays Sauron and computer seats play
-/// the heroes.
+/// `POST /boards`: creates a game where the user plays Sauron. The chosen heroes are
+/// open seats for players to join (`seats=open`), or computer seats played by the
+/// board members.
 ///
 /// # Errors
-/// [`AppError::Engine`] when the static data can't build a game; database errors.
-pub async fn create(State(state): State<AppState>, session: Session) -> Result<Response, AppError> {
+/// [`AppError::Engine`] for a wrong choice of heroes; database errors.
+pub async fn create(
+    State(state): State<AppState>,
+    session: Session,
+    Form(fields): Form<Vec<(String, String)>>,
+) -> Result<Response, AppError> {
+    let codes: Vec<&str> = HERO_COLUMNS
+        .into_iter()
+        .filter(|code| fields.iter().any(|(k, v)| k == "heroes" && v == code))
+        .collect();
+    let open = fields.iter().any(|(k, v)| k == "seats" && v == "open");
+    if codes.is_empty() || codes.len() > MAX_HEROES {
+        return Ok(redirect(
+            "/boards/new",
+            Some(Flash::alert("Choisissez de un à trois héros.")),
+        ));
+    }
     let mut tx = state.db.begin().await.map_err(DbError::from)?;
-    let ai = user_repo::ai_users(&mut tx, 4).await?;
-    let seats = [0, 1, 2, 3].map(|i| ai.get(i).copied().unwrap_or(session.user.id));
+    let ai = user_repo::ai_users(&mut tx, codes.len()).await?;
+    let seats: Vec<HeroSeat<'_>> = codes
+        .iter()
+        .zip(ai)
+        .map(|(code, user_id)| HeroSeat {
+            code,
+            user_id,
+            open,
+        })
+        .collect();
     let mut rng: rand::rngs::StdRng = rand::make_rng();
-    let mut game = new_game(session.user.id, seats, &state.data, &mut rng)?;
+    let mut game = new_game(session.user.id, &seats, &state.data, &mut rng)?;
     game_repo::save(&mut tx, &mut game).await?;
     let board_id = game.board.id.ok_or(AppError::NotFound)?;
     user_repo::add_member(&mut tx, board_id, session.user.id).await?;
@@ -269,27 +301,60 @@ pub async fn create(State(state): State<AppState>, session: Session) -> Result<R
     ))
 }
 
-/// `GET /boards/{board_id}/join`.
+/// `GET /boards/{board_id}/join`: the heroes still waiting for a player.
 ///
 /// # Errors
-/// [`AppError::Template`] when rendering fails.
+/// [`AppError::Db`] when the board can't be loaded.
 pub async fn join_new(
+    State(state): State<AppState>,
     session: Session,
-    axum::extract::Path(board_id): axum::extract::Path<i64>,
+    Path(board_id): Path<i64>,
 ) -> Result<Response, AppError> {
+    let game = read_game(&state, board_id).await?;
     let layout = Layout::user(&session);
+    let heroes = game
+        .board
+        .waiting_heroes
+        .iter()
+        .map(|code| (code.clone(), hero_name(&state, code)))
+        .collect();
     render(
         &JoinPage {
             layout: layout.clone(),
             board_id,
+            heroes,
         },
         &layout,
     )
 }
 
-/// `POST /boards/{board_id}/join`: every seat is taken at creation, so joining is refused.
-pub async fn join(_session: Session) -> Response {
-    redirect("/boards", Some(Flash::alert("Cette partie est complète.")))
+/// Hero chosen when joining.
+#[derive(Debug, Deserialize)]
+pub struct JoinForm {
+    hero: String,
+}
+
+/// `POST /boards/{board_id}/join`: the user takes an open hero seat.
+///
+/// # Errors
+/// [`AppError::Engine`] when the seat isn't open; database errors.
+pub async fn join(
+    State(state): State<AppState>,
+    session: Session,
+    Path(board_id): Path<i64>,
+    Form(form): Form<JoinForm>,
+) -> Result<Response, AppError> {
+    let mut tx = state.db.begin().await.map_err(DbError::from)?;
+    let mut game = game_repo::load(&mut tx, board_id).await?;
+    game.join_hero_seat(&form.hero, session.user.id)?;
+    game_repo::save(&mut tx, &mut game).await?;
+    user_repo::add_member(&mut tx, board_id, session.user.id).await?;
+    tx.commit().await.map_err(DbError::from)?;
+    state.refresh.board_changed(board_id);
+    Ok(redirect(
+        "/boards",
+        Some(Flash::notice("Vous avez rejoint la partie.")),
+    ))
 }
 
 /// `GET /boards/{board_id}/inactive_actor`.

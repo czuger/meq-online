@@ -57,6 +57,15 @@ fn sauron_action_name(code: &str) -> &'static str {
     }
 }
 
+/// Name of a Skill card from its number.
+fn skill_name(number: &str, data: &GameData) -> String {
+    number
+        .parse()
+        .ok()
+        .and_then(|n| data.skills.get(&n))
+        .map_or_else(|| number.to_owned(), |s| s.name.clone())
+}
+
 /// Sentence describing a log entry.
 pub fn log_text(entry: &LogEntry, data: &GameData) -> String {
     let p = |name: &str| param(entry, name, data);
@@ -95,6 +104,14 @@ pub fn log_text(entry: &LogEntry, data: &GameData) -> String {
             p("location"),
             p("corruption")
         ),
+        "defeat.lose_favor" => "Vaincu, perd une faveur.".to_owned(),
+        "defeat.lose_item" => "Vaincu, perd un objet.".to_owned(),
+        "defeat.haven" => format!("Vaincu, est transporté à {} et récupère.", p("location")),
+        "ringwraiths.return" => format!("Les Nazgûl reviennent à {}.", p("location")),
+        "combat.undefeated_influence" => format!(
+            "{} n'a pas été vaincu : Sauron peut placer {tokens}.",
+            p("name")
+        ),
         "corruption.isolated" => format!(
             "N'a pas pu parler avec {} à cause de la corruption Isolé.",
             p("character")
@@ -131,6 +148,13 @@ fn setup_and_combat_log_text(entry: &LogEntry, data: &GameData) -> String {
                 p("lp_cards")
             )
         }
+        "combat.prepare" => format!(
+            "Avant le combat, {} pioche {} cartes et sa force passe de {} à {}.",
+            p("name"),
+            p("cards_drawn"),
+            p("str"),
+            p("nstr")
+        ),
         "combat.inc_strength" => format!(
             "Avant le combat, {} utilise son agilité pour faire passer sa force de {} à {}.",
             p("name"),
@@ -161,6 +185,10 @@ fn sauron_log_text(entry: &LogEntry, data: &GameData) -> String {
             "Impossible de placer l'influence à {} : elle dépasserait la valeur de la forteresse des Ténèbres liée.",
             p("location")
         ),
+        "place_influence.haven" => format!(
+            "Impossible de placer de l'influence à {} : c'est un refuge.",
+            p("location")
+        ),
         "change_shadow_pool" => format!(
             "La réserve des Ténèbres passe de {} à {}.",
             p("old_value"),
@@ -175,10 +203,20 @@ fn sauron_log_text(entry: &LogEntry, data: &GameData) -> String {
         "shadow_cards.draw" => format!("Sauron pioche {shadows}."),
         "shadow_cards.keep" => format!("Sauron garde {shadows}."),
         "shadow_cards.discard" => format!("Sauron défausse {shadows}."),
+        "command.move" => format!("Sauron déplace {} vers {}.", p("name"), p("location")),
+        "command.place" => format!("Sauron place un monstre à {}.", p("location")),
+        "command.heal" => format!("Sauron soigne {}.", p("name")),
         "character.remove" => format!("Retire {}.", p("name")),
         "character.place" => format!("Place {} à {}.", p("name"), p("location")),
         "favor.place" => format!("Place une faveur à {}.", p("location")),
         "event.choose_card" => "Tire une carte événement.".to_owned(),
+        "event.resolved" => format!("L'événement « {} » est appliqué.", p("event")),
+        "event.activated" => format!("Active l'événement en jeu « {} ».", p("event")),
+        "training.keep" => format!(
+            "S'entraîne et garde la compétence {}.",
+            skill_name(&p("skill"), data)
+        ),
+        "corruption.discard" => format!("Défausse la carte de corruption {}.", p("corruption")),
         action => {
             if let Some(code) = action.strip_prefix("sauron_actions.place.") {
                 format!("Choisit l'action : {}.", sauron_action_name(code))

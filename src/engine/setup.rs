@@ -8,8 +8,9 @@ use rand::seq::{IndexedRandom, SliceRandom};
 use serde_json::json;
 
 use crate::engine::board_state::{BoardEvent, BoardState};
+use crate::engine::deck::SauronDeck;
 use crate::engine::engine_error::EngineError;
-use crate::engine::events::starting_event_deck;
+use crate::engine::events::event_step::starting_event_decks;
 use crate::game_data::GameData;
 use crate::game_data::GameDataError;
 use crate::game_data::hero_quests::QuestSetupKind;
@@ -20,8 +21,8 @@ use crate::model::game::Game;
 use crate::model::hero::{Hero, HeroItems};
 use crate::model::sauron::Sauron;
 
-/// Heroes seated at every new game, each controlled by a computer seat.
-pub const STARTING_HEROES: [&str; 4] = ["beravor", "eleanor", "thalin", "eometh"];
+/// Most heroes in a game (§ 1: one Sauron and up to three heroes).
+pub const MAX_HEROES: usize = 3;
 
 /// Plot cards left out of the deck (their effects aren't implemented).
 const EXCLUDED_PLOTS: [u32; 5] = [10, 11, 14, 15, 17];
@@ -35,29 +36,47 @@ const STARTING_MINIONS: [(&str, &str); 2] = [
     ("black_serpent", "near_harad"),
 ];
 
-/// Builds a new game: Sauron for `sauron_user_id`, the [`STARTING_HEROES`] for the
-/// computer seats, the starting plot, decks, minions and quests.
+/// A hero seat of a new game.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct HeroSeat<'a> {
+    /// Hero code.
+    pub code: &'a str,
+    /// User holding the seat (a computer seat until a player takes an open seat).
+    pub user_id: i64,
+    /// The seat waits for a player to join.
+    pub open: bool,
+}
+
+/// Builds a new game (§ 3): Sauron for `sauron_user_id`, the chosen heroes, the
+/// starting plot, decks, minions and quests. The game waits for players while a seat
+/// is open, and otherwise opens on Sauron's setup.
 ///
 /// # Arguments
 /// * `sauron_user_id` - user playing Sauron (the creator).
-/// * `hero_user_ids` - user of each starting hero, in [`STARTING_HEROES`] order.
+/// * `seats` - one to three different heroes, in playing order.
 /// * `data` - static data.
 /// * `rng` - random source.
 ///
 /// # Errors
-/// Fails when the static data misses a starting hero, plot or minion.
+/// [`EngineError::Refused`] for a wrong number of heroes or a hero chosen twice;
+/// fails when the static data misses a hero, plot or minion.
 pub fn new_game(
     sauron_user_id: i64,
-    hero_user_ids: [i64; 4],
+    seats: &[HeroSeat<'_>],
     data: &GameData,
     rng: &mut StdRng,
 ) -> Result<Game, EngineError> {
+    check_seats(seats)?;
     let starting_plot = rng.random_range(0..=2);
-    let board = new_board(starting_plot, data, rng)?;
-    // The game opens on Sauron's setup screen, so Sauron plays first.
+    let mut board = new_board(starting_plot, data, rng)?;
+    board.max_heroes = i32::try_from(seats.len()).unwrap_or(i32::MAX);
+    board.waiting_heroes = seats
+        .iter()
+        .filter(|s| s.open)
+        .map(|s| s.code.to_owned())
+        .collect();
     let sauron = Sauron {
         user_id: sauron_user_id,
-        active: true,
         ..Sauron::default()
     };
     let mut game = Game {
@@ -69,19 +88,39 @@ pub fn new_game(
         new_logs: vec![],
     };
 
-    for (order, (code, user_id)) in STARTING_HEROES.iter().zip(hero_user_ids).enumerate() {
-        let hero = new_hero(code, user_id, order, data, rng)?;
-        game.apply_quest_setup(code, data, rng)?;
+    for (order, seat) in seats.iter().enumerate() {
+        let hero = new_hero(seat.code, seat.user_id, order, data, rng)?;
+        game.apply_quest_setup(seat.code, hero.quest, data)?;
         game.heroes.push(hero);
     }
-    game.fire(BoardEvent::NextToSauronSetupScreen)?;
+    if game.board.waiting_heroes.is_empty() {
+        game.start_game()?;
+    } else {
+        game.fire(BoardEvent::WaitForPlayers)?;
+    }
 
     for (mob, location) in STARTING_MINIONS {
         game.create_mob(mob, location, None, data)?;
     }
     game.log_setup(starting_plot, data)?;
     game.board.plots.insert(1, starting_plot);
+    game.starting_plot_instructions(starting_plot, data, rng)?;
     Ok(game)
+}
+
+fn check_seats(seats: &[HeroSeat<'_>]) -> Result<(), EngineError> {
+    if seats.is_empty() || seats.len() > MAX_HEROES {
+        return Err(EngineError::Refused(format!(
+            "a game has 1 to {MAX_HEROES} heroes"
+        )));
+    }
+    let mut codes: Vec<&str> = seats.iter().map(|s| s.code).collect();
+    codes.sort_unstable();
+    codes.dedup();
+    if codes.len() != seats.len() {
+        return Err(EngineError::Refused("each hero is chosen once".to_owned()));
+    }
+    Ok(())
 }
 
 fn new_board(starting_plot: u32, data: &GameData, rng: &mut StdRng) -> Result<Board, EngineError> {
@@ -94,7 +133,7 @@ fn new_board(starting_plot: u32, data: &GameData, rng: &mut StdRng) -> Result<Bo
     Ok(Board {
         id: None,
         state: BoardState::Created,
-        max_heroes: 4,
+        max_heroes: 0,
         turn: 1,
         current_hero_id: None,
         winner: None,
@@ -106,9 +145,17 @@ fn new_board(starting_plot: u32, data: &GameData, rng: &mut StdRng) -> Result<Bo
         plots: BTreeMap::new(),
         sauron_actions: vec![],
         sauron_actions_count: 0,
+        current_action: None,
         decks: shuffled_decks(data, rng),
         monster_pools: shuffled_monster_pools(data, rng),
-        last_event_card: None,
+        monster_discards: BTreeMap::new(),
+        waiting_heroes: vec![],
+        ringwraiths_return: false,
+        influence_budget: Default::default(),
+        last_event: None,
+        current_event: None,
+        held_event: None,
+        pending_choice: None,
         heroes_objective: None,
         sauron_objective: None,
     })
@@ -123,6 +170,9 @@ fn shuffled_decks(data: &GameData, rng: &mut StdRng) -> Decks {
     shadow.shuffle(rng);
     let mut corruption = data.corruption.deck.clone();
     corruption.shuffle(rng);
+    let mut skills: Vec<u32> = data.skills.keys().copied().collect();
+    skills.shuffle(rng);
+    let [event, event_ii, event_iii] = starting_event_decks(data, rng);
     Decks {
         plot: Pile {
             draw: plot,
@@ -133,7 +183,19 @@ fn shuffled_decks(data: &GameData, rng: &mut StdRng) -> Decks {
             discard: vec![],
         },
         event: Pile {
-            draw: starting_event_deck(data, rng),
+            draw: event,
+            discard: vec![],
+        },
+        event_ii: Pile {
+            draw: event_ii,
+            discard: vec![],
+        },
+        event_iii: Pile {
+            draw: event_iii,
+            discard: vec![],
+        },
+        skill: Pile {
+            draw: skills,
             discard: vec![],
         },
         corruption: Pile {
@@ -164,7 +226,8 @@ fn new_hero(
     let def = data.hero(code)?;
     let mut life_pool = def.starting_deck.clone();
     life_pool.shuffle(rng);
-    let quest = data.hero_quest(code)?.starting_quests.choose(rng).copied();
+    let quests = data.hero_quest(code)?;
+    let quest = quests.starting_quests.choose(rng).copied();
     Ok(Hero {
         id: None,
         user_id,
@@ -176,41 +239,76 @@ fn new_hero(
         wisdom: def.wisdom,
         favor: 0,
         quest,
+        advanced_quest: quests.advanced_quests.first().copied(),
         playing_order: i32::try_from(order).unwrap_or(i32::MAX),
         turn: 1,
         active: false,
         turn_finished: false,
         damages_taken_this_turn: 0,
         temporary_damages: 0,
-        corruption_discarded_this_turn: false,
+        cards_drawn_this_round: 0,
         life_pool,
         hand: vec![],
         rest_pool: vec![],
         damage_pool: vec![],
         items: HeroItems {
             horse: code == "eometh",
+            boat: false,
         },
+        levels: Default::default(),
         used_powers: Default::default(),
         corruption_cards: vec![],
     })
 }
 
 impl Game {
-    /// Places the characters of a hero's starting quest.
+    /// A player takes an open hero seat; the game starts when no seat is left open.
     ///
-    /// The quest is drawn again here, independently of the quest stored on the hero,
-    /// as in the original engine.
+    /// # Returns
+    /// `true` when the game started.
+    ///
+    /// # Errors
+    /// [`EngineError::Refused`] when the hero's seat isn't open; transition errors.
+    pub fn join_hero_seat(&mut self, code: &str, user_id: i64) -> Result<bool, EngineError> {
+        let position = self
+            .board
+            .waiting_heroes
+            .iter()
+            .position(|c| c == code)
+            .ok_or_else(|| EngineError::Refused(format!("the seat of {code} is not open")))?;
+        self.board.waiting_heroes.remove(position);
+        let hero = self
+            .heroes
+            .iter_mut()
+            .find(|h| h.code == code)
+            .ok_or_else(|| EngineError::Refused(format!("{code} is not in this game")))?;
+        hero.user_id = user_id;
+        if !self.board.waiting_heroes.is_empty() {
+            return Ok(false);
+        }
+        self.start_game()?;
+        Ok(true)
+    }
+
+    /// Every seat is taken: Sauron plays first, starting with his setup.
+    fn start_game(&mut self) -> Result<(), EngineError> {
+        self.fire(BoardEvent::NextToSauronSetupScreen)?;
+        self.sauron.active = true;
+        Ok(())
+    }
+
+    /// Follows the "Setup" instructions of the hero's Starting Quest (§ 3).
     fn apply_quest_setup(
         &mut self,
         hero: &str,
+        quest: Option<u32>,
         data: &GameData,
-        rng: &mut StdRng,
     ) -> Result<(), EngineError> {
         let quests = data.hero_quest(hero)?;
-        let Some(quest) = quests.starting_quests.choose(rng) else {
+        let Some(quest) = quest else {
             return Ok(());
         };
-        for action in quests.setup.get(quest).into_iter().flatten() {
+        for action in quests.setup.get(&quest).into_iter().flatten() {
             match action.action {
                 QuestSetupKind::Place => {
                     self.board
@@ -218,6 +316,25 @@ impl Game {
                         .insert(action.character.clone(), action.location.clone());
                 }
             }
+        }
+        Ok(())
+    }
+
+    /// Sauron follows his starting plot (§ 3): influence to place and plot cards to
+    /// draw, some of which he keeps.
+    fn starting_plot_instructions(
+        &mut self,
+        starting_plot: u32,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<(), EngineError> {
+        let plot = data.plot(starting_plot)?;
+        if let Some(influence) = &plot.influence {
+            self.grant_influence(influence.add, 0);
+        }
+        if let Some(cards) = plot.plot_cards {
+            let count = usize::try_from(cards.draw).unwrap_or(0);
+            self.draw_sauron_cards(SauronDeck::Plot, count, rng);
         }
         Ok(())
     }
@@ -256,15 +373,38 @@ mod tests {
     use super::*;
     use crate::engine::test_support::{data, rng};
 
+    fn seats<'a>(codes: &[&'a str], open: bool) -> Vec<HeroSeat<'a>> {
+        codes
+            .iter()
+            .enumerate()
+            .map(|(i, code)| HeroSeat {
+                code,
+                user_id: i64::try_from(i).unwrap() + 2,
+                open,
+            })
+            .collect()
+    }
+
+    fn three_heroes() -> Vec<HeroSeat<'static>> {
+        seats(&["argalad", "eleanor", "eometh"], false)
+    }
+
     // Port of boards_controller_test.rb "should create a board" and board_test.rb.
     #[test]
     fn creates_a_board() {
-        let game = new_game(1, [2, 3, 4, 5], data(), &mut rng()).unwrap();
-        assert_eq!(game.heroes.len(), 4);
+        let game = new_game(1, &three_heroes(), data(), &mut rng()).unwrap();
+        assert_eq!(game.heroes.len(), 3);
+        assert!(game.sauron.active);
         assert_eq!(game.board.state, BoardState::SauronSetupScreen);
         assert_eq!(game.board.plots.len(), 1);
         assert_eq!(game.mobs.len(), 2);
-        assert_eq!(game.board.decks.plot.draw.len(), 10);
+        let plots = game.board.decks.plot.draw.len() + game.sauron.drawn_plot.len();
+        assert_eq!(plots, 10);
+        assert!(
+            !game.sauron.drawn_plot.is_empty(),
+            "§ 3: the starting plot draws"
+        );
+        assert!(game.board.influence_budget.tokens > 0);
         assert_eq!(game.board.decks.shadow.draw.len(), 22);
         assert!(
             game.heroes
@@ -272,5 +412,61 @@ mod tests {
                 .all(|h| h.hand.is_empty() && !h.life_pool.is_empty())
         );
         assert!(game.heroes.iter().any(|h| h.items.horse));
+    }
+
+    // § 3: the characters placed match the Starting Quest kept by each hero, and each
+    // hero receives its Advanced Quest.
+    #[test]
+    fn quest_setup_matches_the_hero_quest() {
+        for seed in 0..20 {
+            let mut rng = <StdRng as rand::SeedableRng>::seed_from_u64(seed);
+            let game = new_game(1, &three_heroes(), data(), &mut rng).unwrap();
+            for hero in &game.heroes {
+                let quests = data().hero_quest(&hero.code).unwrap();
+                let quest = hero.quest.unwrap();
+                for action in quests.setup.get(&quest).into_iter().flatten() {
+                    assert_eq!(
+                        game.board.characters.get(&action.character),
+                        Some(&action.location)
+                    );
+                }
+                assert_eq!(hero.advanced_quest, Some(0));
+            }
+            let expected: usize = game
+                .heroes
+                .iter()
+                .map(|h| {
+                    let quests = data().hero_quest(&h.code).unwrap();
+                    quests.setup.get(&h.quest.unwrap()).map_or(0, Vec::len)
+                })
+                .sum();
+            assert_eq!(game.board.characters.len(), expected, "seed {seed}");
+        }
+    }
+
+    // § 1 and § 3: one to three different heroes, Argalad included.
+    #[test]
+    fn one_to_three_different_heroes() {
+        let refused =
+            |codes: &[&str]| new_game(1, &seats(codes, false), data(), &mut rng()).is_err();
+        assert!(refused(&[]));
+        assert!(refused(&["argalad", "beravor", "eleanor", "thalin"]));
+        assert!(refused(&["argalad", "argalad"]));
+        let game = new_game(1, &seats(&["argalad"], false), data(), &mut rng()).unwrap();
+        assert_eq!(game.heroes[0].location, "woodland_realm");
+    }
+
+    #[test]
+    fn players_take_open_seats_then_the_game_starts() {
+        let mut game =
+            new_game(1, &seats(&["thalin", "beravor"], true), data(), &mut rng()).unwrap();
+        assert_eq!(game.board.state, BoardState::WaitingForPlayers);
+        assert!(!game.sauron.active);
+        assert!(!game.join_hero_seat("thalin", 9).unwrap());
+        assert!(game.join_hero_seat("thalin", 9).is_err());
+        assert!(game.join_hero_seat("beravor", 10).unwrap());
+        assert_eq!(game.board.state, BoardState::SauronSetupScreen);
+        assert!(game.sauron.active);
+        assert_eq!(game.heroes[0].user_id, 9);
     }
 }

@@ -1,250 +1,561 @@
 ---
+# The 42 Event cards, by stage deck then picture number (static/images/events).
+# Transcribed from the card pictures; `text` is the printed ability.
 :I:
   0:
+    :name: "Messengers of the Stormcrow"
+    :priority: 1
+    :text: "Each hero that has favor must immediately either spend 1 favor or receive 1 Corruption card."
+    :ability:
+      :type: "favor_or_corruption"
     :character:
-      :name: 'theoden'
-      :location: 'helms_deep'
+      :name: "theoden"
+      :location: "helms_deep"
     :favors:
-    - 'bree'
+      - "bree"
   1:
+    :name: "Beornings, the Skin Changers"
+    :priority: 6
+    :text: "The heroes may remove up to 2 monster tokens from or deal 2 damage to a minion in any location in the region of Mirkwood."
+    :ability:
+      :type: "clear_monsters_or_hurt_minion"
+      :region: "mirkwood"
+      :monsters: 2
+      :damage: 2
     :character:
-      :name: 'dain'
-      :location: 'the_iron_hills'
+      :name: "dain"
+      :location: "the_iron_hills"
     :favors:
-    - 'the_high_pass'
+      - "the_high_pass"
   2:
+    :name: "The Thieves of Tharbad"
+    :priority: 4
+    :text: "Sauron must choose a character. Place or move the character to the Mouth of the Greyflood."
+    :ability:
+      :type: "sauron_moves_character"
+      :location: "mouth_of_the_greyflood"
     :favors:
-    - 'tharbad'
-    - 'the_bight'
+      - "tharbad"
+      - "the_bight"
   3:
+    :name: "Trust in Friendship"
+    :priority: 3
+    :text: "Each hero loses 1 favor and places it on this card. Then Sauron gives this card to any hero. After this hero explores a location containing a character or another hero, he gains this favor and then discards this card."
+    :ability:
+      :type: "trust_in_friendship"
     :character:
-      :name: 'dain'
-      :location: 'lake_esgaroth'
+      :name: "dain"
+      :location: "lake_esgaroth"
     :favors:
-    - 'osgiliath'
+      - "osgiliath"
   4:
+    :name: "From Argonath to the Sea"
+    :priority: 9
+    :text: "Affects Minas Tirith. After a hero explores here, he may remove 1 influence from each adjacent location. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "remove_adjacent_influence"
     :character:
-      :name: 'thranduil'
-      :location: 'the_forest_trail'
+      :name: "thranduil"
+      :location: "the_forest_trail"
     :favors:
-    - 'ettenmoors'
+      - "ettenmoors"
+    :affect: "minas_tirith"
   5:
+    :name: "Gandalf Visits Frodo"
+    :priority: 14
+    :text: "Affects The Shire. After a hero explores here, he may spend 3 favor to move the hero story marker one space up the Story Track. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "advance_heroes"
+          :cost: 3
     :character:
-      :name: 'gandalf'
-      :location: 'the_shire'
+      :name: "gandalf"
+      :location: "the_shire"
     :favors:
-    - 'eregion'
+      - "eregion"
+    :affect: "the_shire"
   6:
+    :name: "Tempted by Power"
+    :priority: 2
+    :text: "Sauron chooses one hero. The hero must choose to gain 1 Corruption card and receive training, or allow Sauron to draw 1 Plot card."
+    :ability:
+      :type: "temptation"
+      :reward: "training"
+      :refusal: "plot"
     :character:
-      :name: 'saruman'
-      :location: 'fangorn'
+      :name: "saruman"
+      :location: "fangorn"
     :favors:
-    - 'emyn_muil'
+      - "emyn_muil"
   7:
+    :name: "Imladris"
+    :priority: 12
+    :text: "Affects Rivendell. After a hero explores here, he may discard 1 of his Corruption cards or gain 1 level of fortitude. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "discard_corruption"
+        - :type: "gain_fortitude"
     :favors:
-    - 'ered_mithrin'
-    - 'gap_of_rohan'
+      - "ered_mithrin"
+      - "gap_of_rohan"
+    :affect: "rivendell"
   8:
+    :name: "The Dunadan Guards the Shire"
+    :priority: 7
+    :text: "The heroes may remove 3 influence/monster tokens from any locations in Eriador or place 1 favor in The Shire."
+    :ability:
+      :type: "clear_tokens_or_favor"
+      :area:
+        :region: "eriador"
+      :max: 3
+      :favor: "the_shire"
     :favors:
-    - 'the_northdowns'
-    - 'dead_marshes'
+      - "the_northdowns"
+      - "dead_marshes"
   9:
+    :name: "Arwen's Message to Her Beloved"
+    :priority: 11
+    :text: "Affects Weathertop. After a hero explores here, he gains 1 favor or receives training. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "favor"
+          :count: 1
+        - :type: "training"
     :character:
-      :name: 'aragorn'
-      :location: 'weathertop'
+      :name: "aragorn"
+      :location: "weathertop"
     :favors:
-    - 'lothlorien'
+      - "lothlorien"
+    :affect: "weathertop"
   10:
+    :name: "The Courage of Erkenbrand"
+    :priority: 8
+    :text: "The heroes may remove up to 3 influence/monster tokens from Rohan or place 1 favor in Helm's Deep."
+    :ability:
+      :type: "clear_tokens_or_favor"
+      :area:
+        :region: "rhoan"
+      :max: 3
+      :favor: "helms_deep"
     :character:
-      :name: 'theoden'
-      :location: 'plains_of_rohan'
+      :name: "theoden"
+      :location: "plains_of_rohan"
     :favors:
-    - 'dunland'
+      - "dunland"
   11:
+    :name: "Eomer and Eowyn Are Orphaned"
+    :priority: 5
+    :text: "Sauron may discard 1 character or 1 favor from a location in Rohan."
+    :ability:
+      :type: "sauron_discards_character_or_favor"
+      :region: "rhoan"
     :character:
-      :name: 'denethor'
-      :location: 'pelargir'
+      :name: "denethor"
+      :location: "pelargir"
     :favors:
-    - 'rhosgobel'
+      - "rhosgobel"
   12:
+    :name: "Lady of the Golden Wood"
+    :priority: 10
+    :text: "Affects Lothlorien. After a hero explores here, he may gain a \"Boat\" Item card or remove 1 influence from the Shadow Pool. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "boat"
+        - :type: "shadow_pool_loss"
+          :count: 1
     :character:
-      :name: 'boromir'
-      :location: 'dunharrow'
+      :name: "boromir"
+      :location: "dunharrow"
     :favors:
-    - 'the_withered_heath'
+      - "the_withered_heath"
+    :affect: "lothlorien"
   13:
+    :name: "Not All Those Who Wander Are Lost"
+    :priority: 13
+    :text: "Affects Rhun. After a hero explores here he may move to any location. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "move_anywhere"
     :character:
-      :name: 'aragorn'
-      :location: 'rhun'
+      :name: "aragorn"
+      :location: "rhun"
     :favors:
-    - 'the_forest_road'
+      - "the_forest_road"
+    :affect: "rhun"
 :II:
   0:
+    :name: "Athelas, Kingsfoil"
+    :priority: 11
+    :text: "Affects Rhosgobel. After a hero explores here, he may discard 1 of his Corruption cards or shuffle his damage pool into his rest pool. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "discard_corruption"
+        - :type: "damage_to_rest"
     :character:
-      :name: ''
-      :location: ''
+      :name: "thranduil"
+      :location: "woodland_realm"
     :favors:
-    - 'location'
+      - "the_redhorn_gate"
+    :affect: "rhosgobel"
   1:
+    :name: "The Glades of Orthanc Darken"
+    :priority: 2
+    :text: "Affects the Gap of Rohan. After a hero explores here, discard this card. While in play, advance the red story marker 1 space on the Story Track every Story step."
+    :ability:
+      :type: "on_explore"
+      :rewards: []
     :character:
-      :name: ''
-      :location: ''
+      :name: "saruman"
+      :location: "isengard"
     :favors:
-    - 'location'
+      - "the_northern_waste"
+    :affect: "gap_of_rohan"
+    :story:
+      :type: "conquest"
+      :advance: 1
   2:
+    :name: "Aragorn Hunts Gollum"
+    :priority: 13
+    :text: "Affects the Dead Marshes. After a hero explores here, he may spend 3 favor to advance the hero story marker one space on the Story Track. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "advance_heroes"
+          :cost: 3
     :character:
-      :name: ''
-      :location: ''
+      :name: "aragorn"
+      :location: "dead_marshes"
     :favors:
-    - 'location'
+      - "ered_mithrin"
+    :affect: "dead_marshes"
   3:
+    :name: "Brand Becomes King of Dale"
+    :priority: 8
+    :text: "The heroes may remove up to 2 monster tokens or influence within 1 space of Lake Esgaroth, or place 1 favor in Lake Esgaroth."
+    :ability:
+      :type: "clear_tokens_or_favor"
+      :area:
+        :near: "lake_esgaroth"
+      :max: 2
+      :favor: "lake_esgaroth"
     :character:
-      :name: ''
-      :location: ''
+      :name: "dain"
+      :location: "the_forest_road"
     :favors:
-    - 'location'
+      - "enedwaith_plains"
   4:
-    :character:
-      :name: ''
-      :location: ''
+    :name: "There Is Strength Yet"
+    :priority: 4
+    :text: "The heroes may move 1 character to an adjacent location that is not a Shadow Stronghold. Remove all influence and monster tokens from the location."
+    :ability:
+      :type: "move_character_and_clear"
     :favors:
-    - 'location'
+      - "mouth_of_the_greyflood"
+      - "amon_hen"
   5:
+    :name: "Under the Shadow"
+    :priority: 7
+    :text: "Sauron chooses a hero. The hero must either choose to receive 1 Corruption card and then move to any location, or allow Sauron to draw 1 Shadow card."
+    :ability:
+      :type: "temptation"
+      :reward: "move_anywhere"
+      :refusal: "shadow"
     :character:
-      :name: ''
-      :location: ''
+      :name: "aragorn"
+      :location: "rivendell"
     :favors:
-    - 'location'
+      - "sea_of_udun"
   6:
+    :name: "Commander of Edoras"
+    :priority: 9
+    :text: "The heroes may remove 1 monster token and 1 influence within 1 space of Edoras, or place 1 favor in Edoras."
+    :ability:
+      :type: "clear_tokens_or_favor"
+      :area:
+        :near: "edoras"
+      :max: 1
+      :per_kind: true
+      :favor: "edoras"
     :character:
-      :name: ''
-      :location: ''
+      :name: "theoden"
+      :location: "edoras"
     :favors:
-    - 'location'
+      - "mothond"
   7:
-    :character:
-      :name: ''
-      :location: ''
+    :name: "Iarwain Ben-adar"
+    :priority: 10
+    :text: "Affects the Old Forest. After a hero explores here, he may discard 1 of his Corruption cards or shuffle his damage pool into his rest pool. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "discard_corruption"
+        - :type: "damage_to_rest"
     :favors:
-    - 'location'
+      - "hills_of_evendim"
+      - "south_eaves"
+    :affect: "old_forest"
   8:
-    :character:
-      :name: ''
-      :location: ''
+    :name: "Stone Figures in the Trollshaws"
+    :priority: 3
+    :text: "Sauron may place a monster token in any 2 locations in Rhudaur (influence is not required in the locations)."
+    :ability:
+      :type: "sauron_places_monsters"
+      :region: "rhuadur"
+      :count: 2
     :favors:
-    - 'location'
+      - "the_northdowns"
+      - "tharbad"
   9:
+    :name: "The Foe-hammer"
+    :priority: 6
+    :text: "Affects The Trollshaws. After a hero explores here, he may place Gandalf in any location containing influence. Then remove all monster tokens from Gandalf's location and discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "gandalf_to_influence"
     :character:
-      :name: ''
-      :location: ''
+      :name: "gandalf"
+      :location: "the_trollshaws"
     :favors:
-    - 'location'
+      - "the_iron_hills"
+    :affect: "the_trollshaws"
   10:
-    :character:
-      :name: ''
-      :location: ''
+    :name: "Aragorn Meets with Gandalf"
+    :priority: 12
+    :text: "Place or move both Aragorn and Gandalf to Bree."
+    :ability:
+      :type: "place_characters"
+      :characters:
+        - "aragorn"
+        - "gandalf"
+      :location: "bree"
     :favors:
-    - 'location'
+      - "near_harad"
+      - "dagorlad"
   11:
+    :name: "Beregond, Guard of the Citadel"
+    :priority: 14
+    :text: "A hero may spend 3 favor to discard an active Plot card affecting a Haven."
+    :ability:
+      :type: "discard_haven_plot"
+      :cost: 3
     :character:
-      :name: ''
-      :location: ''
+      :name: "denethor"
+      :location: "minas_tirith"
     :favors:
-    - 'location'
+      - "the_grey_havens"
   12:
-    :character:
-      :name: ''
-      :location: ''
+    :name: "Cirdan the Shipwright"
+    :priority: 5
+    :text: "Affects The Grey Havens. After a hero explores here, he gains a \"Boat\" Item card and may move to Belfalas. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "boat_and_move"
+          :location: "belfalas"
     :favors:
-    - 'location'
+      - "anfalas"
+      - "old_forest"
+    :affect: "the_grey_havens"
   13:
+    :name: "Of Serpents and Sand"
+    :priority: 1
+    :text: "Affects Near Harad. After a hero explores here, discard this card. While in play, advance the red story marker 1 space on the Story Track every Story step."
+    :ability:
+      :type: "on_explore"
+      :rewards: []
     :character:
-      :name: ''
-      :location: ''
+      :name: "boromir"
+      :location: "the_nindale"
     :favors:
-    - 'location'
+      - "gladden_fields"
+    :affect: "near_harad"
+    :story:
+      :type: "conquest"
+      :advance: 1
 :III:
   0:
-    :character:
-      :name: ''
-      :location: ''
+    :name: "Radagast the Brown"
+    :priority: 3
+    :text: "Each hero with 4 or more favor must discard 1 favor. Then, if Gandalf is in play, move him to Isengard."
+    :ability:
+      :type: "radagast"
     :favors:
-    - 'location'
+      - "rhosgobel"
+      - "plains_of_gorgoroth"
   1:
+    :name: "Boromir's Dream"
+    :priority: 9
+    :text: "Each hero that does not have favor gains 1 favor. Then, if Sauron's yellow story marker is the closest marker to the start space, advance it 1 space up the Story Track."
+    :ability:
+      :type: "boromirs_dream"
     :character:
-      :name: ''
-      :location: ''
+      :name: "boromir"
+      :location: "osgiliath"
     :favors:
-    - 'location'
+      - "emyn_muil"
   2:
-    :character:
-      :name: ''
-      :location: ''
+    :name: "Eowyn, Sister-daughter"
+    :priority: 11
+    :text: "Place or move Theoden to Edoras and remove 1 influence from each location adjacent to Edoras."
+    :ability:
+      :type: "eowyn"
     :favors:
-    - 'location'
+      - "lake_esgaroth"
+      - "mothond"
   3:
-    :character:
-      :name: ''
-      :location: ''
+    :name: "Warrior of the Lidless Eye"
+    :priority: 4
+    :text: "Sauron may place 1 influence and 1 monster token in each space adjacent to Gothmog of Gorgoroth."
+    :ability:
+      :type: "warrior_of_the_lidless_eye"
     :favors:
-    - 'location'
+      - "ettenmoors"
+      - "belfalas"
   4:
+    :name: "Elladan and Elrohir"
+    :priority: 10
+    :text: "Affects the Ettenmoors. After a hero explores here, he gains 2 favor and may remove any 1 monster token from the board. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "favor_and_remove_monster"
+          :count: 2
     :character:
-      :name: ''
-      :location: ''
+      :name: "thranduil"
+      :location: "the_forest_trail"
     :favors:
-    - 'location'
+      - "mouth_of_the_greyflood"
+    :affect: "ettenmoors"
   5:
+    :name: "Gandalf Stormcrow"
+    :priority: 7
+    :text: "Affects the Plains of Rohan. After a hero explores here, he may place or move Gandalf to any location that is at least 4 spaces away. Then remove 1 influence from the Shadow Pool and discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "gandalf_far_away"
+          :distance: 4
     :character:
-      :name: ''
-      :location: ''
+      :name: "gandalf"
+      :location: "plains_of_rohan"
     :favors:
-    - 'location'
+      - "the_ruins_of_angmar"
+    :affect: "plains_of_rohan"
   6:
-    :character:
-      :name: ''
-      :location: ''
+    :name: "Theoden Warned of Saruman"
+    :priority: 13
+    :text: "Affects Edoras. After a hero explores here, he may spend 2 favor to move the black story marker 1 space leftward on the Story Track. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "retreat_corruption"
+          :cost: 2
     :favors:
-    - 'location'
+      - "eregion"
+      - "the_withered_heath"
+    :affect: "edoras"
   7:
-    :character:
-      :name: ''
-      :location: ''
+    :name: "The Argonath"
+    :priority: 12
+    :text: "Affects Amon Hen. After a hero explores here, he may discard 1 of his Corruption cards or gain 1 level of fortitude. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "discard_corruption"
+        - :type: "gain_fortitude"
     :favors:
-    - 'location'
+      - "fangorn"
+      - "mount_doom"
+    :affect: "amon_hen"
   8:
+    :name: "Dark News From Erebor"
+    :priority: 1
+    :text: "Affects Erebor. After a hero explores here, discard this card. While in play, advance the black story marker 1 space on the Story Track every Story step."
+    :ability:
+      :type: "on_explore"
+      :rewards: []
     :character:
-      :name: ''
-      :location: ''
+      :name: "saruman"
+      :location: "isengard"
     :favors:
-    - 'location'
+      - "blue_mountains"
+    :affect: "erebor"
+    :story:
+      :type: "corruption"
+      :advance: 1
   9:
+    :name: "The Blood of Rhun"
+    :priority: 2
+    :text: "Affects Dagorlad. After a hero explores here, discard this card. While in play, advance the red story marker 1 space on the Story Track every Story step."
+    :ability:
+      :type: "on_explore"
+      :rewards: []
     :character:
-      :name: ''
-      :location: ''
+      :name: "dain"
+      :location: "erebor"
     :favors:
-    - 'location'
+      - "harlingdon"
+    :affect: "dagorlad"
+    :story:
+      :type: "conquest"
+      :advance: 1
   10:
-    :character:
-      :name: ''
-      :location: ''
+    :name: "The Trees of Fangorn"
+    :priority: 6
+    :text: "Affects Fangorn. After a hero explores here, he gains 1 favor and removes all monster tokens within 1 space of Fangorn. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "favor_and_clear_monsters"
+          :count: 1
     :favors:
-    - 'location'
+      - "gap_of_rohan"
+      - "minas_morgul"
+    :affect: "fangorn"
   11:
+    :name: "Arnor, That Was of Old"
+    :priority: 8
+    :text: "The heroes may remove all influence and monster tokens within 1 space of Fornost or place 1 favor in Fornost."
+    :ability:
+      :type: "clear_tokens_or_favor"
+      :area:
+        :near: "fornost"
+      :favor: "fornost"
     :character:
-      :name: ''
-      :location: ''
+      :name: "aragorn"
+      :location: "fornost"
     :favors:
-    - 'location'
+      - "dol_guldur"
   12:
+    :name: "The Account of Isildur"
+    :priority: 14
+    :text: "Affects Minas Tirith. After a hero explores here, he may spend 3 favor to advance the hero story marker 1 space on the Story Track. Then discard this card."
+    :ability:
+      :type: "on_explore"
+      :rewards:
+        - :type: "advance_heroes"
+          :cost: 3
     :character:
-      :name: ''
-      :location: ''
+      :name: "gandalf"
+      :location: "minas_tirith"
     :favors:
-    - 'location'
+      - "moria"
+    :affect: "minas_tirith"
   13:
-    :character:
-      :name: ''
-      :location: ''
+    :name: "He Has at Last Heard"
+    :priority: 5
+    :text: "Place 1 influence in each location within 1 space of The Shire. Sauron may then move a minion to The Shire."
+    :ability:
+      :type: "he_has_at_last_heard"
     :favors:
-    - 'location'
+      - "mount_gundabad"
+      - "dunland"

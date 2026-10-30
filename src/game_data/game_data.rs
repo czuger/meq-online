@@ -19,8 +19,14 @@ use crate::game_data::monster_pool_color::MonsterPoolColor;
 use crate::game_data::plot::Plot;
 use crate::game_data::yaml_loader::{load, load_map};
 
-/// Event set used by the base game.
-pub const BASE_EVENT_SET: &str = "I";
+/// Name of the event set of a stage deck, as in `data/events.yaml` and the pictures.
+pub fn event_set(stage: u8) -> &'static str {
+    match stage {
+        1 => "I",
+        2 => "II",
+        _ => "III",
+    }
+}
 
 /// Quest set used by the base game.
 pub const BASE_QUEST_SET: &str = "regular";
@@ -149,21 +155,21 @@ impl GameData {
             .ok_or_else(|| GameDataError::unknown("plot", number))
     }
 
-    /// Looks up an event card of the base set.
+    /// Looks up an event card of a stage deck (1 to 3).
     ///
     /// # Errors
-    /// [`GameDataError::UnknownCode`] when the number doesn't exist.
-    pub fn event(&self, number: u32) -> Result<&Event, GameDataError> {
+    /// [`GameDataError::UnknownCode`] when the card doesn't exist.
+    pub fn event(&self, stage: u8, number: u32) -> Result<&Event, GameDataError> {
         self.events
-            .get(BASE_EVENT_SET)
+            .get(event_set(stage))
             .and_then(|set| set.get(&number))
-            .ok_or_else(|| GameDataError::unknown("event", number))
+            .ok_or_else(|| GameDataError::unknown("event", format!("{stage}/{number}")))
     }
 
-    /// Numbers of the event cards of the base set.
-    pub fn base_event_cards(&self) -> Vec<u32> {
+    /// Numbers of the event cards of a stage deck (1 to 3).
+    pub fn event_cards(&self, stage: u8) -> Vec<u32> {
         self.events
-            .get(BASE_EVENT_SET)
+            .get(event_set(stage))
             .map(|set| set.keys().copied().collect())
             .unwrap_or_default()
     }
@@ -261,30 +267,38 @@ mod tests {
         }
     }
 
-    // Port of game_data_events_test.rb.
+    // Port of game_data_events_test.rb, for the three stage decks.
     #[test]
-    fn base_events_reference_existing_characters_and_locations() {
+    fn events_reference_existing_characters_and_locations() {
         let data = data();
-        for number in data.base_event_cards() {
-            let event = data.event(number).unwrap();
-            if let Some(character) = &event.character {
-                assert!(data.character(&character.name).is_ok(), "{number}");
-                assert!(data.locations.exists(&character.location), "{number}");
-            }
-            for favor in &event.favors {
-                assert!(data.locations.exists(favor), "{number}: {favor}");
+        for stage in 1..=3 {
+            assert_eq!(data.event_cards(stage).len(), 14);
+            for number in data.event_cards(stage) {
+                let event = data.event(stage, number).unwrap();
+                if let Some(character) = &event.character {
+                    assert!(data.character(&character.name).is_ok(), "{number}");
+                    assert!(data.locations.exists(&character.location), "{number}");
+                }
+                let locations = event.favors.iter().chain(event.affect.as_ref());
+                for location in locations {
+                    assert!(data.locations.exists(location), "{number}: {location}");
+                }
             }
         }
     }
 
     #[test]
-    fn every_location_has_a_regional_haven() {
+    fn every_location_reaches_a_haven() {
         let data = data();
-        for (code, location) in data.locations.iter() {
-            assert!(
-                data.locations.haven_for_color(location.color_code).is_ok(),
-                "{code}"
-            );
+        let havens: Vec<&str> = data
+            .locations
+            .iter()
+            .filter(|(_, l)| l.haven)
+            .map(|(code, _)| code.as_str())
+            .collect();
+        for (code, _) in data.locations.iter() {
+            let distances = data.paths.distances_from(code);
+            assert!(havens.iter().any(|h| distances.contains_key(h)), "{code}");
         }
     }
 }

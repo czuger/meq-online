@@ -100,3 +100,37 @@ eometh) and make the creator Sauron; board members play the computer seats. Shad
 - Code is English: identifiers, comments, docs, commit messages, log lines.
 - User-facing text is French (UTF-8, accents kept): templates, labels, error messages shown to players. Don't
   translate existing French text; write new text in French.
+
+## Finalization status (work in progress, 2026-10-29)
+
+The engine is being brought to the official rules following `docs/finalization-plan.md` (rules in `docs/rules.md`,
+gap analysis in `docs/rules-gaps.md`). D1 and D3 are decided: follow the official rules, the engine enforces the
+action track. Nothing of this work is committed yet.
+
+**Done (Phases 1–3, green when finished):** every Phase 1, 2 and 3 item of the plan. Highlights: defeat screens
+(`engine/defeat.rs`, `HeroDefeatScreen`, `SauronHavenScreen`); game creation with 1–3 chosen heroes, open or computer
+seats (`HeroSeat`, `join_hero_seat`); combat rules (exhaustion "exceeds", agility split, voluntary exhaustion, damage
+paid from hand/life pool); action tracks (`model/sauron_action.rs`, `engine/sauron_actions.rs`), influence budget
+(`engine/influence.rs`), commands (`engine/commands.rs`), one board state per action. Data fixes: stronghold
+`max_influence` in `data/locations.yaml`, `morthond` → `mothond` in `data/locations_paths.yaml`. Many new columns in
+`schema.sql`: an existing database must be recreated.
+
+**Card text found (D4):** `work/data_and_rules/MEQ_Mission_Corruption_Peril_Shadow_Cards_Fulltext.xls` holds the text
+of the 15 Peril, 21 Shadow, 16 Corruption and the Mission cards (read it with `xlrd` in a scratch virtualenv). Card
+pictures exist for events, quests (`hero_cards/quests/standard`), shadows, plots, missions and hero sheets. No
+Encounter or Item card text exists anywhere. Character favor values are unreadable (2 favor kept for all).
+
+**Phase 4 (events), done, green:** all 42 Event cards in `data/events.yaml` (typed `ability`, `affect` for
+green-flag cards, `story` for marker cards); `game_data/event.rs`; generic pending choice (`model/choice.rs`,
+`engine/choices.rs`: `ask`, `answer_choice`, resume to the Action step or to exploration); `engine/events/`
+(`event_step.rs`, `abilities.rs`, `explore.rs`, tests in `events/tests/`); training and level tokens
+(`engine/hero/training.rs`); Boat item; event marker token. Choice screen: `web/handlers/choices.rs` (GET
+`/boards/{id}/choices/choice_screen`, POST `/boards/{id}/choices/choose` with `option` and
+`targets=<option>|<code>`; only the chooser may answer: Sauron's user, or for heroes the hero's user or a computer
+seat), labels in `web/views/choice_label.rs`, template `choices_choice_screen.html`.
+
+**Next phases:** Phase 5 (Peril cards replacing the die, using the choice mechanism; Sauron chooses the ambushing
+mob and combat or peril; character favor or ability; Dark Path; quests from the quest card pictures; skills powers;
+hero abilities from the hero sheets; remaining corruption effects); Encounter step and Items blocked on missing text.
+Phase 6 Shadow cards (text in the xls; map it to the 24 pictures in `static/images/sauron/shadows`). Phase 7 missions
+and Finale. Phase 8 optional rules and end-to-end tests.

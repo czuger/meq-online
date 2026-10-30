@@ -42,6 +42,11 @@ pub fn route_for(state: BoardState, board_id: i64, actor: RouteActor) -> String 
     match state {
         BoardState::SauronSetupScreen => format!("/sauron/{id}/setup_screen"),
         BoardState::EditSauronSauronActions => format!("/sauron/{id}/sauron_actions/edit"),
+        BoardState::PlaceInfluenceScreenSauronActions => {
+            format!("/sauron/{id}/sauron_actions/place_influence_screen")
+        }
+        BoardState::KeepScreenSauronPlotCards => format!("/sauron/{id}/plot_cards/keep_screen"),
+        BoardState::CommandScreenSauronMobs => format!("/sauron/{id}/sauron_mobs/command_screen"),
         BoardState::PlayScreenSauronPlotCards => format!("/sauron/{id}/plot_cards/play_screen"),
         BoardState::LookForGollumCardsSauronPlotCards => {
             format!("/sauron/{id}/plot_cards/look_for_gollum_cards")
@@ -50,6 +55,8 @@ pub fn route_for(state: BoardState, board_id: i64, actor: RouteActor) -> String 
         BoardState::HeroRestScreen => format!("/heroes/{id}/rest_screen"),
         BoardState::HeroMovementScreen => format!("/heroes/{id}/movement_screen"),
         BoardState::HeroExploration => format!("/heroes/{id}/exploration"),
+        BoardState::HeroDefeatScreen => format!("/heroes/{id}/defeat_screen"),
+        BoardState::SauronHavenScreen => format!("/sauron/{id}/haven_screen"),
         BoardState::AfterRestAdvanceStoryMarker => {
             format!("/heroes/{id}/after_rest_advance_story_marker_screen")
         }
@@ -62,6 +69,9 @@ pub fn route_for(state: BoardState, board_id: i64, actor: RouteActor) -> String 
                 actor.side()
             )
         }
+        BoardState::ChoiceScreenBoardChoices => {
+            format!("/boards/{board_id}/choices/choice_screen")
+        }
         BoardState::CardsLossScreenBoardCombats => {
             format!("/boards/{board_id}/combats/cards_loss_screen")
         }
@@ -69,7 +79,6 @@ pub fn route_for(state: BoardState, board_id: i64, actor: RouteActor) -> String 
         | BoardState::WaitingForPlayers
         | BoardState::FinishHeroTurn
         | BoardState::FinishSauronTurn
-        | BoardState::AfterDefeatAdvanceStoryMarker
         | BoardState::Finished => "/boards".to_owned(),
     }
 }

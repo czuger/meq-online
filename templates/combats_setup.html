@@ -2,16 +2,18 @@
 {% block content %}
 <div class="container">
   <h3>Choisissez comment utiliser votre agilité</h3>
+  <div class="alert alert-secondary">
+    <ul class="mt-3">
+      <li>Chaque point d'agilité dépensé vous fait piocher une carte ; chaque point non dépensé ajoute 1 à votre force pour ce combat.</li>
+    </ul>
+  </div>
   {% include "hero_info.html" %}
   <hr>
   {% include "cards_hand.html" %}
-  <form method="post" action="/boards/{{ board_id }}/combats/combat_setup">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-3"><button type="submit" name="button" value="draw" class="btn btn-secondary btn-block">Piocher des cartes</button></div>
-        <div class="col-md-3"><button type="submit" name="button" value="increase" class="btn btn-secondary btn-block">Augmenter la force</button></div>
-      </div>
-    </div>
+  <form method="post" action="/boards/{{ board_id }}/combats/combat_setup" class="form-inline mt-3">
+    <div class="mx-2"><label for="draw">Agilité dépensée pour piocher</label></div>
+    <div class="mx-2"><input class="form-control" type="number" id="draw" name="draw" value="0" min="0" max="{{ info.agility }}"></div>
+    <div class="mx-2"><button type="submit" class="btn btn-primary">Valider</button></div>
   </form>
 </div>
 {% endblock %}

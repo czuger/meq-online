@@ -2,6 +2,7 @@
 
 use std::collections::BTreeMap;
 
+use crate::engine::events::event_step::event_pic_path;
 use crate::game_data::GameData;
 use crate::game_data::mob_def::MobKind;
 use crate::model::game::Game;
@@ -21,6 +22,8 @@ pub enum TokenKind {
     Monster,
     /// A minion.
     Minion,
+    /// The event marker of the event card in play.
+    Event,
 }
 
 /// A token as shown on the map.
@@ -67,6 +70,7 @@ pub fn tokens_by_location(game: &Game, data: &GameData) -> BTreeMap<String, Vec<
         .chain(plot_tokens(game, data))
         .chain(favor_tokens(game))
         .chain(hero_tokens(game, data))
+        .chain(event_token(game, data))
         .chain(
             game.mobs
                 .iter()
@@ -128,6 +132,17 @@ fn favor_tokens(game: &Game) -> impl Iterator<Item = (String, Token)> + '_ {
             ),
         )
     })
+}
+
+fn event_token(game: &Game, data: &GameData) -> Option<(String, Token)> {
+    let event = game.board.current_event?;
+    let def = data.event(event.stage, event.card).ok()?;
+    let location = def.affect.clone()?;
+    let pic = format!("events/{}", event_pic_path(event));
+    Some((
+        location,
+        Token::new(TokenKind::Event, "event", &def.name, 20, pic),
+    ))
 }
 
 fn hero_tokens<'a>(

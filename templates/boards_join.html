@@ -2,9 +2,19 @@
 {% block content %}
 <div class="container">
   <h1>Rejoindre la partie</h1>
-  <p>Toutes les places de cette partie sont attribuées à sa création.</p>
+  {% if heroes.is_empty() %}
+  <p>Toutes les places de cette partie sont prises.</p>
+  {% else %}
   <form method="post" action="/boards/{{ board_id }}/join">
-    <button type="submit" class="btn btn-primary">Rejoindre</button>
+    <h5>Choisissez votre héros</h5>
+    {% for (code, name) in heroes %}
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="hero" id="hero_{{ code }}" value="{{ code }}"{% if loop.first %} checked{% endif %}>
+      <label class="form-check-label" for="hero_{{ code }}">{{ name }}</label>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary mt-3">Rejoindre</button>
   </form>
+  {% endif %}
 </div>
 {% endblock %}

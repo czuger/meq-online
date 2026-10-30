@@ -118,9 +118,11 @@ impl TestApp {
         cookie.split(';').next().unwrap().to_owned()
     }
 
-    /// Creates a board as the logged-in user (who plays Sauron) and returns its game.
+    /// Creates a board as the logged-in user (who plays Sauron), with Beravor, Eleanor
+    /// and Thalin on computer seats, and returns its game.
     pub async fn create_board(&self, cookie: &str) -> Game {
-        let answer = self.post("/boards", cookie, "").await;
+        let form = "heroes=beravor&heroes=eleanor&heroes=thalin&seats=computer";
+        let answer = self.post("/boards", cookie, form).await;
         assert_eq!(answer.status, StatusCode::SEE_OTHER);
         let id: i64 = sqlx::query_scalar("SELECT MAX(id) FROM boards")
             .fetch_one(&self.state.db)

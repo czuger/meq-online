@@ -2,7 +2,9 @@
 
 pub mod boards;
 pub mod characters;
+pub mod choices;
 pub mod combats;
+pub mod defeat;
 pub mod events;
 pub mod explorations;
 pub mod heroes;

@@ -46,6 +46,9 @@ pub struct Location {
     /// Heroes can't rest here.
     #[serde(default)]
     pub shadow_fortress: bool,
+    /// Most influence a Shadow Stronghold may hold (red number on its tower).
+    #[serde(default)]
+    pub max_influence: Option<i32>,
     /// Horizontal position on the map picture.
     pub pos_x: i32,
     /// Vertical position on the map picture.

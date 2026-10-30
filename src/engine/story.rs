@@ -68,29 +68,32 @@ impl StoryMarkers {
         }
     }
 
-    /// Advances the lowest of Sauron's markers.
-    ///
-    /// With `random` false and several markers tied for lowest, nothing moves: the
-    /// player has to choose. Otherwise every marker equal to the lowest value advances,
-    /// which is how the original engine behaves when markers are tied.
+    /// Sauron's markers tied for the lowest (leftmost) position.
+    pub fn lowest_sauron_markers(&self) -> Vec<StoryType> {
+        let min = self.ring.min(self.conquest).min(self.corruption);
+        [
+            (StoryType::Ring, self.ring),
+            (StoryType::Conquest, self.conquest),
+            (StoryType::Corruption, self.corruption),
+        ]
+        .into_iter()
+        .filter(|(_, position)| *position == min)
+        .map(|(track, _)| track)
+        .collect()
+    }
+
+    /// Advances the lowest of Sauron's markers by one space (§ 6.1, § 8.9).
     ///
     /// # Returns
-    /// `true` when markers advanced.
-    pub fn advance_lowest(&mut self, random: bool) -> bool {
-        let min = self.ring.min(self.conquest).min(self.corruption);
-        let tied = [self.ring, self.conquest, self.corruption]
-            .iter()
-            .filter(|&&m| m == min)
-            .count();
-        if !random && tied > 1 {
-            return false;
-        }
-        for marker in [&mut self.ring, &mut self.conquest, &mut self.corruption] {
-            if *marker == min {
-                *marker += 1;
+    /// `false` when several markers are tied: nothing moves and the hero chooses.
+    pub fn advance_lowest(&mut self) -> bool {
+        match self.lowest_sauron_markers().as_slice() {
+            [track] => {
+                self.advance(*track, 1);
+                true
             }
+            _ => false,
         }
-        true
     }
 
     /// Advances one of Sauron's markers.
@@ -129,6 +132,7 @@ impl Game {
                 ],
             );
         }
+        self.advance_current_event_story(data)?;
         self.check_game_end()
     }
 
@@ -175,16 +179,20 @@ mod tests {
     #[test]
     fn lowest_marker_advances() {
         let mut m = markers(0, 2, 1, 3);
-        assert!(m.advance_lowest(false));
+        assert!(m.advance_lowest());
         assert_eq!(m, markers(0, 2, 2, 3));
     }
 
+    // § 6.1: on a tie the hero chooses which marker advances.
     #[test]
-    fn tied_markers_need_a_choice_unless_random() {
+    fn tied_markers_need_a_choice() {
         let mut m = markers(0, 1, 1, 3);
-        assert!(!m.advance_lowest(false));
-        assert!(m.advance_lowest(true));
-        assert_eq!(m, markers(0, 2, 2, 3));
+        assert!(!m.advance_lowest());
+        assert_eq!(m, markers(0, 1, 1, 3));
+        assert_eq!(
+            m.lowest_sauron_markers(),
+            vec![StoryType::Ring, StoryType::Conquest]
+        );
     }
 
     #[test]

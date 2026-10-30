@@ -1,4 +1,4 @@
-// Page behaviours shared by every screen: card selection, alerts and Sauron's action markers.
+// Page behaviours shared by every screen: card selection and alerts.
 "use strict";
 
 // Cards with the class selectable-card-selection-unique: one card at a time, stored
@@ -39,29 +39,8 @@ function setupAlerts() {
   });
 }
 
-// Sauron's action markers: at most 3 at once (a 4th one replaces the others).
-function setupSauronActions() {
-  const area = document.querySelector("[data-sauron-actions]");
-  if (!area) return;
-  const boxes = area.querySelectorAll(".sauron_action");
-  boxes.forEach((box) => {
-    box.addEventListener("change", async () => {
-      const checked = Array.from(boxes).filter((b) => b.checked);
-      if (checked.length >= 4) {
-        boxes.forEach((b) => { b.checked = false; });
-        box.checked = true;
-      }
-      const body = new URLSearchParams();
-      Array.from(boxes).filter((b) => b.checked).forEach((b) => body.append("actions", b.id));
-      const response = await fetch(area.dataset.sauronActions, { method: "PATCH", body });
-      if (response.ok) document.getElementById("used_actions").textContent = await response.json();
-    });
-  });
-}
-
 document.addEventListener("DOMContentLoaded", () => {
   setupUniqueSelection();
   setupMultipleSelection();
   setupAlerts();
-  setupSauronActions();
 });

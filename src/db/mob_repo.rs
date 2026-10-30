@@ -65,7 +65,7 @@ async fn save(conn: &mut SqliteConnection, board_id: i64, mob: &mut Mob) -> Resu
     }
     sqlx::query(
         "UPDATE mobs SET kind = ?, code = ?, name = ?, location = ?, pool = ?, fortitude = ?, strength = ?, \
-         life = ?, max_life = ?, attack_deck = ?, hand = ?, damages_taken_this_turn = ? WHERE id = ?",
+         life = ?, max_life = ?, attack_deck = ?, hand = ?, damages_taken_this_turn = ?, commanded = ? WHERE id = ?",
     )
     .bind(enum_to_text(&mob.kind)?)
     .bind(&mob.code)
@@ -79,6 +79,7 @@ async fn save(conn: &mut SqliteConnection, board_id: i64, mob: &mut Mob) -> Resu
     .bind(&mob.attack_deck)
     .bind(to_json(&mob.hand)?)
     .bind(mob.damages_taken_this_turn)
+    .bind(mob.commanded)
     .bind(mob.id)
     .execute(conn)
     .await?;
@@ -101,5 +102,6 @@ fn mob_from_row(row: &SqliteRow) -> Result<Mob, DbError> {
         attack_deck: row.try_get("attack_deck")?,
         hand: from_json(row.try_get("hand")?)?,
         damages_taken_this_turn: row.try_get("damages_taken_this_turn")?,
+        commanded: row.try_get("commanded")?,
     })
 }

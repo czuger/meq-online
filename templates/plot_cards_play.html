@@ -5,7 +5,7 @@
   <div class="alert alert-secondary">
     <ul class="mt-3">
       <li>Sur cet écran, vous pouvez jouer une carte intrigue.</li>
-      <li>Rappel : vous ne pouvez placer ou défausser qu'une carte par tour.</li>
+      <li>Vous pouvez jouer une carte intrigue, ou défausser une de vos intrigues actives, ou ne rien faire.</li>
     </ul>
   </div>
   {% for card in playable %}<img src="{{ card.pic }}" class="medium-card selectable-card-selection-unique" data-card-id="{{ card.id }}" alt="">{% endfor %}

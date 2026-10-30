@@ -21,5 +21,5 @@ pub mod plot;
 pub mod terrain;
 pub mod yaml_loader;
 
-pub use crate::game_data::game_data::GameData;
+pub use crate::game_data::game_data::{GameData, event_set};
 pub use crate::game_data::game_data_error::GameDataError;

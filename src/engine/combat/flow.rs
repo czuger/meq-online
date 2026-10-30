@@ -6,7 +6,9 @@ use serde_json::json;
 
 use crate::engine::board_state::BoardEvent;
 use crate::engine::combat::reveal::reveal_secretly_played_cards;
+use crate::engine::defeat::{DefeatChoice, DefeatOutcome};
 use crate::engine::engine_error::EngineError;
+use crate::engine::mobs::RINGWRAITHS;
 use crate::engine::turn::TurnEnd;
 use crate::game_data::GameData;
 use crate::game_data::combat_card_def::CardNumber;
@@ -15,18 +17,6 @@ use crate::game_data::mob_def::MobKind;
 use crate::model::actor_ref::ActorRef;
 use crate::model::combat::Combat;
 use crate::model::game::Game;
-
-/// Minion that survives defeat by fleeing to Minas Tirith.
-const RINGWRAITHS: &str = "ringwraiths";
-
-/// The hero's choice at the start of a combat.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum CombatPreparation {
-    /// Draw as many cards as agility.
-    DrawCards,
-    /// Add agility to strength for this combat.
-    GainStrength,
-}
 
 /// Side of a combat.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -64,8 +54,12 @@ pub struct CombatResult {
 /// Where the hero goes after a combat.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CombatEnd {
-    /// The mob was defeated: the hero moves on.
+    /// The hero survived and its turn goes on.
     Movement,
+    /// The hero was defeated and has choices to make.
+    Defeat,
+    /// The hero was defeated; Sauron picks its Haven.
+    ChooseHaven,
     /// The hero's turn ended.
     TurnEnded(TurnEnd),
 }
@@ -80,17 +74,26 @@ impl Game {
         Ok((combat.hero_id, combat.mob_id))
     }
 
-    /// The hero prepares: a cowardly hero first discards a random card.
+    /// Preparation (§ 8.3): the hero spends `agility_to_draw` of its agility to draw
+    /// as many cards; each unspent agility adds 1 strength for this combat. A cowardly
+    /// hero first discards a random card.
     ///
     /// # Errors
+    /// [`EngineError::Refused`] when `agility_to_draw` exceeds the hero's agility;
     /// [`EngineError::NoCombat`]; lookup and transition errors.
     pub fn combat_setup(
         &mut self,
-        choice: CombatPreparation,
+        agility_to_draw: i32,
         data: &GameData,
         rng: &mut StdRng,
     ) -> Result<(), EngineError> {
         let (hero_id, _) = self.combat_ids()?;
+        let agility = self.hero(hero_id)?.agility.max(0);
+        if !(0..=agility).contains(&agility_to_draw) {
+            return Err(EngineError::Refused(format!(
+                "agility to spend must be between 0 and {agility}"
+            )));
+        }
         let hero = self.hero_mut(hero_id)?;
         if hero.has_flaw(Flaw::Cowardly, data) {
             if let Some(card) = hero.hand.choose(rng).copied() {
@@ -100,29 +103,19 @@ impl Game {
         }
 
         let hero = self.hero_mut(hero_id)?;
-        let mut strength = hero.strength;
-        let (code, base_strength) = (hero.code.clone(), hero.strength);
-        match choice {
-            CombatPreparation::DrawCards => {
-                let drawn = hero.draw_cards(usize::try_from(hero.agility).unwrap_or(0));
-                let left = hero.life_pool.len();
-                let params = [
-                    ("name", json!(code)),
-                    ("cards_drawn", json!(drawn)),
-                    ("lp_cards", json!(left)),
-                ];
-                self.log(ActorRef::Hero(hero_id), "combat.draw_cards", &params);
-            }
-            CombatPreparation::GainStrength => {
-                strength += hero.agility;
-                let params = [
-                    ("name", json!(code)),
-                    ("str", json!(base_strength)),
-                    ("nstr", json!(strength)),
-                ];
-                self.log(ActorRef::Hero(hero_id), "combat.inc_strength", &params);
-            }
-        }
+        let code = hero.code.clone();
+        let base_strength = hero.strength;
+        let strength = base_strength + agility - agility_to_draw;
+        let drawn = hero.draw_cards(usize::try_from(agility_to_draw).unwrap_or(0));
+        let left = hero.life_pool.len();
+        let params = [
+            ("name", json!(code)),
+            ("cards_drawn", json!(drawn)),
+            ("lp_cards", json!(left)),
+            ("str", json!(base_strength)),
+            ("nstr", json!(strength)),
+        ];
+        self.log(ActorRef::Hero(hero_id), "combat.prepare", &params);
 
         if let Some(combat) = self.combat.as_mut() {
             combat.hero_strength = Some(strength);
@@ -175,6 +168,44 @@ impl Game {
         self.resolve_round(hero_id, mob_id, data)
     }
 
+    /// A side declares itself exhausted before choosing its card (§ 8.7). Sauron may
+    /// only do so once the hero has chosen its card or declared, the hero deciding first.
+    ///
+    /// # Returns
+    /// What follows, as for a card choice; both sides exhausted end the combat.
+    ///
+    /// # Errors
+    /// [`EngineError::Refused`] when the side already chose its card, or Sauron declares
+    /// before the hero decided; lookup errors.
+    pub fn declare_exhaustion(
+        &mut self,
+        side: CombatSide,
+        data: &GameData,
+    ) -> Result<CardPlayed, EngineError> {
+        let (hero_id, mob_id) = self.combat_ids()?;
+        let hero_deciding = self.hero(hero_id)?.active;
+        let refused = |why: &str| Err(EngineError::Refused(why.to_owned()));
+        match side {
+            CombatSide::Hero if !hero_deciding => return refused("the hero already decided"),
+            CombatSide::Mob if hero_deciding => return refused("the hero declares first"),
+            CombatSide::Mob if !self.sauron.active => return refused("Sauron already decided"),
+            CombatSide::Hero => self.hero_mut(hero_id)?.active = false,
+            CombatSide::Mob => self.sauron.active = false,
+        }
+        let combat = self.combat.as_mut().ok_or(EngineError::NoCombat)?;
+        match side {
+            CombatSide::Hero => combat.hero_exhausted = true,
+            CombatSide::Mob => combat.mob_exhausted = true,
+        }
+        if combat.hero_exhausted && combat.mob_exhausted {
+            return Ok(CardPlayed::Resolved);
+        }
+        if self.hero(hero_id)?.active || self.sauron.active {
+            return Ok(CardPlayed::Waiting);
+        }
+        self.resolve_round(hero_id, mob_id, data)
+    }
+
     fn resolve_round(
         &mut self,
         hero_id: i64,
@@ -196,50 +227,40 @@ impl Game {
             self.sauron.active = true;
         }
 
+        // § 6.3, § 8.8: the hero pays each damage with a card from its hand or the top
+        // of its life pool, in any combination; with no hand there is nothing to choose.
         let hero = self.hero_mut(hero_id)?;
-        let paid = usize::try_from(hero.temporary_damages)
-            .unwrap_or(0)
-            .min(hero.life_pool.len());
-        let lost: Vec<CardNumber> = hero.life_pool.drain(..paid).collect();
-        hero.temporary_damages -= i32::try_from(paid).unwrap_or(0);
-        hero.damage_pool.extend(lost);
-        if hero.temporary_damages <= 0 {
+        let damage = usize::try_from(hero.temporary_damages).unwrap_or(0);
+        if damage == 0 {
             return Ok(CardPlayed::Resolved);
         }
-        if usize::try_from(hero.temporary_damages).unwrap_or(0)
-            < hero.life_pool.len() + hero.hand.len()
-        {
-            self.fire(BoardEvent::NextToCardsLossScreenBoardCombats)?;
-            return Ok(CardPlayed::CardsLoss);
+        if damage >= hero.life_pool.len() + hero.hand.len() {
+            // Not enough cards left: the hero is defeated.
+            let mut everything = std::mem::take(&mut hero.life_pool);
+            everything.append(&mut hero.hand);
+            hero.damage_pool.extend(everything);
+            hero.temporary_damages = 0;
+            return Ok(CardPlayed::Resolved);
         }
-        // Not enough cards left: the hero is defeated.
-        let mut everything = std::mem::take(&mut hero.life_pool);
-        everything.append(&mut hero.hand);
-        hero.damage_pool.extend(everything);
-        Ok(CardPlayed::Resolved)
+        if hero.hand.is_empty() {
+            hero.pay_damage(&[])?;
+            return Ok(CardPlayed::Resolved);
+        }
+        self.fire(BoardEvent::NextToCardsLossScreenBoardCombats)?;
+        Ok(CardPlayed::CardsLoss)
     }
 
-    /// The hero pays the remaining damage with cards from its hand.
-    ///
-    /// # Returns
-    /// `true` when all damage is paid and the combat goes on.
+    /// The hero pays the round's damage: the selected hand cards, the rest from the
+    /// top of its life pool (§ 6.3).
     ///
     /// # Errors
-    /// [`EngineError::CardNotAvailable`] when a card isn't in hand; transition errors.
-    pub fn combat_cards_loss(&mut self, selected: &[CardNumber]) -> Result<bool, EngineError> {
+    /// [`EngineError::Refused`] when more cards are selected than the damage, or the
+    /// life pool can't pay the rest; [`EngineError::CardNotAvailable`] when a card isn't
+    /// in hand; transition errors.
+    pub fn combat_cards_loss(&mut self, selected: &[CardNumber]) -> Result<(), EngineError> {
         let (hero_id, _) = self.combat_ids()?;
-        let hero = self.hero_mut(hero_id)?;
-        let required = usize::try_from(hero.temporary_damages)
-            .unwrap_or(0)
-            .min(selected.len());
-        let paid = selected.get(..required).unwrap_or_default();
-        hero.hand_to_damages(paid)?;
-        hero.temporary_damages -= i32::try_from(paid.len()).unwrap_or(0);
-        if hero.temporary_damages > 0 {
-            return Ok(false);
-        }
-        self.fire(BoardEvent::NextToPlayCombatCardScreenBoardCombats)?;
-        Ok(true)
+        self.hero_mut(hero_id)?.pay_damage(selected)?;
+        self.fire(BoardEvent::NextToPlayCombatCardScreenBoardCombats)
     }
 
     /// Current combat result. A side with an empty hand becomes exhausted and, like a
@@ -273,12 +294,18 @@ impl Game {
         })
     }
 
-    /// Ends the combat: played cards go to the rest pool, defeated mobs leave the map
-    /// and a defeated hero heals in its regional haven.
+    /// Ends the combat (§ 8.3 Resolution): played cards go to the rest pool, the
+    /// monster token is discarded, an undefeated mob lets Sauron place influence equal
+    /// to its wisdom. A defeated hero resolves its defeat (§ 8.9); otherwise the turn
+    /// ends only when a mob met while travelling survived (§ 6.4, § 6.5).
     ///
     /// # Errors
     /// [`EngineError::Refused`] when the combat isn't over; lookup and transition errors.
-    pub fn terminate_combat(&mut self, data: &GameData) -> Result<CombatEnd, EngineError> {
+    pub fn terminate_combat(
+        &mut self,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<CombatEnd, EngineError> {
         let result = self.refresh_combat_result()?;
         let both_exhausted = result.hero_exhausted && result.mob_exhausted;
         if !result.hero_defeated && !result.mob_defeated && !both_exhausted {
@@ -287,42 +314,82 @@ impl Game {
         let combat = self.combat.take().ok_or(EngineError::NoCombat)?;
         let played: Vec<CardNumber> = combat.hero_cards.iter().filter_map(|c| c.card).collect();
         self.hero_mut(combat.hero_id)?.rest_pool.extend(played);
+        if !result.mob_defeated {
+            self.grant_undefeated_mob_influence(combat.mob_id, data)?;
+        }
         self.remove_fought_mob(combat.mob_id)?;
 
         if result.hero_defeated {
-            self.board.story.advance_lowest(true);
-            let hero = self.hero_mut(combat.hero_id)?;
-            hero.favor_loss(1);
-            hero.move_to_regional_haven(data)?;
-            hero.heal();
-        } else if result.mob_defeated {
+            return self.start_hero_defeat(combat.hero_id, data, rng);
+        }
+        if result.mob_defeated || combat.ambush {
             self.fire(BoardEvent::NextToHeroMovementScreen)?;
             self.activate_current_hero()?;
             return Ok(CombatEnd::Movement);
         }
-        self.fire(BoardEvent::NextToCardsLossScreenBoardCombats)?;
-        self.fire(BoardEvent::NextToAfterDefeatAdvanceStoryMarker)?;
         Ok(CombatEnd::TurnEnded(
             self.finish_heroes_turn(combat.hero_id, data)?,
         ))
     }
 
-    /// Monsters always leave the map after a combat; minions only when defeated.
-    fn remove_fought_mob(&mut self, mob_id: i64) -> Result<(), EngineError> {
-        let index = self.mob_index(mob_id)?;
-        let Some(mob) = self.mobs.get_mut(index) else {
+    fn start_hero_defeat(
+        &mut self,
+        hero_id: i64,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<CombatEnd, EngineError> {
+        self.fire(BoardEvent::NextToHeroDefeatScreen)?;
+        self.activate_current_hero()?;
+        if self.defeat_needs_choice(hero_id)? {
+            return Ok(CombatEnd::Defeat);
+        }
+        Ok(
+            match self.resolve_hero_defeat(hero_id, DefeatChoice::default(), data, rng)? {
+                DefeatOutcome::ChooseHaven => CombatEnd::ChooseHaven,
+                DefeatOutcome::TurnEnded(end) => CombatEnd::TurnEnded(end),
+            },
+        )
+    }
+
+    /// Sauron may place influence equal to the wisdom of an undefeated mob (§ 8.3).
+    fn grant_undefeated_mob_influence(
+        &mut self,
+        mob_id: i64,
+        data: &GameData,
+    ) -> Result<(), EngineError> {
+        let code = self
+            .mobs
+            .get(self.mob_index(mob_id)?)
+            .map(|m| m.code.clone())
+            .unwrap_or_default();
+        let Ok(def) = data.mob(&code) else {
+            // The blank token has no definition, and no wisdom.
             return Ok(());
         };
-        let remove = match mob.kind {
-            MobKind::Monster => true,
-            MobKind::Minion if mob.life <= 0 && mob.code == RINGWRAITHS => {
-                mob.location = "minas_tirith".to_owned();
-                false
-            }
-            MobKind::Minion => mob.life <= 0,
+        if def.wisdom > 0 {
+            self.grant_influence(def.wisdom, 0);
+            let params = [("name", json!(def.name)), ("count", json!(def.wisdom))];
+            self.log(ActorRef::Sauron, "combat.undefeated_influence", &params);
+        }
+        Ok(())
+    }
+
+    /// A fought monster token is discarded, defeated or not; a minion leaves the map
+    /// only when defeated, the Ringwraiths coming back later (§ 8.3, § 8.8).
+    fn remove_fought_mob(&mut self, mob_id: i64) -> Result<(), EngineError> {
+        let index = self.mob_index(mob_id)?;
+        let Some(mob) = self.mobs.get(index) else {
+            return Ok(());
         };
-        if remove {
-            self.mobs.remove(index);
+        match mob.kind {
+            MobKind::Monster => self.discard_monster(mob_id)?,
+            MobKind::Minion if mob.life <= 0 => {
+                if mob.code == RINGWRAITHS {
+                    self.board.ringwraiths_return = true;
+                }
+                self.mobs.remove(index);
+            }
+            MobKind::Minion => {}
         }
         Ok(())
     }

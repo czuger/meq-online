@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h3>Refuge du héros vaincu</h3>
+  <div class="alert alert-secondary">
+    <ul class="mt-3">
+      <li>{{ hero_name }} a été vaincu. Plusieurs refuges sont aussi proches : choisissez celui où il est transporté.</li>
+    </ul>
+  </div>
+  <form method="post" action="/sauron/{{ sauron_id }}/haven">
+    {% for (code, name) in havens %}
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="haven" id="haven_{{ code }}" value="{{ code }}"{% if loop.first %} checked{% endif %}>
+      <label class="form-check-label" for="haven_{{ code }}">{{ name }}</label>
+    </div>
+    {% endfor %}
+    <div class="row mt-3">
+      <div class="col-md-3"><button type="submit" class="btn btn-primary btn-block">Valider</button></div>
+    </div>
+  </form>
+</div>
+{% endblock %}

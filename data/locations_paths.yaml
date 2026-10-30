@@ -445,7 +445,7 @@ belfalas:
   - :dest: pelargir
     :path_type: sun
     :difficulty: 3
-  - :dest: morthond
+  - :dest: mothond
     :path_type: desolation
     :difficulty: 3
   :timestamp: !ruby/object:DateTime 2019-02-05 17:57:17.135585000 +01:00
@@ -559,7 +559,7 @@ gap_of_rohan:
     :path_type: sun
     :difficulty: 2
   :timestamp: !ruby/object:DateTime 2019-02-05 18:03:08.665295000 +01:00
-morthond:
+mothond:
   :closed: true
   :destinations:
   - :dest: belfalas
@@ -676,7 +676,7 @@ enedwaith_plains:
 anfalas:
   :closed: true
   :destinations:
-  - :dest: morthond
+  - :dest: mothond
     :path_type: hills
     :difficulty: 3
   - :dest: enedwaith_plains

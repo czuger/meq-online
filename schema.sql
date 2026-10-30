@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS boards (
     id                   INTEGER PRIMARY KEY,
     state                TEXT    NOT NULL,    -- BoardState, named after its GET route
     max_heroes           INTEGER NOT NULL,
+    waiting_heroes       TEXT    NOT NULL DEFAULT '[]', -- JSON [hero code], open seats
     turn                 INTEGER NOT NULL,
     current_hero_id      INTEGER REFERENCES heroes (id) ON DELETE SET NULL,
     winner               TEXT    CHECK (winner IN ('heroes', 'sauron', 'draw')),
@@ -33,11 +34,18 @@ CREATE TABLE IF NOT EXISTS boards (
     characters           TEXT    NOT NULL,    -- JSON {character: location}
     favors               TEXT    NOT NULL,    -- JSON [location], one entry per token
     plots                TEXT    NOT NULL,    -- JSON {slot: plot card}
-    sauron_actions       TEXT    NOT NULL,    -- JSON [action]
-    sauron_actions_count INTEGER NOT NULL DEFAULT 0,
-    decks                TEXT    NOT NULL,    -- JSON {plot|shadow|event|corruption: {draw, discard}}
+    sauron_actions       TEXT    NOT NULL,    -- JSON [action token, e.g. "command_1"]
+    sauron_actions_count INTEGER NOT NULL DEFAULT 0,  -- actions taken this turn
+    current_action       TEXT,                -- JSON ActionInProgress
+    decks                TEXT    NOT NULL,    -- JSON {plot|shadow|event|event_ii|event_iii|corruption|skill: {draw, discard}}
     monster_pools        TEXT    NOT NULL,    -- JSON {color: [mob code]}
-    last_event_card      INTEGER,
+    monster_discards     TEXT    NOT NULL DEFAULT '{}', -- JSON {color: [mob code]}
+    ringwraiths_return   INTEGER NOT NULL DEFAULT 0,
+    influence_budget     TEXT    NOT NULL DEFAULT '{}', -- JSON InfluenceBudget
+    last_event           TEXT,                -- JSON EventRef
+    current_event        TEXT,                -- JSON EventRef, card in play
+    held_event           TEXT,                -- JSON HeldEvent
+    pending_choice       TEXT,                -- JSON PendingChoice
     heroes_objective     INTEGER,
     sauron_objective     INTEGER,
     created_at           TEXT    NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -62,18 +70,20 @@ CREATE TABLE IF NOT EXISTS heroes (
     wisdom                         INTEGER NOT NULL,
     favor                          INTEGER NOT NULL DEFAULT 0,
     quest                          INTEGER,
+    advanced_quest                 INTEGER,
     playing_order                  INTEGER NOT NULL,
     turn                           INTEGER NOT NULL DEFAULT 1,
     active                         INTEGER NOT NULL DEFAULT 0,
     turn_finished                  INTEGER NOT NULL DEFAULT 0,
     damages_taken_this_turn        INTEGER NOT NULL DEFAULT 0,
     temporary_damages              INTEGER NOT NULL DEFAULT 0,
-    corruption_discarded_this_turn INTEGER NOT NULL DEFAULT 0,
+    cards_drawn_this_round         INTEGER NOT NULL DEFAULT 0,
     life_pool                      TEXT    NOT NULL,  -- JSON [card]
     hand                           TEXT    NOT NULL,  -- JSON [card]
     rest_pool                      TEXT    NOT NULL,  -- JSON [card]
     damage_pool                    TEXT    NOT NULL,  -- JSON [card]
-    items                          TEXT    NOT NULL,  -- JSON {horse}
+    items                          TEXT    NOT NULL,  -- JSON {horse, boat}
+    levels                         TEXT    NOT NULL DEFAULT '{}', -- JSON {fortitude, strength, agility, wisdom}
     used_powers                    TEXT    NOT NULL,  -- JSON {argalad}
     corruption_cards               TEXT    NOT NULL,  -- JSON [corruption card]
     UNIQUE (board_id, code)
@@ -105,7 +115,8 @@ CREATE TABLE IF NOT EXISTS mobs (
     max_life                INTEGER NOT NULL,
     attack_deck             TEXT    NOT NULL,
     hand                    TEXT    NOT NULL, -- JSON [card]
-    damages_taken_this_turn INTEGER NOT NULL DEFAULT 0
+    damages_taken_this_turn INTEGER NOT NULL DEFAULT 0,
+    commanded               INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS mobs_board ON mobs (board_id);
 
@@ -113,6 +124,7 @@ CREATE TABLE IF NOT EXISTS combats (
     board_id           INTEGER PRIMARY KEY REFERENCES boards (id) ON DELETE CASCADE,
     hero_id            INTEGER NOT NULL REFERENCES heroes (id) ON DELETE CASCADE,
     mob_id             INTEGER NOT NULL REFERENCES mobs (id) ON DELETE CASCADE,
+    ambush             INTEGER NOT NULL DEFAULT 0,
     hero_strength      INTEGER,
     hero_secret_card   INTEGER,
     mob_secret_card    INTEGER,

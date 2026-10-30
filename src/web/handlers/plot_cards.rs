@@ -2,11 +2,12 @@
 
 use askama::Template;
 use axum::Form;
-use axum::extract::{Query, State};
+use axum::extract::State;
 use axum::response::Response;
 use serde::Deserialize;
 
 use crate::app_state::AppState;
+use crate::engine::board_state::BoardState;
 use crate::engine::deck::SauronDeck;
 use crate::engine::plots::PlotPlayed;
 use crate::engine::route::{RouteActor, route_for};
@@ -19,24 +20,13 @@ use crate::web::page::render;
 use crate::web::views::layout::Layout;
 use crate::web::views::pictures::{CardView, plot_card};
 
-/// Cards drawn when the draw screen gets no count.
-const DEFAULT_DRAW: usize = 2;
-
-#[derive(Template)]
-#[template(path = "plot_cards_draw.html")]
-struct DrawPage {
-    layout: Layout,
-    sauron_id: i64,
-    nb_cards: usize,
-    drawn: Vec<CardView>,
-}
-
 #[derive(Template)]
 #[template(path = "plot_cards_keep.html")]
 struct KeepPage {
     layout: Layout,
     sauron_id: i64,
     cards: Vec<CardView>,
+    to_keep: usize,
 }
 
 #[derive(Template)]
@@ -66,18 +56,6 @@ struct DiscardPage {
     slots: Vec<CardView>,
 }
 
-/// Optional number of cards to draw.
-#[derive(Debug, Deserialize)]
-pub struct DrawQuery {
-    nb_cards: Option<usize>,
-}
-
-/// Draw form.
-#[derive(Debug, Deserialize)]
-pub struct DrawForm {
-    nb_cards: String,
-}
-
 /// Keep form.
 #[derive(Debug, Deserialize)]
 pub struct KeepForm {
@@ -102,53 +80,6 @@ fn actions_url(sauron_id: i64) -> String {
     format!("/sauron/{sauron_id}/sauron_actions/edit")
 }
 
-/// `GET /sauron/{sauron_id}/plot_cards/draw_screen`.
-///
-/// # Errors
-/// Database and rendering errors.
-pub async fn draw_screen(
-    State(state): State<AppState>,
-    access: SauronAccess,
-    Query(query): Query<DrawQuery>,
-) -> Result<Response, AppError> {
-    let game = read_game(&state, access.board_id).await?;
-    let page = DrawPage {
-        layout: Layout::sauron(&access.session, &game),
-        sauron_id: access.sauron_id,
-        nb_cards: query.nb_cards.unwrap_or(DEFAULT_DRAW),
-        drawn: game
-            .sauron
-            .drawn_plot
-            .iter()
-            .map(|c| plot_card(*c))
-            .collect(),
-    };
-    render(&page, &page.layout)
-}
-
-/// `POST /sauron/{sauron_id}/plot_cards/draw`: draws unless cards are already waiting.
-///
-/// # Errors
-/// [`AppError::BadRequest`] for a malformed count; database errors.
-pub async fn draw(
-    State(state): State<AppState>,
-    access: SauronAccess,
-    Form(form): Form<DrawForm>,
-) -> Result<Response, AppError> {
-    let count: usize = number(&form.nb_cards, "card count")?;
-    change_game(&state, access.board_id, |game, _, rng| {
-        if game.sauron.drawn_plot.is_empty() {
-            game.draw_sauron_cards(SauronDeck::Plot, count, rng);
-        }
-        Ok(())
-    })
-    .await?;
-    Ok(redirect(
-        &format!("/sauron/{}/plot_cards/keep_screen", access.sauron_id),
-        None,
-    ))
-}
-
 /// `GET /sauron/{sauron_id}/plot_cards/keep_screen`.
 ///
 /// # Errors
@@ -167,11 +98,13 @@ pub async fn keep_screen(
             .iter()
             .map(|c| plot_card(*c))
             .collect(),
+        to_keep: game.cards_to_keep(SauronDeck::Plot, &state.data),
     };
     render(&page, &page.layout)
 }
 
-/// `POST /sauron/{sauron_id}/plot_cards/keep`, then back to the current step.
+/// `POST /sauron/{sauron_id}/plot_cards/keep`, then back to the current step; during a
+/// Draw Shadow and Plot Cards action, keeping the plot card ends the action.
 ///
 /// # Errors
 /// Rule and database errors.
@@ -181,8 +114,12 @@ pub async fn keep(
     Form(form): Form<KeepForm>,
 ) -> Result<Response, AppError> {
     let cards = card_list(&form.selected_cards)?;
-    let (game, ()) = change_game(&state, access.board_id, |game, _, _| {
-        game.keep_sauron_cards(SauronDeck::Plot, &cards)
+    let (game, ()) = change_game(&state, access.board_id, |game, data, _| {
+        game.keep_sauron_cards(SauronDeck::Plot, &cards, data)?;
+        if game.board.state == BoardState::KeepScreenSauronPlotCards {
+            game.finish_sauron_action()?;
+        }
+        Ok(())
     })
     .await?;
     let to = route_for(
@@ -236,8 +173,8 @@ pub async fn play(
 ) -> Result<Response, AppError> {
     let card: u32 = number(&form.selected_card, "card")?;
     let slot: u8 = number(&form.card_slot, "slot")?;
-    let (_, played) = change_game(&state, access.board_id, |game, data, _| {
-        game.play_plot(card, slot, data)
+    let (_, played) = change_game(&state, access.board_id, |game, data, rng| {
+        game.play_plot(card, slot, data, rng)
     })
     .await?;
     Ok(match played {
@@ -260,8 +197,8 @@ pub async fn play_finished(
     State(state): State<AppState>,
     access: SauronAccess,
 ) -> Result<Response, AppError> {
-    change_game(&state, access.board_id, |game, data, _| {
-        game.plot_play_finished(data)
+    change_game(&state, access.board_id, |game, data, rng| {
+        game.plot_play_finished(data, rng)
     })
     .await?;
     Ok(redirect(&actions_url(access.sauron_id), None))
@@ -331,23 +268,20 @@ pub async fn discard_screen(
     render(&page, &page.layout)
 }
 
-/// `POST /sauron/{sauron_id}/plot_cards/discard`: `selected_card` is the slot.
+/// `POST /sauron/{sauron_id}/plot_cards/discard`: `selected_card` is the slot; this
+/// ends the Plot step.
 ///
 /// # Errors
-/// [`AppError::BadRequest`] for a malformed slot; database errors.
+/// [`AppError::BadRequest`] for a malformed slot; rule and database errors.
 pub async fn discard(
     State(state): State<AppState>,
     access: SauronAccess,
     Form(form): Form<SelectedForm>,
 ) -> Result<Response, AppError> {
     let slot: u8 = number(&form.selected_card, "slot")?;
-    change_game(&state, access.board_id, |game, _, _| {
-        game.discard_plot(slot);
-        Ok(())
+    change_game(&state, access.board_id, |game, data, rng| {
+        game.plot_step_discard(slot, data, rng)
     })
     .await?;
-    Ok(redirect(
-        &format!("/sauron/{}/plot_cards/play_screen", access.sauron_id),
-        None,
-    ))
+    Ok(redirect(&actions_url(access.sauron_id), None))
 }

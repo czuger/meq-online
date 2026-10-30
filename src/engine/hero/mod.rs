@@ -3,3 +3,4 @@
 pub mod corruption;
 pub mod peril;
 pub mod pools;
+pub mod training;

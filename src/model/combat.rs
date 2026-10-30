@@ -10,6 +10,8 @@ pub struct Combat {
     pub hero_id: i64,
     /// Fighting mob.
     pub mob_id: i64,
+    /// Started at the Ambush step (otherwise during the Travel step).
+    pub ambush: bool,
     /// Strength the hero has for this combat; set during combat setup.
     pub hero_strength: Option<i32>,
     /// Card chosen by the hero for the current round, still hidden.

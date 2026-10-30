@@ -77,7 +77,8 @@ fn current_cards(
     Ok((hero_card, mob_card))
 }
 
-/// Spends strength; a side that runs out is exhausted and its card is cancelled.
+/// Spends strength; a side whose spent strength exceeds its strength is exhausted and
+/// its card is cancelled (§ 8.3, § 8.7).
 fn check_exhaustion(
     combat: &mut Combat,
     hero: &mut Hero,
@@ -89,7 +90,7 @@ fn check_exhaustion(
         .hero_strength
         .ok_or(EngineError::CombatNotReady("hero strength not set"))?;
     combat.hero_strength_used += hero_side.current.strength_cost;
-    if combat.hero_strength_used >= hero_strength {
+    if combat.hero_strength_used > hero_strength {
         hero_side.current.cancelled = true;
         combat.hero_exhausted = true;
         hero.active = false;
@@ -97,7 +98,7 @@ fn check_exhaustion(
 
     let mob_cost = (mob_side.current.strength_cost - mob_strength_discount(&mob.code)).max(0);
     combat.mob_strength_used += mob_cost;
-    if combat.mob_strength_used >= mob.strength {
+    if combat.mob_strength_used > mob.strength {
         mob_side.current.cancelled = true;
         combat.mob_exhausted = true;
     }

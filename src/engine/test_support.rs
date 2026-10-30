@@ -42,18 +42,20 @@ pub fn hero(code: &str) -> Hero {
         wisdom: 2,
         favor: 0,
         quest: Some(1),
+        advanced_quest: Some(0),
         playing_order: 0,
         turn: 1,
         active: true,
         turn_finished: false,
         damages_taken_this_turn: 0,
         temporary_damages: 0,
-        corruption_discarded_this_turn: false,
+        cards_drawn_this_round: 0,
         life_pool: deck.clone(),
         hand: deck,
         rest_pool: vec![],
         damage_pool: vec![],
         items: Default::default(),
+        levels: Default::default(),
         used_powers: Default::default(),
         corruption_cards: vec![],
     }
@@ -86,6 +88,7 @@ pub fn mob(code: &str) -> Mob {
         attack_deck: deck.to_owned(),
         hand: vec![],
         damages_taken_this_turn: 0,
+        commanded: false,
     }
 }
 
@@ -149,6 +152,7 @@ pub fn game() -> Game {
         id: Some(1),
         state: BoardState::Created,
         max_heroes: 2,
+        waiting_heroes: vec![],
         turn: 1,
         current_hero_id: Some(1),
         winner: None,
@@ -158,8 +162,9 @@ pub fn game() -> Game {
         characters: BTreeMap::new(),
         favors: vec![],
         plots: BTreeMap::new(),
-        sauron_actions: vec!["command_1".to_owned()],
+        sauron_actions: vec![],
         sauron_actions_count: 0,
+        current_action: None,
         decks: Decks {
             plot: Pile {
                 draw: (3..=17).collect(),
@@ -173,10 +178,28 @@ pub fn game() -> Game {
                 draw: (0..=13).collect(),
                 discard: vec![],
             },
+            event_ii: Pile {
+                draw: (0..=13).collect(),
+                discard: vec![],
+            },
+            event_iii: Pile {
+                draw: (0..=13).collect(),
+                discard: vec![],
+            },
+            skill: Pile {
+                draw: (100..=115).collect(),
+                discard: vec![],
+            },
             corruption: Pile::default(),
         },
         monster_pools: pools,
-        last_event_card: None,
+        monster_discards: BTreeMap::new(),
+        ringwraiths_return: false,
+        influence_budget: Default::default(),
+        last_event: None,
+        current_event: None,
+        held_event: None,
+        pending_choice: None,
         heroes_objective: None,
         sauron_objective: None,
     };

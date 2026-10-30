@@ -4,7 +4,6 @@ use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 use serde_json::json;
 
-use crate::engine::board_state::BoardEvent;
 use crate::engine::engine_error::EngineError;
 use crate::game_data::GameData;
 use crate::game_data::mob_def::MobKind;
@@ -105,6 +104,7 @@ impl Game {
         card: u32,
         slot: PlotSlot,
         data: &GameData,
+        rng: &mut StdRng,
     ) -> Result<PlotPlayed, EngineError> {
         if !self.sauron.plot_hand.contains(&card) {
             return Err(EngineError::CardNotAvailable {
@@ -131,17 +131,20 @@ impl Game {
             // the play screen until a Gollum card is picked.
             return Ok(PlotPlayed::LookForGollum);
         }
-        self.plot_play_finished(data)?;
+        self.plot_play_finished(data, rng)?;
         Ok(PlotPlayed::Finished)
     }
 
-    /// Ends Sauron's plot step: draw the next event and go to his actions.
+    /// Ends Sauron's Plot step: the Event step follows.
     ///
     /// # Errors
     /// Fails when the transition isn't allowed or the event deck can't be drawn.
-    pub fn plot_play_finished(&mut self, data: &GameData) -> Result<(), EngineError> {
-        self.fire(BoardEvent::NextToEditSauronSauronActions)?;
-        self.draw_next_event_card(data)
+    pub fn plot_play_finished(
+        &mut self,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<(), EngineError> {
+        self.event_step(data, rng)
     }
 
     /// Gollum cards still in the plot deck or discard.
@@ -179,19 +182,37 @@ impl Game {
         plot.draw.append(&mut plot.discard);
         plot.draw.retain(|c| *c != card);
         plot.draw.shuffle(rng);
-        self.plot_play_finished(data)
+        self.plot_play_finished(data, rng)
     }
 
-    /// Sauron removes the plot of a slot; the card goes under the plot deck.
+    /// Sauron removes the plot of a slot; the card goes to the discard pile (§ 5.4).
     pub fn discard_plot(&mut self, slot: PlotSlot) {
         if let Some(card) = self.board.plots.remove(&slot) {
-            self.board.decks.plot.draw.push(card);
+            self.board.decks.plot.discard.push(card);
             self.log(
                 ActorRef::Sauron,
                 "plot_cards.discard",
                 &[("plot_card", json!(card))],
             );
         }
+    }
+
+    /// Plot step: Sauron discards one of his active plots instead of playing one (§ 5.4);
+    /// the step ends.
+    ///
+    /// # Errors
+    /// [`EngineError::Refused`] when the slot is empty; transition and event errors.
+    pub fn plot_step_discard(
+        &mut self,
+        slot: PlotSlot,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<(), EngineError> {
+        if !self.board.plots.contains_key(&slot) {
+            return Err(EngineError::Refused(format!("no plot in slot {slot}")));
+        }
+        self.discard_plot(slot);
+        self.plot_play_finished(data, rng)
     }
 
     /// Playing one Gollum plot discards the other one if it is in play.
@@ -301,7 +322,10 @@ mod tests {
         let mut g = setup();
         g.board.state = BoardState::PlayScreenSauronPlotCards;
         g.sauron.plot_hand = vec![8];
-        assert_eq!(g.play_plot(8, 2, data()).unwrap(), PlotPlayed::Finished);
+        assert_eq!(
+            g.play_plot(8, 2, data(), &mut rng()).unwrap(),
+            PlotPlayed::Finished
+        );
         assert_eq!(g.board.plots.get(&2), Some(&8));
         assert!(g.sauron.plot_hand.is_empty());
         assert_eq!(g.board.state, BoardState::EditSauronSauronActions);
@@ -313,7 +337,7 @@ mod tests {
         g.board.state = BoardState::PlayScreenSauronPlotCards;
         g.sauron.plot_hand = vec![13];
         assert_eq!(
-            g.play_plot(13, 2, data()).unwrap(),
+            g.play_plot(13, 2, data(), &mut rng()).unwrap(),
             PlotPlayed::LookForGollum
         );
         assert_eq!(g.board.plots.get(&2), Some(&13));
@@ -325,7 +349,7 @@ mod tests {
         g.board.state = BoardState::PlayScreenSauronPlotCards;
         g.board.plots.insert(1, 5);
         g.sauron.plot_hand = vec![12];
-        g.play_plot(12, 2, data()).unwrap();
+        g.play_plot(12, 2, data(), &mut rng()).unwrap();
         assert_eq!(g.board.plots.get(&2), Some(&12));
         assert_eq!(g.board.plots.get(&1), None);
         assert!(g.board.decks.plot.discard.contains(&5));
@@ -345,12 +369,13 @@ mod tests {
     fn refuses_cards_not_in_hand_and_used_slots() {
         let mut g = setup();
         g.sauron.plot_hand = vec![];
-        assert!(g.play_plot(8, 1, data()).is_err());
+        assert!(g.play_plot(8, 1, data(), &mut rng()).is_err());
         g.sauron.plot_hand = vec![8];
         g.board.plots.insert(1, 3);
-        assert!(g.play_plot(8, 1, data()).is_err());
+        assert!(g.play_plot(8, 1, data(), &mut rng()).is_err());
     }
 
+    // § 5.4: a discarded Plot card goes faceup to the discard pile.
     #[test]
     fn discards_a_slot() {
         let mut g = setup();
@@ -358,6 +383,7 @@ mod tests {
         g.board.plots.insert(1, 8);
         g.discard_plot(1);
         assert!(g.board.plots.is_empty());
-        assert_eq!(g.board.decks.plot.draw.last(), Some(&8));
+        assert_eq!(g.board.decks.plot.discard, vec![8]);
+        assert_ne!(g.board.decks.plot.draw.last(), Some(&8));
     }
 }

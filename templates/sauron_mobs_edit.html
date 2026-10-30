@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container">
-  <h3>Déplacer le monstre</h3>
+  <h3>Déplacer</h3>
   <hr>
   <form method="post" action="/sauron/{{ sauron_id }}/sauron_mobs/{{ mob_id }}">
     <div class="row">
@@ -10,6 +10,6 @@
       {% endfor %}
     </div>
   </form>
-  <div class="row"><div class="col-md-4 mt-2"><a class="btn btn-primary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_actions/edit">Retour aux actions</a></div></div>
+  <div class="row"><div class="col-md-4 mt-2"><a class="btn btn-primary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_mobs">Retour</a></div></div>
 </div>
 {% endblock %}

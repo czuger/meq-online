@@ -1,11 +1,22 @@
 //! Monsters and minions entering or leaving the map.
 
+use rand::rngs::StdRng;
+use rand::seq::SliceRandom;
+use serde_json::json;
+
 use crate::engine::engine_error::EngineError;
 use crate::game_data::GameData;
 use crate::game_data::mob_def::MobKind;
 use crate::game_data::monster_pool_color::MonsterPoolColor;
+use crate::model::actor_ref::ActorRef;
 use crate::model::game::Game;
 use crate::model::mob::{Mob, NOTHING_CODE};
+
+/// Minion that comes back after being defeated.
+pub const RINGWRAITHS: &str = "ringwraiths";
+
+/// Where the Ringwraiths come back.
+const RINGWRAITHS_HOME: &str = "minas_morgul";
 
 impl Game {
     /// Puts a new mob on the map.
@@ -46,6 +57,7 @@ impl Game {
                 attack_deck: def.attack_deck.clone(),
                 hand: vec![],
                 damages_taken_this_turn: 0,
+                commanded: false,
             }
         };
         self.mobs.push(mob);
@@ -53,18 +65,25 @@ impl Game {
     }
 
     /// Draws the top monster of the pool matching the location's color and places it.
+    /// An empty pool is first rebuilt from its discarded tokens (§ 10.2).
     ///
     /// # Errors
-    /// [`EngineError::Refused`] when the pool is empty, [`EngineError::GameData`] when
-    /// the location is unknown.
+    /// [`EngineError::Refused`] when the pool and its discard are both empty,
+    /// [`EngineError::GameData`] when the location is unknown.
     pub fn place_new_monster(
         &mut self,
         location: &str,
         data: &GameData,
+        rng: &mut StdRng,
     ) -> Result<(), EngineError> {
         let color = data.locations.get(location)?.color_code;
         let pool = MonsterPoolColor::for_location_color(color);
         let pile = self.board.monster_pools.entry(pool).or_default();
+        if pile.is_empty() {
+            let discard = self.board.monster_discards.entry(pool).or_default();
+            pile.append(discard);
+            pile.shuffle(rng);
+        }
         if pile.is_empty() {
             return Err(EngineError::Refused(format!(
                 "monster pool {} is empty",
@@ -75,20 +94,37 @@ impl Game {
         self.create_mob(&code, location, Some(pool), data)
     }
 
-    /// Returns a monster to the bottom of its pool and removes it from the map.
+    /// Takes a monster token off the map and puts it faceup on its pool's discard
+    /// pile (§ 8.3, § 8.8).
     ///
     /// # Errors
     /// [`EngineError::NotFound`] when the mob isn't on the board.
-    pub fn place_monster_back_to_pool(&mut self, mob_id: i64) -> Result<(), EngineError> {
+    pub fn discard_monster(&mut self, mob_id: i64) -> Result<(), EngineError> {
         let index = self.mob_index(mob_id)?;
         let mob = self.mobs.remove(index);
         if let Some(pool) = mob.pool {
             self.board
-                .monster_pools
+                .monster_discards
                 .entry(pool)
                 .or_default()
                 .push(mob.code);
         }
+        Ok(())
+    }
+
+    /// Defeated Ringwraiths come back on Minas Morgul, at full life, at the start of
+    /// Sauron's next Action step (§ 8.8).
+    ///
+    /// # Errors
+    /// [`EngineError::GameData`] when the Ringwraiths are missing from the data.
+    pub fn return_ringwraiths(&mut self, data: &GameData) -> Result<(), EngineError> {
+        if !self.board.ringwraiths_return {
+            return Ok(());
+        }
+        self.board.ringwraiths_return = false;
+        self.create_mob(RINGWRAITHS, RINGWRAITHS_HOME, None, data)?;
+        let params = [("location", json!(data.locations.name(RINGWRAITHS_HOME)))];
+        self.log(ActorRef::System, "ringwraiths.return", &params);
         Ok(())
     }
 }
@@ -108,5 +144,6 @@ fn nothing_token(location: &str, pool: Option<MonsterPoolColor>) -> Mob {
         attack_deck: "none".to_owned(),
         hand: vec![],
         damages_taken_this_turn: 0,
+        commanded: false,
     }
 }

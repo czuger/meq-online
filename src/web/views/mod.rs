@@ -1,5 +1,6 @@
 //! Data prepared for templates.
 
+pub mod choice_label;
 pub mod hero_info;
 pub mod layout;
 pub mod log_text;

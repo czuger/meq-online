@@ -5,6 +5,7 @@ use axum::extract::State;
 use axum::response::Response;
 
 use crate::app_state::AppState;
+use crate::engine::deck::SauronDeck;
 use crate::model::game::Game;
 use crate::web::access::SauronAccess;
 use crate::web::app_error::AppError;
@@ -28,7 +29,8 @@ struct ShowPage {
 struct SetupPage {
     layout: Layout,
     sauron_id: i64,
-    plot_cards_to_draw: u32,
+    influence_left: i32,
+    plot_cards_to_keep: usize,
     plots: Vec<CardView>,
 }
 
@@ -74,23 +76,11 @@ pub async fn setup_screen(
     access: SauronAccess,
 ) -> Result<Response, AppError> {
     let game = read_game(&state, access.board_id).await?;
-    let starting_plot = game
-        .board
-        .plots
-        .values()
-        .next()
-        .copied()
-        .unwrap_or_default();
-    let to_draw = state
-        .data
-        .plot(starting_plot)
-        .ok()
-        .and_then(|p| p.plot_cards)
-        .map_or(2, |d| d.draw);
     let page = SetupPage {
         layout: Layout::sauron(&access.session, &game),
         sauron_id: access.sauron_id,
-        plot_cards_to_draw: to_draw,
+        influence_left: game.board.influence_budget.tokens,
+        plot_cards_to_keep: game.cards_to_keep(SauronDeck::Plot, &state.data),
         plots: plots_in_play(&game),
     };
     render(&page, &page.layout)

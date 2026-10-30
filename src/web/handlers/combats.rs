@@ -7,9 +7,7 @@ use axum::response::Response;
 use serde::Deserialize;
 
 use crate::app_state::AppState;
-use crate::engine::combat::flow::{
-    CardPlayed, CombatEnd, CombatPreparation, CombatResult, CombatSide,
-};
+use crate::engine::combat::flow::{CardPlayed, CombatEnd, CombatResult, CombatSide};
 use crate::engine::turn::TurnEnd;
 use crate::game_data::GameData;
 use crate::game_data::mob_def::MobKind;
@@ -70,6 +68,8 @@ struct PlayCardPage {
     hand: Vec<CardView>,
     card_class: &'static str,
     action: &'static str,
+    declare_action: &'static str,
+    can_declare: bool,
     monster_pic: Option<String>,
 }
 
@@ -78,16 +78,16 @@ struct PlayCardPage {
 struct CardsLossPage {
     layout: Layout,
     board_id: i64,
-    mandatory: bool,
     damages: i32,
+    life: usize,
     hand: Vec<CardView>,
     card_class: &'static str,
 }
 
-/// Combat setup form: the clicked button.
+/// Combat setup form: agility spent to draw cards.
 #[derive(Debug, Deserialize)]
 pub struct SetupForm {
-    button: String,
+    draw: String,
 }
 
 /// Card choice form.
@@ -192,7 +192,8 @@ pub async fn combat_setup_screen(
     render(&page, &page.layout)
 }
 
-/// `POST /boards/{board_id}/combats/combat_setup`: draw cards or gain strength.
+/// `POST /boards/{board_id}/combats/combat_setup`: agility split between cards drawn
+/// and strength.
 ///
 /// # Errors
 /// Rule and database errors.
@@ -201,13 +202,9 @@ pub async fn combat_setup(
     access: BoardAccess,
     Form(form): Form<SetupForm>,
 ) -> Result<Response, AppError> {
-    let choice = if form.button == "draw" {
-        CombatPreparation::DrawCards
-    } else {
-        CombatPreparation::GainStrength
-    };
+    let agility_to_draw: i32 = number(&form.draw, "agility")?;
     change_game(&state, access.board_id, |game, data, rng| {
-        game.combat_setup(choice, data, rng)
+        game.combat_setup(agility_to_draw, data, rng)
     })
     .await?;
     Ok(redirect(
@@ -241,6 +238,8 @@ pub async fn play_combat_card_screen(
                 hand: hero_hand(&state.data, &hero.code, &hero.hand),
                 card_class: "small-card selectable-card-selection-unique",
                 action: "play_combat_card_hero",
+                declare_action: "declare_exhaustion_hero",
+                can_declare: hero.active,
                 monster_pic: None,
             }
         }
@@ -260,6 +259,9 @@ pub async fn play_combat_card_screen(
                     .collect(),
                 card_class: "small-card selectable-card-selection-unique",
                 action: "play_combat_card_mob",
+                declare_action: "declare_exhaustion_mob",
+                can_declare: game.sauron.active
+                    && !game.hero(combat.hero_id).is_ok_and(|h| h.active),
                 monster_pic: (mob.kind == MobKind::Monster)
                     .then(|| image(&format!("monsters/monsters/{}.jpg", mob.code))),
             }
@@ -267,6 +269,52 @@ pub async fn play_combat_card_screen(
         _ => return Err(AppError::NotFound),
     };
     render(&page, &page.layout)
+}
+
+fn after_card(board_id: i64, played: CardPlayed) -> Response {
+    match played {
+        CardPlayed::Waiting => redirect("/boards", None),
+        CardPlayed::Resolved => redirect(&format!("/boards/{board_id}/combats"), None),
+        CardPlayed::CardsLoss => redirect(
+            &format!("/boards/{board_id}/combats/cards_loss_screen"),
+            None,
+        ),
+    }
+}
+
+async fn declare(
+    state: AppState,
+    access: BoardAccess,
+    side: CombatSide,
+) -> Result<Response, AppError> {
+    let board_id = access.board_id;
+    let (_, played) = change_game(&state, board_id, |game, data, _| {
+        game.declare_exhaustion(side, data)
+    })
+    .await?;
+    Ok(after_card(board_id, played))
+}
+
+/// `POST /boards/{board_id}/combats/declare_exhaustion_hero`.
+///
+/// # Errors
+/// Rule and database errors.
+pub async fn declare_exhaustion_hero(
+    State(state): State<AppState>,
+    access: BoardAccess,
+) -> Result<Response, AppError> {
+    declare(state, access, CombatSide::Hero).await
+}
+
+/// `POST /boards/{board_id}/combats/declare_exhaustion_mob`.
+///
+/// # Errors
+/// Rule and database errors.
+pub async fn declare_exhaustion_mob(
+    State(state): State<AppState>,
+    access: BoardAccess,
+) -> Result<Response, AppError> {
+    declare(state, access, CombatSide::Mob).await
 }
 
 async fn play_card(
@@ -281,14 +329,7 @@ async fn play_card(
         game.play_combat_card(side, card, data)
     })
     .await?;
-    Ok(match played {
-        CardPlayed::Waiting => redirect("/boards", None),
-        CardPlayed::Resolved => redirect(&format!("/boards/{board_id}/combats"), None),
-        CardPlayed::CardsLoss => redirect(
-            &format!("/boards/{board_id}/combats/cards_loss_screen"),
-            None,
-        ),
-    })
+    Ok(after_card(board_id, played))
 }
 
 /// `POST /boards/{board_id}/combats/play_combat_card_hero`.
@@ -329,8 +370,8 @@ pub async fn cards_loss_screen(
     let page = CardsLossPage {
         layout: Layout::hero(&access.session, &game, combat.hero_id, &state.data),
         board_id: access.board_id,
-        mandatory: hero.temporary_damages > 0 && hero.life_pool.is_empty(),
         damages: hero.temporary_damages,
+        life: hero.life_pool.len(),
         hand: hero_hand(&state.data, &hero.code, &hero.hand),
         card_class: "small-card selectable-card-selection-multiple",
     };
@@ -348,18 +389,11 @@ pub async fn cards_loss(
 ) -> Result<Response, AppError> {
     let cards = card_list(&form.selected_cards)?;
     let board_id = access.board_id;
-    let (_, done) = change_game(&state, board_id, |game, _, _| {
+    change_game(&state, board_id, |game, _, _| {
         game.combat_cards_loss(&cards)
     })
     .await?;
-    Ok(if done {
-        redirect(&format!("/boards/{board_id}/combats"), None)
-    } else {
-        redirect(
-            &format!("/boards/{board_id}/combats/cards_loss_screen"),
-            None,
-        )
-    })
+    Ok(redirect(&format!("/boards/{board_id}/combats"), None))
 }
 
 /// `GET /boards/{board_id}/combats/terminate`.
@@ -370,13 +404,15 @@ pub async fn terminate(
     State(state): State<AppState>,
     access: BoardAccess,
 ) -> Result<Response, AppError> {
-    let (_, (end, hero_id)) = change_game(&state, access.board_id, |game, data, _| {
+    let (_, (end, hero_id)) = change_game(&state, access.board_id, |game, data, rng| {
         let hero_id = game.combat.as_ref().map(|c| c.hero_id).unwrap_or_default();
-        Ok((game.terminate_combat(data)?, hero_id))
+        Ok((game.terminate_combat(data, rng)?, hero_id))
     })
     .await?;
     Ok(match end {
         CombatEnd::Movement => redirect(&format!("/heroes/{hero_id}/movement_screen"), None),
+        CombatEnd::Defeat => redirect(&format!("/heroes/{hero_id}/defeat_screen"), None),
+        CombatEnd::ChooseHaven => redirect("/boards", None),
         CombatEnd::TurnEnded(TurnEnd::HeroDrawCards) => {
             redirect(&format!("/heroes/{hero_id}/draw_cards_screen"), None)
         }

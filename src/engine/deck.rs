@@ -4,7 +4,9 @@ use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 use serde_json::json;
 
+use crate::engine::board_state::BoardState;
 use crate::engine::engine_error::EngineError;
+use crate::game_data::GameData;
 use crate::game_data::combat_card_def::CardNumber;
 use crate::model::actor_ref::ActorRef;
 use crate::model::board::Pile;
@@ -15,7 +17,7 @@ use crate::model::game::Game;
 pub enum SauronDeck {
     /// Plot cards: cards not kept go back under the deck.
     Plot,
-    /// Shadow cards: cards not kept are discarded; the discard refills the deck.
+    /// Shadow cards: cards not kept are discarded.
     Shadow,
 }
 
@@ -29,15 +31,16 @@ impl SauronDeck {
 }
 
 impl Game {
-    /// Draws `count` cards into Sauron's drawn area.
+    /// Draws `count` cards into Sauron's drawn area; a depleted deck is rebuilt from
+    /// its discard pile (§ 10.2).
     ///
     /// # Arguments
     /// * `deck` - which deck.
     /// * `count` - number of cards.
-    /// * `rng` - random source, for refilling the shadow deck.
+    /// * `rng` - random source, for refilling the deck.
     pub fn draw_sauron_cards(&mut self, deck: SauronDeck, count: usize, rng: &mut StdRng) {
         let (pile, drawn) = self.sauron_piles(deck);
-        if deck == SauronDeck::Shadow && count > pile.draw.len() {
+        if count > pile.draw.len() {
             pile.draw.append(&mut pile.discard);
             pile.draw.shuffle(rng);
         }
@@ -48,18 +51,58 @@ impl Game {
         self.log(ActorRef::Sauron, &action, &[("count", json!(cards.len()))]);
     }
 
-    /// Moves the selected drawn cards to Sauron's hand; the others are returned or discarded.
+    /// Sauron draws cards straight into his hand (card effects).
+    pub fn draw_to_sauron_hand(&mut self, deck: SauronDeck, count: usize, rng: &mut StdRng) {
+        let (_, drawn) = self.sauron_piles(deck);
+        let waiting = drawn.len();
+        self.draw_sauron_cards(deck, count, rng);
+        let (hand, drawn) = match deck {
+            SauronDeck::Plot => (&mut self.sauron.plot_hand, &mut self.sauron.drawn_plot),
+            SauronDeck::Shadow => (&mut self.sauron.shadow_hand, &mut self.sauron.drawn_shadow),
+        };
+        hand.extend(drawn.split_off(waiting));
+    }
+
+    /// Number of drawn cards Sauron must keep: what the starting plot says at setup
+    /// (§ 3), one plot card in a Draw Shadow and Plot Cards action (§ 5.7).
+    pub fn cards_to_keep(&self, deck: SauronDeck, data: &GameData) -> usize {
+        let drawn = match deck {
+            SauronDeck::Plot => self.sauron.drawn_plot.len(),
+            SauronDeck::Shadow => self.sauron.drawn_shadow.len(),
+        };
+        let expected = if self.board.state == BoardState::SauronSetupScreen {
+            let starting = self
+                .board
+                .plots
+                .values()
+                .next()
+                .and_then(|card| data.plot(*card).ok());
+            let keep = starting.and_then(|plot| match deck {
+                SauronDeck::Plot => plot.plot_cards,
+                SauronDeck::Shadow => plot.shadow_cards,
+            });
+            keep.map_or(0, |k| usize::try_from(k.keep).unwrap_or(0))
+        } else {
+            1
+        };
+        expected.min(drawn)
+    }
+
+    /// Moves the selected drawn cards to Sauron's hand; the others are returned under
+    /// the deck (plots) or discarded (shadows).
     ///
     /// # Errors
-    /// [`EngineError::Refused`] when nothing is selected,
-    /// [`EngineError::CardNotAvailable`] when a selected card wasn't drawn.
+    /// [`EngineError::Refused`] when the number of selected cards isn't the number to
+    /// keep, [`EngineError::CardNotAvailable`] when a selected card wasn't drawn.
     pub fn keep_sauron_cards(
         &mut self,
         deck: SauronDeck,
         selected: &[CardNumber],
+        data: &GameData,
     ) -> Result<(), EngineError> {
-        if selected.is_empty() {
-            return Err(EngineError::Refused("no card selected".to_owned()));
+        let to_keep = self.cards_to_keep(deck, data);
+        if selected.len() != to_keep {
+            return Err(EngineError::Refused(format!("keep {to_keep} card(s)")));
         }
         let (pile, drawn) = self.sauron_piles(deck);
         if let Some(card) = selected.iter().find(|c| !drawn.contains(c)) {
@@ -110,7 +153,7 @@ impl Game {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::engine::test_support::{game, rng};
+    use crate::engine::test_support::{data, game, rng};
 
     // Port of game_engine_deck_test.rb.
     #[test]
@@ -137,7 +180,8 @@ mod tests {
         g.sauron.drawn_plot = vec![];
         g.board.decks.plot.draw = vec![3, 4, 5, 6];
         g.draw_sauron_cards(SauronDeck::Plot, 3, &mut rng());
-        g.keep_sauron_cards(SauronDeck::Plot, &[4]).unwrap();
+        g.board.state = BoardState::KeepScreenSauronPlotCards;
+        g.keep_sauron_cards(SauronDeck::Plot, &[4], data()).unwrap();
         assert_eq!(g.sauron.plot_hand, vec![4]);
         assert!(g.sauron.drawn_plot.is_empty());
         assert_eq!(g.board.decks.plot.draw, vec![6, 3, 5]);
@@ -147,7 +191,7 @@ mod tests {
     fn refuses_cards_not_drawn() {
         let mut g = game();
         g.sauron.drawn_plot = vec![3];
-        assert!(g.keep_sauron_cards(SauronDeck::Plot, &[9]).is_err());
-        assert!(g.keep_sauron_cards(SauronDeck::Plot, &[]).is_err());
+        assert!(g.keep_sauron_cards(SauronDeck::Plot, &[9], data()).is_err());
+        assert!(g.keep_sauron_cards(SauronDeck::Plot, &[], data()).is_err());
     }
 }

@@ -59,9 +59,9 @@ pub async fn save(
 async fn update(conn: &mut SqliteConnection, hero: &Hero) -> Result<(), DbError> {
     sqlx::query(
         "UPDATE heroes SET user_id = ?, code = ?, location = ?, fortitude = ?, strength = ?, agility = ?, \
-         wisdom = ?, favor = ?, quest = ?, playing_order = ?, turn = ?, active = ?, turn_finished = ?, \
-         damages_taken_this_turn = ?, temporary_damages = ?, corruption_discarded_this_turn = ?, \
-         life_pool = ?, hand = ?, rest_pool = ?, damage_pool = ?, items = ?, used_powers = ?, \
+         wisdom = ?, favor = ?, quest = ?, advanced_quest = ?, playing_order = ?, turn = ?, active = ?, turn_finished = ?, \
+         damages_taken_this_turn = ?, temporary_damages = ?, \
+         cards_drawn_this_round = ?, life_pool = ?, hand = ?, rest_pool = ?, damage_pool = ?, items = ?, levels = ?, used_powers = ?, \
          corruption_cards = ? WHERE id = ?",
     )
     .bind(hero.user_id)
@@ -73,18 +73,20 @@ async fn update(conn: &mut SqliteConnection, hero: &Hero) -> Result<(), DbError>
     .bind(hero.wisdom)
     .bind(hero.favor)
     .bind(hero.quest)
+    .bind(hero.advanced_quest)
     .bind(hero.playing_order)
     .bind(hero.turn)
     .bind(hero.active)
     .bind(hero.turn_finished)
     .bind(hero.damages_taken_this_turn)
     .bind(hero.temporary_damages)
-    .bind(hero.corruption_discarded_this_turn)
+    .bind(hero.cards_drawn_this_round)
     .bind(to_json(&hero.life_pool)?)
     .bind(to_json(&hero.hand)?)
     .bind(to_json(&hero.rest_pool)?)
     .bind(to_json(&hero.damage_pool)?)
     .bind(to_json(&hero.items)?)
+    .bind(to_json(&hero.levels)?)
     .bind(to_json(&hero.used_powers)?)
     .bind(to_json(&hero.corruption_cards)?)
     .bind(hero.id)
@@ -105,18 +107,20 @@ fn hero_from_row(row: &SqliteRow) -> Result<Hero, DbError> {
         wisdom: row.try_get("wisdom")?,
         favor: row.try_get("favor")?,
         quest: row.try_get("quest")?,
+        advanced_quest: row.try_get("advanced_quest")?,
         playing_order: row.try_get("playing_order")?,
         turn: row.try_get("turn")?,
         active: row.try_get("active")?,
         turn_finished: row.try_get("turn_finished")?,
         damages_taken_this_turn: row.try_get("damages_taken_this_turn")?,
         temporary_damages: row.try_get("temporary_damages")?,
-        corruption_discarded_this_turn: row.try_get("corruption_discarded_this_turn")?,
+        cards_drawn_this_round: row.try_get("cards_drawn_this_round")?,
         life_pool: from_json(row.try_get("life_pool")?)?,
         hand: from_json(row.try_get("hand")?)?,
         rest_pool: from_json(row.try_get("rest_pool")?)?,
         damage_pool: from_json(row.try_get("damage_pool")?)?,
         items: from_json(row.try_get("items")?)?,
+        levels: from_json(row.try_get("levels")?)?,
         used_powers: from_json(row.try_get("used_powers")?)?,
         corruption_cards: from_json(row.try_get("corruption_cards")?)?,
     })

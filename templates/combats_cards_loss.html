@@ -1,21 +1,18 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container">
-  <h3>
-    {% if mandatory %}
-    Votre réserve de vie est vide. Vous devez choisir {{ damages }} carte(s) à perdre.
-    {% else %}
-    Vous pouvez choisir jusqu'à {{ damages }} carte(s) pour éviter des dégâts.
-    {% endif %}
-  </h3>
+  <h3>Vous subissez {{ damages }} dégât(s)</h3>
+  <div class="alert alert-secondary">
+    <ul class="mt-3">
+      <li>Pour chaque dégât, vous perdez une carte de votre main ou la carte du dessus de votre réserve de vie ({{ life }} carte(s)).</li>
+      <li>Choisissez les cartes de votre main à perdre (jusqu'à {{ damages }}) ; les autres dégâts sont payés avec votre réserve de vie.</li>
+    </ul>
+  </div>
   {% include "cards_hand.html" %}
   <hr>
   <form method="post" action="/boards/{{ board_id }}/combats/cards_loss">
     <div class="row">
-      <div class="col mt-2"><button type="submit" class="btn btn-primary btn-block">Défausser les cartes</button></div>
-      {% if !mandatory %}
-      <div class="col mt-2"><button type="submit" class="btn btn-primary btn-block">Ne pas défausser</button></div>
-      {% endif %}
+      <div class="col-md-4 mt-2"><button type="submit" class="btn btn-primary btn-block">Valider</button></div>
     </div>
     <input type="hidden" id="selected_cards" name="selected_cards">
   </form>

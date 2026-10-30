@@ -3,16 +3,17 @@
 <div class="container">
   <div class="alert alert-secondary">
     <ul class="mt-3">
-      <li>Placez le nombre indiqué de jetons d'influence sur la carte. Les jetons des forteresses des Ténèbres et de la réserve sont déjà placés.</li>
-      <li>Les cartes des Ténèbres ne sont pas encore utilisées : ignorez-les.</li>
-      <li>Piochez et défaussez le nombre indiqué de cartes intrigue.</li>
+      <li>Suivez les instructions de votre intrigue de départ : les jetons d'influence des forteresses des Ténèbres et de la réserve sont déjà placés.</li>
+      <li>Placez sur la carte les jetons d'influence restants, en extension de vos forteresses ({{ influence_left }} à placer).</li>
+      <li>Gardez le nombre indiqué de cartes intrigue piochées.</li>
+      <li>Les cartes des Ténèbres ne sont pas encore utilisées.</li>
       <li>Quand vous avez terminé, cliquez sur « Terminer ».</li>
     </ul>
   </div>
   <div class="form-group">
     <div class="row">
-      <div class="col-md-3"><a class="btn btn-secondary btn-block" role="button" href="/maps/{{ sauron_id }}/edit">1 - Aller à la carte</a></div>
-      <div class="col-md-3"><a class="btn btn-secondary btn-block" role="button" href="/sauron/{{ sauron_id }}/plot_cards/draw_screen?nb_cards={{ plot_cards_to_draw }}">2 - Piocher des intrigues</a></div>
+      <div class="col-md-3"><a class="btn btn-secondary btn-block" role="button" href="/maps/{{ sauron_id }}/edit">1 - Placer l'influence</a></div>
+      <div class="col-md-3">{% if plot_cards_to_keep > 0 %}<a class="btn btn-secondary btn-block" role="button" href="/sauron/{{ sauron_id }}/plot_cards/keep_screen">2 - Garder {{ plot_cards_to_keep }} intrigue(s)</a>{% endif %}</div>
       <div class="col-md-3"><a class="btn btn-primary btn-block" role="button" href="/sauron/{{ sauron_id }}/setup_finished">3 - Terminer</a></div>
     </div>
   </div>

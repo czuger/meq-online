@@ -1,6 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container-fluid">
+  {% if let Some(text) = budget %}
+  <div class="alert alert-info">{{ text }}
+    {% if let Some(url) = finish_action %}<a class="btn btn-primary ml-3" role="button" href="{{ url }}">Terminer l'action</a>{% endif %}
+  </div>
+  {% endif %}
   <div id="map" data-board-id="{{ board_id }}"{% if let Some(id) = sauron_id %} data-sauron-id="{{ id }}"{% endif %}>
     <img src="{{ map.map_pic }}" id="map-picture" alt="Carte">
     <div id="influence-alert"></div>

@@ -9,7 +9,7 @@ use serde::Deserialize;
 use crate::app_state::AppState;
 use crate::engine::hero::peril::PerilOutcome;
 use crate::engine::movement::{MoveOutcome, path_difficulty};
-use crate::engine::rest::RestOutcome;
+use crate::engine::rest::{Rest, RestOutcome};
 use crate::game_data::plot::StoryType;
 use crate::model::game::Game;
 use crate::model::hero::Hero;
@@ -41,14 +41,6 @@ struct RestPage {
     layout: Layout,
     hero_id: i64,
     can_heal: bool,
-    can_discard: bool,
-}
-
-#[derive(Template)]
-#[template(path = "heroes_discard_corruption.html")]
-struct DiscardCorruptionPage {
-    layout: Layout,
-    hero_id: i64,
     corruptions: Vec<CardView>,
 }
 
@@ -91,13 +83,7 @@ struct DrawCardsPage {
     hero_id: i64,
     hand: Vec<CardView>,
     card_class: &'static str,
-    fortitude: i32,
-}
-
-/// Form with one selected card.
-#[derive(Debug, Deserialize)]
-pub struct SelectedCardForm {
-    selected_card: String,
+    left_to_draw: i32,
 }
 
 /// Movement form: the destination is the clicked button.
@@ -112,6 +98,13 @@ pub struct MoveForm {
 #[derive(Debug, Deserialize)]
 pub struct DrawForm {
     nb_cards: String,
+}
+
+/// Corruption card discarded while resting.
+#[derive(Debug, Deserialize)]
+pub struct RestQuery {
+    #[serde(default)]
+    corruption: Option<String>,
 }
 
 /// Chosen story marker.
@@ -170,15 +163,31 @@ pub async fn rest_screen(
             .locations
             .get(&hero.location)
             .is_ok_and(|l| l.haven),
-        can_discard: hero.can_discard_corruption_cards(&state.data),
+        corruptions: hero
+            .discardable_corruption_cards(&state.data)
+            .into_iter()
+            .map(corruption_card)
+            .collect(),
     };
     render(&page, &page.layout)
 }
 
-async fn rest(state: AppState, access: HeroAccess, heal: bool) -> Result<Response, AppError> {
+async fn rest(
+    state: AppState,
+    access: HeroAccess,
+    heal: bool,
+    query: RestQuery,
+) -> Result<Response, AppError> {
+    let discard = query
+        .corruption
+        .as_deref()
+        .filter(|c| !c.is_empty())
+        .map(|c| number(c, "corruption card"))
+        .transpose()?;
     let hero_id = access.hero_id;
-    let (_, outcome) = change_game(&state, access.board_id, |game, data, _| {
-        game.rest_hero(hero_id, heal, data)
+    let rest = Rest { heal, discard };
+    let (_, outcome) = change_game(&state, access.board_id, |game, data, rng| {
+        game.rest_hero(hero_id, rest, data, rng)
     })
     .await?;
     Ok(match outcome {
@@ -190,26 +199,28 @@ async fn rest(state: AppState, access: HeroAccess, heal: bool) -> Result<Respons
     })
 }
 
-/// `GET /heroes/{hero_id}/rest_rest`.
+/// `GET /heroes/{hero_id}/rest_rest?corruption=14` (the card to discard is optional).
 ///
 /// # Errors
 /// Rule and database errors.
 pub async fn rest_rest(
     State(state): State<AppState>,
     access: HeroAccess,
+    Query(query): Query<RestQuery>,
 ) -> Result<Response, AppError> {
-    rest(state, access, false).await
+    rest(state, access, false, query).await
 }
 
-/// `GET /heroes/{hero_id}/rest_heal`.
+/// `GET /heroes/{hero_id}/rest_heal?corruption=14` (the card to discard is optional).
 ///
 /// # Errors
 /// Rule and database errors.
 pub async fn rest_heal(
     State(state): State<AppState>,
     access: HeroAccess,
+    Query(query): Query<RestQuery>,
 ) -> Result<Response, AppError> {
-    rest(state, access, true).await
+    rest(state, access, true, query).await
 }
 
 /// `GET /heroes/{hero_id}/rest_skip`.
@@ -224,49 +235,6 @@ pub async fn rest_skip(
     Ok(redirect(
         &format!("/heroes/{}/movement_screen", access.hero_id),
         None,
-    ))
-}
-
-/// `GET /heroes/{hero_id}/discard_corruption_card_screen`.
-///
-/// # Errors
-/// Database and rendering errors.
-pub async fn discard_corruption_card_screen(
-    State(state): State<AppState>,
-    access: HeroAccess,
-) -> Result<Response, AppError> {
-    let game = read_game(&state, access.board_id).await?;
-    let hero = hero(&game, access.hero_id)?;
-    let page = DiscardCorruptionPage {
-        layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
-        hero_id: access.hero_id,
-        corruptions: hero
-            .discardable_corruption_cards(&state.data)
-            .into_iter()
-            .map(corruption_card)
-            .collect(),
-    };
-    render(&page, &page.layout)
-}
-
-/// `POST /heroes/{hero_id}/discard_corruption_card`.
-///
-/// # Errors
-/// Rule and database errors.
-pub async fn discard_corruption_card(
-    State(state): State<AppState>,
-    access: HeroAccess,
-    Form(form): Form<SelectedCardForm>,
-) -> Result<Response, AppError> {
-    let card: u32 = number(&form.selected_card, "card")?;
-    let hero_id = access.hero_id;
-    change_game(&state, access.board_id, |game, _, _| {
-        game.discard_corruption_card(hero_id, card)
-    })
-    .await?;
-    Ok(redirect(
-        &format!("/heroes/{hero_id}/rest_screen"),
-        Some(Flash::notice("La carte de corruption a été défaussée.")),
     ))
 }
 
@@ -468,7 +436,7 @@ pub async fn draw_cards_screen(
         hero_id: access.hero_id,
         hand: hero_hand(&state.data, &hero.code, &hero.hand),
         card_class: "small-card",
-        fortitude: hero.fortitude,
+        left_to_draw: hero.cards_left_to_draw(),
     };
     render(&page, &page.layout)
 }
@@ -485,7 +453,7 @@ pub async fn draw_cards(
     let count: usize = number(&form.nb_cards, "card count")?;
     let hero_id = access.hero_id;
     change_game(&state, access.board_id, |game, _, _| {
-        game.hero_mut(hero_id)?.draw_cards(count);
+        game.hero_mut(hero_id)?.draw_step_cards(count);
         Ok(())
     })
     .await?;

@@ -25,6 +25,8 @@ pub struct ExploreChoice {
     pub favors: usize,
     /// Remove the plot of the location.
     pub plot: bool,
+    /// Activate the event card in play on the location.
+    pub event: bool,
 }
 
 /// Message to show after exploring.
@@ -38,6 +40,8 @@ pub enum ExploreNotice {
     Dispairing,
     /// A plot was removed.
     PlotRemoved,
+    /// The event card in play was activated.
+    EventActivated,
 }
 
 impl Game {
@@ -88,6 +92,7 @@ impl Game {
         choice: &ExploreChoice,
         data: &GameData,
     ) -> Result<Option<ExploreNotice>, EngineError> {
+        self.trigger_held_event(hero_id, data)?;
         let mut notice = None;
         for character in &choice.characters {
             self.meet_character(hero_id, character, data)?;
@@ -99,6 +104,10 @@ impl Game {
         if choice.plot {
             self.remove_plot_at_hero_location(hero_id, data)?;
             notice = Some(ExploreNotice::PlotRemoved);
+        }
+        if choice.event {
+            self.activate_current_event(hero_id, data)?;
+            notice = Some(ExploreNotice::EventActivated);
         }
         Ok(notice)
     }
@@ -177,6 +186,7 @@ impl Game {
         }
         hero.favor -= cost;
         self.board.plots.remove(&slot);
+        self.board.decks.plot.discard.push(card);
         let params = [("location_name", json!(data.locations.name(&location)))];
         self.log(ActorRef::Hero(hero_id), "exploration.plot.remove", &params);
         Ok(())

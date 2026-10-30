@@ -6,6 +6,7 @@ use axum::extract::State;
 use axum::response::Response;
 
 use crate::app_state::AppState;
+use crate::engine::board_state::BoardState;
 use crate::engine::exploration::{ExploreChoice, ExploreNotice};
 use crate::engine::tokens::TokenKind;
 use crate::engine::turn::TurnEnd;
@@ -101,6 +102,12 @@ fn choice(
                 enabled,
             })
         }
+        TokenKind::Event => Some(Choice {
+            field: "tokens[event][]",
+            value: "event".to_owned(),
+            text: format!("Activer la carte événement « {name} »"),
+            enabled: true,
+        }),
         TokenKind::Hero | TokenKind::Monster | TokenKind::Minion => None,
     }
 }
@@ -120,14 +127,21 @@ pub async fn update(
             "tokens[character][]" => choice.characters.push(value),
             "tokens[favor][]" => choice.favors += 1,
             "tokens[plot][]" => choice.plot = true,
+            "tokens[event][]" => choice.event = true,
             _ => {}
         }
     }
     let hero_id = access.hero_id;
-    let (_, notice) = change_game(&state, access.board_id, |game, data, _| {
+    let (game, notice) = change_game(&state, access.board_id, |game, data, _| {
         game.explore(hero_id, &choice, data)
     })
     .await?;
+    if game.board.state == BoardState::ChoiceScreenBoardChoices {
+        return Ok(redirect(
+            &format!("/boards/{}/choices/choice_screen", access.board_id),
+            None,
+        ));
+    }
     let text = notice.map(|n| match n {
         ExploreNotice::CharacterEncountered => "Personnage rencontré.",
         ExploreNotice::FavorTaken => "Faveur obtenue.",
@@ -135,6 +149,7 @@ pub async fn update(
             "Vous n'avez pas pu prendre toutes les faveurs à cause de la corruption Désespéré."
         }
         ExploreNotice::PlotRemoved => "Intrigue retirée.",
+        ExploreNotice::EventActivated => "Carte événement activée.",
     });
     Ok(redirect(
         &format!("/heroes/{hero_id}/exploration"),

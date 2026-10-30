@@ -3,6 +3,7 @@
 use crate::engine::tokens::{Token, TokenKind, tokens_by_location};
 use crate::game_data::GameData;
 use crate::model::game::Game;
+use crate::model::sauron_action::{ActionToken, SauronAction};
 use crate::web::views::pictures::{image, plot_card};
 
 /// Scale between the coordinates in the data and the displayed map picture.
@@ -91,7 +92,7 @@ pub fn map_view(game: &Game, data: &GameData, sauron: bool) -> MapView {
             .board
             .sauron_actions
             .iter()
-            .filter_map(|a| action_style(a))
+            .map(|token| action_style(*token))
             .collect(),
         plots: game
             .board
@@ -193,15 +194,15 @@ fn pool_tokens(shadow_pool: i32) -> Vec<PoolToken> {
         .collect()
 }
 
-/// Position of a Sauron action marker (`place_influence_2`, ...) on the action bar.
-fn action_style(action: &str) -> Option<String> {
-    let (root, count) = action.rsplit_once('_')?;
-    let count: i32 = count.parse().ok()?;
-    let x = match root {
-        "place_influence" => 2463,
-        "draw_cards" => 2612,
-        "command" => 2761,
-        _ => return None,
+/// Position of a Sauron action token on the action tracks of the map.
+fn action_style(token: ActionToken) -> String {
+    let x = match token.action {
+        SauronAction::PlaceInfluence => 2463,
+        SauronAction::DrawCards => 2612,
+        SauronAction::Command => 2761,
     };
-    Some(format!("top:1614px; left:{}px;", x + (count - 1) * 46))
+    format!(
+        "top:1614px; left:{}px;",
+        x + (i32::from(token.space) - 1) * 46
+    )
 }

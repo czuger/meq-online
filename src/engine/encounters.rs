@@ -24,12 +24,14 @@ pub enum Encounter {
 
 impl Game {
     /// Checks the hero's location; the strongest mob there (life, then strength) fights.
+    /// `ambush` tells whether this is the Ambush step (otherwise the Travel step).
     ///
     /// # Errors
     /// [`EngineError::CombatInProgress`] when a combat is already running; lookup errors.
     pub fn check_location_encounters(
         &mut self,
         hero_id: i64,
+        ambush: bool,
         data: &GameData,
         rng: &mut StdRng,
     ) -> Result<Encounter, EngineError> {
@@ -55,8 +57,14 @@ impl Game {
             return Ok(Encounter::Exploration);
         };
 
-        if self.mobs.get(index).is_some_and(|m| m.code == NOTHING_CODE) {
-            self.mobs.remove(index);
+        let (mob_id, code) = self
+            .mobs
+            .get(index)
+            .map(|m| (m.id, m.code.clone()))
+            .unwrap_or_default();
+        if code == NOTHING_CODE {
+            let mob_id = mob_id.ok_or(EngineError::Unpersisted("mob"))?;
+            self.discard_monster(mob_id)?;
             let hero_name = data.hero(&self.hero(hero_id)?.code)?.name.clone();
             let params = [("location", json!(location)), ("hero", json!(hero_name))];
             self.log(ActorRef::Hero(hero_id), "combat.encounter_nothing", &params);
@@ -71,7 +79,9 @@ impl Game {
         else {
             return Err(EngineError::NotFound { kind: "mob", id: 0 });
         };
-        self.combat = Some(start_combat(hero, mob, data, rng)?);
+        let mut combat = start_combat(hero, mob, data, rng)?;
+        combat.ambush = ambush;
+        self.combat = Some(combat);
         Ok(Encounter::Monster)
     }
 }

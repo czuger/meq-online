@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+  <h3>Décision : {{ chooser }}</h3>
+  {% if let Some(pic) = card_pic %}<img src="{{ pic }}" class="medium-card mb-3" alt="">{% endif %}
+  {% if can_answer %}
+  <form method="post" action="/boards/{{ board_id }}/choices/choose">
+    {% for option in options %}
+    <div class="card mb-2">
+      <div class="card-body">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="option" id="option_{{ option.code }}" value="{{ option.code }}"{% if loop.first %} checked{% endif %}>
+          <label class="form-check-label" for="option_{{ option.code }}"><strong>{{ option.label }}</strong></label>
+        </div>
+        {% if !option.hint.is_empty() %}<p class="text-muted mb-1 ml-4">{{ option.hint }}</p>{% endif %}
+        {% for target in option.targets %}
+        <div class="form-check ml-4">
+          <input class="form-check-input" type="checkbox" name="targets" id="target_{{ target.value }}" value="{{ target.value }}">
+          <label class="form-check-label" for="target_{{ target.value }}">
+            {% if let Some(pic) = target.picture %}<img src="{{ pic }}" class="small-card" alt="">{% endif %}
+            {{ target.label }}
+          </label>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Valider</button>
+  </form>
+  {% else %}
+  <div class="alert alert-secondary"><ul class="mt-3"><li>En attente de la décision de : {{ chooser }}.</li></ul></div>
+  <ul>
+    {% for option in options %}<li>{{ option.label }}</li>{% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endblock %}

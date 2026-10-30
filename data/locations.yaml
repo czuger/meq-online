@@ -240,6 +240,7 @@ dol_guldur:
   :pos_x: 1189
   :pos_y: 608
   :shadow_fortress: true
+  :max_influence: 3
 gladden_fields:
   :name: Gladden Fields
   :region: Mirkwood
@@ -281,6 +282,7 @@ mount_gundabad:
   :pos_x: 1028
   :pos_y: 205
   :shadow_fortress: true
+  :max_influence: 3
 rhosgobel:
   :name: Rhosgobel
   :region: Mirkwood
@@ -422,6 +424,7 @@ barad_dur:
   :pos_x: 1563
   :pos_y: 953
   :shadow_fortress: true
+  :max_influence: 6
 mount_doom:
   :name: Mount Doom
   :region: Mordor

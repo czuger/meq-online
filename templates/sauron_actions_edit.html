@@ -1,53 +1,38 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container">
+  <h3>Actions de Sauron</h3>
   <div class="alert alert-secondary">
     <ul class="mt-3">
-      <li>Choisissez une action (cela place seulement un marqueur sur la carte).</li>
-      <li>Exécutez ensuite votre action avec les boutons du bas.</li>
-      <li>Aucune règle n'est vérifiée ici : vous êtes seul maître à cette étape.</li>
-      <li>Quand vous avez terminé, cliquez sur « Terminer ».</li>
-      <li><s>Rappel : Sauron a 2 actions avec 1 ou 2 héros et 3 actions avec 3 héros.</s></li>
-      <li>Actuellement : Sauron a 3 actions avec 1 ou 2 héros et 4 actions avec 3 héros (pour compenser les capacités manquantes de Sauron).</li>
-      <li>Vous ne pouvez placer que 2 jetons d'influence dans la réserve des Ténèbres par ordre « Placer de l'influence ».</li>
+      <li>Pour chaque action, placez un jeton sur la case libre la plus à gauche d'une piste : X est le nombre de cette case.</li>
+      <li>Quand vous placez votre quatrième jeton, les trois autres sont retirés.</li>
+      <li>Sauron a deux actions par tour, trois avec trois héros.</li>
     </ul>
   </div>
-
-  <div class="row">
-    <div class="col-md-4"><b>Actions utilisées ce tour : <span id="used_actions">{{ used_actions }}</span></b></div>
-  </div>
-  <div class="row" data-sauron-actions="/sauron/{{ sauron_id }}/sauron_actions">
-    {% for column in columns %}
-    <div class="col-md">
-      {% for action in column %}
-      <div class="row mt-2">
-        <label class="col-8 col-form-label" for="{{ action.code }}">{{ action.label }}</label>
-        <div class="col-2 pt-2"><input type="checkbox" id="{{ action.code }}" class="sauron_action"{% if action.checked %} checked{% endif %}></div>
-      </div>
-      {% endfor %}
-    </div>
+  <p><b>Actions prises ce tour : {{ actions_taken }} / {{ actions_per_turn }}</b></p>
+  {% if let Some(url) = action_in_progress %}
+  <div class="alert alert-warning">Une action est en cours. <a href="{{ url }}">Reprendre l'action</a></div>
+  {% endif %}
+  {% for track in tracks %}
+  <div class="row mt-2">
+    <div class="col-md-4 col-form-label">{{ track.label }}</div>
+    {% for space in track.spaces %}
+    <div class="col-md-1"><span class="badge {% if space.covered %}badge-dark{% else %}badge-light{% endif %} p-2">{{ space.value }}</span></div>
     {% endfor %}
+    <div class="col-md-3">
+      {% if track.available %}
+      <form method="post" action="/sauron/{{ sauron_id }}/sauron_actions/start">
+        <button type="submit" name="action" value="{{ track.code }}" class="btn btn-secondary btn-block">Choisir</button>
+      </form>
+      {% endif %}
+    </div>
   </div>
-
+  {% endfor %}
   <hr>
-  <div class="form-group">
-    <div class="row">
-      <div class="col-md-4"><a class="btn btn-secondary btn-block" role="button" href="/maps/{{ sauron_id }}/edit">Placer de l'influence</a></div>
-      <div class="col-md-4"><a class="btn btn-secondary btn-block" role="button" href="/sauron/{{ sauron_id }}/plot_cards/draw_screen">Piocher des intrigues</a></div>
-      <div class="col-md-4"><a class="btn btn-secondary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_mobs/new">Placer un monstre</a></div>
-    </div>
+  {% if can_terminate %}
+  <div class="row">
+    <div class="col-md-4"><a class="btn btn-primary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_actions/terminate">Terminer le tour</a></div>
   </div>
-  <div class="form-group">
-    <div class="row">
-      <div class="col-md-4"></div><div class="col-md-4"></div>
-      <div class="col-md-4"><a class="btn btn-secondary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_mobs">Déplacer un monstre ou un serviteur, soigner un serviteur</a></div>
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="row">
-      <div class="col-md-4"></div>
-      <div class="col-md-4"><a class="btn btn-primary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_actions/terminate">Terminer</a></div>
-    </div>
-  </div>
+  {% endif %}
 </div>
 {% endblock %}

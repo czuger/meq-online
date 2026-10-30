@@ -50,7 +50,10 @@ fn mouth_of_sauron_example_1() {
         f.hero_card_by_name("Aimed Shot"),
         f.mob_card_by_name("Reckless"),
     );
-    assert_eq!(f.round(aimed_shot, reckless), (5, 0));
+    // § 8.3: 5 strength spent out of 5 doesn't exceed it, so Argalad isn't exhausted
+    // (the Rails test exhausted him at "equal" and expected no damage to the mob).
+    assert_eq!(f.round(aimed_shot, reckless), (5, 7));
+    assert!(!f.combat.hero_exhausted);
 }
 
 #[test]

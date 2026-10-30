@@ -2,16 +2,18 @@
 {% block content %}
 <div class="container">
   <h3>Pioche</h3>
-  <div class="alert alert-secondary"><ul class="mt-3"><li>À cette étape, vous pouvez piocher des cartes.</li></ul></div>
+  <div class="alert alert-secondary"><ul class="mt-3"><li>À cette étape, vous pouvez piocher autant de cartes que votre endurance, ou moins.</li></ul></div>
   <div class="form-group">
     {% include "cards_hand.html" %}
+    {% if left_to_draw > 0 %}
     <div class="form-group mt-3">
       <form method="post" action="/heroes/{{ hero_id }}/draw_cards" class="form-inline">
         <div class="mx-2"><label for="nb_cards">Nombre de cartes</label></div>
-        <div class="mx-2"><input class="form-control" type="number" id="nb_cards" name="nb_cards" value="{{ fortitude }}" min="0" max="20"></div>
+        <div class="mx-2"><input class="form-control" type="number" id="nb_cards" name="nb_cards" value="{{ left_to_draw }}" min="0" max="{{ left_to_draw }}"></div>
         <div class="mx-2"><button type="submit" class="btn btn-secondary">Piocher</button></div>
       </form>
     </div>
+    {% endif %}
   </div>
   <div class="row">
     <div class="col-md-3"><a class="btn btn-primary btn-block" role="button" href="/heroes/{{ hero_id }}/draw_cards_finished">Terminer</a></div>

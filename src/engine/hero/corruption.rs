@@ -2,10 +2,12 @@
 
 use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
+use serde_json::json;
 
 use crate::engine::engine_error::EngineError;
 use crate::game_data::GameData;
 use crate::game_data::corruption_card::{CorruptionCode, Flaw, Immediate, Modification};
+use crate::model::actor_ref::ActorRef;
 use crate::model::board::Pile;
 use crate::model::game::Game;
 use crate::model::hero::Hero;
@@ -34,11 +36,6 @@ impl Hero {
             .collect()
     }
 
-    /// Tells whether the hero may discard a corruption card this turn.
-    pub fn can_discard_corruption_cards(&self, data: &GameData) -> bool {
-        !self.corruption_discarded_this_turn && !self.discardable_corruption_cards(data).is_empty()
-    }
-
     fn apply_modification(&mut self, modification: Modification) {
         match modification {
             Modification::Helpless => self.agility -= 1,
@@ -47,6 +44,16 @@ impl Hero {
             Modification::Weak => self.strength -= 1,
             Modification::Dispairing => self.favor = self.favor.min(3),
             Modification::Distraught => {}
+        }
+    }
+
+    fn undo_modification(&mut self, modification: Modification) {
+        match modification {
+            Modification::Helpless => self.agility += 1,
+            Modification::Weary => self.fortitude += 1,
+            Modification::Derangd => self.wisdom += 1,
+            Modification::Weak => self.strength += 1,
+            Modification::Dispairing | Modification::Distraught => {}
         }
     }
 }
@@ -90,29 +97,58 @@ impl Game {
         Ok(code)
     }
 
-    /// A hero discards one of its corruption cards back into the deck.
-    ///
-    /// The favor cost isn't paid and the stat change isn't undone, as in the original
-    /// engine. Any copy of the card held by another hero is removed too.
+    /// A resting hero discards one of its corruption cards by spending the favor shown
+    /// on it (§ 6.1); the card's attribute malus ends.
     ///
     /// # Errors
-    /// [`EngineError::CardNotAvailable`] when the card is already in the deck.
+    /// [`EngineError::CardNotAvailable`] when the hero doesn't hold the card,
+    /// [`EngineError::Refused`] when it lacks the favor; lookup errors.
     pub fn discard_corruption_card(
         &mut self,
         hero_id: i64,
         card: CorruptionCode,
+        data: &GameData,
     ) -> Result<(), EngineError> {
-        if self.board.decks.corruption.draw.contains(&card) {
-            return Err(EngineError::CardNotAvailable {
+        let cost = data.corruption_card(card)?.favor_cost;
+        self.remove_corruption_card(hero_id, card, cost, data)
+    }
+
+    /// The hero discards one of its corruption cards for `cost` favor (free when an
+    /// Event or Encounter card allows it); the card's attribute malus ends.
+    ///
+    /// # Errors
+    /// [`EngineError::CardNotAvailable`] when the hero doesn't hold the card,
+    /// [`EngineError::Refused`] when it lacks the favor; lookup errors.
+    pub fn remove_corruption_card(
+        &mut self,
+        hero_id: i64,
+        card: CorruptionCode,
+        cost: i32,
+        data: &GameData,
+    ) -> Result<(), EngineError> {
+        let def = data.corruption_card(card)?;
+        let hero = self.hero_mut(hero_id)?;
+        let position = hero
+            .corruption_cards
+            .iter()
+            .position(|c| *c == card)
+            .ok_or(EngineError::CardNotAvailable {
                 card,
-                pile: "corruption deck (already there)",
-            });
+                pile: "corruption cards",
+            })?;
+        if hero.favor < cost {
+            return Err(EngineError::Refused(
+                "not enough favor to discard this corruption card".to_owned(),
+            ));
         }
-        self.board.decks.corruption.draw.push(card);
-        for hero in &mut self.heroes {
-            hero.corruption_cards.retain(|c| *c != card);
+        hero.favor -= cost;
+        hero.corruption_cards.remove(position);
+        if let Some(modification) = def.modification {
+            hero.undo_modification(modification);
         }
-        self.hero_mut(hero_id)?.corruption_discarded_this_turn = true;
+        self.board.decks.corruption.discard.push(card);
+        let params = [("corruption", json!(def.name))];
+        self.log(ActorRef::Hero(hero_id), "corruption.discard", &params);
         Ok(())
     }
 }

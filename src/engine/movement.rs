@@ -85,7 +85,7 @@ impl Game {
         hero.location = destination.to_owned();
         let peril = self.suffer_peril(hero_id, data, rng)?;
 
-        match self.check_location_encounters(hero_id, data, rng)? {
+        match self.check_location_encounters(hero_id, false, data, rng)? {
             Encounter::Empty => Ok(MoveOutcome::Empty(peril)),
             Encounter::Monster => {
                 self.fire(BoardEvent::NextToCombatSetupScreenBoardCombats)?;

@@ -4,11 +4,29 @@
   <h1>Nouvelle partie</h1>
   <div class="alert alert-secondary">
     <ul class="mt-3">
-      <li>Vous jouez Sauron. Les quatre héros (Béravor, Eleanor, Thalin et Eometh) sont tenus par des places ordinateur que les membres de la partie jouent.</li>
+      <li>Vous jouez Sauron. Choisissez de un à trois héros.</li>
+      <li>Les places des héros peuvent attendre des joueurs qui rejoignent la partie, ou être des places ordinateur jouées par les membres de la partie.</li>
+      <li>Sauron a deux actions par tour, trois avec trois héros.</li>
     </ul>
   </div>
   <form method="post" action="/boards" class="form-group">
-    <div class="actions"><button type="submit" class="btn btn-primary">Créer</button></div>
+    <h5>Héros</h5>
+    {% for (code, name) in heroes %}
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" name="heroes" id="hero_{{ code }}" value="{{ code }}">
+      <label class="form-check-label" for="hero_{{ code }}">{{ name }}</label>
+    </div>
+    {% endfor %}
+    <h5 class="mt-3">Places des héros</h5>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="seats" id="seats_open" value="open" checked>
+      <label class="form-check-label" for="seats_open">Attendre des joueurs</label>
+    </div>
+    <div class="form-check">
+      <input class="form-check-input" type="radio" name="seats" id="seats_computer" value="computer">
+      <label class="form-check-label" for="seats_computer">Places ordinateur jouées par les membres</label>
+    </div>
+    <div class="actions mt-3"><button type="submit" class="btn btn-primary">Créer</button></div>
   </form>
 </div>
 {% endblock %}
