@@ -81,6 +81,8 @@ impl MapTarget {
 pub struct TableView {
     /// Board id.
     pub board_id: i64,
+    /// Board version when the page was displayed, polled by the page to follow the game.
+    pub version: String,
     /// Game turn.
     pub turn: i32,
     /// Story stage (1 to 3).
@@ -117,6 +119,7 @@ impl TableView {
     /// * `me` - the user viewing the page.
     /// * `viewer` - the seat whose table is displayed.
     /// * `recent` - latest log lines, newest first.
+    /// * `version` - board version.
     pub fn new(
         game: &Game,
         data: &GameData,
@@ -124,6 +127,7 @@ impl TableView {
         me: &User,
         viewer: RouteActor,
         recent: Vec<String>,
+        version: String,
     ) -> Self {
         let sauron = matches!(viewer, RouteActor::Sauron(_));
         let messages_url = match viewer {
@@ -132,6 +136,7 @@ impl TableView {
         };
         Self {
             board_id: game.board.id.unwrap_or_default(),
+            version,
             turn: game.board.turn,
             stage: game.board.story.stage(),
             phase: state_label(game.board.state),

@@ -1,12 +1,12 @@
 //! The play page of a board: it opens the screen of a seat the user plays when the
 //! game waits on it, or shows what the game waits for; and the status the game table
-//! polls to follow the turn.
+//! polls to follow the game.
 
 use askama::Template;
 use axum::Json;
-use axum::extract::State;
+use axum::extract::{Query, State};
 use axum::response::{IntoResponse, Response};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::app_state::AppState;
 use crate::game_data::GameData;
@@ -34,11 +34,21 @@ struct WaitingPage {
     finished: bool,
 }
 
-/// Where the table should be, sent to the page when the board changes.
+/// Version of the board, and where the table should be when it changed.
 #[derive(Debug, Serialize)]
 struct Status {
-    /// Screen of a seat the user plays that the game waits on.
+    /// Current version of the board.
+    version: String,
+    /// Screen of a seat the user plays that the game waits on; only computed when the
+    /// version changed.
     url: Option<String>,
+}
+
+/// Query of the status: the version the page shows.
+#[derive(Debug, Deserialize)]
+pub struct StatusQuery {
+    /// Version of the board when the page was displayed.
+    version: Option<String>,
 }
 
 /// `GET /boards/{board_id}/play`: the screen of the user's seat the game waits on, or
@@ -69,20 +79,29 @@ pub async fn play(
     )
 }
 
-/// `GET /boards/{board_id}/status`: JSON `{ "url": … }`, the screen the user should
-/// be on.
+/// `GET /boards/{board_id}/status?version=…`: JSON `{ "version": …, "url": … }`, the
+/// board version and the screen the user should be on.
+///
+/// The game is only loaded when the version differs from the page's, so polling an
+/// unchanged board stays cheap.
 ///
 /// # Errors
 /// Database errors.
-#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id), err(level = "debug"))]
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, version = ?query.version), err(level = "debug"))]
 pub async fn status(
     State(state): State<AppState>,
     access: BoardAccess,
+    Query(query): Query<StatusQuery>,
 ) -> Result<Response, AppError> {
+    let version = state.versions.version(access.board_id);
+    if query.version.as_deref() == Some(version.as_str()) {
+        return Ok(Json(Status { version, url: None }).into_response());
+    }
     let game = read_game(&state, access.board_id).await?;
     let players = board_players(&state, &game).await?;
     let url = my_screen(&game, &players, &access.session);
-    Ok(Json(Status { url }).into_response())
+    tracing::debug!(%version, ?url, "board changed");
+    Ok(Json(Status { version, url }).into_response())
 }
 
 /// `GET /boards/{board_id}/inactive_actor`: kept for old links, same as the play page.

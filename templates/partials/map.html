@@ -6,7 +6,7 @@
   </div>
   <div class="map-scroll" data-map-scroll>
     <div class="map-sizer" data-map-sizer>
-      <div id="map" data-board-id="{{ table.board_id }}"{% if let Some(id) = table.influence_editor %} data-sauron-id="{{ id }}"{% endif %}>
+      <div id="map" data-board-id="{{ table.board_id }}" data-board-version="{{ table.version }}"{% if let Some(id) = table.influence_editor %} data-sauron-id="{{ id }}"{% endif %}>
         <img src="{{ table.map.map_pic }}" id="map-picture" alt="Carte" draggable="false">
         <div id="influence-alert"></div>
 

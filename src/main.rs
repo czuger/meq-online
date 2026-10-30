@@ -4,11 +4,11 @@ use std::error::Error;
 use std::sync::Arc;
 
 use meq_online::app_state::AppState;
+use meq_online::board_versions::BoardVersions;
 use meq_online::config::Config;
 use meq_online::db::pool;
 use meq_online::game_data::GameData;
 use meq_online::logging;
-use meq_online::refresh::RefreshHub;
 use meq_online::web::router::router;
 
 #[tokio::main]
@@ -21,12 +21,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
     tracing::debug!(folder = %config.data_dir.display(), "game data loaded");
     let db = pool::connect(&config.database_url).await?;
     tracing::debug!(url = %config.database_url, "database ready");
-    let refresh = RefreshHub::new();
     let app = router(
         AppState {
             db,
             data,
-            refresh: refresh.clone(),
+            versions: BoardVersions::new(),
         },
         &config.static_dir,
     );
@@ -34,10 +33,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let listener = tokio::net::TcpListener::bind(config.bind).await?;
     tracing::info!(address = %config.bind, "listening");
     axum::serve(listener, app)
-        .with_graceful_shutdown(async move {
-            shutdown_signal().await;
-            refresh.shutdown();
-        })
+        .with_graceful_shutdown(shutdown_signal())
         .await?;
     tracing::info!("stopped");
     Ok(())

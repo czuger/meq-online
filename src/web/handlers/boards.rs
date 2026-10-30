@@ -401,7 +401,7 @@ pub async fn join(
     game_repo::save(&mut tx, &mut game).await?;
     user_repo::add_member(&mut tx, board_id, session.user.id).await?;
     tx.commit().await.map_err(DbError::from)?;
-    state.refresh.board_changed(board_id);
+    state.versions.board_changed(board_id);
     Ok(redirect(
         &format!("/boards/{board_id}/play"),
         Some(Flash::notice("Vous avez rejoint la partie.")),

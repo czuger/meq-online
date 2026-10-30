@@ -62,6 +62,7 @@ pub async fn table(
         &session.user,
         viewer,
         recent,
+        state.versions.version(board_id),
     ))
 }
 

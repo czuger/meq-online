@@ -53,8 +53,9 @@ functions and loops get the same; never log session tokens or e-mails.
   `kind`.
 - **`web/`**: axum router, handlers (one file per area), askama page structs (private to their handler) and views.
   `access.rs` extractors check that the user is a member of the board in the URL (the only ownership rule).
-  `game_tx::change_game` wraps load → change → save → refresh broadcast (only when the game changed, so a screen
-  that saves on display doesn't reload itself). Flash messages use a cookie. State-changing actions are POST forms.
+  `game_tx::change_game` wraps load → change → save → board version raised (only when the game changed, so a
+  screen that saves on display doesn't reload itself). Flash messages use a cookie. State-changing actions are POST
+  forms.
   - **Game table**: every screen of a seat is framed by `views/table_view.rs` (`TableView`: seats, turn steps, map,
     recent log lines, the seat's cards in a tray), attached to the `Layout` by `game_layout.rs` (`hero_layout`,
     `sauron_layout`, `viewer_layout` for screens shared by both sides). `layout.html` wraps the page's `content`
@@ -65,13 +66,15 @@ functions and loops get the same; never log session tokens or e-mails.
     seat or computer seat).
   - **Play page**: `GET /boards/{id}/play` (`handlers/play.rs`) redirects to the screen of the user's seat the game
     waits on (`game_layout::my_screen`, using `route::screen_side`) or shows the waiting page; turn-ending actions
-    and transient states (`route_for`) go there. `GET /boards/{id}/status` returns `{ "url": … }` for
-    `static/js/game.js`.
-- **`refresh.rs`**: a tokio broadcast; `/boards/{id}/events` streams it as server-sent events. On each event the
-  table (`game.js`) asks `/status`, goes to the user's screen when it changed, otherwise reloads, or shows an
-  "Actualiser" banner when the player has started filling the screen.
+    and transient states (`route_for`) go there. `GET /boards/{id}/status?version=…` returns
+    `{ "version": …, "url": … }` for `static/js/game.js` (the game is only loaded when the version differs).
+- **`board_versions.rs`**: an in-memory version per board (`AppState::versions`, opaque text, new on every
+  server start). The table renders it as `data-board-version` and `game.js` polls `/status` every 2 s (not while
+  the tab is hidden); when it changed, it goes to the user's screen, otherwise reloads, or shows an "Actualiser"
+  banner when the player has started filling the screen. No server-sent events: one long-lived connection per tab
+  exhausted the browser's 6 HTTP/1.1 connections per host and froze the interface with several tabs open.
 - `templates/` (askama, French text), `static/` (pictures, `css/app.css` (own stylesheet, no Bootstrap), vanilla
-  JS: `app.js` card selection, `game.js` map fit/zoom/drag, influence clicks and turn following; served under
+  JS: `app.js` card selection, `game.js` map fit/zoom/drag, influence clicks and polling the board; served under
   `/static`). The map picture is drawn at its natural size (2934 × 2017) and scaled with a CSS transform.
 
 Notable behavior kept from the original: new games seat four computer-controlled heroes (beravor, eleanor, thalin,

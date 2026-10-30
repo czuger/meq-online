@@ -10,10 +10,10 @@ use axum::Router;
 use axum::body::{Body, to_bytes};
 use axum::http::{Method, Request, StatusCode, header};
 use meq_online::app_state::AppState;
+use meq_online::board_versions::BoardVersions;
 use meq_online::db::{game_repo, pool};
 use meq_online::game_data::GameData;
 use meq_online::model::game::Game;
-use meq_online::refresh::RefreshHub;
 use meq_online::web::router::router;
 use tower::ServiceExt;
 
@@ -38,7 +38,7 @@ impl TestApp {
         let state = AppState {
             db: pool::connect("sqlite::memory:").await.unwrap(),
             data: Arc::new(GameData::load(&root.join("data")).unwrap()),
-            refresh: RefreshHub::new(),
+            versions: BoardVersions::new(),
         };
         Self {
             router: router(state.clone(), &root.join("static")),

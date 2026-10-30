@@ -93,7 +93,7 @@ async fn play_page_follows_the_turn() {
         waiting.body
     );
     let status = app.get("/boards/1/status", &player).await;
-    assert_eq!(status.body, "{\"url\":null}");
+    assert!(status.body.ends_with("\"url\":null}"), "{}", status.body);
     // The waiting page is framed by the hero's table.
     assert!(
         waiting.body.contains("Derniers événements"),
@@ -652,20 +652,30 @@ async fn flash_message_shows_once() {
 }
 
 #[tokio::test]
-async fn events_stream_is_server_sent_events() {
+async fn status_reports_the_board_version() {
     let app = TestApp::new().await;
     let me = app.login("legolas").await;
     let game = app.create_board(&me).await;
     let board = game.board.id.unwrap();
-    // Shutting the hub down first lets the stream end, so the body can be read.
-    let router = app.router.clone();
-    let request = axum::http::Request::get(format!("/boards/{board}/events"))
-        .header("cookie", &me)
-        .body(axum::body::Body::empty())
-        .unwrap();
-    let response = tower::ServiceExt::oneshot(router, request).await.unwrap();
-    assert_eq!(response.status(), StatusCode::OK);
-    assert_eq!(response.headers()["content-type"], "text/event-stream");
+    let status = |query: String| {
+        let app = &app;
+        let me = &me;
+        async move {
+            let answer = app.get(&format!("/boards/{board}/status{query}"), me).await;
+            assert_eq!(answer.status, StatusCode::OK);
+            serde_json::from_str::<serde_json::Value>(&answer.body).unwrap()
+        }
+    };
+
+    let first = status(String::new()).await;
+    let version = first["version"].as_str().unwrap().to_owned();
+    let same = status(format!("?version={version}")).await;
+    assert_eq!(same["version"], version.as_str());
+    assert!(same["url"].is_null(), "{same}");
+
+    app.state.versions.board_changed(board);
+    let changed = status(format!("?version={version}")).await;
+    assert_ne!(changed["version"], version.as_str());
 }
 
 // § 5.6: an event asking Sauron to choose waits on the choice screen until answered.

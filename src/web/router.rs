@@ -11,8 +11,8 @@ use tracing::Level;
 
 use crate::app_state::AppState;
 use crate::web::handlers::{
-    boards, characters, choices, combats, defeat, events, explorations, heroes, logs, maps,
-    messages, play, plot_cards, sauron, sauron_actions, sauron_mobs, sessions, shadow_cards,
+    boards, characters, choices, combats, defeat, explorations, heroes, logs, maps, messages, play,
+    plot_cards, sauron, sauron_actions, sauron_mobs, sessions, shadow_cards,
 };
 
 /// Builds the application router.
@@ -75,7 +75,6 @@ fn board_routes() -> Router<AppState> {
         .route("/boards/{board_id}/status", get(play::status))
         .route("/boards/{board_id}/story_screen", get(boards::story_screen))
         .route("/boards/{board_id}/logs", get(logs::show))
-        .route("/boards/{board_id}/events", get(events::stream))
         .route(
             "/boards/{board_id}/choices/choice_screen",
             get(choices::choice_screen),

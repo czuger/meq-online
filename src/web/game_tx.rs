@@ -21,10 +21,10 @@ pub async fn read_game(state: &AppState, board_id: i64) -> Result<Game, AppError
     Ok(game)
 }
 
-/// Loads a game, applies `change`, saves it and tells open pages when it changed.
+/// Loads a game, applies `change`, saves it and raises the board version when it changed.
 ///
-/// Nothing is saved when `change` fails. Pages are not told about a change that left
-/// the game as it was, so a screen that saves on display doesn't reload itself forever.
+/// Nothing is saved when `change` fails. A change that left the game as it was keeps the
+/// version, so a screen that saves on display doesn't reload itself forever.
 ///
 /// # Returns
 /// The game after the change, and the value returned by `change`.
@@ -62,7 +62,7 @@ pub async fn change_game<T>(
     tx.commit().await.map_err(DbError::from)?;
     tracing::debug!("change committed");
     if changed {
-        state.refresh.board_changed(board_id);
+        state.versions.board_changed(board_id);
     }
     Ok((game, value))
 }
