@@ -9,6 +9,7 @@ use crate::app_state::AppState;
 use crate::db::{DbError, user_repo};
 use crate::engine::EngineError;
 use crate::engine::events::event_step::event_pic_path;
+use crate::engine::mobs::RINGWRAITHS;
 use crate::engine::route::{RouteActor, route_for};
 use crate::game_data::GameData;
 use crate::game_data::shadow::ShadowTiming;
@@ -194,11 +195,23 @@ fn choice_context(source: &ChoiceSource, game: &Game, data: &GameData) -> Option
             "Le héros subit {amount} dégâts : choisissez les cartes de la main à perdre, \
              le reste est pris sur la réserve de vie."
         ),
+        ChoiceSource::Champion => champion_context(game)?,
         ChoiceSource::Wretched { .. } => "Carte de corruption Misérable : le tour du héros \
             se termine. Sauron peut l'envoyer au refuge le plus proche."
             .to_owned(),
     };
     Some(text)
+}
+
+/// French text of the champion choice, with the Ringwraiths the champion will fight.
+fn champion_context(game: &Game) -> Option<String> {
+    let ringwraiths = game.mobs.iter().find(|m| m.code == RINGWRAITHS)?;
+    Some(format!(
+        "Finale : chaque héros a mélangé ses cartes et pioché une nouvelle main. Les héros \
+         choisissent leur champion, qui affronte les Nazgûl ({} points de vie, \
+         endurance {}). S'il les vainc, les héros gagnent ; sinon, Sauron gagne.",
+        ringwraiths.life, ringwraiths.fortitude
+    ))
 }
 
 fn option_view(option: &ChoiceOption, game: &Game, data: &GameData, sauron: bool) -> OptionView {

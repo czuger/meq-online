@@ -239,8 +239,8 @@ pub async fn next_step(
     access: HeroAccess,
 ) -> Result<Response, AppError> {
     let hero_id = access.hero_id;
-    let (_, end) = change_game(&state, access.board_id, |game, data, _| {
-        game.finish_heroes_turn(hero_id, data)
+    let (_, end) = change_game(&state, access.board_id, |game, data, rng| {
+        game.finish_heroes_turn(hero_id, data, rng)
     })
     .await?;
     Ok(match end {

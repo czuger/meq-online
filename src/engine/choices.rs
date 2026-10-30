@@ -166,6 +166,7 @@ impl Game {
             ChoiceSource::Wretched { hero_id } => {
                 self.apply_wretched_choice(hero_id, option, targets, data)?;
             }
+            ChoiceSource::Champion => self.apply_champion(targets, data, rng)?,
             ChoiceSource::ShadowWindow { .. }
             | ChoiceSource::Shadow { .. }
             | ChoiceSource::PlotLocation { .. } => {
@@ -276,7 +277,7 @@ impl Game {
             }
             Resume::EndTurn => {
                 let hero_id = self.current_hero_id()?;
-                self.finish_heroes_turn(hero_id, data).map(|_| ())
+                self.finish_heroes_turn(hero_id, data, rng).map(|_| ())
             }
             Resume::Ambush => {
                 self.activate_current_hero()?;

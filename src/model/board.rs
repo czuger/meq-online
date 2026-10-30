@@ -89,8 +89,6 @@ pub enum Winner {
     Heroes,
     /// Sauron won.
     Sauron,
-    /// Both reached their goal on the same turn.
-    Draw,
 }
 
 /// A game board.

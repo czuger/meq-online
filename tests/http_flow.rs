@@ -645,3 +645,74 @@ async fn event_choice_flow() {
     assert!(game.board.pending_choice.is_none());
     assert_eq!(game.board.state, BoardState::EditSauronSauronActions);
 }
+
+#[tokio::test]
+async fn finale_flow() {
+    let app = TestApp::new().await;
+    let me = app.login("aragorn").await;
+    let mut game = app.create_board(&me).await;
+    let board = game.board.id.unwrap();
+    let hero = game.heroes[0].id.unwrap();
+
+    // The last hero ends the round; the Story step brings the heroes to the Finale
+    // space. No mission is fulfilled: "His Dark Throne" and "The Spear of the West".
+    game.board.state = BoardState::HeroExploration;
+    game.board.current_hero_id = Some(hero);
+    for other in game.heroes.iter_mut().skip(1) {
+        other.turn_finished = true;
+    }
+    game.board.story.heroes = 16;
+    game.board.plots.clear();
+    game.board.sauron_objective = Some(0);
+    game.board.heroes_objective = Some(0);
+    app.save(&mut game).await;
+
+    let end = app
+        .get(&format!("/heroes/{hero}/exploration/next_step"), &me)
+        .await;
+    assert_eq!(end.location.as_deref(), Some("/boards"));
+    let game = app.game(board).await;
+    assert_eq!(game.board.state, BoardState::ChoiceScreenBoardChoices);
+    let screen = app
+        .get(&format!("/boards/{board}/choices/choice_screen"), &me)
+        .await;
+    assert!(
+        screen.body.contains("Choisir le champion"),
+        "{}",
+        screen.body
+    );
+    let story = app.get(&format!("/boards/{board}/story_screen"), &me).await;
+    // Sauron's user sees his own Mission only while the game goes on.
+    assert!(story.body.contains("sauron_0.png"), "{}", story.body);
+    assert!(!story.body.contains("heroes_0.png"), "{}", story.body);
+
+    let answer = app
+        .post(
+            &format!("/boards/{board}/choices/choose"),
+            &me,
+            &format!("option=champion&targets=champion%7Chero%3A{hero}"),
+        )
+        .await;
+    assert_eq!(
+        answer.location.as_deref(),
+        Some(format!("/boards/{board}/combats/combat_setup_screen").as_str())
+    );
+    let mut game = app.game(board).await;
+    assert_eq!(game.combat.as_ref().unwrap().hero_id, hero);
+
+    // The champion defeats the Ringwraiths.
+    game.board.state = BoardState::PlayCombatCardScreenBoardCombats;
+    let mob = game.combat.as_ref().unwrap().mob_id;
+    game.mobs
+        .iter_mut()
+        .filter(|m| m.id == Some(mob))
+        .for_each(|m| m.life = 0);
+    app.save(&mut game).await;
+    let end = app
+        .get(&format!("/boards/{board}/combats/terminate"), &me)
+        .await;
+    assert_eq!(end.location.as_deref(), Some("/boards"));
+    let story = app.get(&format!("/boards/{board}/story_screen"), &me).await;
+    assert!(story.body.contains("Victoire des héros"), "{}", story.body);
+    assert!(story.body.contains("heroes_0.png"), "{}", story.body);
+}

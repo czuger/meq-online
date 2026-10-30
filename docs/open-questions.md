@@ -122,6 +122,23 @@ Phase 6. "A Broken Line of Kings" also forbids drawing Encounter cards on its Ha
 | j | Wretched drawn from a combat start card | The combat is dropped and the turn ends; drawn during Sauron's turn ("The Lidless Eye") the card only goes back (Q7). | `shadows/effects.rs` `shadow_corruption` |
 | k | Defeat by a combat start card's damage | The combat is dropped before the defeat. | `shadows/effects.rs` `shadow_damage` |
 
+### Q29. Missions and Finale: interpretations made in Phase 7 — To confirm
+
+| # | Topic | What the engine does | Source |
+|---|---|---|---|
+| a | "The Spear of the West" | Never fulfilled: quests can't be completed yet (Q27). | `missions.rs` |
+| b | "Against the Shadow": monster tokens in play | Blank tokens on the map count; they are monster tokens until revealed. | `missions.rs` |
+| c | "stage III" of one marker | Space 13 or more, the same split as the current stage (6 spaces per stage). | `story.rs` `stage_of` |
+| d | When the Finale is checked | Only at the end of the Story step, after the stage minions entered (§ 5.3); markers moved by a defeat, a rest or an event between two Story steps wait for it. | `turn.rs` |
+| e | Dominance used by step 4 | Recomputed after step 2 advanced the markers, as in the rulebook example. | `finale.rs` |
+| f | Ringwraiths adjustment | Health never below 1, fortitude never below 0, however large the heroes' lead. | `finale.rs` |
+| g | Ringwraiths not in play at the Finale | They come back on Minas Morgul, healed; where the fight happens doesn't matter. | `finale.rs` |
+| h | Shadow cards during the Finale | None: the Finale is no player's turn, so the combat start window doesn't open. | `finale.rs` `apply_champion` |
+| i | Champion choice with one hero | Still asked (it is also the moment the hero has seen his new hand); any hero player answers. | `finale.rs` |
+| j | Preparation draw | The Distraught hand limit (7 cards) still applies. | `finale.rs` `prepare_finale` |
+| k | Mission secrecy | Sauron's user sees Sauron's Mission; every other member sees the heroes'. Computer seats are played by members, so a Sauron player who also plays them doesn't see the heroes' Mission until the end. | `web/handlers/boards.rs` |
+| l | French Mission names | Translated for the game (« Sang noble », « Le Secret d'Isildur »…), not taken from the French edition. | `web/views/mission_label.rs` |
+
 ## 5. Project questions
 
 ### Q26. `rules-gaps.md` is out of date — Open
@@ -135,7 +152,8 @@ It describes commit b2a6934, before Phases 1–5, and still lists as missing mos
 ### Q27. Quests beyond the Starting and Advanced quests — Open
 
 Only the 15 Starting and Advanced quest cards are readable (`static/images/hero_cards/quests/standard`). Quests found
-in encounters wait on Q4, and some Starting quests refer to the Encounter step.
+in encounters wait on Q4, and some Starting quests refer to the Encounter step. The heroes' Mission "The Spear of
+the West" (each hero completed both quests) can't be fulfilled until then (Q29 a).
 
 - **Decision needed**: implement the Starting and Advanced quests now with their Encounter-related setup steps left
   out (logged as such), or wait for the Encounter cards.

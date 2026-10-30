@@ -80,6 +80,7 @@ fn shadow_label(code: &str) -> &'static str {
         }
         "corrupt_hero" => "Donner 1 carte de corruption à ce héros",
         "plot_location" => "Choisir le lieu affecté par l'intrigue",
+        "champion" => "Choisir le champion",
         other => reward_label(other),
     }
 }

@@ -237,7 +237,7 @@ impl Game {
         if self.open_shadow_window(window, Resume::EndTurn, data)? {
             return Ok(TurnEnd::Boards);
         }
-        self.finish_heroes_turn(hero_id, data)
+        self.finish_heroes_turn(hero_id, data, rng)
     }
 }
 

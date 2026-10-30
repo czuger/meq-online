@@ -104,6 +104,10 @@ Rule deviations:
 - Phase 6 (session 4, 2026-10-30): Shadow cards and the plots choosing their location. Schema changes
   (`boards.turn_effects`, `combats.modifiers`): an existing database must be recreated.
 
+- Phase 7 (session 5, 2026-10-30): Mission cards and the Finale. No schema change; `Winner::Draw` is gone, so a
+  finished board stored as a draw no longer loads. "The Spear of the West" waits on quests (Q27); interpretations in
+  Q29.
+
 ## Phase 4 — Events
 
 - [x] Use the stage II and III decks from `data/events.yaml`; the current stage picks the deck (§ 5.3).
@@ -153,10 +157,14 @@ Rule deviations:
 
 ## Phase 7 — Finale and missions
 
-- [ ] `Mission` enum (5 Sauron + 5 heroes, table in § 9) with evaluation functions.
-- [ ] Replace the immediate winner (`story.rs` `check_game_end`) by the Finale: immediate victory check, marker
-  advance for fulfilled missions, preparation, Ringwraiths adjustment by dominance, champion choice, final combat,
-  winner (§ 9).
+- [x] `SauronMission` and `HeroesMission` (`model/mission.rs`, numbered as their pictures) evaluated in
+  `engine/missions.rs`. "The Spear of the West" is never fulfilled until quests can be completed (Q27).
+- [x] The Finale replaces the immediate winner (`engine/finale.rs`): triggered at the end of the Story step, after
+  the stage minions enter; immediate victory check, marker advance for fulfilled missions, preparation (Ringwraiths
+  healed or brought back, heroes reshuffle and draw), Ringwraiths adjustment by dominance, champion choice
+  (`Champion` choice, any hero player answers), final combat (`CombatOrigin::Finale`), winner (§ 9).
+- [x] Each side sees its own Mission on the story screen, both once the game is over; French log lines for the
+  Finale.
 
 ## Phase 8 — Optional rules and polish
 

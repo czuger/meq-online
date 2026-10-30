@@ -136,6 +136,8 @@ pub enum ChoiceSource {
         #[serde(default)]
         picked: Vec<String>,
     },
+    /// The heroes pick the champion who fights the Ringwraiths in the Finale (§ 9).
+    Champion,
     /// Sauron picks the affected location of the Plot card he plays (§ 5.4).
     PlotLocation {
         /// The Plot card.

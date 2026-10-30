@@ -18,7 +18,7 @@ use crate::model::mob::{Mob, NOTHING_CODE};
 pub const RINGWRAITHS: &str = "ringwraiths";
 
 /// Where the Ringwraiths come back.
-const RINGWRAITHS_HOME: &str = "minas_morgul";
+pub(crate) const RINGWRAITHS_HOME: &str = "minas_morgul";
 
 impl Game {
     /// Puts a new mob on the map.

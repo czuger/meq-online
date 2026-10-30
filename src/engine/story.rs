@@ -1,17 +1,22 @@
-//! Story track: markers, stages and the end of the game.
+//! Story track: markers, stages and dominance.
 
 use serde_json::json;
 
-use crate::engine::board_state::BoardEvent;
 use crate::engine::engine_error::EngineError;
 use crate::game_data::GameData;
 use crate::game_data::plot::StoryType;
 use crate::model::actor_ref::ActorRef;
-use crate::model::board::{StoryMarkers, Winner};
+use crate::model::board::StoryMarkers;
 use crate::model::game::Game;
 
-/// Space of the story track where a side wins.
-const FINAL_SPACE: i32 = 18;
+/// The Finale space, at the end of the story track.
+pub const FINAL_SPACE: i32 = 18;
+
+/// The Shadow Falls space: the Finale also begins when Sauron's three markers reached it.
+const SHADOW_FALLS_SPACE: i32 = 10;
+
+/// Spaces in each stage of the story track.
+const STAGE_SPACES: i32 = 6;
 
 /// Spaces the heroes' marker advances at each Story step (§ 5.3).
 const HEROES_STORY_ADVANCE: i32 = 2;
@@ -30,11 +35,11 @@ pub enum Dominance {
 /// Distances to the end of the game.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct StoryData {
-    /// Spaces left before the heroes win.
+    /// Spaces left before the heroes' marker reaches the Finale space.
     pub heroes_to_final: i32,
-    /// Spaces left before Sauron's best marker wins.
+    /// Spaces left before Sauron's closest marker reaches the Finale space.
     pub sauron_to_final: i32,
-    /// Points left before Shadowfall.
+    /// Spaces Sauron's markers still need, in all, to reach The Shadow Falls.
     pub sauron_to_shadowfall: i32,
     /// Who is ahead.
     pub dominance: Dominance,
@@ -48,15 +53,26 @@ impl StoryMarkers {
             .max(self.ring)
             .max(self.conquest)
             .max(self.corruption);
-        (highest - 1).max(0) / 6 + 1
+        stage_of(highest)
+    }
+
+    /// Position of one of Sauron's markers.
+    pub fn sauron_marker(&self, track: StoryType) -> i32 {
+        match track {
+            StoryType::Ring => self.ring,
+            StoryType::Conquest => self.conquest,
+            StoryType::Corruption => self.corruption,
+        }
     }
 
     /// Distances to the end of the game.
     pub fn data(&self) -> StoryData {
         let heroes_to_final = FINAL_SPACE - self.heroes;
         let sauron_to_final = FINAL_SPACE - self.ring.max(self.conquest).max(self.corruption);
-        let shadowfall_points = self.ring.min(10) + self.conquest.min(10) + self.corruption.min(10);
-        let sauron_to_shadowfall = 30 - shadowfall_points;
+        let sauron_to_shadowfall = [self.ring, self.conquest, self.corruption]
+            .into_iter()
+            .map(|position| (SHADOW_FALLS_SPACE - position).max(0))
+            .sum();
         let sauron_best = sauron_to_final.min(sauron_to_shadowfall);
         let dominance = match heroes_to_final.cmp(&sauron_best) {
             std::cmp::Ordering::Less => Dominance::Heroes,
@@ -114,7 +130,7 @@ impl Game {
     /// plot in play advances its track.
     ///
     /// # Errors
-    /// Fails when a plot in play is unknown or the game can't be finished now.
+    /// Fails when a plot in play is unknown.
     pub fn advance_stories_markers(&mut self, data: &GameData) -> Result<(), EngineError> {
         // "Grievous Loss" holds the green marker back.
         let malus = std::mem::take(&mut self.board.turn_effects.heroes_story_malus);
@@ -139,27 +155,13 @@ impl Game {
                 ],
             );
         }
-        self.advance_current_event_story(data)?;
-        self.check_game_end()
+        self.advance_current_event_story(data)
     }
+}
 
-    /// Ends the game when a side reached its goal.
-    ///
-    /// # Errors
-    /// [`EngineError::InvalidTransition`] when the game ends outside the end of a hero turn.
-    pub fn check_game_end(&mut self) -> Result<(), EngineError> {
-        let story = self.board.story.data();
-        let heroes_won = story.heroes_to_final <= 0;
-        let sauron_won = story.sauron_to_final <= 0 || story.sauron_to_shadowfall <= 0;
-        let winner = match (heroes_won, sauron_won) {
-            (true, true) => Winner::Draw,
-            (false, true) => Winner::Sauron,
-            (true, false) => Winner::Heroes,
-            (false, false) => return Ok(()),
-        };
-        self.board.winner = Some(winner);
-        self.fire(BoardEvent::FinishGame)
-    }
+/// Stage (1 to 3) of a position on the story track.
+pub fn stage_of(position: i32) -> i32 {
+    ((position - 1).max(0) / STAGE_SPACES + 1).min(3)
 }
 
 #[cfg(test)]

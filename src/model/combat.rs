@@ -27,6 +27,8 @@ pub enum CombatOrigin {
         /// The Shadow card.
         card: ShadowCode,
     },
+    /// The champion of the heroes against the Ringwraiths: it decides the game (§ 9).
+    Finale,
 }
 
 /// Changes to the hero's attributes until the end of the combat (Shadow cards).

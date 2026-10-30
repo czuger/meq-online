@@ -108,8 +108,8 @@ eometh) and make the creator Sauron; board members play the computer seats. Shad
 
 The engine is being brought to the official rules following `docs/finalization-plan.md` (rules in `docs/rules.md`,
 gap analysis in `docs/rules-gaps.md`, open questions in `docs/open-questions.md`: add new ones there). D1 and D3
-are decided: follow the official rules, the engine enforces the action track. Phases 1–5 are committed (1765f01);
-Phase 6 is not.
+are decided: follow the official rules, the engine enforces the action track. Phases 1–6 are committed (66951be);
+Phase 7 is not.
 
 **Done (Phases 1–3, green when finished):** every Phase 1, 2 and 3 item of the plan. Highlights: defeat screens
 (`engine/defeat.rs`, `HeroDefeatScreen`, `SauronHavenScreen`); game creation with 1–3 chosen heroes, open or computer
@@ -154,6 +154,14 @@ points `SauronActions`, `Ambush`, `TravelThreats`, `CombatSetup`, `EventStep`; `
 Rest step. The 5 plots without a printed location are back: Sauron picks it (`engine/plot_locations.rs`,
 `PlotLocation` choice); always go through `Game::plot_location`/`plot_at`, not `Plot::affect`. Greedy is enforced.
 Schema changed again: an existing database must be recreated. Interpretations to confirm: Q28.
+
+**Phase 7 (missions and Finale), done, green:** `model/mission.rs` (`SauronMission`, `HeroesMission`, card number
+= picture number, stored as `boards.sauron_objective`/`heroes_objective`), evaluated in `engine/missions.rs` ("The
+Spear of the West" waits on quests). `engine/finale.rs` replaces `check_game_end`: `finale_triggered` is checked at
+the end of the Story step after the stage minions (`turn.rs`), then immediate victory, marker advance, preparation,
+Ringwraiths adjustment, the `Champion` choice (`Chooser::Heroes`) and the final combat (`CombatOrigin::Finale`,
+`CombatEnd::GameOver`; no Shadow window, no defeat steps). `finish_heroes_turn` now takes the rng. `Winner::Draw` is
+gone. The story screen shows each side its Mission (`web/views/mission_label.rs`). Interpretations to confirm: Q29.
 
 **Next:** Phase 5 leftovers: quests (text readable on `static/images/hero_cards/quests/standard`: Starting and
 Advanced quests), trading between heroes, Argalad's peek limited to one adjacent location. Encounter step and Items

@@ -15,5 +15,18 @@
   <div class="row my-4">
     <div class="col-md-3"><button class="btn btn-primary btn-block" type="button" disabled>Étape de l'histoire <span class="badge badge-light">{{ stage }}</span></button></div>
   </div>
+  {% if let Some(winner) = winner %}
+  <div class="alert alert-success">{{ winner }}</div>
+  {% endif %}
+  {% if !missions.is_empty() %}
+  <div class="row my-4">
+    {% for mission in missions %}
+    <div class="col-md-4">
+      <h5>{{ mission.side }} : {{ mission.name }}</h5>
+      <img class="img-fluid" src="{{ mission.pic }}" alt="{{ mission.name }}">
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
 </div>
 {% endblock %}

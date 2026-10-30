@@ -4,6 +4,7 @@ use serde_json::Value;
 
 use crate::game_data::GameData;
 use crate::model::log_entry::LogEntry;
+use crate::web::views::mission_label::{heroes_mission_name, sauron_mission_name};
 use crate::web::views::pictures::image;
 
 /// Value of a log parameter as text; hero codes are replaced by hero names.
@@ -93,6 +94,45 @@ pub fn log_text(entry: &LogEntry, data: &GameData) -> String {
         ),
         "exploration.dark_path" => "Choisit la voie des Ténèbres et gagne une faveur.".to_owned(),
         "exploration.plot.remove" => format!("Retire une intrigue à {}.", p("location_name")),
+        _ => finale_log_text(entry, data),
+    }
+}
+
+fn finale_log_text(entry: &LogEntry, data: &GameData) -> String {
+    let p = |name: &str| param(entry, name, data);
+    let mission = |name: Option<&str>| {
+        let outcome = match entry.params.get("fulfilled").and_then(Value::as_bool) {
+            Some(true) => "remplie",
+            _ => "non remplie",
+        };
+        name.map_or_else(
+            || "Aucune mission.".to_owned(),
+            |name| format!("« {name} » : {outcome}."),
+        )
+    };
+    let code = entry.params.get("mission").cloned().unwrap_or(Value::Null);
+    match entry.action.as_str() {
+        "finale.start" => "La Finale commence.".to_owned(),
+        "finale.sauron_mission" => {
+            let name = serde_json::from_value(code).ok().map(sauron_mission_name);
+            format!("Sauron révèle sa mission {}", mission(name))
+        }
+        "finale.heroes_mission" => {
+            let name = serde_json::from_value(code).ok().map(heroes_mission_name);
+            format!("Les héros révèlent leur mission {}", mission(name))
+        }
+        "finale.advance" if p("side") == "sauron" => {
+            "Mission remplie : chaque marqueur de Sauron avance d'une case.".to_owned()
+        }
+        "finale.advance" => "Mission remplie : le marqueur des héros avance d'une case.".to_owned(),
+        "finale.ringwraiths" => format!(
+            "Les Nazgûl attendent le champion avec {} points de vie et une endurance de {}.",
+            p("life"),
+            p("fortitude")
+        ),
+        "finale.champion" => format!("{} est le champion des héros face aux Nazgûl.", p("hero")),
+        "finale.winner" if p("winner") == "heroes" => "Les héros gagnent la partie !".to_owned(),
+        "finale.winner" => "Sauron gagne la partie !".to_owned(),
         _ => shadow_log_text(entry, data),
     }
 }

@@ -11,6 +11,7 @@ use serde::Deserialize;
 use crate::app_state::AppState;
 use crate::db::{DbError, board_repo, game_repo, user_repo};
 use crate::engine::board_state::BoardState;
+use crate::engine::missions::objective_pic_path;
 use crate::engine::route::{RouteActor, route_for};
 use crate::engine::setup::{HeroSeat, MAX_HEROES, new_game};
 use crate::engine::story::Dominance;
@@ -24,6 +25,8 @@ use crate::web::game_tx::read_game;
 use crate::web::page::render;
 use crate::web::session::Session;
 use crate::web::views::layout::Layout;
+use crate::web::views::mission_label::{heroes_mission_name, sauron_mission_name};
+use crate::web::views::pictures::image;
 use crate::web::views::state_label::state_label;
 
 /// Hero columns of the board list, in display order.
@@ -85,6 +88,13 @@ struct Counter {
     value: String,
 }
 
+/// A Mission card shown to its side.
+struct MissionView {
+    side: &'static str,
+    name: &'static str,
+    pic: String,
+}
+
 #[derive(Template)]
 #[template(path = "boards_story.html")]
 struct StoryPage {
@@ -92,6 +102,8 @@ struct StoryPage {
     markers: Vec<Counter>,
     distances: Vec<Counter>,
     stage: i32,
+    winner: Option<&'static str>,
+    missions: Vec<MissionView>,
 }
 
 /// Query of the board list.
@@ -165,12 +177,7 @@ fn board_row(game: &Game, users: &BTreeMap<i64, User>, me: &User, state: &AppSta
             .iter()
             .map(|h| format!("{} ({})", hero_name(state, &h.code), user_name(h.user_id))),
     );
-    let status = match game.board.winner {
-        Some(Winner::Heroes) => "Victoire des héros",
-        Some(Winner::Sauron) => "Victoire de Sauron",
-        Some(Winner::Draw) => "Égalité",
-        None => "En cours",
-    };
+    let status = winner_label(game).unwrap_or("En cours");
     BoardRow {
         id: game.board.id.unwrap_or_default(),
         players: players.join(", "),
@@ -180,6 +187,42 @@ fn board_row(game: &Game, users: &BTreeMap<i64, User>, me: &User, state: &AppSta
         sauron: sauron_cell(game, me),
         heroes: hero_cells(game, users, me, state),
     }
+}
+
+fn winner_label(game: &Game) -> Option<&'static str> {
+    game.board.winner.map(|winner| match winner {
+        Winner::Heroes => "Victoire des héros",
+        Winner::Sauron => "Victoire de Sauron",
+    })
+}
+
+/// Missions the user may see: each side sees its own, everyone sees both once the
+/// game is over (§ 3, § 9).
+fn visible_missions(game: &Game, user_id: i64) -> Vec<MissionView> {
+    let over = game.board.winner.is_some();
+    let sauron = over || game.sauron.user_id == user_id;
+    let heroes =
+        over || game.sauron.user_id != user_id || game.heroes.iter().any(|h| h.user_id == user_id);
+    let mut missions = Vec::new();
+    if let (true, Some(card), Some(mission)) =
+        (sauron, game.board.sauron_objective, game.sauron_mission())
+    {
+        missions.push(MissionView {
+            side: "Mission de Sauron",
+            name: sauron_mission_name(mission),
+            pic: image(&objective_pic_path("sauron", card)),
+        });
+    }
+    if let (true, Some(card), Some(mission)) =
+        (heroes, game.board.heroes_objective, game.heroes_mission())
+    {
+        missions.push(MissionView {
+            side: "Mission des héros",
+            name: heroes_mission_name(mission),
+            pic: image(&objective_pic_path("heroes", card)),
+        });
+    }
+    missions
 }
 
 fn hero_name(state: &AppState, code: &str) -> String {
@@ -414,6 +457,8 @@ pub async fn story_screen(
             },
         ],
         stage: story.stage(),
+        winner: winner_label(&game),
+        missions: visible_missions(&game, access.session.user.id),
     };
     render(&page, &page.layout)
 }

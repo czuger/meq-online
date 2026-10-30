@@ -320,7 +320,10 @@ impl BoardEvent {
                 S::FinishHeroTurn,
             ),
             Self::NextToFinishSauronTurn => (&[S::EditSauronSauronActions], S::FinishSauronTurn),
-            Self::FinishGame => (&[S::FinishHeroTurn], S::Finished),
+            Self::FinishGame => (
+                &[S::FinishHeroTurn, S::PlayCombatCardScreenBoardCombats],
+                S::Finished,
+            ),
             Self::NextToChoiceScreenBoardChoices => (
                 &[
                     S::PlayScreenSauronPlotCards,
@@ -334,6 +337,7 @@ impl BoardEvent {
                     S::EditSauronSauronActions,
                     S::HeroDefeatScreen,
                     S::SauronHavenScreen,
+                    S::FinishHeroTurn,
                 ],
                 S::ChoiceScreenBoardChoices,
             ),

@@ -449,6 +449,6 @@ pub async fn terminate(
         CombatEnd::TurnEnded(TurnEnd::HeroDrawCards) => {
             redirect(&format!("/heroes/{hero_id}/draw_cards_screen"), None)
         }
-        CombatEnd::TurnEnded(TurnEnd::Boards) => redirect("/boards", None),
+        CombatEnd::TurnEnded(TurnEnd::Boards) | CombatEnd::GameOver => redirect("/boards", None),
     })
 }

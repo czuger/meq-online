@@ -8,6 +8,7 @@ pub mod game;
 pub mod hero;
 pub mod log_entry;
 pub mod message;
+pub mod mission;
 pub mod mob;
 pub mod played_card;
 pub mod sauron;

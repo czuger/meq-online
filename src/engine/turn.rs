@@ -1,5 +1,6 @@
 //! Hero order, end of turns and the switch to Sauron.
 
+use rand::rngs::StdRng;
 use serde_json::json;
 
 use crate::engine::board_state::BoardEvent;
@@ -45,7 +46,7 @@ impl Game {
         Ok(())
     }
 
-    /// Ends the turn of `hero_id`: next hero, second turn, or Sauron's turn.
+    /// Ends the turn of `hero_id`: next hero, second turn, Sauron's turn or the Finale.
     ///
     /// # Errors
     /// Fails when the hero is unknown or a transition isn't allowed now.
@@ -53,15 +54,16 @@ impl Game {
         &mut self,
         hero_id: i64,
         data: &GameData,
+        rng: &mut StdRng,
     ) -> Result<TurnEnd, EngineError> {
         self.hero_end_turn_operations(hero_id)?;
         if self.heroes.len() > 1 {
             if !self.switch_to_next_hero()? {
-                self.actions_before_switch_to_sauron(data)?;
+                self.actions_before_switch_to_sauron(data, rng)?;
             }
             return Ok(TurnEnd::Boards);
         }
-        if self.start_hero_second_turn(hero_id, data)? {
+        if self.start_hero_second_turn(hero_id, data, rng)? {
             Ok(TurnEnd::HeroDrawCards)
         } else {
             Ok(TurnEnd::Boards)
@@ -86,11 +88,12 @@ impl Game {
         &mut self,
         hero_id: i64,
         data: &GameData,
+        rng: &mut StdRng,
     ) -> Result<bool, EngineError> {
         let hero = self.hero_mut(hero_id)?;
         if hero.turn == 2 {
             hero.turn = 1;
-            self.actions_before_switch_to_sauron(data)?;
+            self.actions_before_switch_to_sauron(data, rng)?;
             return Ok(false);
         }
         hero.turn = 2;
@@ -125,8 +128,13 @@ impl Game {
         Ok(true)
     }
 
-    /// End of the heroes' round: rally, story advance, stage spawns, then Sauron plays.
-    fn actions_before_switch_to_sauron(&mut self, data: &GameData) -> Result<(), EngineError> {
+    /// End of the heroes' round: rally, story advance, stage spawns, then Sauron plays,
+    /// unless the Finale begins (§ 9).
+    fn actions_before_switch_to_sauron(
+        &mut self,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<(), EngineError> {
         self.rally_step(data);
         self.fire(BoardEvent::NextToFinishHeroTurn)?;
 
@@ -141,12 +149,13 @@ impl Game {
             }
         }
 
-        if self.board.winner.is_none() {
-            self.board.turn_effects.start_turn();
-            self.fire(BoardEvent::NextToPlayScreenSauronPlotCards)?;
-            self.switch_to_sauron()?;
-            self.board.turn += 1;
+        if self.finale_triggered() {
+            return self.start_finale(data, rng);
         }
+        self.board.turn_effects.start_turn();
+        self.fire(BoardEvent::NextToPlayScreenSauronPlotCards)?;
+        self.switch_to_sauron()?;
+        self.board.turn += 1;
         Ok(())
     }
 

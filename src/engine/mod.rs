@@ -11,6 +11,7 @@ pub mod defeat;
 pub mod engine_error;
 pub mod events;
 pub mod exploration;
+pub mod finale;
 pub mod game_access;
 pub mod hero;
 pub mod influence;

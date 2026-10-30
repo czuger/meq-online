@@ -25,7 +25,7 @@ fn play_turn(g: &mut Game, hero_id: i64) -> TurnEnd {
         g.skip_rest().unwrap();
     }
     g.board.state = BoardState::HeroExploration;
-    g.finish_heroes_turn(hero_id, data()).unwrap()
+    g.finish_heroes_turn(hero_id, data(), &mut rng()).unwrap()
 }
 
 #[test]
@@ -67,7 +67,7 @@ fn story_stage_two_brings_minions() {
     g.heroes[0].turn = 2;
     g.board.story.ring = 6;
     g.board.plots.insert(1, 0); // ring +1
-    g.finish_heroes_turn(1, data()).unwrap();
+    g.finish_heroes_turn(1, data(), &mut rng()).unwrap();
     assert!(g.mobs.iter().any(|m| m.code == "gothmog"));
     assert!(g.mobs.iter().any(|m| m.code == "ringwraiths"));
 }
@@ -304,7 +304,7 @@ fn two_player_game_rallies_between_hero_turns() {
     g.board.influence.insert(location.clone(), 1);
     g.heroes[0].cards_drawn_this_round = 5;
     assert_eq!(
-        g.finish_heroes_turn(1, data()).unwrap(),
+        g.finish_heroes_turn(1, data(), &mut rng()).unwrap(),
         TurnEnd::HeroDrawCards
     );
     assert!(!g.board.influence.contains_key(&location));
@@ -318,6 +318,6 @@ fn no_rally_on_a_shadow_stronghold() {
     g.board.state = BoardState::HeroExploration;
     g.heroes[0].location = "dol_guldur".to_owned();
     g.board.influence.insert("dol_guldur".to_owned(), 2);
-    g.finish_heroes_turn(1, data()).unwrap();
+    g.finish_heroes_turn(1, data(), &mut rng()).unwrap();
     assert_eq!(g.board.influence.get("dol_guldur"), Some(&2));
 }

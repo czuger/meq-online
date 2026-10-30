@@ -74,6 +74,8 @@ pub enum CombatEnd {
     ChooseHaven,
     /// The hero's turn ended.
     TurnEnded(TurnEnd),
+    /// The Finale combat decided the game.
+    GameOver,
 }
 
 impl Game {
@@ -311,7 +313,7 @@ impl Game {
     /// Ends the combat (§ 8.3 Resolution): played cards go to the rest pool, the
     /// monster token is discarded, an undefeated mob lets Sauron place influence equal
     /// to its wisdom. A defeated hero resolves its defeat (§ 8.9); otherwise see
-    /// [`Game::after_combat`].
+    /// [`Game::after_combat`]. The Finale combat only decides the winner (§ 9).
     ///
     /// # Errors
     /// [`EngineError::Refused`] when the combat isn't over; lookup and transition errors.
@@ -326,6 +328,10 @@ impl Game {
             return Err(EngineError::Refused("the combat is not over".to_owned()));
         }
         let combat = self.combat.take().ok_or(EngineError::NoCombat)?;
+        if combat.origin == CombatOrigin::Finale {
+            self.finish_finale(result.mob_defeated)?;
+            return Ok(CombatEnd::GameOver);
+        }
         let played: Vec<CardNumber> = combat.hero_cards.iter().filter_map(|c| c.card).collect();
         self.hero_mut(combat.hero_id)?.rest_pool.extend(played);
         if !result.mob_defeated {
@@ -366,7 +372,10 @@ impl Game {
     ) -> Result<CombatEnd, EngineError> {
         let peril = match origin {
             CombatOrigin::Peril { card } => Some(data.peril(card)?.effect),
-            CombatOrigin::Ambush | CombatOrigin::Travel | CombatOrigin::Shadow { .. } => None,
+            CombatOrigin::Ambush
+            | CombatOrigin::Travel
+            | CombatOrigin::Shadow { .. }
+            | CombatOrigin::Finale => None,
         };
         let turn_start = matches!(origin, CombatOrigin::Ambush | CombatOrigin::Shadow { .. });
         let goes_on = mob_defeated
@@ -375,7 +384,7 @@ impl Game {
             || peril.is_some_and(peril_combat_continues);
         if !goes_on {
             return Ok(CombatEnd::TurnEnded(
-                self.finish_heroes_turn(hero_id, data)?,
+                self.finish_heroes_turn(hero_id, data, rng)?,
             ));
         }
         if let (true, CombatOrigin::Peril { card }) = (mob_defeated, origin) {
