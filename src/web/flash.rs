@@ -44,8 +44,8 @@ impl Flash {
     /// Bootstrap classes of the message box.
     pub fn css_class(&self) -> &'static str {
         match self.kind {
-            FlashKind::Notice => "alert alert-info",
-            FlashKind::Alert => "alert alert-danger",
+            FlashKind::Notice => "flash",
+            FlashKind::Alert => "flash flash-error",
         }
     }
 

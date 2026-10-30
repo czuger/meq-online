@@ -18,6 +18,7 @@ use crate::web::access::SauronAccess;
 use crate::web::app_error::AppError;
 use crate::web::flash::redirect;
 use crate::web::forms::number;
+use crate::web::game_layout::sauron_layout;
 use crate::web::game_tx::{change_game, read_game};
 use crate::web::handlers::maps::sauron_map_page;
 use crate::web::page::render;
@@ -142,6 +143,7 @@ fn playable_shadows(game: &Game, data: &GameData) -> Result<Vec<ShadowView>, App
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn edit(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -169,7 +171,7 @@ pub async fn edit(
         })
         .collect();
     let page = EditPage {
-        layout: Layout::sauron(&access.session, &game),
+        layout: sauron_layout(&state, &access.session, &game).await?,
         sauron_id: access.sauron_id,
         actions_taken: game.board.sauron_actions_count,
         actions_per_turn: game.sauron_actions_per_turn(),
@@ -191,6 +193,7 @@ pub async fn edit(
 ///
 /// # Errors
 /// [`AppError::BadRequest`] for an unknown track; rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id, form = ?form), err(level = "debug"))]
 pub async fn start(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -215,6 +218,7 @@ pub async fn start(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn place_influence_screen(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -222,10 +226,11 @@ pub async fn place_influence_screen(
     sauron_map_page(&state, &access).await
 }
 
-/// `GET /sauron/{sauron_id}/sauron_actions/finish_action`: ends the action in progress.
+/// `POST /sauron/{sauron_id}/sauron_actions/finish_action`: ends the action in progress.
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn finish_action(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -244,6 +249,7 @@ pub async fn finish_action(
 ///
 /// # Errors
 /// [`AppError::BadRequest`] for a malformed value; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id, form = ?form), err(level = "debug"))]
 pub async fn set_influence(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -266,10 +272,11 @@ pub async fn set_influence(
     .into_response())
 }
 
-/// `GET /sauron/{sauron_id}/sauron_actions/terminate`: Sauron ends his turn.
+/// `POST /sauron/{sauron_id}/sauron_actions/terminate`: Sauron ends his turn.
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn terminate(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -278,7 +285,7 @@ pub async fn terminate(
         game.terminate_sauron_turn()
     })
     .await?;
-    Ok(redirect("/boards", None))
+    Ok(redirect(&format!("/boards/{}/play", access.board_id), None))
 }
 
 /// `PATCH /shadow_pools/{sauron_id}/update_from_map`: fills (value 0) or empties a slot.
@@ -288,6 +295,7 @@ pub async fn terminate(
 ///
 /// # Errors
 /// [`AppError::BadRequest`] for a malformed value; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id, form = ?form), err(level = "debug"))]
 pub async fn update_shadow_pool(
     State(state): State<AppState>,
     access: SauronAccess,

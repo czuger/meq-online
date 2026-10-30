@@ -16,10 +16,12 @@ use crate::model::game::Game;
 const DRAWN_WITH_DOMINANCE: usize = 3;
 
 /// The three Event decks of a new game, shuffled, stage I first.
+#[tracing::instrument(level = "debug", skip_all)]
 pub fn starting_event_decks(data: &GameData, rng: &mut StdRng) -> [Vec<u32>; 3] {
     [1, 2, 3].map(|stage| {
         let mut deck = data.event_cards(stage);
         deck.shuffle(rng);
+        tracing::trace!(pile = "deck", order = ?deck, "shuffled");
         deck
     })
 }
@@ -46,6 +48,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup, choice and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn event_step(&mut self, data: &GameData, rng: &mut StdRng) -> Result<(), EngineError> {
         let stage = u8::try_from(self.board.story.stage())
             .unwrap_or(3)
@@ -70,10 +73,12 @@ impl Game {
         self.start_action_step(data)
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(stage, count))]
     fn draw_events(&mut self, stage: u8, count: usize, rng: &mut StdRng) -> Vec<u32> {
         let pile = self.event_pile(stage);
         if pile.draw.len() < count {
             pile.discard.shuffle(rng);
+            tracing::trace!(pile = "pile.discard", order = ?pile.discard, "shuffled");
             pile.draw.append(&mut pile.discard);
         }
         let count = count.min(pile.draw.len());
@@ -85,6 +90,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and choice errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(?event), err(level = "debug"))]
     pub fn resolve_event(&mut self, event: EventRef, data: &GameData) -> Result<(), EngineError> {
         self.board.last_event = Some(event);
         self.log(
@@ -107,6 +113,7 @@ impl Game {
 
     /// Characters and favor of an event; a character already on another location
     /// stays where it is.
+    #[tracing::instrument(level = "debug", skip_all, fields(?event), err(level = "debug"))]
     fn place_event_tokens(&mut self, event: EventRef, data: &GameData) -> Result<(), EngineError> {
         let def = data.event(event.stage, event.card)?;
         if let Some(character) = def
@@ -117,6 +124,7 @@ impl Game {
             self.place_character(ActorRef::System, &character.name, &character.location, data)?;
         }
         for favor in &def.favors {
+            tracing::trace!(?favor, "placing favor");
             self.board.favors.push(favor.clone());
             self.log(
                 ActorRef::System,
@@ -128,11 +136,13 @@ impl Game {
     }
 
     /// Puts an event card faceup on its deck's discard pile.
+    #[tracing::instrument(level = "debug", skip_all, fields(?event))]
     pub fn discard_event(&mut self, event: EventRef) {
         self.event_pile(event.stage).discard.push(event.card);
     }
 
     /// The card in play leaves the Current Event Card space.
+    #[tracing::instrument(level = "debug", skip_all)]
     pub fn discard_current_event(&mut self) {
         if let Some(event) = self.board.current_event.take() {
             self.discard_event(event);
@@ -143,6 +153,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn advance_current_event_story(&mut self, data: &GameData) -> Result<(), EngineError> {
         let Some(event) = self.board.current_event else {
             return Ok(());

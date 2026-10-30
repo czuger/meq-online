@@ -1,19 +1,19 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
-  <h3>Envoyer un message</h3>
-  <form method="post" action="{{ base_url }}">
+<div class="page">
+  <h1>Envoyer un message</h1>
+  <form method="post" action="{{ base_url }}" class="box">
     <div class="field">
       <label for="receiver">À</label>
-      <select class="form-control" id="receiver" name="receiver">
+      <select id="receiver" name="receiver">
         {% for (value, name) in receivers %}<option value="{{ value }}">{{ name }}</option>{% endfor %}
       </select>
     </div>
-    <div class="field mt-2">
+    <div class="field" style="max-width: none">
       <label for="text">Votre message</label>
-      <textarea class="form-control" id="text" name="text"></textarea>
+      <textarea id="text" name="text"></textarea>
     </div>
-    <div class="actions mt-3"><button type="submit" class="btn btn-secondary">Envoyer</button></div>
+    <div class="actions"><button type="submit" class="btn btn-primary">Envoyer</button></div>
   </form>
 </div>
 {% endblock %}

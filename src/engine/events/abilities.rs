@@ -88,12 +88,14 @@ impl Game {
 
     /// Removes the influence, monster token and favor targets picked; influence cut from
     /// its strongholds is then reduced (§ 5.8).
+    #[tracing::instrument(level = "debug", skip_all, fields(?targets), err(level = "debug"))]
     pub fn remove_token_targets(
         &mut self,
         targets: &[String],
         data: &GameData,
     ) -> Result<(), EngineError> {
         for code in targets {
+            tracing::trace!(target = ?code, "event target");
             match parse_target(code) {
                 ("influence", values) => {
                     if let Some(location) = values.first() {
@@ -120,6 +122,12 @@ impl Game {
     }
 
     /// Deals damage to a minion outside of combat; a defeated minion leaves the map.
+    #[tracing::instrument(
+        level = "debug",
+        skip_all,
+        fields(mob_id, damage),
+        err(level = "debug")
+    )]
     pub fn hurt_minion(&mut self, mob_id: i64, damage: i32) -> Result<(), EngineError> {
         let index = self.mob_index(mob_id)?;
         let Some(mob) = self.mobs.get_mut(index) else {
@@ -135,6 +143,7 @@ impl Game {
         Ok(())
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(?event, ?chooser, ?heroes), err(level = "debug"))]
     fn ask_event(
         &mut self,
         event: EventRef,
@@ -158,6 +167,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and choice errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(?event), err(level = "debug"))]
     pub fn start_event_ability(
         &mut self,
         event: EventRef,
@@ -184,6 +194,7 @@ impl Game {
                 location,
             } => {
                 for character in characters {
+                    tracing::trace!(%character, %location, "placing character");
                     self.place_character(ActorRef::System, &character, &location, data)?;
                 }
                 Ok(())
@@ -196,6 +207,7 @@ impl Game {
             EventAbility::Eowyn => {
                 self.place_character(ActorRef::System, "theoden", "edoras", data)?;
                 for location in data.paths.connected("edoras") {
+                    tracing::trace!(%location, "removing influence next to Edoras");
                     self.remove_influence(location, 1);
                 }
                 self.trim_unsupported_influence(data);
@@ -208,6 +220,7 @@ impl Game {
     }
 
     /// Abilities that only offer a choice to Sauron or to the heroes.
+    #[tracing::instrument(level = "debug", skip_all, fields(?event, ?ability), err(level = "debug"))]
     fn start_choice_ability(
         &mut self,
         event: EventRef,
@@ -354,6 +367,7 @@ impl Game {
             .collect()
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(?event, ?heroes), err(level = "debug"))]
     fn ask_favor_or_corruption(
         &mut self,
         event: EventRef,
@@ -366,9 +380,11 @@ impl Game {
         self.ask_event(event, Chooser::Hero(first), heroes, options)
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(?event), err(level = "debug"))]
     fn start_trust_in_friendship(&mut self, event: EventRef) -> Result<(), EngineError> {
         let mut favor = 0;
         for hero in &mut self.heroes {
+            tracing::trace!(hero = %hero.code, favor = hero.favor, "taking one favor");
             if hero.favor > 0 {
                 hero.favor -= 1;
                 favor += 1;
@@ -384,8 +400,10 @@ impl Game {
         self.ask_event(event, Chooser::Sauron, vec![], options)
     }
 
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     fn radagast(&mut self, data: &GameData) -> Result<(), EngineError> {
         for hero in &mut self.heroes {
+            tracing::trace!(hero = %hero.code, favor = hero.favor, "Radagast: favor check");
             if hero.favor >= 4 {
                 hero.favor -= 1;
             }
@@ -396,8 +414,10 @@ impl Game {
         Ok(())
     }
 
+    #[tracing::instrument(level = "debug", skip_all)]
     fn boromirs_dream(&mut self, data: &GameData) {
         for hero in &mut self.heroes {
+            tracing::trace!(hero = %hero.code, favor = hero.favor, "Boromir's dream: favor check");
             if hero.favor == 0 {
                 hero.gain_favor(1, data);
             }
@@ -408,12 +428,14 @@ impl Game {
         }
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(?event), err(level = "debug"))]
     fn he_has_at_last_heard(
         &mut self,
         event: EventRef,
         data: &GameData,
     ) -> Result<(), EngineError> {
         for location in area_locations(&Area::Near("the_shire".to_owned()), data) {
+            tracing::trace!(%location, "adding influence near the Shire");
             self.add_influence(&location, 1, data);
         }
         self.trim_unsupported_influence(data);
@@ -435,6 +457,7 @@ impl Game {
 
     /// Applies an answer to an event choice.
     #[allow(clippy::too_many_arguments)]
+    #[tracing::instrument(level = "debug", skip_all, fields(?event, ?heroes, %option, ?targets, ?resume), err(level = "debug"))]
     pub(crate) fn apply_event_choice(
         &mut self,
         event: EventRef,
@@ -476,6 +499,7 @@ impl Game {
     }
 
     #[allow(clippy::too_many_arguments)]
+    #[tracing::instrument(level = "debug", skip_all, fields(?event, ?heroes, %option, ?targets, ?resume), err(level = "debug"))]
     fn apply_temptation(
         &mut self,
         event: EventRef,
@@ -524,6 +548,7 @@ impl Game {
         }
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(?event, ?ability, %option, ?targets), err(level = "debug"))]
     fn apply_target_choice(
         &mut self,
         event: EventRef,
@@ -567,6 +592,7 @@ impl Game {
             }
             (EventAbility::SauronPlacesMonsters { .. }, _) => {
                 for code in targets {
+                    tracing::trace!(target = ?code, "monster placement target");
                     if let ("location", values) = parse_target(code) {
                         let location = values.first().copied().unwrap_or_default();
                         self.place_new_monster(location, data, rng)?;
@@ -617,6 +643,7 @@ impl Game {
         Ok(targets.to_vec())
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(?targets), err(level = "debug"))]
     fn move_character_and_clear(
         &mut self,
         targets: &[String],
@@ -636,6 +663,7 @@ impl Game {
         self.remove_token_targets(&tokens, data)
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(?targets, cost), err(level = "debug"))]
     fn discard_haven_plot(&mut self, targets: &[String], cost: i32) -> Result<(), EngineError> {
         let Some(code) = targets.first() else {
             return Ok(());
@@ -654,6 +682,7 @@ impl Game {
         Ok(())
     }
 
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     fn warrior_of_the_lidless_eye(
         &mut self,
         data: &GameData,
@@ -669,6 +698,7 @@ impl Game {
             .map(str::to_owned)
             .collect();
         for location in around {
+            tracing::trace!(%location, "adding influence and maybe a monster");
             self.add_influence(&location, 1, data);
             if !self.heroes.iter().any(|h| h.location == location) {
                 self.place_new_monster(&location, data, rng)?;
@@ -680,6 +710,7 @@ impl Game {
 }
 
 /// Advances one of Sauron's markers by 1 and logs it.
+#[tracing::instrument(level = "debug", skip_all, fields(?track))]
 fn story_advance(game: &mut Game, track: crate::game_data::plot::StoryType) {
     game.board.story.advance(track, 1);
     game.log(

@@ -36,6 +36,7 @@ pub struct LoginForm {
 ///
 /// # Errors
 /// [`AppError::Template`] when rendering fails.
+#[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
 pub async fn new(headers: HeaderMap) -> Result<Response, AppError> {
     let layout = Layout {
         flash: Flash::from_headers(&headers),
@@ -53,6 +54,7 @@ pub async fn new(headers: HeaderMap) -> Result<Response, AppError> {
 ///
 /// # Errors
 /// [`AppError::Db`] on database failure.
+#[tracing::instrument(level = "debug", skip_all, fields(name = %form.name), err(level = "debug"))]
 pub async fn create(
     State(state): State<AppState>,
     Form(form): Form<LoginForm>,
@@ -73,6 +75,7 @@ pub async fn create(
 }
 
 /// `GET /auth/failure`.
+#[tracing::instrument(level = "debug", skip_all)]
 pub async fn failure() -> Response {
     redirect(
         "/sessions/new",
@@ -86,6 +89,7 @@ pub async fn failure() -> Response {
 ///
 /// # Errors
 /// [`AppError::Db`] on database failure.
+#[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
 pub async fn destroy(
     State(state): State<AppState>,
     headers: HeaderMap,

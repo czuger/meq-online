@@ -1,22 +1,14 @@
-<div class="form-group">
-  <div class="row">
-    <div class="col-md-4"><button class="btn btn-secondary btn-block" type="button" disabled>Lieu <span class="badge badge-light">{{ info.location }}</span></button></div>
-    <div class="col-md-2"><button class="btn btn-secondary btn-block" type="button" disabled>Faveurs <span class="badge badge-light">{{ info.favor }}</span></button></div>
-  </div>
+<div class="stats">
+  <span class="stat"><span class="stat-label">Lieu</span><span class="stat-value">{{ info.location }}</span></span>
+  <span class="stat"><span class="stat-label">Faveurs</span><span class="stat-value">{{ info.favor }}</span></span>
+  <span class="stat"><span class="stat-label">Main</span><span class="stat-value">{{ info.hand }}</span></span>
+  <span class="stat"><span class="stat-label">Vie</span><span class="stat-value">{{ info.life }}</span></span>
+  <span class="stat"><span class="stat-label">Repos</span><span class="stat-value">{{ info.rest }}</span></span>
+  <span class="stat"><span class="stat-label">Blessures</span><span class="stat-value">{{ info.damage }}</span></span>
 </div>
-<div class="form-group">
-  <div class="row">
-    <div class="col-md-2"><button class="btn btn-secondary btn-block" type="button" disabled>Main <span class="badge badge-light">{{ info.hand }}</span></button></div>
-    <div class="col-md-2"><button class="btn btn-secondary btn-block" type="button" disabled>Vie <span class="badge badge-light">{{ info.life }}</span></button></div>
-    <div class="col-md-2"><button class="btn btn-secondary btn-block" type="button" disabled>Repos <span class="badge badge-light">{{ info.rest }}</span></button></div>
-    <div class="col-md-2"><button class="btn btn-secondary btn-block" type="button" disabled>Blessures <span class="badge badge-light">{{ info.damage }}</span></button></div>
-  </div>
-</div>
-<div class="form-group">
-  <div class="row">
-    <div class="col-md-2"><button class="btn btn-secondary btn-block" type="button" disabled>Endurance <span class="badge badge-light">{{ info.fortitude }}</span></button></div>
-    <div class="col-md-2"><button class="btn btn-secondary btn-block" type="button" disabled>Force <span class="badge badge-light">{{ info.strength }}</span></button></div>
-    <div class="col-md-2"><button class="btn btn-secondary btn-block" type="button" disabled>Agilité <span class="badge badge-light">{{ info.agility }}</span></button></div>
-    <div class="col-md-2"><button class="btn btn-secondary btn-block" type="button" disabled>Sagesse <span class="badge badge-light">{{ info.wisdom }}</span></button></div>
-  </div>
+<div class="stats">
+  <span class="stat"><span class="stat-label">Endurance</span><span class="stat-value">{{ info.fortitude }}</span></span>
+  <span class="stat"><span class="stat-label">Force</span><span class="stat-value">{{ info.strength }}</span></span>
+  <span class="stat"><span class="stat-label">Agilité</span><span class="stat-value">{{ info.agility }}</span></span>
+  <span class="stat"><span class="stat-label">Sagesse</span><span class="stat-value">{{ info.wisdom }}</span></span>
 </div>

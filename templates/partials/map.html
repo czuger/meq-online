@@ -1,0 +1,45 @@
+<div class="map-viewport" data-map-viewport>
+  <div class="map-toolbar">
+    <button type="button" class="btn btn-quiet" data-map-zoom="out" aria-label="Dézoomer">−</button>
+    <button type="button" class="btn btn-quiet" data-map-zoom="in" aria-label="Zoomer">+</button>
+    <button type="button" class="btn btn-quiet" data-map-zoom="fit">Ajuster</button>
+  </div>
+  <div class="map-scroll" data-map-scroll>
+    <div class="map-sizer" data-map-sizer>
+      <div id="map" data-board-id="{{ table.board_id }}"{% if let Some(id) = table.influence_editor %} data-sauron-id="{{ id }}"{% endif %}>
+        <img src="{{ table.map.map_pic }}" id="map-picture" alt="Carte" draggable="false">
+        <div id="influence-alert"></div>
+
+        {% for pawn in table.map.pawns %}
+        <div class="influence-pawn-box" style="{{ pawn.style }}" data-location="{{ pawn.code }}">
+          <img src="{{ table.map.influence_pic }}" class="influence-pawn" alt="" draggable="false">
+          <span class="influence-value" id="influence-value-{{ pawn.code }}">{{ pawn.value }}</span>
+        </div>
+        {% endfor %}
+
+        {% for token in table.map.tokens %}
+        <div class="token-on-map" style="{{ token.style }}" title="{{ token.title }}">
+          <img src="{{ token.pic }}" class="{{ token.class }}" alt="" draggable="false">
+          {% if token.count > 1 %}<div class="tokens-count" style="{{ token.count_style }}">{{ token.count }}</div>{% endif %}
+        </div>
+        {% endfor %}
+
+        {% for slot in table.map.pool %}
+        <div class="influence-pool-value" style="{{ slot.style }}" id="pool_token_id_{{ slot.number }}">{{ slot.value }}</div>
+        {% endfor %}
+
+        {% for style in table.map.actions %}
+        <div class="sauron-actions-token" style="{{ style }}"><img src="{{ table.map.action_pic }}" alt="" draggable="false"></div>
+        {% endfor %}
+
+        {% for plot in table.map.plots %}
+        <img src="{{ plot.pic }}" id="plot-{{ plot.slot }}" class="plot-card-on-map" alt="" draggable="false">
+        {% endfor %}
+
+        {% for target in table.map_targets %}
+        <button type="submit" form="{{ target.form_id }}" name="{{ target.name }}" value="{{ target.value }}" class="map-target" style="{{ target.style }}" title="{{ target.label }}" aria-label="{{ target.label }}"><span>{{ target.label }}</span></button>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>

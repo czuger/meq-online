@@ -39,6 +39,7 @@ impl Hero {
             .collect()
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(?modification))]
     fn apply_modification(&mut self, modification: Modification) {
         match modification {
             Modification::Helpless => self.agility -= 1,
@@ -50,6 +51,7 @@ impl Hero {
         }
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(?modification))]
     fn undo_modification(&mut self, modification: Modification) {
         match modification {
             Modification::Helpless => self.agility += 1,
@@ -69,6 +71,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::Refused`] when the corruption deck and discard are both empty.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn gain_random_corruption(
         &mut self,
         hero_id: i64,
@@ -84,6 +87,7 @@ impl Game {
     }
 
     /// Draws up to `count` corruption cards, reshuffling the discard pile when needed.
+    #[tracing::instrument(level = "debug", skip_all, fields(count))]
     pub fn draw_corruption_cards(&mut self, count: usize, rng: &mut StdRng) -> Vec<CorruptionCode> {
         let pile = &mut self.board.decks.corruption;
         if pile.draw.len() < count {
@@ -99,6 +103,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?code), err(level = "debug"))]
     pub fn give_corruption(
         &mut self,
         hero_id: i64,
@@ -135,6 +140,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?card), err(level = "debug"))]
     pub fn end_turn_if_wretched(
         &mut self,
         hero_id: i64,
@@ -163,6 +169,7 @@ impl Game {
     }
 
     /// Sauron sends the wretched hero to the picked Haven, or leaves him.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, %option, ?targets), err(level = "debug"))]
     pub(crate) fn apply_wretched_choice(
         &mut self,
         hero_id: i64,
@@ -186,6 +193,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::CardNotAvailable`] when `from` doesn't hold the card; lookup
     /// errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(from, to, ?card), err(level = "debug"))]
     pub fn move_corruption_card(
         &mut self,
         from: i64,
@@ -221,6 +229,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::CardNotAvailable`] when the hero doesn't hold the card,
     /// [`EngineError::Refused`] when it lacks the favor; lookup errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?card), err(level = "debug"))]
     pub fn discard_corruption_card(
         &mut self,
         hero_id: i64,
@@ -237,6 +246,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::CardNotAvailable`] when the hero doesn't hold the card,
     /// [`EngineError::Refused`] when it lacks the favor; lookup errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?card, cost), err(level = "debug"))]
     pub fn remove_corruption_card(
         &mut self,
         hero_id: i64,
@@ -271,7 +281,9 @@ impl Game {
     }
 }
 
+#[tracing::instrument(level = "debug", skip_all)]
 fn shuffle_discard_in(pile: &mut Pile, rng: &mut StdRng) {
     pile.draw.append(&mut pile.discard);
     pile.draw.shuffle(rng);
+    tracing::trace!(pile = "pile.draw", order = ?pile.draw, "shuffled");
 }

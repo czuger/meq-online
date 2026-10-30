@@ -15,6 +15,7 @@ pub trait Combatant {
 impl Combatant for Hero {
     /// Damage is not paid immediately: it accumulates in `temporary_damages` and is
     /// paid with cards at the end of the round.
+    #[tracing::instrument(level = "debug", skip_all, fields(amount))]
     fn deal_damages(&mut self, amount: i32) {
         let amount = amount.max(0);
         self.temporary_damages += amount;
@@ -27,6 +28,7 @@ impl Combatant for Hero {
 }
 
 impl Combatant for Mob {
+    #[tracing::instrument(level = "debug", skip_all, fields(amount))]
     fn deal_damages(&mut self, amount: i32) {
         let amount = amount.max(0);
         self.life -= amount;

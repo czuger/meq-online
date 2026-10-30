@@ -34,6 +34,7 @@ struct LogsPage {
 ///
 /// # Errors
 /// [`AppError::Db`] on database failure.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id), err(level = "debug"))]
 pub async fn show(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -44,6 +45,7 @@ pub async fn show(
     let mut names = BTreeMap::new();
     for user_id in std::iter::once(game.sauron.user_id).chain(game.heroes.iter().map(|h| h.user_id))
     {
+        tracing::trace!(user_id, "loading player name");
         if let Some(user) = user_repo::find(&mut conn, user_id).await? {
             names.insert(user_id, user.name);
         }

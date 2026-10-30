@@ -1,33 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
+<div class="page">
   <h1>Liste des parties</h1>
   <table class="table">
     <thead>
-      <tr>
-        <th>Joueurs</th><th>Tour</th><th>Résultat</th><th></th><th></th>
-        <th></th><th></th><th></th><th></th><th></th>
-      </tr>
+      <tr><th>Partie</th><th>Joueurs</th><th>Tour</th><th>Résultat</th><th>Vos places</th><th></th></tr>
     </thead>
     <tbody>
       {% for row in rows %}
       <tr>
+        <td>#{{ row.id }}</td>
         <td>{{ row.players }}</td>
         <td>{{ row.turn }}</td>
         <td>{{ row.status }}</td>
-        <td>{% if row.can_join %}<a href="/boards/{{ row.id }}/join">Rejoindre</a>{% endif %}</td>
         <td>
           {% if let Some(cell) = row.sauron %}
-            {% if let Some(url) = cell.url %}<a href="{{ url }}">{{ cell.name }}</a>{% else %}{{ cell.name }}{% endif %}
+            {% if let Some(url) = cell.url %}<a class="btn" href="{{ url }}">{{ cell.name }} <span class="badge badge-turn">à vous</span></a>{% else %}<span class="badge">{{ cell.name }}</span>{% endif %}
           {% endif %}
+          {% for hero in row.heroes %}
+            {% if let Some(cell) = hero %}
+              {% if let Some(url) = cell.url %}<a class="btn" href="{{ url }}">{{ cell.name }} <span class="badge badge-turn">à vous</span></a>{% else %}<span class="badge">{{ cell.name }}</span>{% endif %}
+            {% endif %}
+          {% endfor %}
         </td>
-        {% for hero in row.heroes %}
         <td>
-          {% if let Some(cell) = hero %}
-            {% if let Some(url) = cell.url %}<a href="{{ url }}">{{ cell.name }}</a>{% else %}{{ cell.name }}{% endif %}
-          {% endif %}
+          {% if row.can_join %}<a class="btn" href="/boards/{{ row.id }}/join">Rejoindre</a>{% endif %}
+          {% if row.member %}<a class="btn btn-primary" href="/boards/{{ row.id }}/play">Jouer</a>{% endif %}
         </td>
-        {% endfor %}
       </tr>
       {% endfor %}
     </tbody>

@@ -105,6 +105,7 @@ impl StoryMarkers {
     ///
     /// # Returns
     /// `false` when several markers are tied: nothing moves and the hero chooses.
+    #[tracing::instrument(level = "debug", skip_all, fields(spaces))]
     pub fn advance_lowest(&mut self, spaces: i32) -> bool {
         match self.lowest_sauron_markers().as_slice() {
             [track] => {
@@ -116,6 +117,7 @@ impl StoryMarkers {
     }
 
     /// Advances one of Sauron's markers.
+    #[tracing::instrument(level = "debug", skip_all, fields(?track, spaces))]
     pub fn advance(&mut self, track: StoryType, spaces: i32) {
         match track {
             StoryType::Ring => self.ring += spaces,
@@ -131,6 +133,7 @@ impl Game {
     ///
     /// # Errors
     /// Fails when a plot in play is unknown.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn advance_stories_markers(&mut self, data: &GameData) -> Result<(), EngineError> {
         // "Grievous Loss" holds the green marker back.
         let malus = std::mem::take(&mut self.board.turn_effects.heroes_story_malus);
@@ -144,6 +147,7 @@ impl Game {
 
         let plots: Vec<u32> = self.board.plots.values().copied().collect();
         for card in plots {
+            tracing::trace!(card, "plot advances story");
             let story = data.plot(card)?.story;
             self.board.story.advance(story.story_type, story.advance);
             self.log(

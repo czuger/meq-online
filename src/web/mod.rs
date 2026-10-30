@@ -5,6 +5,7 @@ pub mod app_error;
 pub mod cookies;
 pub mod flash;
 pub mod forms;
+pub mod game_layout;
 pub mod game_tx;
 pub mod handlers;
 pub mod page;

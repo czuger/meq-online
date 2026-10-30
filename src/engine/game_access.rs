@@ -16,8 +16,18 @@ impl Game {
     /// # Errors
     /// [`EngineError::InvalidTransition`] when the event isn't allowed now.
     pub fn fire(&mut self, event: BoardEvent) -> Result<(), EngineError> {
-        self.board.state = self.board.state.transition(event)?;
-        Ok(())
+        let from = self.board.state;
+        match from.transition(event) {
+            Ok(to) => {
+                tracing::debug!(board_id = ?self.board.id, %from, event = event.as_str(), %to, "board state");
+                self.board.state = to;
+                Ok(())
+            }
+            Err(error) => {
+                tracing::debug!(board_id = ?self.board.id, %from, event = event.as_str(), "board event refused");
+                Err(error)
+            }
+        }
     }
 
     /// Records a log entry, saved with the game.
@@ -27,6 +37,7 @@ impl Game {
     /// * `action` - dotted action key.
     /// * `params` - values interpolated in the message.
     pub fn log(&mut self, actor: ActorRef, action: &str, params: &[(&str, Value)]) {
+        tracing::debug!(board_id = ?self.board.id, ?actor, action, ?params, "game log");
         self.new_logs.push(LogEntry::new(actor, action, params));
     }
 

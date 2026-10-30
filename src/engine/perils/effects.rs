@@ -77,6 +77,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?card), err(level = "debug"))]
     pub fn start_peril(
         &mut self,
         hero_id: i64,
@@ -141,6 +142,7 @@ impl Game {
 
     /// "Armies Underground" and "Khazad-dûm": a monster (not a token of the pools)
     /// appears on the hero's location to fight him.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?effect), err(level = "debug"))]
     fn peril_monster(
         &mut self,
         hero_id: i64,
@@ -161,6 +163,7 @@ impl Game {
 
     /// "Trapped": 2 influence to the Shadow Pool, the hero discards 2 hand cards (all
     /// of them, without a choice, when he holds no more).
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     fn trapped(&mut self, hero_id: i64) -> Result<Option<Vec<ChoiceOption>>, EngineError> {
         self.add_to_shadow_pool(SHADOW_POOL_GAIN);
         let hero = self.hero_mut(hero_id)?;
@@ -180,6 +183,7 @@ impl Game {
 
     /// "It's a Dangerous Business" and "Undying Regret": 2 influence to the Shadow
     /// Pool, then Sauron may place influence in the hero's region.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?card, ?effect), err(level = "debug"))]
     fn peril_placement(
         &mut self,
         hero_id: i64,
@@ -201,6 +205,7 @@ impl Game {
     }
 
     /// Peril cards resolving without a decision of their own.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?card, ?effect), err(level = "debug"))]
     fn immediate_peril(
         &mut self,
         hero_id: i64,
@@ -252,6 +257,7 @@ impl Game {
 
     /// "Nine for Mortal Men": a Corruption card, then Sauron commands a minion or
     /// draws a Plot card.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?card), err(level = "debug"))]
     fn nine_for_mortal_men(
         &mut self,
         hero_id: i64,
@@ -273,6 +279,7 @@ impl Game {
     }
 
     /// "The Dark Tower": the minion there fights the hero, Sauron picking among several.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?card), err(level = "debug"))]
     fn dark_tower(
         &mut self,
         hero_id: i64,
@@ -297,6 +304,7 @@ impl Game {
     }
 
     /// Asks a decision of a Peril card.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?card, ?chooser, ?drawn), err(level = "debug"))]
     pub(crate) fn ask_peril(
         &mut self,
         hero_id: i64,
@@ -321,6 +329,7 @@ impl Game {
     ///
     /// # Returns
     /// [`Resume::EndTurn`] when the card was "Wretched", `resume` otherwise.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?resume), err(level = "debug"))]
     pub(crate) fn peril_corruption(
         &mut self,
         hero_id: i64,
@@ -338,6 +347,7 @@ impl Game {
     }
 
     /// "Armies Underground": one random hand card discarded per Corruption card.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     fn armies_underground_discards(
         &mut self,
         hero_id: i64,
@@ -346,6 +356,7 @@ impl Game {
         let hero = self.hero_mut(hero_id)?;
         let mut hand = hero.hand.clone();
         hand.shuffle(rng);
+        tracing::trace!(pile = "hand", order = ?hand, "shuffled");
         hand.truncate(hero.corruption_cards.len());
         hero.hand_to_rest(&hand)
     }
@@ -373,8 +384,10 @@ impl Game {
     fn minion_moves(&self, data: &GameData) -> Result<Vec<String>, EngineError> {
         let mut moves = Vec::new();
         for mob in self.mobs.iter().filter(|m| m.kind == MobKind::Minion) {
+            tracing::trace!(mob = %mob.code, id = ?mob.id, "minion move options");
             let Some(id) = mob.id else { continue };
             for to in self.mob_destinations(id, data)? {
+                tracing::trace!(%to, "minion destination");
                 moves.push(format!("minion_to:{id}:{to}"));
             }
         }
@@ -385,6 +398,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?card), err(level = "debug"))]
     pub fn reward_peril_victory(
         &mut self,
         hero_id: i64,
@@ -406,6 +420,7 @@ impl Game {
     }
 
     /// Starts the combat a Peril card asked for.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, mob_id, ?card), err(level = "debug"))]
     pub(crate) fn start_peril_combat(
         &mut self,
         hero_id: i64,

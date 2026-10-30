@@ -6,3 +6,6 @@
 
 # Editors
 .idea
+
+# Debug log files
+/logs

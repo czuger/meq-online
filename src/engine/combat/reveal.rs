@@ -27,6 +27,7 @@ use crate::model::played_card::PlayedCard;
 /// # Errors
 /// [`EngineError::CombatNotReady`] when the hero strength or a secret card is missing,
 /// [`EngineError::GameData`] when a played card is unknown.
+#[tracing::instrument(level = "debug", skip_all, fields(hero = %hero.code, mob = %mob.code), err(level = "debug"))]
 pub fn reveal_secretly_played_cards(
     combat: &mut Combat,
     hero: &mut Hero,
@@ -37,12 +38,22 @@ pub fn reveal_secretly_played_cards(
     mob.damages_taken_this_turn = 0;
 
     let (hero_card, mob_card) = current_cards(combat, hero, mob, data)?;
+    tracing::debug!(?hero_card, ?mob_card, "combat cards revealed");
     let mut hero_side = Side::new(hero_card, combat.hero_cards.last().cloned());
     let mut mob_side = Side::new(mob_card, combat.mob_cards.last().cloned());
 
     check_exhaustion(combat, hero, mob, &mut hero_side, &mut mob_side)?;
     resolve_powers_and_damage(hero, mob, &mut hero_side, &mut mob_side);
 
+    tracing::debug!(
+        hero_exhausted = combat.hero_exhausted,
+        mob_exhausted = combat.mob_exhausted,
+        hero_damage = hero.damages_taken_this_turn,
+        hero_temporary_damages = hero.temporary_damages,
+        mob_damage = mob.damages_taken_this_turn,
+        mob_life = mob.life,
+        "combat round resolved"
+    );
     if !combat.hero_exhausted {
         hero.active = true;
     }
@@ -79,6 +90,7 @@ fn current_cards(
 
 /// Spends strength; a side whose spent strength exceeds its strength is exhausted and
 /// its card is cancelled (§ 8.3, § 8.7).
+#[tracing::instrument(level = "debug", skip_all, fields(hero = %hero.code, mob = %mob.code), err(level = "debug"))]
 fn check_exhaustion(
     combat: &mut Combat,
     hero: &mut Hero,
@@ -105,6 +117,7 @@ fn check_exhaustion(
     Ok(())
 }
 
+#[tracing::instrument(level = "debug", skip_all, fields(hero = %hero.code, mob = %mob.code))]
 fn resolve_powers_and_damage(
     hero: &mut Hero,
     mob: &mut Mob,
@@ -132,6 +145,7 @@ fn resolve_powers_and_damage(
 }
 
 /// Each side deals its attack minus the opposing defense; cancelled cards count as 0.
+#[tracing::instrument(level = "debug", skip_all, fields(hero = %hero.code, mob = %mob.code, ?hero_side, ?mob_side))]
 fn deal_damages(hero: &mut Hero, mob: &mut Mob, hero_side: &Side, mob_side: &Side) {
     let totals = |side: &Side| {
         if side.current.cancelled {

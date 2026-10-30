@@ -48,6 +48,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn draw_cards_finished(
         &mut self,
         hero_id: i64,
@@ -68,6 +69,7 @@ impl Game {
 
     /// The current hero's turn starts: Sauron may play a Shadow card (§ 5.9), then
     /// monsters and minions on its location ambush it (§ 6.4), then it may rest.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     fn check_rest(&mut self, data: &GameData, rng: &mut StdRng) -> Result<(), EngineError> {
         let hero_id = self.current_hero_id()?;
         self.hero_mut(hero_id)?.turn_record = TurnRecord::default();
@@ -87,6 +89,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn ambush_step(&mut self, data: &GameData, rng: &mut StdRng) -> Result<(), EngineError> {
         let hero_id = self.current_hero_id()?;
         if self.face_location_threats(hero_id, true, data, rng)? == Threat::None {
@@ -101,6 +104,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn enter_rest_step(&mut self, data: &GameData) -> Result<(), EngineError> {
         let hero_id = self.current_hero_id()?;
         let location = self.hero(hero_id)?.location.clone();
@@ -122,6 +126,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] when healing or training isn't allowed or the
     /// corruption card can't be paid; transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?rest), err(level = "debug"))]
     pub fn rest_hero(
         &mut self,
         hero_id: i64,
@@ -172,6 +177,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn advance_story_after_rest(
         &mut self,
         hero_id: i64,
@@ -191,6 +197,7 @@ impl Game {
     ///
     /// # Errors
     /// Transition errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn skip_rest(&mut self) -> Result<(), EngineError> {
         self.fire(BoardEvent::NextToHeroMovementScreen)
     }
@@ -199,6 +206,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::Refused`] when `marker` isn't one of the lowest; transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(?marker), err(level = "debug"))]
     pub fn advance_chosen_story_marker(
         &mut self,
         marker: StoryType,

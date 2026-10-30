@@ -20,6 +20,7 @@ use crate::model::combat::CombatOrigin;
 use crate::model::game::Game;
 
 /// A decision within a Shadow card, as answered.
+#[derive(Debug)]
 pub(crate) struct ShadowAnswer<'a> {
     /// The Shadow card.
     pub card: ShadowCode,
@@ -56,6 +57,7 @@ impl Game {
     ///
     /// # Returns
     /// Where play goes on when no other decision is pending.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     pub(crate) fn apply_shadow_choice(
         &mut self,
         answer: &ShadowAnswer,
@@ -93,6 +95,7 @@ impl Game {
     }
 
     /// Decisions of the cards played during the Action step.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     fn apply_action_shadow_choice(
         &mut self,
         answer: &ShadowAnswer,
@@ -110,6 +113,7 @@ impl Game {
                     .iter()
                     .filter_map(|t| t.strip_prefix("location:"))
                 {
+                    tracing::trace!(%location, "shadow: placing monster");
                     self.place_new_monster(location, data, rng)?;
                 }
             }
@@ -140,6 +144,7 @@ impl Game {
 
     /// The hero fights the monster his Shadow card brought (it replaces his Ambush
     /// step); "Flocks of Crebain" takes his agility.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     fn shadow_fight(
         &mut self,
         answer: &ShadowAnswer,
@@ -170,6 +175,7 @@ impl Game {
 
     /// "Storms of Mordor": the hero discards the picked cards, then a random card per
     /// Corruption card; the next heroes follow.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     fn storms_discard(
         &mut self,
         answer: &ShadowAnswer,
@@ -186,6 +192,7 @@ impl Game {
 
     /// "An Evil Fog" and "Do Not Tempt Me!": the hero picked, moved or not, then the
     /// card's loss per Corruption card.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     fn apply_hero_pick(
         &mut self,
         answer: &ShadowAnswer,
@@ -215,6 +222,7 @@ impl Game {
 
     /// "A New Power Is Rising": 2 influence on each location of Mordor, excess removed
     /// as usual (§ 5.8).
+    #[tracing::instrument(level = "debug", skip_all)]
     fn mordor_influence(&mut self, data: &GameData) {
         let mordor: Vec<String> = data
             .locations
@@ -223,6 +231,7 @@ impl Game {
             .map(|(code, _)| code.clone())
             .collect();
         for location in &mordor {
+            tracing::trace!(%location, "Mordor influence");
             self.add_influence(location, MORDOR_INFLUENCE, data);
         }
         self.trim_unsupported_influence(data);
@@ -232,6 +241,7 @@ impl Game {
 
     /// "Lord of the Rings": the picked discarded card goes to Sauron's hand, shown to
     /// the heroes; then the yellow marker may advance.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     fn take_discarded_card(&mut self, answer: &ShadowAnswer) -> Result<(), EngineError> {
         let (kind, values) = answer.first_target()?;
         let card: u32 = parse_id(values.first())?
@@ -269,6 +279,7 @@ impl Game {
 
     /// "The Ithil-stone": the plot card leaves its pile for Sauron's hand or the Active
     /// Plot Track; the deck is shuffled after the search.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     fn ithil_stone_plot(
         &mut self,
         answer: &ShadowAnswer,
@@ -282,6 +293,7 @@ impl Game {
         pile.draw.retain(|c| *c != card);
         pile.discard.retain(|c| *c != card);
         pile.draw.shuffle(rng);
+        tracing::trace!(pile = "pile.draw", order = ?pile.draw, "shuffled");
         match (answer.option, self.free_plot_slots().first().copied()) {
             (option::PLAY_PLOT, Some(slot)) => self.activate_plot(card, slot),
             _ => {
@@ -297,6 +309,7 @@ impl Game {
     }
 
     /// "They Are Terrible": Sauron picks where the minion goes.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     fn ask_minion_location(&mut self, answer: &ShadowAnswer) -> Result<(), EngineError> {
         let picked = answer
             .targets
@@ -328,6 +341,7 @@ impl Game {
 
     /// "They Are Terrible": the minion, healed (or back from defeat at full life),
     /// goes to the picked location.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     fn place_terrible_minion(
         &mut self,
         answer: &ShadowAnswer,
@@ -362,6 +376,7 @@ impl Game {
     }
 
     /// "The Lidless Eye": Sauron splits the two heroes' Corruption cards.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     fn ask_redistribution(&mut self, answer: &ShadowAnswer) -> Result<(), EngineError> {
         let mut heroes: Vec<i64> = answer
             .targets
@@ -371,6 +386,7 @@ impl Game {
         heroes.sort_unstable();
         let mut cards = Vec::new();
         for hero_id in &heroes {
+            tracing::trace!(hero_id, "collecting corruption cards");
             let hero = self.hero(*hero_id)?;
             cards.extend(
                 hero.corruption_cards
@@ -400,6 +416,7 @@ impl Game {
 
     /// The picked Corruption cards go to the first hero, the others to the second;
     /// then Sauron picks the hero receiving a new one.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     fn redistribute_corruption(
         &mut self,
         answer: &ShadowAnswer,
@@ -409,8 +426,10 @@ impl Game {
             return Err(EngineError::Refused("two heroes are needed".to_owned()));
         };
         for (from, to) in [(*first, *second), (*second, *first)] {
+            tracing::trace!(from, to, "redistributing corruption cards");
             let cards = self.hero(from)?.corruption_cards.clone();
             for card in cards {
+                tracing::trace!(card, from, to, "corruption card redistribution");
                 let to_first = answer.targets.contains(&target("corruption", card));
                 if to_first == (to == *first) {
                     self.move_corruption_card(from, to, card, data)?;

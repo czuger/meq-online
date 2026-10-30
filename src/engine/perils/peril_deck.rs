@@ -27,6 +27,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn draw_perils(
         &mut self,
         hero_id: i64,
@@ -68,6 +69,7 @@ impl Game {
 
     /// Draws Peril cards, rebuilding the deck from its discard pile (or from every card
     /// when both are empty, for games created before the Peril deck existed).
+    #[tracing::instrument(level = "debug", skip_all, fields(count))]
     fn draw_peril_cards(
         &mut self,
         count: usize,
@@ -78,10 +80,12 @@ impl Game {
         if pile.draw.len() < count {
             pile.draw.append(&mut pile.discard);
             pile.draw.shuffle(rng);
+            tracing::trace!(pile = "pile.draw", order = ?pile.draw, "shuffled");
         }
         if pile.draw.is_empty() {
             pile.draw = data.perils.keys().copied().collect();
             pile.draw.shuffle(rng);
+            tracing::trace!(pile = "pile.draw", order = ?pile.draw, "shuffled");
         }
         let count = count.min(pile.draw.len());
         pile.draw.drain(..count).collect()
@@ -89,6 +93,7 @@ impl Game {
 
     /// Sauron picked a Peril card: the drawn cards are discarded and the hero resolves
     /// the picked one.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?cards, ?targets), err(level = "debug"))]
     pub(crate) fn apply_peril_draw(
         &mut self,
         hero_id: i64,
@@ -109,9 +114,11 @@ impl Game {
     }
 
     /// "Orc Scouts": the card and the discard pile are shuffled back into the deck.
+    #[tracing::instrument(level = "debug", skip_all)]
     pub(crate) fn shuffle_perils_back(&mut self, rng: &mut StdRng) {
         let pile = &mut self.board.decks.peril;
         pile.draw.append(&mut pile.discard);
         pile.draw.shuffle(rng);
+        tracing::trace!(pile = "pile.draw", order = ?pile.draw, "shuffled");
     }
 }

@@ -60,6 +60,7 @@ fn read_normalized(dir: &Path, name: &str) -> Result<(PathBuf, Value), GameDataE
         path: path.clone(),
         source,
     })?;
+    tracing::debug!(path = %path.display(), bytes = text.len(), "reading game data");
     let value: Value = serde_norway::from_str(&text).map_err(|source| GameDataError::Yaml {
         path: path.clone(),
         source,

@@ -4,6 +4,7 @@ use crate::game_data::GameData;
 use crate::model::game::Game;
 use crate::web::flash::Flash;
 use crate::web::session::Session;
+use crate::web::views::table_view::{MapTarget, TableView};
 
 /// Board shortcuts in the menu.
 #[derive(Debug, Clone)]
@@ -40,12 +41,40 @@ pub struct Layout {
     pub actor: Option<ActorNav>,
     /// Flash message to display.
     pub flash: Option<Flash>,
+    /// Game table framing the page, for a seat's screens.
+    pub table: Option<TableView>,
 }
 
 impl Layout {
     /// Layout without user (login pages).
     pub fn anonymous() -> Self {
         Self::default()
+    }
+
+    /// Frames the page with the game table.
+    #[must_use]
+    pub fn with_table(mut self, table: TableView) -> Self {
+        self.table = Some(table);
+        self
+    }
+
+    /// Changes the game table framing the page, if any.
+    #[must_use]
+    pub fn map_table(mut self, change: impl FnOnce(TableView) -> TableView) -> Self {
+        self.table = self.table.map(change);
+        self
+    }
+
+    /// Hides the hand in the table's tray, for screens showing the cards themselves.
+    #[must_use]
+    pub fn without_hand(self) -> Self {
+        self.map_table(TableView::without_hand)
+    }
+
+    /// Lets the player click the step's locations on the table's map.
+    #[must_use]
+    pub fn with_targets(self, targets: Vec<MapTarget>) -> Self {
+        self.map_table(|table| table.with_targets(targets))
     }
 
     /// Layout of a page outside any board.

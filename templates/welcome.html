@@ -1,59 +1,51 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
-  <div class="alert alert-secondary">
-    <ul class="mt-3">
-      <li>Cette version est une pré-alpha : beaucoup de choses ne sont pas encore implémentées et elle peut contenir des bogues.</li>
+<div class="page">
+  <div class="hero-banner">
+    <h1>Middle-earth Quest en ligne</h1>
+    <p class="muted">Cette version est une pré-alpha : beaucoup de choses ne sont pas encore implémentées et elle peut contenir des bogues.</p>
+    <a class="btn btn-primary" role="button" href="/sessions/new">Se connecter</a>
+  </div>
+
+  <details class="rules">
+    <summary>Fonctionnalités manquantes</summary>
+    <h4 class="mt">En cours</h4>
+    <ul>
+      <li>Impossible de retirer les corruptions.</li>
+      <li>Un héros peut se reposer même s'il y a un monstre ou un serviteur sur le lieu.</li>
+      <li>Le Roi-Sorcier n'empêche pas les héros de se reposer.</li>
+      <li>La Bouche de Sauron ne donne pas de corruption.</li>
+      <li>Ajout du monstre Agent.</li>
+      <li>Les environs de Gothmog ne sont pas périlleux.</li>
     </ul>
-  </div>
 
-  <div class="row">
-    <div class="col-4"></div>
-    <div class="col-4"><a class="btn btn-primary btn-block" role="button" href="/sessions/new">Se connecter</a></div>
-    <div class="col-4"></div>
-  </div>
+    <h4>À corriger à court terme</h4>
+    <ul>
+      <li>En entrant dans un lieu périlleux avec un monstre, le héros subit le péril et le monstre (Sauron devrait choisir).</li>
+      <li>Sauron doit choisir où placer un monstre avant de savoir quel monstre il obtiendra.</li>
+    </ul>
 
-  <hr>
-  <h3>Fonctionnalités manquantes</h3>
+    <h4>À corriger à moyen terme</h4>
+    <ul>
+      <li>Plus de 2 jetons d'influence peuvent être ajoutés à la réserve des Ténèbres en un seul tour.</li>
+      <li>Les pouvoirs des cartes intrigue ne fonctionnent pas.</li>
+      <li>Pas de cartes des Ténèbres.</li>
+    </ul>
 
-  <b>En cours</b>
-  <ul>
-    <li>Impossible de retirer les corruptions.</li>
-    <li>Un héros peut se reposer même s'il y a un monstre ou un serviteur sur le lieu.</li>
-    <li>Le Roi-Sorcier n'empêche pas les héros de se reposer.</li>
-    <li>La Bouche de Sauron ne donne pas de corruption.</li>
-    <li>Ajout du monstre Agent.</li>
-    <li>Les environs de Gothmog ne sont pas périlleux.</li>
-  </ul>
-
-  <b>À corriger à court terme</b>
-  <ul>
-    <li>En entrant dans un lieu périlleux avec un monstre, le héros subit le péril et le monstre (Sauron devrait choisir).</li>
-    <li>Sauron doit choisir où placer un monstre avant de savoir quel monstre il obtiendra.</li>
-  </ul>
-
-  <hr>
-  <b>À corriger à moyen terme</b>
-  <ul>
-    <li>Plus de 2 jetons d'influence peuvent être ajoutés à la réserve des Ténèbres en un seul tour.</li>
-    <li>Les pouvoirs des cartes intrigue ne fonctionnent pas.</li>
-    <li>Pas de cartes des Ténèbres.</li>
-  </ul>
-
-  <hr>
-  <b>À corriger à long terme</b>
-  <ul>
-    <li>Toutes les actions ne sont pas journalisées.</li>
-    <li>Pas de quêtes pour les héros.</li>
-    <li>Pas de départage en fin de partie.</li>
-    <li>Après une défaite, le héros est déplacé vers un refuge fixe plutôt que le plus proche.</li>
-    <li>Aucune carte rencontre n'est tirée à la fin du tour du héros.</li>
-    <li>Les personnages ne donnent que des faveurs.</li>
-    <li>Après un combat, en cas d'égalité, un marqueur au hasard avance au lieu de demander au joueur.</li>
-    <li>Pas d'objectifs : le premier arrivé au bout de la piste gagne.</li>
-    <li>Après une victoire d'un monstre, Sauron ne peut pas placer d'influence.</li>
-    <li>Tous les héros, monstres, objets et cartes de corruption ne sont pas présents.</li>
-    <li>Les formations et les compétences ne sont pas disponibles.</li>
-  </ul>
+    <h4>À corriger à long terme</h4>
+    <ul>
+      <li>Toutes les actions ne sont pas journalisées.</li>
+      <li>Pas de quêtes pour les héros.</li>
+      <li>Pas de départage en fin de partie.</li>
+      <li>Après une défaite, le héros est déplacé vers un refuge fixe plutôt que le plus proche.</li>
+      <li>Aucune carte rencontre n'est tirée à la fin du tour du héros.</li>
+      <li>Les personnages ne donnent que des faveurs.</li>
+      <li>Après un combat, en cas d'égalité, un marqueur au hasard avance au lieu de demander au joueur.</li>
+      <li>Pas d'objectifs : le premier arrivé au bout de la piste gagne.</li>
+      <li>Après une victoire d'un monstre, Sauron ne peut pas placer d'influence.</li>
+      <li>Tous les héros, monstres, objets et cartes de corruption ne sont pas présents.</li>
+      <li>Les formations et les compétences ne sont pas disponibles.</li>
+    </ul>
+  </details>
 </div>
 {% endblock %}

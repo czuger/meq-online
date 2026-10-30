@@ -14,6 +14,7 @@ const AI_USER_NAMES: [&str; 5] = ["IA Alice", "IA Bob", "IA Marc", "IA Luc", "IA
 ///
 /// # Errors
 /// Database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(%provider, %name), err(level = "debug"))]
 pub async fn find_or_create(
     conn: &mut SqliteConnection,
     provider: &str,
@@ -40,6 +41,7 @@ pub async fn find_or_create(
 ///
 /// # Errors
 /// Database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(user_id), err(level = "debug"))]
 pub async fn find(conn: &mut SqliteConnection, user_id: i64) -> Result<Option<User>, DbError> {
     let row = sqlx::query("SELECT * FROM users WHERE id = ?")
         .bind(user_id)
@@ -52,9 +54,11 @@ pub async fn find(conn: &mut SqliteConnection, user_id: i64) -> Result<Option<Us
 ///
 /// # Errors
 /// Database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(count), err(level = "debug"))]
 pub async fn ai_users(conn: &mut SqliteConnection, count: usize) -> Result<Vec<i64>, DbError> {
     let mut ids = Vec::with_capacity(count);
     for (index, name) in AI_USER_NAMES.iter().enumerate().take(count) {
+        tracing::trace!(index, name, "creating computer user");
         let email = format!("{}@foo.bar", name.replace(' ', ""));
         let uid = format!("ai-{index}");
         sqlx::query(
@@ -83,6 +87,7 @@ pub async fn ai_users(conn: &mut SqliteConnection, count: usize) -> Result<Vec<i
 ///
 /// # Errors
 /// Database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(user_id), err(level = "debug"))]
 pub async fn create_session(conn: &mut SqliteConnection, user_id: i64) -> Result<String, DbError> {
     let token = format!("{:032x}", rand::rng().random::<u128>());
     sqlx::query("INSERT INTO sessions (token, user_id) VALUES (?, ?)")
@@ -97,6 +102,7 @@ pub async fn create_session(conn: &mut SqliteConnection, user_id: i64) -> Result
 ///
 /// # Errors
 /// Database errors.
+#[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
 pub async fn session_user(
     conn: &mut SqliteConnection,
     token: &str,
@@ -114,6 +120,7 @@ pub async fn session_user(
 ///
 /// # Errors
 /// Database errors.
+#[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
 pub async fn delete_session(conn: &mut SqliteConnection, token: &str) -> Result<(), DbError> {
     sqlx::query("DELETE FROM sessions WHERE token = ?")
         .bind(token)
@@ -126,6 +133,12 @@ pub async fn delete_session(conn: &mut SqliteConnection, token: &str) -> Result<
 ///
 /// # Errors
 /// Database errors.
+#[tracing::instrument(
+    level = "debug",
+    skip_all,
+    fields(board_id, user_id),
+    err(level = "debug")
+)]
 pub async fn add_member(
     conn: &mut SqliteConnection,
     board_id: i64,
@@ -143,6 +156,12 @@ pub async fn add_member(
 ///
 /// # Errors
 /// Database errors.
+#[tracing::instrument(
+    level = "debug",
+    skip_all,
+    fields(board_id, user_id),
+    err(level = "debug")
+)]
 pub async fn is_member(
     conn: &mut SqliteConnection,
     board_id: i64,
@@ -161,6 +180,7 @@ pub async fn is_member(
 ///
 /// # Errors
 /// Database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(user_id), err(level = "debug"))]
 pub async fn member_board_ids(
     conn: &mut SqliteConnection,
     user_id: i64,

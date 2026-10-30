@@ -15,6 +15,7 @@ use crate::web::access::BoardAccess;
 ///
 /// A subscriber that falls behind also gets a `refresh`. The stream ends when the
 /// server shuts down.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id))]
 pub async fn stream(
     State(state): State<AppState>,
     access: BoardAccess,

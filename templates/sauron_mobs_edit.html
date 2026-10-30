@@ -1,15 +1,15 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
-  <h3>Déplacer</h3>
-  <hr>
-  <form method="post" action="/sauron/{{ sauron_id }}/sauron_mobs/{{ mob_id }}">
-    <div class="row">
+<div class="page">
+  <h1>Déplacer</h1>
+  <p class="lead">Choisissez la destination.</p>
+  <form method="post" action="/sauron/{{ sauron_id }}/sauron_mobs/{{ mob_id }}" id="move-mob-form">
+    <div class="button-grid">
       {% for location in locations %}
-      <div class="col-md-4 mt-2"><button type="submit" name="button" value="{{ location.code }}" class="btn btn-secondary btn-block">{{ location.name }}</button></div>
+      <button type="submit" name="button" value="{{ location.code }}" class="btn">{{ location.name }}</button>
       {% endfor %}
     </div>
   </form>
-  <div class="row"><div class="col-md-4 mt-2"><a class="btn btn-primary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_mobs">Retour</a></div></div>
+  <div class="actions"><a class="btn btn-quiet" role="button" href="/sauron/{{ sauron_id }}/sauron_mobs">Retour</a></div>
 </div>
 {% endblock %}

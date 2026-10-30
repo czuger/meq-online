@@ -1,0 +1,37 @@
+<section class="tray">
+  {% if let Some(tray) = table.hero_tray %}
+  <div class="tray-row">
+    <h3>{{ tray.info.name }}</h3>
+    {% let info = tray.info %}{% include "hero_info.html" %}
+  </div>
+  {% if table.show_hand %}
+  <h4>Main <span class="muted">({{ tray.hand.len() }})</span></h4>
+  <div class="cards">{% for card in tray.hand %}<img src="{{ card.pic }}" class="small-card" alt="">{% endfor %}</div>
+  {% endif %}
+  <details class="rules">
+    <summary>Fiche du héros{% if !tray.corruptions.is_empty() %} et corruptions ({{ tray.corruptions.len() }}){% endif %}</summary>
+    <div class="hero-sheet mt">
+      <img src="{{ tray.sheet_pic }}" alt="{{ tray.info.name }}">
+      <div class="cards">{% for card in tray.corruptions %}<img src="{{ card.pic }}" class="small-card" alt="">{% endfor %}</div>
+    </div>
+  </details>
+  {% endif %}
+  {% if let Some(tray) = table.sauron_tray %}
+  {% if table.show_hand %}
+  <div class="tray-columns">
+    <div>
+      <h4>Cartes des Ténèbres <span class="muted">({{ tray.shadow_hand.len() }})</span></h4>
+      <div class="cards">{% for card in tray.shadow_hand %}<img src="{{ card.pic }}" class="small-card" alt="">{% endfor %}</div>
+    </div>
+    <div>
+      <h4>Cartes intrigue <span class="muted">({{ tray.plot_hand.len() }})</span></h4>
+      <div class="cards">{% for card in tray.plot_hand %}<img src="{{ card.pic }}" class="small-card" alt="">{% endfor %}</div>
+    </div>
+    <div>
+      <h4>Intrigues en jeu <span class="muted">({{ tray.plots.len() }})</span></h4>
+      <div class="cards">{% for card in tray.plots %}<img src="{{ card.pic }}" class="small-card" alt="">{% endfor %}</div>
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+</section>

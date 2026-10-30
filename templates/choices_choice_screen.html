@@ -1,36 +1,35 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
-  <h3>Décision : {{ chooser }}</h3>
-  {% if let Some(pic) = card_pic %}<img src="{{ pic }}" class="medium-card mb-3" alt="">{% endif %}
-  {% if let Some(text) = context %}<div class="alert alert-secondary">{{ text }}</div>{% endif %}
-  {% if let Some(pic) = seen_pic %}<p>Carte du dessus de la pioche Intrigue :</p><img src="{{ pic }}" class="medium-card mb-3" alt="">{% endif %}
+<div class="page">
+  <h1>Décision : {{ chooser }}</h1>
+  {% if let Some(text) = context %}<p class="lead">{{ text }}</p>{% endif %}
+  <div class="cards">
+    {% if let Some(pic) = card_pic %}<img src="{{ pic }}" class="medium-card" alt="">{% endif %}
+    {% if let Some(pic) = seen_pic %}<figure><img src="{{ pic }}" class="medium-card" alt=""><figcaption>Carte du dessus de la pioche Intrigue</figcaption></figure>{% endif %}
+  </div>
   {% if can_answer %}
   <form method="post" action="/boards/{{ board_id }}/choices/choose">
     {% for option in options %}
-    <div class="card mb-2">
-      <div class="card-body">
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="option" id="option_{{ option.code }}" value="{{ option.code }}"{% if loop.first %} checked{% endif %}>
-          <label class="form-check-label" for="option_{{ option.code }}"><strong>{{ option.label }}</strong></label>
-        </div>
-        {% if !option.hint.is_empty() %}<p class="text-muted mb-1 ml-4">{{ option.hint }}</p>{% endif %}
+    <div class="box">
+      <label class="option box-title" for="option_{{ option.code }}"><input type="radio" name="option" id="option_{{ option.code }}" value="{{ option.code }}"{% if loop.first %} checked{% endif %}> {{ option.label }}</label>
+      {% if !option.hint.is_empty() %}<p class="option-hint">{{ option.hint }}</p>{% endif %}
+      {% if !option.targets.is_empty() %}
+      <div class="option-targets">
         {% for target in option.targets %}
-        <div class="form-check ml-4">
-          <input class="form-check-input" type="checkbox" name="targets" id="target_{{ target.value }}" value="{{ target.value }}">
-          <label class="form-check-label" for="target_{{ target.value }}">
-            {% if let Some(pic) = target.picture %}<img src="{{ pic }}" class="small-card" alt="">{% endif %}
-            {{ target.label }}
-          </label>
-        </div>
+        <label class="option" for="target_{{ target.value }}">
+          <input type="checkbox" name="targets" id="target_{{ target.value }}" value="{{ target.value }}">
+          {% if let Some(pic) = target.picture %}<img src="{{ pic }}" class="small-card" alt="">{% endif %}
+          <span>{{ target.label }}</span>
+        </label>
         {% endfor %}
       </div>
+      {% endif %}
     </div>
     {% endfor %}
-    <button type="submit" class="btn btn-primary">Valider</button>
+    <div class="actions"><button type="submit" class="btn btn-primary">Valider</button></div>
   </form>
   {% else %}
-  <div class="alert alert-secondary"><ul class="mt-3"><li>En attente de la décision de : {{ chooser }}.</li></ul></div>
+  <div class="note">En attente de la décision de : {{ chooser }}.</div>
   <ul>
     {% for option in options %}<li>{{ option.label }}</li>{% endfor %}
   </ul>

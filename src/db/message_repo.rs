@@ -11,6 +11,7 @@ use crate::model::message::Message;
 ///
 /// # Errors
 /// Database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id, ?actor), err(level = "debug"))]
 pub async fn for_actor(
     conn: &mut SqliteConnection,
     board_id: i64,
@@ -48,6 +49,7 @@ pub async fn for_actor(
 ///
 /// # Errors
 /// Database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id, ?sender, ?receiver, %text), err(level = "debug"))]
 pub async fn create(
     conn: &mut SqliteConnection,
     board_id: i64,

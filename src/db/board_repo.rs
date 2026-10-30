@@ -19,6 +19,7 @@ const COLUMNS: &str = "id, state, max_heroes, waiting_heroes, turn, current_hero
 ///
 /// # Errors
 /// [`DbError::NotFound`] when the board doesn't exist; decoding errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id), err(level = "debug"))]
 pub async fn find(conn: &mut SqliteConnection, board_id: i64) -> Result<Board, DbError> {
     let sql = format!("SELECT {COLUMNS} FROM boards WHERE id = ?");
     let row = sqlx::query(sqlx::AssertSqlSafe(sql))
@@ -33,6 +34,7 @@ pub async fn find(conn: &mut SqliteConnection, board_id: i64) -> Result<Board, D
 ///
 /// # Errors
 /// [`DbError::Sqlx`] on database failure.
+#[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
 pub async fn all_ids(conn: &mut SqliteConnection) -> Result<Vec<i64>, DbError> {
     let ids = sqlx::query_scalar("SELECT id FROM boards ORDER BY updated_at DESC, id DESC")
         .fetch_all(conn)
@@ -44,6 +46,7 @@ pub async fn all_ids(conn: &mut SqliteConnection) -> Result<Vec<i64>, DbError> {
 ///
 /// # Errors
 /// Encoding and database errors.
+#[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
 pub async fn insert(conn: &mut SqliteConnection, board: &mut Board) -> Result<(), DbError> {
     let result = sqlx::query(
         "INSERT INTO boards (state, max_heroes, turn, shadow_pool, influence, characters, favors, plots, \
@@ -63,6 +66,7 @@ pub async fn insert(conn: &mut SqliteConnection, board: &mut Board) -> Result<()
 ///
 /// # Errors
 /// [`DbError::NotFound`] when the board has no id; encoding and database errors.
+#[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
 pub async fn update(conn: &mut SqliteConnection, board: &Board) -> Result<(), DbError> {
     let id = board.id.ok_or(DbError::NotFound("board id"))?;
     let winner = board.winner.as_ref().map(enum_to_text).transpose()?;

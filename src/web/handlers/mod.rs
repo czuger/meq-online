@@ -11,6 +11,7 @@ pub mod heroes;
 pub mod logs;
 pub mod maps;
 pub mod messages;
+pub mod play;
 pub mod plot_cards;
 pub mod sauron;
 pub mod sauron_actions;

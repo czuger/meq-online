@@ -11,6 +11,7 @@ use crate::model::sauron::Sauron;
 ///
 /// # Errors
 /// [`DbError::NotFound`] when the board has no Sauron; decoding errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id), err(level = "debug"))]
 pub async fn for_board(conn: &mut SqliteConnection, board_id: i64) -> Result<Sauron, DbError> {
     let row = sqlx::query("SELECT * FROM saurons WHERE board_id = ?")
         .bind(board_id)
@@ -24,6 +25,7 @@ pub async fn for_board(conn: &mut SqliteConnection, board_id: i64) -> Result<Sau
 ///
 /// # Errors
 /// [`DbError::NotFound`] when the Sauron doesn't exist.
+#[tracing::instrument(level = "debug", skip_all, fields(sauron_id), err(level = "debug"))]
 pub async fn board_id(conn: &mut SqliteConnection, sauron_id: i64) -> Result<i64, DbError> {
     sqlx::query_scalar("SELECT board_id FROM saurons WHERE id = ?")
         .bind(sauron_id)
@@ -36,6 +38,7 @@ pub async fn board_id(conn: &mut SqliteConnection, sauron_id: i64) -> Result<i64
 ///
 /// # Errors
 /// Encoding and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id), err(level = "debug"))]
 pub async fn save(
     conn: &mut SqliteConnection,
     board_id: i64,

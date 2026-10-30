@@ -36,7 +36,7 @@ pub mod tokens;
 pub mod turn;
 
 #[cfg(test)]
-mod test_support;
+pub(crate) mod test_support;
 
 pub use crate::engine::engine_error::EngineError;
 

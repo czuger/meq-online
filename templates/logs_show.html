@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
+<div class="page">
   <h1>Journal</h1>
   <table class="table">
     <thead><tr><th>Utilisateur</th><th>Acteur</th><th>Action</th><th>Carte</th></tr></thead>
@@ -10,7 +10,7 @@
         {% if let Some((user, actor)) = row.actor %}
         <td>{{ user }}</td><td>{{ actor }}</td>
         {% else %}
-        <td colspan="2">Système</td>
+        <td colspan="2" class="muted">Système</td>
         {% endif %}
         <td>{{ row.text }}</td>
         <td>{% if let Some(pic) = row.card_pic %}<img class="log-card" src="{{ pic }}" alt="">{% endif %}</td>

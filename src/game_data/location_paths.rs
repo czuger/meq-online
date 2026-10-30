@@ -75,8 +75,10 @@ impl LocationPaths {
         let mut distances = BTreeMap::from([(start, 0)]);
         let mut frontier = VecDeque::from([start]);
         while let Some(current) = frontier.pop_front() {
+            tracing::trace!(%current, frontier = frontier.len(), "distance search");
             let next_distance = distances.get(current).copied().unwrap_or(0) + 1;
             for next in self.connected(current) {
+                tracing::trace!(%next, "distance neighbor");
                 if !distances.contains_key(next) {
                     distances.insert(next, next_distance);
                     frontier.push_back(next);

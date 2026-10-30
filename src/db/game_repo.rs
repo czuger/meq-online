@@ -10,6 +10,7 @@ use crate::model::game::Game;
 ///
 /// # Errors
 /// [`DbError::NotFound`] when the board or its Sauron is missing; decoding errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id), err(level = "debug"))]
 pub async fn load(conn: &mut SqliteConnection, board_id: i64) -> Result<Game, DbError> {
     Ok(Game {
         board: board_repo::find(conn, board_id).await?,
@@ -26,6 +27,7 @@ pub async fn load(conn: &mut SqliteConnection, board_id: i64) -> Result<Game, Db
 ///
 /// # Errors
 /// Encoding and database errors.
+#[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
 pub async fn save(conn: &mut SqliteConnection, game: &mut Game) -> Result<(), DbError> {
     let board_id = match game.board.id {
         Some(id) => id,
@@ -36,6 +38,7 @@ pub async fn save(conn: &mut SqliteConnection, game: &mut Game) -> Result<(), Db
     };
     sauron_repo::save(conn, board_id, &mut game.sauron).await?;
     for hero in &mut game.heroes {
+        tracing::trace!(hero = %hero.code, id = ?hero.id, "saving hero");
         hero_repo::save(conn, board_id, hero).await?;
     }
     combat_repo::replace(conn, board_id, None).await?;

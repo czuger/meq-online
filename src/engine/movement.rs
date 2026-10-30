@@ -61,6 +61,7 @@ pub fn validate_movement(
     let path = data.paths.path(&hero.location, destination)?;
     let mut remaining = path_difficulty(path, hero);
     for card in cards {
+        tracing::trace!(?card, remaining, "movement card");
         let def = data.hero_card(&hero.code, *card)?;
         if def.movement_type == Some(path.path_type) {
             return Ok(true);
@@ -80,6 +81,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::CardNotAvailable`] when a card isn't in hand; lookup and
     /// transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, %destination), err(level = "debug"))]
     pub fn move_hero(
         &mut self,
         hero_id: i64,
@@ -122,6 +124,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn travel_threats(
         &mut self,
         hero_id: i64,
@@ -139,6 +142,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::InvalidTransition`] outside the movement step.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn movement_finished(&mut self) -> Result<(), EngineError> {
         self.fire(BoardEvent::NextToHeroExploration)
     }
@@ -166,6 +170,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::Refused`] when the hero isn't Argalad.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn use_argalad_power(&mut self, hero_id: i64) -> Result<(), EngineError> {
         let hero = self.hero_mut(hero_id)?;
         if hero.code != "argalad" {

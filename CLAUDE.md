@@ -20,8 +20,15 @@ cargo fmt
 ```
 
 Settings come from `MEQ_BIND`, `DATABASE_URL` (default `sqlite://meq.sqlite3`), `MEQ_DATA_DIR`, `MEQ_STATIC_DIR` and
-`RUST_LOG`. `schema.sql` is applied at every start with `CREATE TABLE IF NOT EXISTS`; there are no migrations, so a
-schema change on an existing database needs a manual `ALTER TABLE` or a fresh database.
+`RUST_LOG` (console, default `info`). `schema.sql` is applied at every start with `CREATE TABLE IF NOT EXISTS`; there
+are no migrations, so a schema change on an existing database needs a manual `ALTER TABLE` or a fresh database.
+
+Debug log (`logging.rs`): dev builds (`cargo run`) write a detailed daily file `logs/meq-debug.YYYY-MM-DD.log`
+(`MEQ_DEBUG_LOG=0` turns it off, `=1` turns it on in release builds; `MEQ_LOG_DIR`, `MEQ_LOG_FILTER`, default
+`config::DEFAULT_LOG_FILTER`). It holds every request, every engine step (`#[tracing::instrument]` spans with entry,
+exit and timing on state-changing functions, handlers and repos), board state transitions (`Game::fire`), game log
+entries (`Game::log`), shuffles and random draws, a `trace!` in each loop, and SQL statements. New state-changing
+functions and loops get the same; never log session tokens or e-mails.
 
 ## Architecture
 
@@ -46,10 +53,26 @@ schema change on an existing database needs a manual `ALTER TABLE` or a fresh da
   `kind`.
 - **`web/`**: axum router, handlers (one file per area), askama page structs (private to their handler) and views.
   `access.rs` extractors check that the user is a member of the board in the URL (the only ownership rule).
-  `game_tx::change_game` wraps load → change → save → refresh broadcast. Flash messages use a cookie.
-- **`refresh.rs`**: a tokio broadcast; `/boards/{id}/events` streams it as server-sent events and the map page reloads
-  on each event.
-- `templates/` (askama, French text), `static/` (pictures, CSS, vanilla JS, served under `/static`).
+  `game_tx::change_game` wraps load → change → save → refresh broadcast (only when the game changed, so a screen
+  that saves on display doesn't reload itself). Flash messages use a cookie. State-changing actions are POST forms.
+  - **Game table**: every screen of a seat is framed by `views/table_view.rs` (`TableView`: seats, turn steps, map,
+    recent log lines, the seat's cards in a tray), attached to the `Layout` by `game_layout.rs` (`hero_layout`,
+    `sauron_layout`, `viewer_layout` for screens shared by both sides). `layout.html` wraps the page's `content`
+    block in the table when `layout.table` is set; partials live in `templates/partials/`. A screen makes
+    locations clickable on the map with `Layout::with_targets` (`MapTarget`: a submit button of the step's form
+    drawn over the location), hides the tray hand with `without_hand` when it shows the hand itself.
+  - `views/turn_steps.rs` (the stepper, an exhaustive `match BoardState`), `views/seat_view.rs` (`controls`: own
+    seat or computer seat).
+  - **Play page**: `GET /boards/{id}/play` (`handlers/play.rs`) redirects to the screen of the user's seat the game
+    waits on (`game_layout::my_screen`, using `route::screen_side`) or shows the waiting page; turn-ending actions
+    and transient states (`route_for`) go there. `GET /boards/{id}/status` returns `{ "url": … }` for
+    `static/js/game.js`.
+- **`refresh.rs`**: a tokio broadcast; `/boards/{id}/events` streams it as server-sent events. On each event the
+  table (`game.js`) asks `/status`, goes to the user's screen when it changed, otherwise reloads, or shows an
+  "Actualiser" banner when the player has started filling the screen.
+- `templates/` (askama, French text), `static/` (pictures, `css/app.css` (own stylesheet, no Bootstrap), vanilla
+  JS: `app.js` card selection, `game.js` map fit/zoom/drag, influence clicks and turn following; served under
+  `/static`). The map picture is drawn at its natural size (2934 × 2017) and scaled with a CSS transform.
 
 Notable behavior kept from the original: new games seat four computer-controlled heroes (beravor, eleanor, thalin,
 eometh) and make the creator Sauron; board members play the computer seats. Shadow cards are disabled.

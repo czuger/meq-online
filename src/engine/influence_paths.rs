@@ -48,10 +48,12 @@ impl<'a> InfluencePaths<'a> {
         let mut visited = BTreeSet::from([start]);
         let mut frontier = VecDeque::from([start]);
         while let Some(current) = frontier.pop_front() {
+            tracing::trace!(%current, frontier = frontier.len(), "influence path search");
             if current == destination {
                 return true;
             }
             for next in self.paths.connected(current) {
+                tracing::trace!(%next, "influence path neighbor");
                 let influenced = self.influence.get(next).copied().unwrap_or(0) >= 1;
                 if influenced && visited.insert(next) {
                     frontier.push_back(next);

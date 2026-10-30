@@ -1,23 +1,24 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
-  <h3>Déplacement</h3>
-  <div class="alert alert-secondary"><ul class="mt-3"><li>À cette étape, vous pouvez avancer d'un lieu : choisissez les cartes à utiliser, puis la destination.</li></ul></div>
+<div class="page">
+  <h1>Déplacement</h1>
+  <p class="lead">Choisissez les cartes à défausser dans votre main, puis la destination.</p>
   {% include "cards_hand.html" %}
-  <hr>
-  <form method="post" action="/heroes/{{ hero_id }}/move">
-    <div class="row">
+  <p class="selection-count" data-selection-count>Aucune carte choisie.</p>
+  <form method="post" action="/heroes/{{ hero_id }}/move" id="move-form">
+    <h3>Destinations</h3>
+    <div class="button-grid">
       {% for destination in destinations %}
-      <div class="col-md-4 mt-2"><button type="submit" name="button" value="{{ destination.code }}" class="btn btn-secondary btn-block">{{ destination.label }}</button></div>
+      <button type="submit" name="button" value="{{ destination.code }}" class="btn">{{ destination.label }}</button>
       {% endfor %}
     </div>
     <input type="hidden" id="selected_cards" name="selected_cards">
   </form>
-  <div class="row my-2">
-    <div class="col-md-4"><a class="btn btn-primary btn-block" role="button" href="/heroes/{{ hero_id }}/movement_finished">Fin du déplacement</a></div>
+  <div class="actions">
     {% if argalad_can_use_power %}
-    <div class="col-md-4"><a class="btn btn-primary btn-block" role="button" href="/heroes/{{ hero_id }}/argalad_power_screen">Utiliser le pouvoir d'Argalad</a></div>
+    <a class="btn" role="button" href="/heroes/{{ hero_id }}/argalad_power_screen">Utiliser le pouvoir d'Argalad</a>
     {% endif %}
+    <form method="post" action="/heroes/{{ hero_id }}/movement_finished" class="end"><button type="submit" class="btn btn-primary">Fin du déplacement</button></form>
   </div>
 </div>
 {% endblock %}

@@ -21,6 +21,7 @@ pub enum MobPowerEffect {
 ///
 /// # Returns
 /// Damage to apply to the hero, if any.
+#[tracing::instrument(level = "debug", skip_all, fields(%code, ?mob))]
 pub fn apply_mob_power(code: &str, mob: &Side, hero: &mut Side) -> MobPowerEffect {
     match code {
         // Orcs hurt in melee exchanges.

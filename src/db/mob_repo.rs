@@ -11,6 +11,7 @@ use crate::model::mob::Mob;
 ///
 /// # Errors
 /// Decoding and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id), err(level = "debug"))]
 pub async fn for_board(conn: &mut SqliteConnection, board_id: i64) -> Result<Vec<Mob>, DbError> {
     let rows = sqlx::query("SELECT * FROM mobs WHERE board_id = ? ORDER BY id")
         .bind(board_id)
@@ -24,6 +25,7 @@ pub async fn for_board(conn: &mut SqliteConnection, board_id: i64) -> Result<Vec
 ///
 /// # Errors
 /// Encoding and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id), err(level = "debug"))]
 pub async fn sync(
     conn: &mut SqliteConnection,
     board_id: i64,
@@ -37,17 +39,20 @@ pub async fn sync(
         .iter()
         .filter(|id| !mobs.iter().any(|m| m.id == Some(**id)))
     {
+        tracing::trace!(mob_id = id, "deleting mob");
         sqlx::query("DELETE FROM mobs WHERE id = ?")
             .bind(id)
             .execute(&mut *conn)
             .await?;
     }
     for mob in mobs.iter_mut() {
+        tracing::trace!(mob = %mob.code, id = ?mob.id, "saving mob");
         save(conn, board_id, mob).await?;
     }
     Ok(())
 }
 
+#[tracing::instrument(level = "debug", skip_all, fields(board_id, mob = %mob.code), err(level = "debug"))]
 async fn save(conn: &mut SqliteConnection, board_id: i64, mob: &mut Mob) -> Result<(), DbError> {
     if mob.id.is_none() {
         let result = sqlx::query(

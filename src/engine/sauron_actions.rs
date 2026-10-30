@@ -64,6 +64,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] when an action is in progress, no action is left this
     /// turn or the track is full; transition errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn start_sauron_action(
         &mut self,
         action: SauronAction,
@@ -115,6 +116,7 @@ impl Game {
 
     /// Draw Shadow and Plot Cards: X Shadow cards go to the hand, X Plot cards wait for
     /// Sauron to keep one.
+    #[tracing::instrument(level = "debug", skip_all, fields(value))]
     fn draw_shadow_and_plot_cards(&mut self, value: i32, rng: &mut StdRng) {
         let count = usize::try_from(value).unwrap_or(0);
         self.draw_sauron_cards(SauronDeck::Shadow, count, rng);
@@ -133,6 +135,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] without an action, or while drawn plot cards wait to be
     /// kept; transition errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn finish_sauron_action(&mut self) -> Result<(), EngineError> {
         let action = self
             .board
@@ -147,6 +150,7 @@ impl Game {
             self.close_influence_budget();
         }
         for mob in &mut self.mobs {
+            tracing::trace!(mob = %mob.code, "clearing command");
             mob.commanded = false;
         }
         self.board.current_action = None;

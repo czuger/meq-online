@@ -1,50 +1,51 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
-  <h3>Actions de Sauron</h3>
-  <div class="alert alert-secondary">
-    <ul class="mt-3">
+<div class="page">
+  <h1>Actions de Sauron</h1>
+  <p class="lead">Actions prises ce tour : <b>{{ actions_taken }} / {{ actions_per_turn }}</b>. Choisissez une piste d'action.</p>
+  <details class="rules">
+    <summary>Règles</summary>
+    <ul>
       <li>Pour chaque action, placez un jeton sur la case libre la plus à gauche d'une piste : X est le nombre de cette case.</li>
       <li>Quand vous placez votre quatrième jeton, les trois autres sont retirés.</li>
       <li>Sauron a deux actions par tour, trois avec trois héros.</li>
     </ul>
-  </div>
-  <p><b>Actions prises ce tour : {{ actions_taken }} / {{ actions_per_turn }}</b></p>
+  </details>
   {% if let Some(url) = action_in_progress %}
-  <div class="alert alert-warning">Une action est en cours. <a href="{{ url }}">Reprendre l'action</a></div>
+  <div class="note note-warn">Une action est en cours. <a href="{{ url }}">Reprendre l'action</a></div>
   {% endif %}
-  {% for track in tracks %}
-  <div class="row mt-2">
-    <div class="col-md-4 col-form-label">{{ track.label }}</div>
-    {% for space in track.spaces %}
-    <div class="col-md-1"><span class="badge {% if space.covered %}badge-dark{% else %}badge-light{% endif %} p-2">{{ space.value }}</span></div>
-    {% endfor %}
-    <div class="col-md-3">
+  <div class="tracks">
+    {% for track in tracks %}
+    <div class="box track">
+      <span class="box-title">{{ track.label }}</span>
+      <span class="track-spaces">
+        {% for space in track.spaces %}<span class="track-space{% if space.covered %} covered{% endif %}">{{ space.value }}</span>{% endfor %}
+      </span>
       {% if track.available %}
       <form method="post" action="/sauron/{{ sauron_id }}/sauron_actions/start">
-        <button type="submit" name="action" value="{{ track.code }}" class="btn btn-secondary btn-block">Choisir</button>
+        <button type="submit" name="action" value="{{ track.code }}" class="btn">Choisir</button>
       </form>
+      {% else %}
+      <span></span>
       {% endif %}
     </div>
+    {% endfor %}
   </div>
-  {% endfor %}
   {% if !shadow_cards.is_empty() %}
-  <hr>
-  <h5>Cartes des Ténèbres jouables (une seule par tour de joueur)</h5>
-  <div class="d-flex flex-wrap">
+  <h3>Cartes des Ténèbres jouables <span class="muted">(une seule par tour de joueur)</span></h3>
+  <div class="cards">
     {% for shadow in shadow_cards %}
-    <form method="post" action="/sauron/{{ sauron_id }}/shadow_cards/play" class="m-1 text-center">
-      <img src="{{ shadow.pic }}" class="medium-card d-block mb-1" alt="">
-      <button type="submit" name="card" value="{{ shadow.card }}" class="btn btn-secondary">Jouer</button>
+    <form method="post" action="/sauron/{{ sauron_id }}/shadow_cards/play">
+      <figure>
+        <img src="{{ shadow.pic }}" class="medium-card" alt="">
+        <button type="submit" name="card" value="{{ shadow.card }}" class="btn mt">Jouer</button>
+      </figure>
     </form>
     {% endfor %}
   </div>
   {% endif %}
-  <hr>
   {% if can_terminate %}
-  <div class="row">
-    <div class="col-md-4"><a class="btn btn-primary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_actions/terminate">Terminer le tour</a></div>
-  </div>
+  <form method="post" action="/sauron/{{ sauron_id }}/sauron_actions/terminate" class="actions"><button type="submit" class="btn btn-primary">Terminer le tour</button></form>
   {% endif %}
 </div>
 {% endblock %}

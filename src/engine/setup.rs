@@ -56,6 +56,7 @@ pub struct HeroSeat<'a> {
 /// # Errors
 /// [`EngineError::Refused`] for a wrong number of heroes or a hero chosen twice;
 /// fails when the static data misses a hero, plot or minion.
+#[tracing::instrument(level = "debug", skip_all, fields(sauron_user_id, ?seats), err(level = "debug"))]
 pub fn new_game(
     sauron_user_id: i64,
     seats: &[HeroSeat<'_>],
@@ -64,6 +65,7 @@ pub fn new_game(
 ) -> Result<Game, EngineError> {
     check_seats(seats)?;
     let starting_plot = rng.random_range(0..=2);
+    tracing::debug!(starting_plot, "starting plot drawn");
     let mut board = new_board(starting_plot, data, rng)?;
     board.max_heroes = i32::try_from(seats.len()).unwrap_or(i32::MAX);
     board.waiting_heroes = seats
@@ -85,6 +87,12 @@ pub fn new_game(
     };
 
     for (order, seat) in seats.iter().enumerate() {
+        tracing::trace!(
+            order,
+            hero = seat.code,
+            user_id = seat.user_id,
+            "seating hero"
+        );
         let hero = new_hero(seat.code, seat.user_id, order, data, rng)?;
         game.apply_quest_setup(seat.code, hero.quest, data)?;
         game.heroes.push(hero);
@@ -96,6 +104,7 @@ pub fn new_game(
     }
 
     for (mob, location) in STARTING_MINIONS {
+        tracing::trace!(mob, location, "placing starting minion");
         game.create_mob(mob, location, None, data)?;
     }
     game.log_setup(starting_plot, data)?;
@@ -119,6 +128,7 @@ fn check_seats(seats: &[HeroSeat<'_>]) -> Result<(), EngineError> {
     Ok(())
 }
 
+#[tracing::instrument(level = "debug", skip_all, fields(starting_plot), err(level = "debug"))]
 fn new_board(starting_plot: u32, data: &GameData, rng: &mut StdRng) -> Result<Board, EngineError> {
     let influence = data
         .plot(starting_plot)?
@@ -159,18 +169,24 @@ fn new_board(starting_plot: u32, data: &GameData, rng: &mut StdRng) -> Result<Bo
     })
 }
 
+#[tracing::instrument(level = "debug", skip_all)]
 fn shuffled_decks(data: &GameData, rng: &mut StdRng) -> Decks {
     // Plots 0 to 2 are the starting plots.
     let mut plot: Vec<u32> = data.plots.keys().copied().filter(|c| *c >= 3).collect();
     plot.shuffle(rng);
+    tracing::trace!(pile = "plot", order = ?plot, "shuffled");
     let mut shadow: Vec<u32> = data.shadows.keys().copied().collect();
     shadow.shuffle(rng);
+    tracing::trace!(pile = "shadow", order = ?shadow, "shuffled");
     let mut corruption = data.corruption.deck.clone();
     corruption.shuffle(rng);
+    tracing::trace!(pile = "corruption", order = ?corruption, "shuffled");
     let mut skills: Vec<u32> = data.skills.keys().copied().collect();
     skills.shuffle(rng);
+    tracing::trace!(pile = "skills", order = ?skills, "shuffled");
     let mut peril: Vec<u32> = data.perils.keys().copied().collect();
     peril.shuffle(rng);
+    tracing::trace!(pile = "peril", order = ?peril, "shuffled");
     let [event, event_ii, event_iii] = starting_event_decks(data, rng);
     Decks {
         plot: Pile {
@@ -208,17 +224,21 @@ fn shuffled_decks(data: &GameData, rng: &mut StdRng) -> Decks {
     }
 }
 
+#[tracing::instrument(level = "debug", skip_all)]
 fn shuffled_monster_pools(
     data: &GameData,
     rng: &mut StdRng,
 ) -> BTreeMap<MonsterPoolColor, Vec<String>> {
     let mut pools = data.monster_pools.clone();
     for pool in pools.values_mut() {
+        tracing::trace!(cards = pool.len(), "shuffling monster pool");
         pool.shuffle(rng);
+        tracing::trace!(pile = "pool", order = ?pool, "shuffled");
     }
     pools
 }
 
+#[tracing::instrument(level = "debug", skip_all, fields(%code, user_id, order), err(level = "debug"))]
 fn new_hero(
     code: &str,
     user_id: i64,
@@ -229,8 +249,10 @@ fn new_hero(
     let def = data.hero(code)?;
     let mut life_pool = def.starting_deck.clone();
     life_pool.shuffle(rng);
+    tracing::trace!(pile = "life_pool", order = ?life_pool, "shuffled");
     let quests = data.hero_quest(code)?;
     let quest = quests.starting_quests.choose(rng).copied();
+    tracing::debug!(hero = code, ?quest, "starting quest drawn");
     Ok(Hero {
         id: None,
         user_id,
@@ -272,6 +294,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::Refused`] when the hero's seat isn't open; transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(%code, user_id), err(level = "debug"))]
     pub fn join_hero_seat(&mut self, code: &str, user_id: i64) -> Result<bool, EngineError> {
         let position = self
             .board
@@ -294,6 +317,7 @@ impl Game {
     }
 
     /// Every seat is taken: Sauron plays first, starting with his setup.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     fn start_game(&mut self) -> Result<(), EngineError> {
         self.fire(BoardEvent::NextToSauronSetupScreen)?;
         self.sauron.active = true;
@@ -301,6 +325,7 @@ impl Game {
     }
 
     /// Follows the "Setup" instructions of the hero's Starting Quest (§ 3).
+    #[tracing::instrument(level = "debug", skip_all, fields(%hero, ?quest), err(level = "debug"))]
     fn apply_quest_setup(
         &mut self,
         hero: &str,
@@ -312,6 +337,7 @@ impl Game {
             return Ok(());
         };
         for action in quests.setup.get(&quest).into_iter().flatten() {
+            tracing::trace!(?action, "quest setup action");
             match action.action {
                 QuestSetupKind::Place => {
                     self.board
@@ -325,6 +351,7 @@ impl Game {
 
     /// Sauron follows his starting plot (§ 3): influence to place and plot cards to
     /// draw, some of which he keeps.
+    #[tracing::instrument(level = "debug", skip_all, fields(starting_plot), err(level = "debug"))]
     fn starting_plot_instructions(
         &mut self,
         starting_plot: u32,
@@ -342,6 +369,7 @@ impl Game {
         Ok(())
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(starting_plot), err(level = "debug"))]
     fn log_setup(&mut self, starting_plot: u32, data: &GameData) -> Result<(), EngineError> {
         self.log(
             ActorRef::System,
@@ -361,6 +389,7 @@ impl Game {
             .map(|i| i.init.clone())
             .unwrap_or_default();
         for (location, count) in init {
+            tracing::trace!(%location, count, "initial influence");
             let params = [
                 ("count", json!(count)),
                 ("location", json!(data.locations.name(&location))),

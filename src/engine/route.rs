@@ -27,11 +27,65 @@ impl RouteActor {
     }
 }
 
+/// Which side a state's screen is for.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ScreenSide {
+    /// Only Sauron acts on this screen.
+    Sauron,
+    /// Only a hero acts on this screen.
+    Hero,
+    /// Either side may act (combat cards, choices).
+    Both,
+    /// No screen: the state is transient or the game hasn't started or is over.
+    None,
+}
+
+impl ScreenSide {
+    /// Whether `actor` has something to do on this screen.
+    pub fn includes(self, actor: RouteActor) -> bool {
+        matches!(
+            (self, actor),
+            (Self::Both, _)
+                | (Self::Sauron, RouteActor::Sauron(_))
+                | (Self::Hero, RouteActor::Hero(_))
+        )
+    }
+}
+
+/// The side the screen of `state` is for.
+pub fn screen_side(state: BoardState) -> ScreenSide {
+    use BoardState as S;
+    match state {
+        S::SauronSetupScreen
+        | S::EditSauronSauronActions
+        | S::PlaceInfluenceScreenSauronActions
+        | S::KeepScreenSauronPlotCards
+        | S::CommandScreenSauronMobs
+        | S::PlayScreenSauronPlotCards
+        | S::LookForGollumCardsSauronPlotCards
+        | S::SauronHavenScreen => ScreenSide::Sauron,
+        S::HeroDrawCardsScreen
+        | S::HeroRestScreen
+        | S::HeroMovementScreen
+        | S::HeroExploration
+        | S::HeroDefeatScreen
+        | S::AfterRestAdvanceStoryMarker
+        | S::CombatSetupScreenBoardCombats
+        | S::CardsLossScreenBoardCombats => ScreenSide::Hero,
+        S::PlayCombatCardScreenBoardCombats | S::ChoiceScreenBoardChoices => ScreenSide::Both,
+        S::Created
+        | S::WaitingForPlayers
+        | S::FinishHeroTurn
+        | S::FinishSauronTurn
+        | S::Finished => ScreenSide::None,
+    }
+}
+
 /// Path of the GET route displaying `state` to `actor`.
 ///
 /// Each screen state is named after its route (`play_screen_sauron_plot_cards` is
 /// `/sauron/:sauron_id/plot_cards/play_screen`). Transient states have no screen and
-/// send the player back to the board list.
+/// send the player to the board's play page, which follows the game to whoever acts.
 ///
 /// # Arguments
 /// * `state` - current board state.
@@ -79,7 +133,7 @@ pub fn route_for(state: BoardState, board_id: i64, actor: RouteActor) -> String 
         | BoardState::WaitingForPlayers
         | BoardState::FinishHeroTurn
         | BoardState::FinishSauronTurn
-        | BoardState::Finished => "/boards".to_owned(),
+        | BoardState::Finished => format!("/boards/{board_id}/play"),
     }
 }
 
@@ -104,10 +158,21 @@ mod tests {
     }
 
     #[test]
-    fn transient_states_go_back_to_boards() {
+    fn transient_states_go_to_the_play_page() {
         assert_eq!(
             route_for(BoardState::FinishHeroTurn, 3, RouteActor::Hero(2)),
-            "/boards"
+            "/boards/3/play"
+        );
+    }
+
+    #[test]
+    fn hero_screens_leave_sauron_waiting() {
+        let side = screen_side(BoardState::CombatSetupScreenBoardCombats);
+        assert!(side.includes(RouteActor::Hero(2)));
+        assert!(!side.includes(RouteActor::Sauron(1)));
+        assert!(
+            screen_side(BoardState::PlayCombatCardScreenBoardCombats)
+                .includes(RouteActor::Sauron(1))
         );
     }
 }

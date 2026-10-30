@@ -109,6 +109,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] outside a Command action, without commands left, for a
     /// mob already commanded or a forbidden destination; lookup errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(mob_id, %location), err(level = "debug"))]
     pub fn command_move_mob(
         &mut self,
         mob_id: i64,
@@ -142,6 +143,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] outside a Command action, without commands left, after
     /// a placement in this action or on a forbidden location; pool errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(%location), err(level = "debug"))]
     pub fn command_place_monster(
         &mut self,
         location: &str,
@@ -180,6 +182,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] outside a Command action, without commands left, for a
     /// mob already commanded, a monster, or a minion in a hero's location.
+    #[tracing::instrument(level = "debug", skip_all, fields(mob_id), err(level = "debug"))]
     pub fn command_heal_minion(&mut self, mob_id: i64) -> Result<(), EngineError> {
         self.command()?;
         let mob = self.uncommanded_mob(mob_id)?;

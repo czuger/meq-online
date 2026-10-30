@@ -87,6 +87,7 @@ impl Mailbox {
 }
 
 /// "Name (user)" of every actor of the board.
+#[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
 async fn actor_names(state: &AppState, game: &Game) -> Result<Vec<(ActorRef, String)>, AppError> {
     let mut conn = state.db.acquire().await.map_err(DbError::from)?;
     let mut user_name = async |id: i64| -> Result<String, AppError> {
@@ -100,6 +101,7 @@ async fn actor_names(state: &AppState, game: &Game) -> Result<Vec<(ActorRef, Str
         format!("Sauron ({})", user_name(game.sauron.user_id).await?),
     )];
     for hero in &game.heroes {
+        tracing::trace!(hero = %hero.code, "mailbox");
         let hero_name = state
             .data
             .heroes
@@ -150,6 +152,7 @@ async fn index(state: AppState, mailbox: Mailbox) -> Result<Response, AppError> 
     render(&page, &page.layout)
 }
 
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = mailbox.board_id, actor = ?mailbox.actor), err(level = "debug"))]
 async fn new(state: AppState, mailbox: Mailbox) -> Result<Response, AppError> {
     let game = read_game(&state, mailbox.board_id).await?;
     let receivers = actor_names(&state, &game)
@@ -172,6 +175,7 @@ async fn new(state: AppState, mailbox: Mailbox) -> Result<Response, AppError> {
     render(&page, &page.layout)
 }
 
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = mailbox.board_id, actor = ?mailbox.actor), err(level = "debug"))]
 async fn create(
     state: AppState,
     mailbox: Mailbox,
@@ -215,6 +219,7 @@ async fn create(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn hero_index(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -226,6 +231,7 @@ pub async fn hero_index(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn hero_new(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -237,6 +243,7 @@ pub async fn hero_new(
 ///
 /// # Errors
 /// [`AppError::BadRequest`] for an unknown receiver; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id, form = ?form), err(level = "debug"))]
 pub async fn hero_create(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -249,6 +256,7 @@ pub async fn hero_create(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn sauron_index(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -260,6 +268,7 @@ pub async fn sauron_index(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn sauron_new(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -271,6 +280,7 @@ pub async fn sauron_new(
 ///
 /// # Errors
 /// [`AppError::BadRequest`] for an unknown receiver; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id, form = ?form), err(level = "debug"))]
 pub async fn sauron_create(
     State(state): State<AppState>,
     access: SauronAccess,

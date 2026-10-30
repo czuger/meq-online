@@ -6,11 +6,13 @@ use std::path::Path;
 use axum::Router;
 use axum::routing::{get, post};
 use tower_http::services::{ServeDir, ServeFile};
+use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
+use tracing::Level;
 
 use crate::app_state::AppState;
 use crate::web::handlers::{
     boards, characters, choices, combats, defeat, events, explorations, heroes, logs, maps,
-    messages, plot_cards, sauron, sauron_actions, sauron_mobs, sessions, shadow_cards,
+    messages, play, plot_cards, sauron, sauron_actions, sauron_mobs, sessions, shadow_cards,
 };
 
 /// Builds the application router.
@@ -33,7 +35,19 @@ pub fn router(state: AppState, static_dir: &Path) -> Router {
         )
         .route_service("/robots.txt", ServeFile::new(static_dir.join("robots.txt")))
         .nest_service("/static", ServeDir::new(static_dir))
+        .layer(request_tracing())
         .with_state(state)
+}
+
+/// Logs every request and its response (status, latency) at debug level. Headers stay
+/// out: they carry the session cookie.
+fn request_tracing()
+-> TraceLayer<tower_http::classify::SharedClassifier<tower_http::classify::ServerErrorsAsFailures>>
+{
+    TraceLayer::new_for_http()
+        .make_span_with(DefaultMakeSpan::new().level(Level::DEBUG))
+        .on_request(DefaultOnRequest::new().level(Level::DEBUG))
+        .on_response(DefaultOnResponse::new().level(Level::DEBUG))
 }
 
 fn board_routes() -> Router<AppState> {
@@ -55,8 +69,10 @@ fn board_routes() -> Router<AppState> {
         )
         .route(
             "/boards/{board_id}/inactive_actor",
-            get(boards::inactive_actor),
+            get(play::inactive_actor),
         )
+        .route("/boards/{board_id}/play", get(play::play))
+        .route("/boards/{board_id}/status", get(play::status))
         .route("/boards/{board_id}/story_screen", get(boards::story_screen))
         .route("/boards/{board_id}/logs", get(logs::show))
         .route("/boards/{board_id}/events", get(events::stream))
@@ -74,21 +90,21 @@ fn hero_routes() -> Router<AppState> {
     Router::new()
         .route("/heroes/{hero_id}", get(heroes::show))
         .route(&hero("rest_screen"), get(heroes::rest_screen))
-        .route(&hero("rest_rest"), get(heroes::rest_rest))
-        .route(&hero("rest_heal"), get(heroes::rest_heal))
-        .route(&hero("rest_train"), get(heroes::rest_train))
-        .route(&hero("rest_skip"), get(heroes::rest_skip))
+        .route(&hero("rest_rest"), post(heroes::rest_rest))
+        .route(&hero("rest_heal"), post(heroes::rest_heal))
+        .route(&hero("rest_train"), post(heroes::rest_train))
+        .route(&hero("rest_skip"), post(heroes::rest_skip))
         .route(
             &hero("after_rest_advance_story_marker_screen"),
             get(heroes::after_rest_advance_story_marker_screen),
         )
         .route(
             &hero("after_rest_advance_story_marker"),
-            get(heroes::after_rest_advance_story_marker),
+            post(heroes::after_rest_advance_story_marker),
         )
         .route(&hero("movement_screen"), get(heroes::movement_screen))
         .route(&hero("move"), post(heroes::move_hero))
-        .route(&hero("movement_finished"), get(heroes::movement_finished))
+        .route(&hero("movement_finished"), post(heroes::movement_finished))
         .route(
             &hero("argalad_power_screen"),
             get(heroes::argalad_power_screen),
@@ -99,7 +115,7 @@ fn hero_routes() -> Router<AppState> {
         .route(&hero("draw_cards"), post(heroes::draw_cards))
         .route(
             &hero("draw_cards_finished"),
-            get(heroes::draw_cards_finished),
+            post(heroes::draw_cards_finished),
         )
         .route(
             &hero("board_messages"),
@@ -119,11 +135,11 @@ fn exploration_routes() -> Router<AppState> {
         )
         .route(
             "/heroes/{hero_id}/exploration/next_movement",
-            get(explorations::next_movement),
+            post(explorations::next_movement),
         )
         .route(
             "/heroes/{hero_id}/exploration/next_step",
-            get(explorations::next_step),
+            post(explorations::next_step),
         )
 }
 
@@ -136,7 +152,7 @@ fn sauron_routes() -> Router<AppState> {
         )
         .route(
             "/sauron/{sauron_id}/setup_finished",
-            get(sauron::setup_finished),
+            post(sauron::setup_finished),
         )
         .route(
             "/sauron/{sauron_id}/haven_screen",
@@ -163,7 +179,7 @@ fn plot_card_routes() -> Router<AppState> {
     Router::new()
         .route(&plot("play_screen"), get(plot_cards::play_screen))
         .route(&plot("play"), post(plot_cards::play))
-        .route(&plot("play_finished"), get(plot_cards::play_finished))
+        .route(&plot("play_finished"), post(plot_cards::play_finished))
         .route(&plot("discard_screen"), get(plot_cards::discard_screen))
         .route(&plot("discard"), post(plot_cards::discard))
         .route(&plot("keep_screen"), get(plot_cards::keep_screen))
@@ -195,11 +211,11 @@ fn sauron_action_routes() -> Router<AppState> {
         )
         .route(
             "/sauron/{sauron_id}/sauron_actions/finish_action",
-            get(sauron_actions::finish_action),
+            post(sauron_actions::finish_action),
         )
         .route(
             "/sauron/{sauron_id}/sauron_actions/terminate",
-            get(sauron_actions::terminate),
+            post(sauron_actions::terminate),
         )
         .route(
             "/sauron/{sauron_id}/sauron_actions/set_influence",
@@ -226,7 +242,7 @@ fn sauron_action_routes() -> Router<AppState> {
         )
         .route(
             "/sauron/{sauron_id}/sauron_mobs/{mob_id}/heal",
-            get(sauron_mobs::heal),
+            post(sauron_mobs::heal),
         )
 }
 
@@ -264,5 +280,5 @@ fn combat_routes() -> Router<AppState> {
             &combat("play_combat_card_mob"),
             post(combats::play_combat_card_mob),
         )
-        .route(&combat("terminate"), get(combats::terminate))
+        .route(&combat("terminate"), post(combats::terminate))
 }

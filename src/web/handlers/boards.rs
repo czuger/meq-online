@@ -28,7 +28,7 @@ use crate::web::session::Session;
 use crate::web::views::layout::Layout;
 use crate::web::views::mission_label::{heroes_mission_name, sauron_mission_name};
 use crate::web::views::pictures::image;
-use crate::web::views::state_label::state_label;
+use crate::web::views::seat_view::controls;
 
 /// Hero columns of the board list, in display order.
 const HERO_COLUMNS: [&str; 5] = ["argalad", "beravor", "eleanor", "eometh", "thalin"];
@@ -45,6 +45,8 @@ struct BoardRow {
     turn: i32,
     status: String,
     can_join: bool,
+    /// The user plays a seat of the board.
+    member: bool,
     sauron: Option<PlayerCell>,
     heroes: Vec<Option<PlayerCell>>,
 }
@@ -75,13 +77,6 @@ struct JoinPage {
     layout: Layout,
     board_id: i64,
     heroes: Vec<(String, String)>,
-}
-
-#[derive(Template)]
-#[template(path = "boards_inactive.html")]
-struct InactivePage {
-    layout: Layout,
-    state: &'static str,
 }
 
 struct Counter {
@@ -118,6 +113,7 @@ pub struct IndexQuery {
 ///
 /// # Errors
 /// [`AppError::Template`] when rendering fails.
+#[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
 pub async fn welcome(headers: axum::http::HeaderMap) -> Result<Response, AppError> {
     let layout = Layout {
         flash: Flash::from_headers(&headers),
@@ -149,10 +145,12 @@ pub async fn index(
     let mut users = BTreeMap::new();
     let mut rows = Vec::with_capacity(ids.len());
     for id in ids {
+        tracing::trace!(board_id = id, "listing board");
         let game = game_repo::load(&mut conn, id).await?;
         for user_id in
             std::iter::once(game.sauron.user_id).chain(game.heroes.iter().map(|h| h.user_id))
         {
+            tracing::trace!(user_id, "board player");
             if !users.contains_key(&user_id)
                 && let Some(user) = user_repo::find(&mut conn, user_id).await?
             {
@@ -186,6 +184,7 @@ fn board_row(game: &Game, users: &BTreeMap<i64, User>, me: &User, state: &AppSta
         turn: game.board.turn,
         status: status.to_owned(),
         can_join: !game.board.waiting_heroes.is_empty(),
+        member: game.sauron.user_id == me.id || game.heroes.iter().any(|h| h.user_id == me.id),
         sauron: sauron_cell(game, me),
         heroes: hero_cells(game, users, me, state),
     }
@@ -260,16 +259,13 @@ fn hero_cells(
     me: &User,
     state: &AppState,
 ) -> Vec<Option<PlayerCell>> {
-    let controls = |user_id: i64| {
-        user_id == me.id || users.get(&user_id).is_some_and(|u| u.ai_index.is_some())
-    };
     HERO_COLUMNS
         .iter()
         .map(|code| {
             let hero = game
                 .heroes
                 .iter()
-                .find(|h| h.code == *code && controls(h.user_id))?;
+                .find(|h| h.code == *code && controls(h.user_id, me, users))?;
             Some(PlayerCell {
                 name: hero_name(state, code),
                 url: actor_url(
@@ -286,6 +282,7 @@ fn hero_cells(
 ///
 /// # Errors
 /// [`AppError::Template`] when rendering fails.
+#[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
 pub async fn new(State(state): State<AppState>, session: Session) -> Result<Response, AppError> {
     let layout = Layout::user(&session);
     let heroes = HERO_COLUMNS
@@ -307,6 +304,7 @@ pub async fn new(State(state): State<AppState>, session: Session) -> Result<Resp
 ///
 /// # Errors
 /// [`AppError::Engine`] for a wrong choice of heroes; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(fields = ?fields), err(level = "debug"))]
 pub async fn create(
     State(state): State<AppState>,
     session: Session,
@@ -347,7 +345,7 @@ pub async fn create(
     user_repo::add_member(&mut tx, board_id, session.user.id).await?;
     tx.commit().await.map_err(DbError::from)?;
     Ok(redirect(
-        "/boards",
+        &format!("/boards/{board_id}/play"),
         Some(Flash::notice("La partie a été créée.")),
     ))
 }
@@ -356,6 +354,7 @@ pub async fn create(
 ///
 /// # Errors
 /// [`AppError::Db`] when the board can't be loaded.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id), err(level = "debug"))]
 pub async fn join_new(
     State(state): State<AppState>,
     session: Session,
@@ -389,6 +388,7 @@ pub struct JoinForm {
 ///
 /// # Errors
 /// [`AppError::Engine`] when the seat isn't open; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id, form = ?form), err(level = "debug"))]
 pub async fn join(
     State(state): State<AppState>,
     session: Session,
@@ -403,34 +403,16 @@ pub async fn join(
     tx.commit().await.map_err(DbError::from)?;
     state.refresh.board_changed(board_id);
     Ok(redirect(
-        "/boards",
+        &format!("/boards/{board_id}/play"),
         Some(Flash::notice("Vous avez rejoint la partie.")),
     ))
-}
-
-/// `GET /boards/{board_id}/inactive_actor`.
-///
-/// # Errors
-/// [`AppError::Db`] when the board can't be loaded.
-pub async fn inactive_actor(
-    State(state): State<AppState>,
-    access: BoardAccess,
-) -> Result<Response, AppError> {
-    let game = read_game(&state, access.board_id).await?;
-    let layout = Layout::board(&access.session, &game);
-    render(
-        &InactivePage {
-            layout: layout.clone(),
-            state: state_label(game.board.state),
-        },
-        &layout,
-    )
 }
 
 /// `GET /boards/{board_id}/story_screen`.
 ///
 /// # Errors
 /// [`AppError::Db`] when the board can't be loaded.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id), err(level = "debug"))]
 pub async fn story_screen(
     State(state): State<AppState>,
     access: BoardAccess,

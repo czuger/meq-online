@@ -10,6 +10,7 @@ use crate::model::game::Game;
 use crate::web::access::SauronAccess;
 use crate::web::app_error::AppError;
 use crate::web::flash::redirect;
+use crate::web::game_layout::sauron_layout;
 use crate::web::game_tx::{change_game, read_game};
 use crate::web::page::render;
 use crate::web::views::layout::Layout;
@@ -31,7 +32,6 @@ struct SetupPage {
     sauron_id: i64,
     influence_left: i32,
     plot_cards_to_keep: usize,
-    plots: Vec<CardView>,
 }
 
 /// Plots in play, by slot.
@@ -43,13 +43,16 @@ pub fn plots_in_play(game: &Game) -> Vec<CardView> {
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn show(
     State(state): State<AppState>,
     access: SauronAccess,
 ) -> Result<Response, AppError> {
     let game = read_game(&state, access.board_id).await?;
     let page = ShowPage {
-        layout: Layout::sauron(&access.session, &game),
+        layout: sauron_layout(&state, &access.session, &game)
+            .await?
+            .without_hand(),
         shadow_hand: game
             .sauron
             .shadow_hand
@@ -71,25 +74,28 @@ pub async fn show(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn setup_screen(
     State(state): State<AppState>,
     access: SauronAccess,
 ) -> Result<Response, AppError> {
     let game = read_game(&state, access.board_id).await?;
     let page = SetupPage {
-        layout: Layout::sauron(&access.session, &game),
+        layout: sauron_layout(&state, &access.session, &game)
+            .await?
+            .map_table(|table| table.with_influence_editor(access.sauron_id)),
         sauron_id: access.sauron_id,
         influence_left: game.board.influence_budget.tokens,
         plot_cards_to_keep: game.cards_to_keep(SauronDeck::Plot, &state.data),
-        plots: plots_in_play(&game),
     };
     render(&page, &page.layout)
 }
 
-/// `GET /sauron/{sauron_id}/setup_finished`.
+/// `POST /sauron/{sauron_id}/setup_finished`.
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn setup_finished(
     State(state): State<AppState>,
     access: SauronAccess,

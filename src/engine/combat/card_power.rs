@@ -30,6 +30,7 @@ pub enum Phase {
 /// * `me` - side owning the card.
 /// * `op` - opposing side.
 /// * `me_fighter` - entity owning the card, for powers that hurt their owner.
+#[tracing::instrument(level = "debug", skip_all, fields(?phase))]
 pub fn apply_card_power(
     phase: Phase,
     me: &mut Side,
@@ -72,6 +73,7 @@ pub fn apply_card_power(
 }
 
 /// Powers that only add attack or defense, or cancel from the previous round.
+#[tracing::instrument(level = "debug", skip_all, fields(?phase))]
 fn apply_bonus_power(power: CardPower, phase: Phase, me: &mut Side, op: &mut Side) {
     match (power, phase) {
         (CardPower::Concentrate, Phase::Previous) => {
@@ -121,6 +123,7 @@ fn apply_bonus_power(power: CardPower, phase: Phase, me: &mut Side, op: &mut Sid
 ///
 /// The totals are lowered by the printed value minus 1 *and* the printed value is
 /// then set to 1 and added later, as in the original engine.
+#[tracing::instrument(level = "debug", skip_all)]
 fn deadly_finesse(op: &mut Side) {
     op.final_defense -= op.current.defense - 1;
     op.final_attack -= op.current.attack - 1;

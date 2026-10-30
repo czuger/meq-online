@@ -1,0 +1,25 @@
+<div class="table-head">
+  <div class="seats">
+    {% for seat in table.seats %}
+    {% if let Some(url) = seat.url %}<a class="seat{% if seat.active %} seat-active{% endif %}{% if seat.viewing %} seat-viewing{% endif %}" href="{{ url }}">{% else %}<span class="seat{% if seat.active %} seat-active{% endif %}{% if seat.viewing %} seat-viewing{% endif %}">{% endif %}
+      <img src="{{ seat.pic }}" alt="">
+      <span class="seat-text"><span class="seat-name">{{ seat.name }}</span><span class="seat-player">{{ seat.player }}</span></span>
+      {% if seat.active %}<span class="badge badge-turn">à jouer</span>{% endif %}
+    {% if seat.url.is_some() %}</a>{% else %}</span>{% endif %}
+    {% endfor %}
+  </div>
+  <div class="turn-info">
+    <span>Tour <b>{{ table.turn }}</b></span>
+    <span>Étape <b>{{ table.stage }}</b></span>
+    <a href="/boards/{{ table.board_id }}/story_screen">Histoire</a>
+    <a href="/boards/{{ table.board_id }}/logs">Journal</a>
+    <a href="{{ table.messages_url }}">Messages</a>
+  </div>
+  {% if let Some(steps) = table.steps %}
+  <ol class="stepper" aria-label="Étapes du tour">
+    {% for step in steps.steps %}<li class="step-{{ step.status }}"{% if step.status == "current" %} aria-current="step"{% endif %}>{{ step.label }}</li>{% endfor %}
+  </ol>
+  {% else %}
+  <div class="stepper-phase">{{ table.phase }}</div>
+  {% endif %}
+</div>

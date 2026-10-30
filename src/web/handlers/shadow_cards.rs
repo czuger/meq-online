@@ -24,6 +24,7 @@ pub struct PlayForm {
 ///
 /// # Errors
 /// [`AppError::BadRequest`] for a malformed card; rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id, form = ?form), err(level = "debug"))]
 pub async fn play(
     State(state): State<AppState>,
     access: SauronAccess,

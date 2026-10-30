@@ -23,6 +23,7 @@ use crate::model::mob::Mob;
 /// # Errors
 /// [`EngineError::Unpersisted`] when the hero or mob has no id yet,
 /// [`EngineError::GameData`] when the attack deck is unknown.
+#[tracing::instrument(level = "debug", skip_all, fields(hero = %hero.code, mob = %mob.code), err(level = "debug"))]
 pub fn start_combat(
     hero: &Hero,
     mob: &mut Mob,
@@ -34,6 +35,7 @@ pub fn start_combat(
 
     let mut deck = data.attack_deck(&mob.attack_deck)?.deck.clone();
     deck.shuffle(rng);
+    tracing::trace!(pile = "deck", order = ?deck, "shuffled");
     deck.truncate(usize::try_from(mob.fortitude).unwrap_or(0));
     mob.hand = deck;
 

@@ -12,9 +12,11 @@ use crate::model::sauron_action::SauronAction;
 use crate::web::access::SauronAccess;
 use crate::web::app_error::AppError;
 use crate::web::flash::{Flash, redirect};
+use crate::web::game_layout::sauron_layout;
 use crate::web::game_tx::{change_game, read_game};
 use crate::web::page::render;
 use crate::web::views::layout::Layout;
+use crate::web::views::table_view::MapTarget;
 
 struct MobRow {
     id: i64,
@@ -73,6 +75,19 @@ fn mobs_url(sauron_id: i64) -> String {
     format!("/sauron/{sauron_id}/sauron_mobs")
 }
 
+/// The locations as clickable targets of the form `form_id` on the table's map.
+fn targets(
+    locations: &[LocationChoice],
+    form_id: &'static str,
+    name: &'static str,
+    state: &AppState,
+) -> Vec<MapTarget> {
+    locations
+        .iter()
+        .filter_map(|l| MapTarget::new(&state.data, form_id, name, &l.code, l.name.clone()))
+        .collect()
+}
+
 fn choices(codes: Vec<String>, state: &AppState) -> Vec<LocationChoice> {
     codes
         .into_iter()
@@ -119,7 +134,7 @@ pub async fn index(
         })
         .collect();
     let page = IndexPage {
-        layout: Layout::sauron(&access.session, &game),
+        layout: sauron_layout(&state, &access.session, &game).await?,
         sauron_id: access.sauron_id,
         mobs: rows,
         commands_left: command.map(|c| c.commands_left),
@@ -132,6 +147,7 @@ pub async fn index(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn new(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -139,7 +155,9 @@ pub async fn new(
     let game = read_game(&state, access.board_id).await?;
     let locations = choices(game.monster_placement_locations(&state.data), &state);
     let page = NewPage {
-        layout: Layout::sauron(&access.session, &game),
+        layout: sauron_layout(&state, &access.session, &game)
+            .await?
+            .with_targets(targets(&locations, "place-mob-form", "location", &state)),
         sauron_id: access.sauron_id,
         locations,
     };
@@ -150,6 +168,7 @@ pub async fn new(
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id, form = ?form), err(level = "debug"))]
 pub async fn create(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -166,6 +185,7 @@ pub async fn create(
 ///
 /// # Errors
 /// Rule, database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn edit(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -174,7 +194,9 @@ pub async fn edit(
     let game = read_game(&state, access.board_id).await?;
     let locations = choices(game.mob_destinations(mob_id, &state.data)?, &state);
     let page = EditPage {
-        layout: Layout::sauron(&access.session, &game),
+        layout: sauron_layout(&state, &access.session, &game)
+            .await?
+            .with_targets(targets(&locations, "move-mob-form", "button", &state)),
         sauron_id: access.sauron_id,
         mob_id,
         locations,
@@ -187,6 +209,7 @@ pub async fn edit(
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id, form = ?form), err(level = "debug"))]
 pub async fn update(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -203,10 +226,11 @@ pub async fn update(
     ))
 }
 
-/// `GET /sauron/{sauron_id}/sauron_mobs/{mob_id}/heal`: command healing a minion.
+/// `POST /sauron/{sauron_id}/sauron_mobs/{mob_id}/heal`: command healing a minion.
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn heal(
     State(state): State<AppState>,
     access: SauronAccess,

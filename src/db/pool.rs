@@ -14,6 +14,7 @@ use crate::db::db_error::DbError;
 ///
 /// # Errors
 /// [`DbError::Sqlx`] when the database can't be opened or the schema fails.
+#[tracing::instrument(level = "debug", skip_all, fields(%url), err(level = "debug"))]
 pub async fn connect(url: &str) -> Result<SqlitePool, DbError> {
     let options = SqliteConnectOptions::from_str(url)?
         .create_if_missing(true)

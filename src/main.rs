@@ -7,21 +7,20 @@ use meq_online::app_state::AppState;
 use meq_online::config::Config;
 use meq_online::db::pool;
 use meq_online::game_data::GameData;
+use meq_online::logging;
 use meq_online::refresh::RefreshHub;
 use meq_online::web::router::router;
-use tracing_subscriber::EnvFilter;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    tracing_subscriber::fmt()
-        .with_env_filter(
-            EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info")),
-        )
-        .init();
-
     let config = Config::from_env()?;
+    // Flushes the debug log file when dropped, at the end of `main`.
+    let _log_guard = logging::init(&config)?;
+    tracing::debug!(?config, "configuration");
     let data = Arc::new(GameData::load(&config.data_dir)?);
+    tracing::debug!(folder = %config.data_dir.display(), "game data loaded");
     let db = pool::connect(&config.database_url).await?;
+    tracing::debug!(url = %config.database_url, "database ready");
     let refresh = RefreshHub::new();
     let app = router(
         AppState {

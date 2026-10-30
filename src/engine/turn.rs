@@ -31,6 +31,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::Refused`] when the board has no hero.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn set_first_hero_to_play(&mut self) -> Result<(), EngineError> {
         let first = self
             .heroes
@@ -41,6 +42,7 @@ impl Game {
         self.board.current_hero_id = Some(first);
         self.activate_current_hero()?;
         for hero in &mut self.heroes {
+            tracing::trace!(hero = %hero.code, "resetting turn finished");
             hero.turn_finished = false;
         }
         Ok(())
@@ -50,6 +52,7 @@ impl Game {
     ///
     /// # Errors
     /// Fails when the hero is unknown or a transition isn't allowed now.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn finish_heroes_turn(
         &mut self,
         hero_id: i64,
@@ -74,6 +77,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::NotFound`] when the hero is unknown.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn hero_end_turn_operations(&mut self, hero_id: i64) -> Result<(), EngineError> {
         self.hero_mut(hero_id)?.turn_record = TurnRecord::default();
         Ok(())
@@ -84,6 +88,7 @@ impl Game {
     ///
     /// # Returns
     /// `true` when the second turn starts, `false` when the round ended.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     fn start_hero_second_turn(
         &mut self,
         hero_id: i64,
@@ -109,6 +114,7 @@ impl Game {
     ///
     /// # Returns
     /// `false` when every hero has played.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     fn switch_to_next_hero(&mut self) -> Result<bool, EngineError> {
         let current = self.current_hero_id()?;
         self.hero_mut(current)?.turn_finished = true;
@@ -130,6 +136,7 @@ impl Game {
 
     /// End of the heroes' round: rally, story advance, stage spawns, then Sauron plays,
     /// unless the Finale begins (§ 9).
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     fn actions_before_switch_to_sauron(
         &mut self,
         data: &GameData,
@@ -143,6 +150,7 @@ impl Game {
         let new_stage = self.board.story.stage();
         if new_stage > old_stage {
             for (stage, mob, location) in STAGE_SPAWNS {
+                tracing::trace!(stage, mob, location, "stage spawn check");
                 if stage == new_stage {
                     self.create_mob(mob, location, None, data)?;
                 }
@@ -162,6 +170,7 @@ impl Game {
     /// Heroes remove the influence where they stand, except on a Shadow Stronghold;
     /// influence cut from the strongholds is reduced to what they can still support
     /// (§ 5.2, § 5.8).
+    #[tracing::instrument(level = "debug", skip_all)]
     fn rally_step(&mut self, data: &GameData) {
         let on_stronghold = |location: &str| {
             data.locations
@@ -182,6 +191,7 @@ impl Game {
             })
             .collect();
         for (hero, location) in hero_spots {
+            tracing::trace!(?hero, %location, "hero clears influence");
             let count = self.board.influence.get(&location).copied().unwrap_or(0);
             if count > 0 {
                 self.board.influence.remove(&location);

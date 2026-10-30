@@ -11,6 +11,7 @@ use crate::model::hero::Hero;
 ///
 /// # Errors
 /// Decoding and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id), err(level = "debug"))]
 pub async fn for_board(conn: &mut SqliteConnection, board_id: i64) -> Result<Vec<Hero>, DbError> {
     let rows = sqlx::query("SELECT * FROM heroes WHERE board_id = ? ORDER BY id")
         .bind(board_id)
@@ -23,6 +24,7 @@ pub async fn for_board(conn: &mut SqliteConnection, board_id: i64) -> Result<Vec
 ///
 /// # Errors
 /// [`DbError::NotFound`] when the hero doesn't exist.
+#[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
 pub async fn board_id(conn: &mut SqliteConnection, hero_id: i64) -> Result<i64, DbError> {
     sqlx::query_scalar("SELECT board_id FROM heroes WHERE id = ?")
         .bind(hero_id)
@@ -35,6 +37,7 @@ pub async fn board_id(conn: &mut SqliteConnection, hero_id: i64) -> Result<i64, 
 ///
 /// # Errors
 /// Encoding and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id, hero = %hero.code), err(level = "debug"))]
 pub async fn save(
     conn: &mut SqliteConnection,
     board_id: i64,
@@ -56,6 +59,7 @@ pub async fn save(
     update(conn, hero).await
 }
 
+#[tracing::instrument(level = "debug", skip_all, fields(hero = %hero.code), err(level = "debug"))]
 async fn update(conn: &mut SqliteConnection, hero: &Hero) -> Result<(), DbError> {
     sqlx::query(
         "UPDATE heroes SET user_id = ?, code = ?, location = ?, fortitude = ?, strength = ?, agility = ?, \

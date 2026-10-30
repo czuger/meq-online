@@ -72,7 +72,7 @@ impl<'a> Driver<'a> {
             _ => RouteActor::Sauron(self.sauron),
         };
         let screen = route_for(state, self.board, actor);
-        if screen != "/boards" {
+        if !screen.ends_with("/play") {
             let page = self.app.get(&screen, &self.cookie).await;
             assert_eq!(page.status, StatusCode::OK, "{screen}: {}", page.body);
         }
@@ -81,11 +81,11 @@ impl<'a> Driver<'a> {
             BoardState::SauronSetupScreen => self.setup(game).await,
             BoardState::EditSauronSauronActions => self.sauron_action(game).await,
             BoardState::PlaceInfluenceScreenSauronActions | BoardState::CommandScreenSauronMobs => {
-                self.sauron_get("sauron_actions/finish_action").await;
+                self.sauron_post("sauron_actions/finish_action", "").await;
             }
             BoardState::KeepScreenSauronPlotCards => self.keep_plots(game).await,
             BoardState::PlayScreenSauronPlotCards => {
-                self.sauron_get("plot_cards/play_finished").await
+                self.sauron_post("plot_cards/play_finished", "").await
             }
             BoardState::HeroDrawCardsScreen => self.heroes_draw(game).await,
             BoardState::ChoiceScreenBoardChoices => self.choose(game).await,
@@ -98,14 +98,15 @@ impl<'a> Driver<'a> {
     async fn hero_step(&mut self, game: &Game) {
         let hero = game.board.current_hero_id.unwrap();
         match game.board.state {
-            BoardState::HeroRestScreen => self.hero_get(hero, "rest_skip").await,
+            BoardState::HeroRestScreen => self.hero_post(hero, "rest_skip", "").await,
             BoardState::AfterRestAdvanceStoryMarker => {
                 let marker = marker_code(game.board.story.lowest_sauron_markers()[0]);
-                let path = format!("after_rest_advance_story_marker?marker={marker}");
-                self.hero_get(hero, &path).await;
+                let form = format!("marker={marker}");
+                self.hero_post(hero, "after_rest_advance_story_marker", &form)
+                    .await;
             }
             BoardState::HeroMovementScreen => self.travel(game, hero).await,
-            BoardState::HeroExploration => self.hero_get(hero, "exploration/next_step").await,
+            BoardState::HeroExploration => self.hero_post(hero, "exploration/next_step", "").await,
             BoardState::HeroDefeatScreen => self.defeat(game, hero).await,
             BoardState::SauronHavenScreen => {
                 let location = &game.hero(hero).unwrap().location;
@@ -127,7 +128,7 @@ impl<'a> Driver<'a> {
         let hero = game.hero(hero_id).unwrap();
         let turn = (hero_id, hero.turn);
         if self.moves.contains(&turn) {
-            return self.hero_get(hero_id, "movement_finished").await;
+            return self.hero_post(hero_id, "movement_finished", "").await;
         }
         let data = &self.app.state.data;
         let adjacent: Vec<&str> = data
@@ -138,6 +139,15 @@ impl<'a> Driver<'a> {
             .map(|(code, _)| code)
             .collect();
         let url = format!("/heroes/{hero_id}/move");
+        let screen = self
+            .app
+            .get(&format!("/heroes/{hero_id}/movement_screen"), &self.cookie)
+            .await;
+        // Every destination can also be clicked on the table's map.
+        for destination in &adjacent {
+            let target = format!(r#"form="move-form" name="button" value="{destination}""#);
+            assert!(screen.body.contains(&target), "{destination}");
+        }
         for destination in adjacent {
             for card in &hero.hand {
                 let form = format!("button={destination}&selected_cards={card}");
@@ -162,7 +172,7 @@ impl<'a> Driver<'a> {
         if game.board.influence_budget.tokens > 0 {
             return self.place_one_influence(game).await;
         }
-        self.sauron_get("setup_finished").await;
+        self.sauron_post("setup_finished", "").await;
     }
 
     /// Places one influence token on the first location that takes it.
@@ -187,7 +197,7 @@ impl<'a> Driver<'a> {
     /// Sauron takes his next action, Command or Place influence first, or ends his turn.
     async fn sauron_action(&mut self, game: &Game) {
         if game.sauron_actions_left() == 0 {
-            return self.sauron_get("sauron_actions/terminate").await;
+            return self.sauron_post("sauron_actions/terminate", "").await;
         }
         let action = [
             SauronAction::Command,
@@ -228,7 +238,7 @@ impl<'a> Driver<'a> {
             .post(&format!("/heroes/{id}/draw_cards"), &self.cookie, &form)
             .await;
         assert_eq!(drawn.status, StatusCode::SEE_OTHER, "{}", drawn.body);
-        self.hero_get(id, "draw_cards_finished").await;
+        self.hero_post(id, "draw_cards_finished", "").await;
     }
 
     /// Answers the pending choice: passes when allowed, otherwise picks the first
@@ -279,27 +289,21 @@ impl<'a> Driver<'a> {
             .iter()
             .find(|m| m.id == Some(combat.mob_id))
             .and_then(|m| m.hand.first().copied());
-        let mut moves = vec![("combats/terminate".to_owned(), None)];
+        let mut moves = vec![("combats/terminate".to_owned(), String::new())];
         if let Some(card) = hero_card {
             let form = format!("selected_card={card}");
-            moves.push(("combats/play_combat_card_hero".to_owned(), Some(form)));
+            moves.push(("combats/play_combat_card_hero".to_owned(), form));
         }
         if let Some(card) = mob_card {
             let form = format!("selected_card={card}");
-            moves.push(("combats/play_combat_card_mob".to_owned(), Some(form)));
+            moves.push(("combats/play_combat_card_mob".to_owned(), form));
         }
         for side in ["hero", "mob"] {
-            moves.push((
-                format!("combats/declare_exhaustion_{side}"),
-                Some(String::new()),
-            ));
+            moves.push((format!("combats/declare_exhaustion_{side}"), String::new()));
         }
         for (path, form) in moves {
             let url = format!("/boards/{}/{path}", self.board);
-            let answer = match form {
-                None => self.app.get(&url, &self.cookie).await,
-                Some(form) => self.app.post(&url, &self.cookie, &form).await,
-            };
+            let answer = self.app.post(&url, &self.cookie, &form).await;
             if answer.status == StatusCode::SEE_OTHER {
                 return;
             }
@@ -338,17 +342,6 @@ impl<'a> Driver<'a> {
         }
     }
 
-    async fn sauron_get(&self, path: &str) {
-        let url = format!("/sauron/{}/{path}", self.sauron);
-        let answer = self.app.get(&url, &self.cookie).await;
-        assert_eq!(
-            answer.status,
-            StatusCode::SEE_OTHER,
-            "{url}: {}",
-            answer.body
-        );
-    }
-
     async fn sauron_post(&self, path: &str, form: &str) {
         let url = format!("/sauron/{}/{path}", self.sauron);
         let answer = self.app.post(&url, &self.cookie, form).await;
@@ -360,9 +353,9 @@ impl<'a> Driver<'a> {
         );
     }
 
-    async fn hero_get(&self, hero: i64, path: &str) {
+    async fn hero_post(&self, hero: i64, path: &str, form: &str) {
         let url = format!("/heroes/{hero}/{path}");
-        let answer = self.app.get(&url, &self.cookie).await;
+        let answer = self.app.post(&url, &self.cookie, form).await;
         assert_eq!(
             answer.status,
             StatusCode::SEE_OTHER,

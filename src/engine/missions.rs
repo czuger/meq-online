@@ -31,12 +31,18 @@ const ISILDUR_FAVOR: i32 = 5;
 
 impl Game {
     /// Deals the secret missions of both sides (§ 3).
+    #[tracing::instrument(level = "debug", skip_all)]
     pub fn set_objectives(&mut self, rng: &mut StdRng) {
         let card = |rng: &mut StdRng, count: usize| {
             u32::try_from(rng.random_range(0..count)).unwrap_or_default()
         };
         self.board.heroes_objective = Some(card(rng, HEROES_MISSIONS.len()));
         self.board.sauron_objective = Some(card(rng, SAURON_MISSIONS.len()));
+        tracing::debug!(
+            heroes = ?self.board.heroes_objective,
+            sauron = ?self.board.sauron_objective,
+            "missions drawn"
+        );
     }
 
     /// Sauron's Mission card, once dealt.

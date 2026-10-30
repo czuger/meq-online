@@ -95,6 +95,12 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] when `agility_to_draw` exceeds the hero's agility;
     /// [`EngineError::NoCombat`]; lookup and transition errors.
+    #[tracing::instrument(
+        level = "debug",
+        skip_all,
+        fields(agility_to_draw),
+        err(level = "debug")
+    )]
     pub fn combat_setup(
         &mut self,
         agility_to_draw: i32,
@@ -112,6 +118,7 @@ impl Game {
         let hero = self.hero_mut(hero_id)?;
         if hero.has_flaw(Flaw::Cowardly, data) {
             if let Some(card) = hero.hand.choose(rng).copied() {
+                tracing::debug!(hero_id, card, "Cowardly: random card lost");
                 hero.hand_to_rest(&[card])?;
             }
             self.log(ActorRef::Hero(hero_id), "corruption.cowardly", &[]);
@@ -147,6 +154,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::CardNotAvailable`] when the card isn't in the player's hand.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn play_combat_card(
         &mut self,
         side: CombatSide,
@@ -193,6 +201,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] when the side already chose its card, or Sauron declares
     /// before the hero decided; lookup errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn declare_exhaustion(
         &mut self,
         side: CombatSide,
@@ -222,6 +231,12 @@ impl Game {
         self.resolve_round(hero_id, mob_id, data)
     }
 
+    #[tracing::instrument(
+        level = "debug",
+        skip_all,
+        fields(hero_id, mob_id),
+        err(level = "debug")
+    )]
     fn resolve_round(
         &mut self,
         hero_id: i64,
@@ -273,6 +288,7 @@ impl Game {
     /// [`EngineError::Refused`] when more cards are selected than the damage, or the
     /// life pool can't pay the rest; [`EngineError::CardNotAvailable`] when a card isn't
     /// in hand; transition errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn combat_cards_loss(&mut self, selected: &[CardNumber]) -> Result<(), EngineError> {
         let (hero_id, _) = self.combat_ids()?;
         self.hero_mut(hero_id)?.pay_damage(selected)?;
@@ -284,6 +300,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::NoCombat`]; lookup errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn refresh_combat_result(&mut self) -> Result<CombatResult, EngineError> {
         let (hero_id, mob_id) = self.combat_ids()?;
         let hero = self.hero(hero_id)?;
@@ -317,6 +334,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::Refused`] when the combat isn't over; lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn terminate_combat(
         &mut self,
         data: &GameData,
@@ -364,6 +382,12 @@ impl Game {
     /// Otherwise the hero travels after an ambush, goes to his Rest step after a Shadow
     /// card's combat (it replaced the Ambush step) and explores after a combat met while
     /// travelling.
+    #[tracing::instrument(
+        level = "debug",
+        skip_all,
+        fields(hero_id, mob_defeated),
+        err(level = "debug")
+    )]
     fn after_combat(
         &mut self,
         hero_id: i64,
@@ -412,6 +436,7 @@ impl Game {
 
     /// "Seem Fairer, Feel Fouler": after the combat, Sauron draws a Plot card when the
     /// hero holds a Corruption card.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     fn after_shadow_combat(
         &mut self,
         origin: CombatOrigin,
@@ -430,6 +455,7 @@ impl Game {
     }
 
     /// Sauron may place influence equal to the wisdom of an undefeated mob (§ 8.3).
+    #[tracing::instrument(level = "debug", skip_all, fields(mob_id), err(level = "debug"))]
     fn grant_undefeated_mob_influence(
         &mut self,
         mob_id: i64,
@@ -454,6 +480,7 @@ impl Game {
 
     /// A fought monster token is discarded, defeated or not; a minion leaves the map
     /// only when defeated, the Ringwraiths coming back later (§ 8.3, § 8.8).
+    #[tracing::instrument(level = "debug", skip_all, fields(mob_id), err(level = "debug"))]
     fn remove_fought_mob(&mut self, mob_id: i64) -> Result<(), EngineError> {
         let index = self.mob_index(mob_id)?;
         let Some(mob) = self.mobs.get(index) else {

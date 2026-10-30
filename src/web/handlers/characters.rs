@@ -38,6 +38,7 @@ struct EditPage {
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn edit(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -76,6 +77,7 @@ pub async fn edit(
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id, fields = ?fields), err(level = "debug"))]
 pub async fn update(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -90,6 +92,7 @@ pub async fn update(
         .collect();
     change_game(&state, access.board_id, |game, data, _| {
         for (code, location) in &wanted {
+            tracing::trace!(%code, %location, "character placement");
             if location.is_empty() {
                 game.remove_character(ActorRef::Sauron, code, data)?;
             } else {

@@ -53,6 +53,7 @@ impl Game {
         let against_minion = self.combat_against_minion();
         let mut playable = Vec::new();
         for card in &self.sauron.shadow_hand {
+            tracing::trace!(?card, "shadow card playable?");
             let def = data.shadow(*card)?;
             let allowed = def.timing == timing
                 && self.board.shadow_pool >= def.requirement
@@ -84,6 +85,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(?window, ?resume), err(level = "debug"))]
     pub fn open_shadow_window(
         &mut self,
         window: ShadowWindow,
@@ -114,6 +116,7 @@ impl Game {
     ///
     /// # Returns
     /// Where play goes on when the card asks nothing more.
+    #[tracing::instrument(level = "debug", skip_all, fields(?window, %option, ?targets, ?resume), err(level = "debug"))]
     pub(crate) fn apply_shadow_window(
         &mut self,
         window: ShadowWindow,
@@ -145,6 +148,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] outside the Action step, during an action, or when the
     /// card isn't playable now; lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(?card), err(level = "debug"))]
     pub fn play_action_shadow(
         &mut self,
         card: ShadowCode,
@@ -172,6 +176,7 @@ impl Game {
 
     /// The card leaves Sauron's hand for the discard pile and resolves. Against a
     /// greedy hero Sauron then draws a Shadow card.
+    #[tracing::instrument(level = "debug", skip_all, fields(?card, ?hero_id, ?resume), err(level = "debug"))]
     fn play_shadow(
         &mut self,
         card: ShadowCode,

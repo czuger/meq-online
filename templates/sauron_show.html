@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
+<div class="page">
+  <h1>Sauron</h1>
   <h3>Cartes des Ténèbres en main</h3>
-  {% for card in shadow_hand %}<img src="{{ card.pic }}" class="medium-card" alt="">{% endfor %}
-  <hr>
+  <div class="cards">{% for card in shadow_hand %}<img src="{{ card.pic }}" class="medium-card" alt="">{% endfor %}</div>
   <h3>Cartes intrigue en main</h3>
-  {% for card in plot_hand %}<img src="{{ card.pic }}" class="medium-card" alt="">{% endfor %}
+  <div class="cards">{% for card in plot_hand %}<img src="{{ card.pic }}" class="medium-card" alt="">{% endfor %}</div>
   {% include "plots_in_play.html" %}
 </div>
 {% endblock %}

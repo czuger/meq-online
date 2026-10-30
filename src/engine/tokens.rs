@@ -77,6 +77,7 @@ pub fn tokens_by_location(game: &Game, data: &GameData) -> BTreeMap<String, Vec<
                 .map(|mob| (mob.location.clone(), mob_token(mob))),
         );
     for (location, token) in all {
+        tracing::trace!(%location, ?token, "exploration token");
         tokens.entry(location).or_default().push(token);
     }
     tokens

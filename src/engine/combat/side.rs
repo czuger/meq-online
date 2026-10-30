@@ -31,6 +31,7 @@ impl Side {
     }
 
     /// Cancels the current card and wipes its totals.
+    #[tracing::instrument(level = "debug", skip_all)]
     pub fn cancel_current(&mut self) {
         self.final_attack = 0;
         self.final_defense = 0;

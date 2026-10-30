@@ -1,33 +1,33 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
-  <h3>Piste d'histoire</h3>
-  <div class="row my-4">
+<div class="page">
+  <h1>Piste d'histoire</h1>
+  {% if let Some(winner) = winner %}
+  <div class="note note-success"><b>{{ winner }}</b></div>
+  {% endif %}
+  <div class="story-track">
     {% for counter in markers %}
-    <div class="col-md-3"><button class="btn btn-primary btn-block" type="button" disabled>{{ counter.label }} <span class="badge badge-light">{{ counter.value }}</span></button></div>
+    <span class="stat stat-wide"><span class="stat-label">{{ counter.label }}</span><span class="stat-value">{{ counter.value }}</span></span>
     {% endfor %}
   </div>
-  <div class="row my-4">
+  <div class="story-track">
     {% for counter in distances %}
-    <div class="col-md-3"><button class="btn btn-primary btn-block" type="button" disabled>{{ counter.label }} <span class="badge badge-light">{{ counter.value }}</span></button></div>
+    <span class="stat stat-wide"><span class="stat-label">{{ counter.label }}</span><span class="stat-value">{{ counter.value }}</span></span>
     {% endfor %}
   </div>
-  <div class="row my-4">
-    <div class="col-md-3"><button class="btn btn-primary btn-block" type="button" disabled>Étape de l'histoire <span class="badge badge-light">{{ stage }}</span></button></div>
+  <div class="story-track">
+    <span class="stat stat-wide"><span class="stat-label">Étape de l'histoire</span><span class="stat-value">{{ stage }}</span></span>
   </div>
   {% if !options.is_empty() %}
   <p>Règles optionnelles : {{ options|join(", ") }}.</p>
   {% endif %}
-  {% if let Some(winner) = winner %}
-  <div class="alert alert-success">{{ winner }}</div>
-  {% endif %}
   {% if !missions.is_empty() %}
-  <div class="row my-4">
+  <div class="missions">
     {% for mission in missions %}
-    <div class="col-md-4">
-      <h5>{{ mission.side }} : {{ mission.name }}</h5>
-      <img class="img-fluid" src="{{ mission.pic }}" alt="{{ mission.name }}">
-    </div>
+    <figure>
+      <h4>{{ mission.side }} : {{ mission.name }}</h4>
+      <img src="{{ mission.pic }}" alt="{{ mission.name }}">
+    </figure>
     {% endfor %}
   </div>
   {% endif %}

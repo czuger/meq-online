@@ -79,6 +79,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn start_hero_defeat(
         &mut self,
         hero_id: i64,
@@ -136,6 +137,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] when a needed choice is missing or not allowed;
     /// lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn resolve_hero_defeat(
         &mut self,
         hero_id: i64,
@@ -175,6 +177,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] when `haven` isn't one of the closest Havens; lookup
     /// and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(%haven), err(level = "debug"))]
     pub fn choose_defeat_haven(
         &mut self,
         haven: &str,
@@ -221,6 +224,7 @@ impl Game {
         }
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     fn lose_to_defeat(&mut self, hero_id: i64, loss: DefeatLoss) -> Result<(), EngineError> {
         let hero = self.hero_mut(hero_id)?;
         match loss {
@@ -239,6 +243,7 @@ impl Game {
 
     /// The defeated hero recovers in the Haven; Sauron may then play a Shadow card
     /// (§ 5.9) before the hero's turn ends.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, %haven), err(level = "debug"))]
     fn send_to_haven(
         &mut self,
         hero_id: i64,

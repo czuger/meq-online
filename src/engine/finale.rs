@@ -40,6 +40,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn start_finale(&mut self, data: &GameData, rng: &mut StdRng) -> Result<(), EngineError> {
         self.log(ActorRef::System, "finale.start", &[]);
         let sauron = self.sauron_mission_fulfilled();
@@ -56,6 +57,7 @@ impl Game {
 
     /// Step 1: the dominant side reveals its Mission and wins if it is fulfilled; with
     /// no dominant side both reveal, and only a single fulfilled Mission wins.
+    #[tracing::instrument(level = "debug", skip_all, fields(?dominance, sauron, heroes))]
     fn reveal_missions(
         &mut self,
         dominance: Dominance,
@@ -85,6 +87,7 @@ impl Game {
 
     /// Step 2: a fulfilled Mission advances its side's markers one space, except a
     /// marker already on the Finale space.
+    #[tracing::instrument(level = "debug", skip_all, fields(sauron, heroes))]
     fn advance_for_missions(&mut self, sauron: bool, heroes: bool) {
         let step = |position: &mut i32| {
             if *position < FINAL_SPACE {
@@ -101,6 +104,7 @@ impl Game {
             step(&mut story.heroes);
         }
         for (side, advanced) in [("sauron", sauron), ("heroes", heroes)] {
+            tracing::trace!(side, advanced, "mission marker advance");
             if advanced {
                 self.log(ActorRef::System, "finale.advance", &[("side", json!(side))]);
             }
@@ -110,6 +114,7 @@ impl Game {
     /// Step 3: the Ringwraiths lose their damage (they come back first if defeated);
     /// each hero shuffles hand, rest and damage pools into his life pool and draws his
     /// fortitude.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     fn prepare_finale(&mut self, data: &GameData, rng: &mut StdRng) -> Result<(), EngineError> {
         match self.mobs.iter_mut().find(|m| m.code == RINGWRAITHS) {
             Some(ringwraiths) => ringwraiths.life = ringwraiths.max_life,
@@ -119,6 +124,7 @@ impl Game {
             }
         }
         for hero in &mut self.heroes {
+            tracing::trace!(hero = %hero.code, life_pool = hero.life_pool.len(), hand = hero.hand.len(), "preparing hero for the Finale");
             hero.life_pool.append(&mut hero.hand);
             hero.heal(rng);
             let fortitude = usize::try_from(hero.fortitude).unwrap_or(0);
@@ -131,6 +137,7 @@ impl Game {
     /// to the Finale when Sauron is dominant; they lose Sauron's distance (the lower of
     /// his closest marker to the Finale and his markers to The Shadow Falls) when the
     /// heroes are.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     fn adjust_ringwraiths(&mut self, data: &GameData) -> Result<(), EngineError> {
         let story = self.board.story.data();
         let change = match self.dominance(data)? {
@@ -151,6 +158,7 @@ impl Game {
     }
 
     /// Step 5: the heroes, who already drew, pick their champion.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     fn ask_champion(&mut self) -> Result<(), EngineError> {
         let heroes = self
             .heroes
@@ -168,6 +176,7 @@ impl Game {
 
     /// Step 6: the champion picked becomes the current hero and fights the Ringwraiths
     /// with the standard combat rules; no Shadow card is played (no player turn).
+    #[tracing::instrument(level = "debug", skip_all, fields(?targets), err(level = "debug"))]
     pub(crate) fn apply_champion(
         &mut self,
         targets: &[String],
@@ -197,6 +206,12 @@ impl Game {
     ///
     /// # Errors
     /// Transition errors.
+    #[tracing::instrument(
+        level = "debug",
+        skip_all,
+        fields(ringwraiths_defeated),
+        err(level = "debug")
+    )]
     pub(crate) fn finish_finale(&mut self, ringwraiths_defeated: bool) -> Result<(), EngineError> {
         self.end_game(if ringwraiths_defeated {
             Winner::Heroes
@@ -205,6 +220,7 @@ impl Game {
         })
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(?winner), err(level = "debug"))]
     fn end_game(&mut self, winner: Winner) -> Result<(), EngineError> {
         self.board.winner = Some(winner);
         self.set_heroes_active(false);

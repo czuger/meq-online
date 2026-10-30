@@ -42,6 +42,7 @@ impl Game {
     ///
     /// # Errors
     /// Transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn ask_defeat_marker(&mut self, hero_id: i64) -> Result<(), EngineError> {
         let targets = SAURON_MARKERS
             .iter()
@@ -60,6 +61,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::Refused`] for an unknown marker; errors of the defeat.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?targets), err(level = "debug"))]
     pub fn apply_defeat_marker(
         &mut self,
         hero_id: i64,
@@ -86,6 +88,12 @@ impl Game {
     ///
     /// # Errors
     /// Lookup errors.
+    #[tracing::instrument(
+        level = "debug",
+        skip_all,
+        fields(hero_id, mob_id),
+        err(level = "debug")
+    )]
     pub fn high_stakes_mob_defeated(
         &mut self,
         hero_id: i64,

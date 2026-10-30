@@ -95,6 +95,7 @@ pub mod option {
 }
 
 /// A decision of a Shadow card to ask.
+#[derive(Debug)]
 pub(crate) struct ShadowAsk {
     /// The Shadow card.
     pub card: ShadowCode,
@@ -123,6 +124,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] when a card needing a hero has none; lookup and
     /// transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(?card, ?hero_id, ?resume), err(level = "debug"))]
     pub fn start_shadow(
         &mut self,
         card: ShadowCode,
@@ -158,6 +160,7 @@ impl Game {
     }
 
     /// Cards played at the start of a combat.
+    #[tracing::instrument(level = "debug", skip_all, fields(?card, hero_id, ?effect, ?resume), err(level = "debug"))]
     fn start_combat_shadow(
         &mut self,
         card: ShadowCode,
@@ -203,6 +206,7 @@ impl Game {
 
     /// "Betrayed" (2 random cards discarded) and "The Black Breath" (1 Corruption card):
     /// then -1 strength (and agility for the Black Breath) per Corruption card.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?effect, ?resume), err(level = "debug"))]
     fn weaken_for_combat(
         &mut self,
         hero_id: i64,
@@ -229,6 +233,7 @@ impl Game {
     }
 
     /// Cards bringing a monster the hero fights at the start of his turn.
+    #[tracing::instrument(level = "debug", skip_all, fields(?card, hero_id, ?effect), err(level = "debug"))]
     fn shadow_monster(
         &mut self,
         card: ShadowCode,
@@ -260,6 +265,7 @@ impl Game {
     }
 
     /// "Grievous Loss": influence per Corruption card, the green marker held back.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     fn grievous_loss(&mut self, hero_id: i64) -> Result<(), EngineError> {
         let count = i32::try_from(self.corruption_count(hero_id)?).unwrap_or(i32::MAX);
         self.grant_influence(count, count);
@@ -273,6 +279,7 @@ impl Game {
     }
 
     /// Cards played during Sauron's Action step.
+    #[tracing::instrument(level = "debug", skip_all, fields(?card, ?effect, ?resume), err(level = "debug"))]
     fn start_action_shadow(
         &mut self,
         card: ShadowCode,
@@ -308,6 +315,7 @@ impl Game {
     }
 
     /// Action step cards looking at decks, piles and the board.
+    #[tracing::instrument(level = "debug", skip_all, fields(?card, ?effect, ?resume), err(level = "debug"))]
     fn start_search_shadow(
         &mut self,
         card: ShadowCode,
@@ -351,6 +359,7 @@ impl Game {
     }
 
     /// The last part of a search card when there was nothing to pick.
+    #[tracing::instrument(level = "debug", skip_all, fields(?effect, ?resume), err(level = "debug"))]
     fn finish_search_shadow(
         &mut self,
         effect: ShadowEffect,
@@ -368,8 +377,10 @@ impl Game {
     fn evil_fog_options(&self, data: &GameData) -> Result<Vec<ChoiceOption>, EngineError> {
         let mut moves = Vec::new();
         for hero in &self.heroes {
+            tracing::trace!(hero = %hero.code, "hero move options");
             let Some(id) = hero.id else { continue };
             for to in data.paths.connected(&hero.location) {
+                tracing::trace!(%to, "hero destination");
                 moves.push(format!("hero_to:{id}:{to}"));
             }
         }
@@ -384,6 +395,7 @@ impl Game {
     fn tempt_options(&self, data: &GameData) -> Result<Vec<ChoiceOption>, EngineError> {
         let mut outside_havens = Vec::new();
         for hero in &self.heroes {
+            tracing::trace!(hero = %hero.code, location = %hero.location, "haven check");
             if let (Some(id), false) = (hero.id, data.locations.get(&hero.location)?.haven) {
                 outside_havens.push(target("hero", id));
             }
@@ -421,6 +433,7 @@ impl Game {
 
     /// "Shire, Baggins": influence in the Shadow Pool and the Shire, then the yellow
     /// marker advances 2 spaces with 3 influence or a minion there.
+    #[tracing::instrument(level = "debug", skip_all)]
     fn shire_baggins(&mut self, data: &GameData) {
         self.add_to_shadow_pool(1);
         self.add_influence(THE_SHIRE, 1, data);
@@ -436,6 +449,7 @@ impl Game {
 
     /// "Storms of Mordor" for the heroes left, in order: each discards down to 5 cards
     /// (choosing which), then a random card per Corruption card.
+    #[tracing::instrument(level = "debug", skip_all, fields(?card, ?heroes, ?resume), err(level = "debug"))]
     pub(crate) fn storms_of_mordor(
         &mut self,
         card: ShadowCode,
@@ -444,6 +458,7 @@ impl Game {
         rng: &mut StdRng,
     ) -> Result<Resume, EngineError> {
         while !heroes.is_empty() {
+            tracing::trace!(left = heroes.len(), "storm: next hero");
             let hero_id = heroes.remove(0);
             let hero = self.hero(hero_id)?;
             let excess = hero.hand.len().saturating_sub(STORMS_HAND);
@@ -470,11 +485,13 @@ impl Game {
     }
 
     /// The top card of the Plot deck, rebuilt from its discard pile when empty.
+    #[tracing::instrument(level = "debug", skip_all)]
     fn top_plot_card(&mut self, rng: &mut StdRng) -> Option<u32> {
         let pile = &mut self.board.decks.plot;
         if pile.draw.is_empty() {
             pile.draw.append(&mut pile.discard);
             pile.draw.shuffle(rng);
+            tracing::trace!(pile = "pile.draw", order = ?pile.draw, "shuffled");
         }
         pile.draw.first().copied()
     }
@@ -507,6 +524,7 @@ impl Game {
         let take = found.iter().map(|c| target("plot_card", c)).collect();
         let mut play = Vec::new();
         for card in &found {
+            tracing::trace!(?card, "plot card found");
             if !self.free_plot_slots().is_empty() && self.plot_playable(*card, data)? {
                 play.push(target("plot_card", card));
             }
@@ -550,6 +568,7 @@ impl Game {
 
     /// "Saruman's Lies": the black marker advances when a hero holds as many
     /// Corruption cards as his wisdom.
+    #[tracing::instrument(level = "debug", skip_all)]
     pub(crate) fn sarumans_lies_marker(&mut self) {
         let corrupted = self
             .heroes
@@ -562,6 +581,7 @@ impl Game {
 
     /// "Lord of the Rings": the yellow marker advances while "A Dark Messenger" is
     /// active.
+    #[tracing::instrument(level = "debug", skip_all)]
     pub(crate) fn dark_messenger_marker(&mut self) {
         const DARK_MESSENGER: u32 = 3;
         if self.board.plots.values().any(|c| *c == DARK_MESSENGER) {
@@ -570,6 +590,7 @@ impl Game {
     }
 
     /// Advances one of Sauron's markers because of a Shadow card.
+    #[tracing::instrument(level = "debug", skip_all, fields(?marker, spaces))]
     pub(crate) fn advance_marker(&mut self, marker: StoryType, spaces: i32) {
         self.board.story.advance(marker, spaces);
         let params = [("marker_name", json!(marker)), ("count", json!(spaces))];
@@ -577,6 +598,7 @@ impl Game {
     }
 
     /// Asks a decision of a Shadow card.
+    #[tracing::instrument(level = "debug", skip_all, fields(?ask, ?resume), err(level = "debug"))]
     pub(crate) fn ask_shadow(&mut self, ask: ShadowAsk, resume: Resume) -> Result<(), EngineError> {
         self.ask(PendingChoice {
             chooser: ask.chooser,
@@ -603,6 +625,7 @@ impl Game {
     }
 
     /// Changes the hero's attributes for the combat in progress.
+    #[tracing::instrument(level = "debug", skip_all)]
     pub(crate) fn combat_modifiers(&mut self, change: impl FnOnce(&mut CombatModifiers)) {
         if let Some(combat) = self.combat.as_mut() {
             change(&mut combat.modifiers);
@@ -610,6 +633,12 @@ impl Game {
     }
 
     /// The hero discards `count` random hand cards to his rest pool.
+    #[tracing::instrument(
+        level = "debug",
+        skip_all,
+        fields(hero_id, count),
+        err(level = "debug")
+    )]
     pub(crate) fn discard_random(
         &mut self,
         hero_id: i64,
@@ -619,6 +648,7 @@ impl Game {
         let hero = self.hero_mut(hero_id)?;
         let mut hand = hero.hand.clone();
         hand.shuffle(rng);
+        tracing::trace!(pile = "hand", order = ?hand, "shuffled");
         hand.truncate(count);
         hero.hand_to_rest(&hand)
     }
@@ -628,6 +658,7 @@ impl Game {
     ///
     /// # Returns
     /// [`Resume::EndTurn`] for "Wretched", `resume` otherwise.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?resume), err(level = "debug"))]
     pub(crate) fn shadow_corruption(
         &mut self,
         hero_id: i64,
@@ -652,6 +683,7 @@ impl Game {
 
     /// Deals damage from a Shadow card; a combat about to start is dropped when the
     /// damage defeats the hero.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, amount, ?resume), err(level = "debug"))]
     pub(crate) fn shadow_damage(
         &mut self,
         hero_id: i64,
@@ -672,6 +704,7 @@ impl Game {
     }
 
     /// Drops a combat that never started; a monster brought by a card leaves the board.
+    #[tracing::instrument(level = "debug", skip_all)]
     fn abandon_combat(&mut self) {
         let Some(combat) = self.combat.take() else {
             return;

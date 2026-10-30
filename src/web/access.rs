@@ -42,6 +42,7 @@ pub struct SauronAccess {
 }
 
 /// Reads an integer path parameter.
+#[tracing::instrument(level = "debug", skip_all, fields(%name), err(level = "debug"))]
 async fn path_id(parts: &mut Parts, state: &AppState, name: &str) -> Result<i64, AppError> {
     let Path(params) = Path::<HashMap<String, String>>::from_request_parts(parts, state)
         .await
@@ -53,6 +54,7 @@ async fn path_id(parts: &mut Parts, state: &AppState, name: &str) -> Result<i64,
 }
 
 /// Checks board membership, the only ownership rule of the game.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id), err(level = "debug"))]
 async fn ensure_member(state: &AppState, board_id: i64, session: &Session) -> Result<(), AppError> {
     let mut conn = state.db.acquire().await.map_err(DbError::from)?;
     if user_repo::is_member(&mut conn, board_id, session.user.id).await? {

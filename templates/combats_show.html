@@ -1,35 +1,39 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
-  <h3>Combat en cours</h3>
-  <div class="row">{% let fighter = hero %}{% include "fighter_stats.html" %}</div>
-  <div class="row mt-2">{% let fighter = mob %}{% include "fighter_stats.html" %}</div>
+<div class="page">
+  <h1>Combat en cours</h1>
+  <div class="duel">
+    <div class="box fighter">{% let fighter = hero %}{% include "fighter_stats.html" %}</div>
+    <div class="box fighter fighter-mob">{% let fighter = mob %}{% include "fighter_stats.html" %}</div>
+  </div>
 
   {% if result.hero_defeated %}
-  <div class="row mt-2">
-    <div class="col-md-6"><h3>Le héros a été vaincu !</h3></div>
-    <div class="col-md-3"><a class="btn btn-primary btn-block" role="button" href="/boards/{{ board_id }}/combats/terminate">Finir le tour</a></div>
-  </div>
+  <div class="note note-warn"><b>Le héros a été vaincu !</b></div>
+  <form method="post" action="/boards/{{ board_id }}/combats/terminate" class="actions"><button type="submit" class="btn btn-primary">Finir le tour</button></form>
   {% else if result.mob_defeated %}
-  <div class="row mt-2">
-    <div class="col-md-6"><h3>Le héros a gagné le combat !</h3></div>
-    <div class="col-md-3"><a class="btn btn-primary btn-block" role="button" href="/boards/{{ board_id }}/combats/terminate">Continuer le déplacement</a></div>
-  </div>
+  <div class="note note-success"><b>Le héros a gagné le combat !</b></div>
+  <form method="post" action="/boards/{{ board_id }}/combats/terminate" class="actions"><button type="submit" class="btn btn-primary">Continuer le déplacement</button></form>
   {% else if result.mob_exhausted && result.hero_exhausted %}
-  <div class="row mt-2">
-    <div class="col-md-6"><h3>Le héros et le monstre sont tous deux épuisés.</h3></div>
-    <div class="col-md-3"><a class="btn btn-primary btn-block" role="button" href="/boards/{{ board_id }}/combats/terminate">Finir le tour</a></div>
-  </div>
+  <div class="note"><b>Le héros et le monstre sont tous deux épuisés.</b></div>
+  <form method="post" action="/boards/{{ board_id }}/combats/terminate" class="actions"><button type="submit" class="btn btn-primary">Finir le tour</button></form>
   {% else %}
-  <div class="row mt-2">
-    <div class="col-md-3"></div>
-    <div class="col-md-3">{% if hero_can_play %}<a class="btn btn-primary btn-block" role="button" href="/boards/{{ board_id }}/combats/hero/play_combat_card_screen">Jouer une carte héros</a>{% endif %}</div>
-    <div class="col-md-3">{% if sauron_can_play %}<a class="btn btn-primary btn-block" role="button" href="/boards/{{ board_id }}/combats/sauron/play_combat_card_screen">Jouer une carte monstre</a>{% endif %}</div>
+  <div class="actions">
+    {% if hero_can_play %}<a class="btn btn-primary" role="button" href="/boards/{{ board_id }}/combats/hero/play_combat_card_screen">Jouer une carte héros</a>{% endif %}
+    {% if sauron_can_play %}<a class="btn btn-danger" role="button" href="/boards/{{ board_id }}/combats/sauron/play_combat_card_screen">Jouer une carte monstre</a>{% endif %}
+    {% if !hero_can_play && !sauron_can_play %}<span class="muted">En attente des cartes de combat.</span>{% endif %}
   </div>
   {% endif %}
 
-  <hr>
-  <div class="row mb-3">{% for pic in hero_history %}<div class="col-md-2"><img src="{{ pic }}" class="small-card" alt=""></div>{% endfor %}</div>
-  <div class="row mb-3">{% for pic in mob_history %}<div class="col-md-2"><img src="{{ pic }}" class="small-card" alt=""></div>{% endfor %}</div>
+  {% if !hero_history.is_empty() %}
+  <h3>Manches jouées</h3>
+  <table class="table rounds">
+    <thead><tr><th>Manche</th><th>Héros</th><th>Monstre</th></tr></thead>
+    <tbody>
+      {% for (hero_pic, mob_pic) in hero_history.iter().zip(mob_history.iter()) %}
+      <tr><td>{{ loop.index }}</td><td><img src="{{ hero_pic }}" class="small-card" alt=""></td><td><img src="{{ mob_pic }}" class="small-card" alt=""></td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
 </div>
 {% endblock %}

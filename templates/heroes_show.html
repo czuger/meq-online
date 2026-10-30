@@ -1,13 +1,16 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
-  {% include "hero_info.html" %}
-  <hr>
+<div class="page">
+  <h1>{{ info.name }}</h1>
   {% include "cards_hand.html" %}
-  <hr>
-  <div class="hero-card"><img src="{{ sheet_pic }}" alt="{{ info.name }}"></div>
-  <div class="corruption_area">
-    {% for card in corruptions %}<img src="{{ card.pic }}" alt="">{% endfor %}
+  <div class="hero-sheet">
+    <img src="{{ sheet_pic }}" alt="{{ info.name }}">
+    {% if !corruptions.is_empty() %}
+    <div>
+      <h3>Corruptions</h3>
+      <div class="cards">{% for card in corruptions %}<img src="{{ card.pic }}" class="small-card" alt="">{% endfor %}</div>
+    </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

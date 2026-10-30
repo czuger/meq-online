@@ -106,6 +106,22 @@ pub fn map_view(game: &Game, data: &GameData, sauron: bool) -> MapView {
     }
 }
 
+/// Side of the clickable circle drawn over a location, in map pixels.
+const TARGET_SIZE: f64 = 120.0;
+
+/// Inline style centring a clickable circle on a location of the map.
+///
+/// # Returns
+/// `None` for an unknown location.
+pub fn target_style(data: &GameData, code: &str) -> Option<String> {
+    let location = data.locations.get(code).ok()?;
+    let half = TARGET_SIZE / 2.0;
+    Some(place(
+        f64::from(location.pos_y) * MUL_Y - half,
+        f64::from(location.pos_x) * MUL_X - half,
+    ))
+}
+
 fn place(top: f64, left: f64) -> String {
     format!("top:{top}px; left:{left}px;")
 }
@@ -205,4 +221,39 @@ fn action_style(token: ActionToken) -> String {
         "top:1614px; left:{}px;",
         x + (i32::from(token.space) - 1) * 46
     )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::engine::test_support::data;
+
+    /// Size of `map_half.jpg`.
+    const MAP_SIZE: (f64, f64) = (2934.0, 2017.0);
+
+    fn position(style: &str) -> (f64, f64) {
+        let value = |key: &str| {
+            let start = style.find(key).expect("key") + key.len();
+            let end = style[start..].find("px").expect("px") + start;
+            style[start..end].parse::<f64>().expect("number")
+        };
+        (value("left:"), value("top:"))
+    }
+
+    #[test]
+    fn every_location_target_lies_on_the_map() {
+        for (code, _) in data().locations.iter() {
+            let (left, top) = position(&target_style(data(), code).expect("known location"));
+            assert!(
+                (0.0..MAP_SIZE.0 - TARGET_SIZE).contains(&left)
+                    && (0.0..MAP_SIZE.1 - TARGET_SIZE).contains(&top),
+                "{code}: {left}, {top}"
+            );
+        }
+    }
+
+    #[test]
+    fn unknown_locations_have_no_target() {
+        assert!(target_style(data(), "nowhere").is_none());
+    }
 }

@@ -1,31 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
-  <h3>Jouer une carte de combat</h3>
-  <div class="alert alert-secondary">
-    <ul class="mt-3">
+<div class="page">
+  <h1>Jouer une carte de combat</h1>
+  <p class="lead">Choisissez une carte de combat, puis attendez que votre adversaire joue la sienne.</p>
+  <details class="rules">
+    <summary>Règles</summary>
+    <ul>
       <li>Jouez une carte de combat et attendez que votre adversaire joue la sienne.</li>
       <li>Avant de choisir une carte, vous pouvez vous déclarer épuisé pour le reste du combat (le héros décide en premier).</li>
     </ul>
-  </div>
-  <div class="row mb-2">{% include "fighter_stats.html" %}</div>
+  </details>
+  <div class="box">{% include "fighter_stats.html" %}</div>
   {% include "cards_hand.html" %}
   <form method="post" action="/boards/{{ board_id }}/combats/{{ action }}">
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-5"><input type="hidden" id="selected_card" name="selected_card"></div>
-        <div class="col-md-2"><button type="submit" class="btn btn-secondary btn-block" id="validate_unique" disabled>Jouer la carte</button></div>
-      </div>
+    <input type="hidden" id="selected_card" name="selected_card">
+    <div class="actions">
+      <button type="submit" class="btn btn-primary" id="validate_unique" disabled title="Choisissez d'abord une carte">Jouer la carte</button>
+      <span class="selection-count" data-selection-hint>Cliquez sur une carte pour la choisir.</span>
     </div>
   </form>
   {% if can_declare %}
   <form method="post" action="/boards/{{ board_id }}/combats/{{ declare_action }}">
-    <button type="submit" class="btn btn-outline-secondary">Se déclarer épuisé</button>
+    <button type="submit" class="btn btn-quiet">Se déclarer épuisé</button>
   </form>
   {% endif %}
   {% if let Some(pic) = monster_pic %}
-  <hr>
-  <div class="row"><div class="col-12"><img src="{{ pic }}" class="mx-auto d-block" alt=""></div></div>
+  <h3 class="mt">Carte du monstre</h3>
+  <img src="{{ pic }}" class="big-card" alt="">
   {% endif %}
 </div>
 {% endblock %}

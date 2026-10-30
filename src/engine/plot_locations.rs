@@ -82,6 +82,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::Refused`] without a location; play errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(card, ?targets), err(level = "debug"))]
     pub(crate) fn apply_plot_location(
         &mut self,
         card: u32,
@@ -109,6 +110,7 @@ impl Game {
     }
 
     /// "Urgent Summons": the character tokens of `location` leave the board.
+    #[tracing::instrument(level = "debug", skip_all, fields(%location))]
     fn send_characters_back(&mut self, location: &str, data: &GameData) {
         let summoned: Vec<String> = self
             .board
@@ -118,6 +120,7 @@ impl Game {
             .map(|(code, _)| code.clone())
             .collect();
         for code in summoned {
+            tracing::trace!(%code, "removing summoned character");
             self.board.characters.remove(&code);
             let name = data
                 .character(&code)
@@ -128,6 +131,7 @@ impl Game {
     }
 
     /// An active plot leaves its slot: the location Sauron picked for it is forgotten.
+    #[tracing::instrument(level = "debug", skip_all)]
     pub(crate) fn forget_plot_location(&mut self, slot: PlotSlot) {
         self.board.turn_effects.plot_locations.remove(&slot);
     }

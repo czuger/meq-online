@@ -8,6 +8,7 @@ impl Game {
     ///
     /// # Errors
     /// Fails when no current hero is set or it isn't on the board.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn activate_current_hero(&mut self) -> Result<(), EngineError> {
         let current = self.current_hero_id()?;
         self.set_heroes_active(false);
@@ -20,6 +21,7 @@ impl Game {
     ///
     /// # Errors
     /// Fails when no current hero is set or it isn't on the board.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn switch_to_sauron(&mut self) -> Result<(), EngineError> {
         let current = self.current_hero_id()?;
         self.hero_mut(current)?.active = false;
@@ -33,8 +35,10 @@ impl Game {
     }
 
     /// Activates or deactivates every hero.
+    #[tracing::instrument(level = "debug", skip_all, fields(active))]
     pub fn set_heroes_active(&mut self, active: bool) {
         for hero in &mut self.heroes {
+            tracing::trace!(hero = %hero.code, active, "hero activity");
             hero.active = active;
         }
     }

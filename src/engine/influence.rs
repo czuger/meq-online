@@ -42,6 +42,7 @@ pub fn shadow_pool_left(budget: &InfluenceBudget) -> i32 {
 impl Game {
     /// Gives Sauron influence tokens to place, `shadow_pool_max` of which may go to the
     /// Shadow Pool.
+    #[tracing::instrument(level = "debug", skip_all, fields(tokens, shadow_pool_max))]
     pub fn grant_influence(&mut self, tokens: i32, shadow_pool_max: i32) {
         let budget = &mut self.board.influence_budget;
         budget.tokens += tokens;
@@ -49,6 +50,7 @@ impl Game {
     }
 
     /// Drops the tokens left to place; placed tokens can't be taken back anymore.
+    #[tracing::instrument(level = "debug", skip_all)]
     pub fn close_influence_budget(&mut self) {
         self.board.influence_budget = InfluenceBudget::default();
     }
@@ -61,6 +63,7 @@ impl Game {
     ///
     /// # Returns
     /// Why the change was refused, if it was.
+    #[tracing::instrument(level = "debug", skip_all, fields(%location, value))]
     pub fn set_influence(
         &mut self,
         location: &str,
@@ -87,6 +90,7 @@ impl Game {
         refusal
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(%location, count, max))]
     fn place_influence(
         &mut self,
         location: &str,
@@ -112,6 +116,7 @@ impl Game {
         None
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(%location, count))]
     fn take_back_influence(&mut self, location: &str, count: i32) -> Option<InfluenceRefusal> {
         let budget = &mut self.board.influence_budget;
         let placed = budget.placed.get(location).copied().unwrap_or(0);
@@ -133,6 +138,7 @@ impl Game {
 
     /// Adds influence to a location outside of a budget (card effects); Havens never
     /// hold influence (§ 5.8).
+    #[tracing::instrument(level = "debug", skip_all, fields(%location, count))]
     pub fn add_influence(&mut self, location: &str, count: i32, data: &GameData) {
         if data.locations.get(location).is_ok_and(|l| l.haven) {
             return;
@@ -142,6 +148,7 @@ impl Game {
 
     /// Adds influence to the Shadow Pool outside of a budget (card effects), up to its
     /// capacity of 4 × the current stage (§ 5.8).
+    #[tracing::instrument(level = "debug", skip_all, fields(count))]
     pub fn add_to_shadow_pool(&mut self, count: i32) {
         let capacity = self.board.story.stage() * SHADOW_POOL_PER_STAGE;
         let old = self.board.shadow_pool;
@@ -154,6 +161,7 @@ impl Game {
     }
 
     /// Removes up to `count` influence from a location.
+    #[tracing::instrument(level = "debug", skip_all, fields(%location, count))]
     pub fn remove_influence(&mut self, location: &str, count: i32) {
         let left = self.board.influence.get(location).copied().unwrap_or(0) - count;
         if left > 0 {
@@ -165,9 +173,11 @@ impl Game {
 
     /// Excess influence is removed down to what the connected strongholds support, a
     /// location cut from them keeping one token (§ 5.8).
+    #[tracing::instrument(level = "debug", skip_all)]
     pub fn trim_unsupported_influence(&mut self, data: &GameData) {
         let locations: Vec<String> = self.board.influence.keys().cloned().collect();
         for location in locations {
+            tracing::trace!(%location, influence = ?self.board.influence.get(&location), "checking influence limit");
             let max = data
                 .locations
                 .get(&location)
@@ -194,6 +204,7 @@ impl Game {
     ///
     /// # Errors
     /// The [`InfluenceRefusal`] when the change isn't allowed.
+    #[tracing::instrument(level = "debug", skip_all, fields(add), err(level = "debug", Debug))]
     pub fn change_shadow_pool(&mut self, add: bool) -> Result<i32, InfluenceRefusal> {
         let old = self.board.shadow_pool;
         let capacity = self.board.story.stage() * SHADOW_POOL_PER_STAGE;

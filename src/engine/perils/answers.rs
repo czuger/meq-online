@@ -23,6 +23,7 @@ use crate::model::game::Game;
 const ILL_MET_DRAW: usize = 2;
 
 /// A decision within a Peril card, as answered.
+#[derive(Debug)]
 pub(crate) struct PerilAnswer<'a> {
     /// The hero resolving the card.
     pub hero_id: i64,
@@ -41,6 +42,7 @@ impl Game {
     ///
     /// # Returns
     /// Where play goes on when no other decision is pending.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     pub(crate) fn apply_peril_choice(
         &mut self,
         answer: &PerilAnswer,
@@ -79,6 +81,7 @@ impl Game {
             option::PLACE_INFLUENCE => self.peril_influence(answer, data)?,
             option::PLACE_MONSTER => {
                 for location in locations(answer.targets) {
+                    tracing::trace!(%location, "peril: placing monster");
                     self.place_new_monster(location, data, rng)?;
                 }
             }
@@ -90,6 +93,7 @@ impl Game {
     }
 
     /// "The Weakness of Men": the black (corruption) marker advances 1 space.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id))]
     fn advance_corruption_marker(&mut self, hero_id: i64) {
         self.board.story.advance(StoryType::Corruption, 1);
         let params = [
@@ -101,6 +105,7 @@ impl Game {
 
     /// "The Hounds of Sauron": discarded cards reduce the damage by their shields; with
     /// no damage left the hero gains 1 favor or training.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?answer), err(level = "debug"))]
     fn hounds_discard(
         &mut self,
         hero_id: i64,
@@ -114,6 +119,7 @@ impl Game {
         hero.hand_to_rest(&cards)?;
         let mut shields = 0;
         for card in &cards {
+            tracing::trace!(?card, shields, "Hounds: counting shields");
             shields += data.hero_card(&code, *card)?.defense.max(0);
         }
         let damage = HOUNDS_DAMAGE.saturating_sub(u32::try_from(shields).unwrap_or(u32::MAX));
@@ -132,6 +138,7 @@ impl Game {
     }
 
     /// "Ill-met Company": Sauron draws two Corruption cards to pick one for the hero.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?card), err(level = "debug"))]
     fn ill_met_draw(
         &mut self,
         hero_id: i64,
@@ -145,6 +152,7 @@ impl Game {
     }
 
     /// Sauron gives the hero one of the drawn Corruption cards and discards the other.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     fn ill_met_give(
         &mut self,
         answer: &PerilAnswer,
@@ -169,6 +177,7 @@ impl Game {
     }
 
     /// The monster a Peril card created on the hero's location fights him.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?card), err(level = "debug"))]
     fn peril_fight(
         &mut self,
         hero_id: i64,
@@ -194,12 +203,14 @@ impl Game {
 
     /// Sauron places 1 influence on each picked location; for "Undying Regret" he may
     /// then place a monster token.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     fn peril_influence(
         &mut self,
         answer: &PerilAnswer,
         data: &GameData,
     ) -> Result<(), EngineError> {
         for location in locations(answer.targets) {
+            tracing::trace!(%location, "peril: adding influence");
             self.add_influence(location, 1, data);
             let params = [("location", json!(data.locations.name(location)))];
             self.log(ActorRef::Sauron, "peril.influence", &params);
@@ -221,6 +232,7 @@ impl Game {
     }
 
     /// "Nine for Mortal Men": a commanded minion entering the hero's location fights him.
+    #[tracing::instrument(level = "debug", skip_all, fields(?answer), err(level = "debug"))]
     fn peril_minion_move(
         &mut self,
         answer: &PerilAnswer,

@@ -16,6 +16,7 @@ use crate::model::game::Game;
 use crate::web::access::HeroAccess;
 use crate::web::app_error::AppError;
 use crate::web::flash::{Flash, redirect};
+use crate::web::game_layout::hero_layout;
 use crate::web::game_tx::change_game;
 use crate::web::page::render;
 use crate::web::views::layout::Layout;
@@ -51,6 +52,7 @@ struct ShowPage {
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn show(State(state): State<AppState>, access: HeroAccess) -> Result<Response, AppError> {
     let hero_id = access.hero_id;
     let (game, tokens) = change_game(&state, access.board_id, |game, data, _| {
@@ -76,7 +78,7 @@ pub async fn show(State(state): State<AppState>, access: HeroAccess) -> Result<R
         .collect();
     let dark_path = game.dark_path_allowed(hero_id)?;
     let page = ShowPage {
-        layout: Layout::hero(&access.session, &game, hero_id, &state.data),
+        layout: hero_layout(&state, &access.session, &game, hero_id).await?,
         hero_id,
         any_enabled: choices.iter().any(|c| c.enabled) || !consults.is_empty() || dark_path,
         choices,
@@ -159,6 +161,7 @@ fn choice(
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id, fields = ?fields), err(level = "debug"))]
 pub async fn update(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -166,6 +169,7 @@ pub async fn update(
 ) -> Result<Response, AppError> {
     let mut choice = ExploreChoice::default();
     for (field, value) in fields {
+        tracing::trace!(%field, %value, "exploration form field");
         if let Some(character) = field
             .strip_prefix("consult[")
             .and_then(|f| f.strip_suffix(']'))
@@ -212,10 +216,11 @@ pub async fn update(
     ))
 }
 
-/// `GET /heroes/{hero_id}/exploration/next_movement`.
+/// `POST /heroes/{hero_id}/exploration/next_movement`.
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn next_movement(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -230,10 +235,11 @@ pub async fn next_movement(
     ))
 }
 
-/// `GET /heroes/{hero_id}/exploration/next_step`: the hero ends its turn.
+/// `POST /heroes/{hero_id}/exploration/next_step`: the hero ends its turn.
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn next_step(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -245,6 +251,6 @@ pub async fn next_step(
     .await?;
     Ok(match end {
         TurnEnd::HeroDrawCards => redirect(&format!("/heroes/{hero_id}/draw_cards_screen"), None),
-        TurnEnd::Boards => redirect("/boards", None),
+        TurnEnd::Boards => redirect(&format!("/boards/{}/play", access.board_id), None),
     })
 }

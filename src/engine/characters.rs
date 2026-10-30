@@ -12,6 +12,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::GameData`] when the character or location is unknown.
+    #[tracing::instrument(level = "debug", skip_all, fields(?actor, %code, %location), err(level = "debug"))]
     pub fn place_character(
         &mut self,
         actor: ActorRef,
@@ -36,6 +37,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::GameData`] when the character is unknown.
+    #[tracing::instrument(level = "debug", skip_all, fields(?actor, %code), err(level = "debug"))]
     pub fn remove_character(
         &mut self,
         actor: ActorRef,

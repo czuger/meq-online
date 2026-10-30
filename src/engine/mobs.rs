@@ -27,6 +27,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::GameData`] when the mob is unknown or has no life defined.
+    #[tracing::instrument(level = "debug", skip_all, fields(%code, %location), err(level = "debug"))]
     pub fn create_mob(
         &mut self,
         code: &str,
@@ -72,6 +73,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] when the pool and its discard are both empty,
     /// [`EngineError::GameData`] when the location is unknown.
+    #[tracing::instrument(level = "debug", skip_all, fields(%location), err(level = "debug"))]
     pub fn place_new_monster(
         &mut self,
         location: &str,
@@ -85,6 +87,7 @@ impl Game {
             let discard = self.board.monster_discards.entry(pool).or_default();
             pile.append(discard);
             pile.shuffle(rng);
+            tracing::trace!(pile = "pile", order = ?pile, "shuffled");
         }
         if pile.is_empty() {
             return Err(EngineError::Refused(format!(
@@ -101,6 +104,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::NotFound`] when the mob isn't on the board.
+    #[tracing::instrument(level = "debug", skip_all, fields(mob_id), err(level = "debug"))]
     pub fn discard_monster(&mut self, mob_id: i64) -> Result<(), EngineError> {
         let index = self.mob_index(mob_id)?;
         let mob = self.mobs.remove(index);
@@ -135,6 +139,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::GameData`] when the Ringwraiths are missing from the data.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn return_ringwraiths(&mut self, data: &GameData) -> Result<(), EngineError> {
         if !self.board.ringwraiths_return {
             return Ok(());

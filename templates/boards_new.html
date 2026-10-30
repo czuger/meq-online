@@ -1,41 +1,33 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
+<div class="page">
   <h1>Nouvelle partie</h1>
-  <div class="alert alert-secondary">
-    <ul class="mt-3">
-      <li>Vous jouez Sauron. Choisissez de un à trois héros.</li>
-      <li>Les places des héros peuvent attendre des joueurs qui rejoignent la partie, ou être des places ordinateur jouées par les membres de la partie.</li>
+  <p class="lead">Vous jouez Sauron. Choisissez de un à trois héros.</p>
+  <details class="rules">
+    <summary>Règles</summary>
+    <ul>
+      <li>Les places des héros peuvent attendre des joueurs qui rejoignent la partie, ou être des héros partagés, joués par les membres de la partie.</li>
       <li>Sauron a deux actions par tour, trois avec trois héros.</li>
     </ul>
-  </div>
-  <form method="post" action="/boards" class="form-group">
-    <h5>Héros</h5>
-    {% for (code, name) in heroes %}
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="heroes" id="hero_{{ code }}" value="{{ code }}">
-      <label class="form-check-label" for="hero_{{ code }}">{{ name }}</label>
+  </details>
+  <form method="post" action="/boards">
+    <div class="box option-group">
+      <h4>Héros</h4>
+      {% for (code, name) in heroes %}
+      <label class="option" for="hero_{{ code }}"><input type="checkbox" name="heroes" id="hero_{{ code }}" value="{{ code }}"> {{ name }}</label>
+      {% endfor %}
     </div>
-    {% endfor %}
-    <h5 class="mt-3">Places des héros</h5>
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="seats" id="seats_open" value="open" checked>
-      <label class="form-check-label" for="seats_open">Attendre des joueurs</label>
+    <div class="box option-group">
+      <h4>Places des héros</h4>
+      <label class="option" for="seats_open"><input type="radio" name="seats" id="seats_open" value="open" checked> Attendre des joueurs</label>
+      <label class="option" for="seats_computer"><input type="radio" name="seats" id="seats_computer" value="computer"> Héros partagés, joués par les membres de la partie</label>
     </div>
-    <div class="form-check">
-      <input class="form-check-input" type="radio" name="seats" id="seats_computer" value="computer">
-      <label class="form-check-label" for="seats_computer">Places ordinateur jouées par les membres</label>
+    <div class="box option-group">
+      <h4>Règles optionnelles</h4>
+      <label class="option" for="advanced_dominance"><input type="checkbox" name="advanced_dominance" id="advanced_dominance" value="1"> <span>Domination avancée : est dominant le camp qui atteindrait la Finale en moins d'étapes d'histoire, les intrigues actives restant en jeu.</span></label>
+      <label class="option" for="high_stakes"><input type="checkbox" name="high_stakes" id="high_stakes" value="1"> <span>Enjeux élevés à l'étape III : si les héros dominent, Sauron choisit le marqueur qui avance quand il vainc un héros ; si Sauron domine, le marqueur des héros avance d'une case pour chaque serviteur vaincu.</span></label>
     </div>
-    <h5 class="mt-3">Règles optionnelles</h5>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="advanced_dominance" id="advanced_dominance" value="1">
-      <label class="form-check-label" for="advanced_dominance">Domination avancée : est dominant le camp qui atteindrait la Finale en moins d'étapes d'histoire, les intrigues actives restant en jeu.</label>
-    </div>
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="high_stakes" id="high_stakes" value="1">
-      <label class="form-check-label" for="high_stakes">Enjeux élevés à l'étape III : si les héros dominent, Sauron choisit le marqueur qui avance quand il vainc un héros ; si Sauron domine, le marqueur des héros avance d'une case pour chaque serviteur vaincu.</label>
-    </div>
-    <div class="actions mt-3"><button type="submit" class="btn btn-primary">Créer</button></div>
+    <div class="actions"><button type="submit" class="btn btn-primary">Créer</button></div>
   </form>
 </div>
 {% endblock %}

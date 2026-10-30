@@ -1,7 +1,13 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
-  <div class="jumbotron"><h1>Ce n'est pas votre tour</h1></div>
-  <h3>Étape en cours : {{ state }}</h3>
+<div class="page">
+  {% if finished %}
+  <h1>Partie terminée</h1>
+  <div class="actions"><a class="btn btn-primary" href="/boards/{{ board_id }}/story_screen">Voir le résultat</a></div>
+  {% else %}
+  <h1>Ce n'est pas votre tour</h1>
+  <p class="lead">En attente de <b>{{ waiting_for }}</b> : {{ state }}.</p>
+  <p class="muted" data-waiting>Cette page suivra la partie : elle s'ouvrira sur votre écran dès que ce sera à vous.</p>
+  {% endif %}
 </div>
 {% endblock %}

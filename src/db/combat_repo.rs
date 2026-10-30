@@ -11,6 +11,7 @@ use crate::model::combat::Combat;
 ///
 /// # Errors
 /// Decoding and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id), err(level = "debug"))]
 pub async fn for_board(
     conn: &mut SqliteConnection,
     board_id: i64,
@@ -26,6 +27,7 @@ pub async fn for_board(
 ///
 /// # Errors
 /// Encoding and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id), err(level = "debug"))]
 pub async fn replace(
     conn: &mut SqliteConnection,
     board_id: i64,

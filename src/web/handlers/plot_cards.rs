@@ -15,6 +15,7 @@ use crate::web::access::SauronAccess;
 use crate::web::app_error::AppError;
 use crate::web::flash::{Flash, redirect};
 use crate::web::forms::{card_list, number};
+use crate::web::game_layout::sauron_layout;
 use crate::web::game_tx::{change_game, read_game};
 use crate::web::page::render;
 use crate::web::views::layout::Layout;
@@ -84,13 +85,14 @@ fn actions_url(sauron_id: i64) -> String {
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn keep_screen(
     State(state): State<AppState>,
     access: SauronAccess,
 ) -> Result<Response, AppError> {
     let game = read_game(&state, access.board_id).await?;
     let page = KeepPage {
-        layout: Layout::sauron(&access.session, &game),
+        layout: sauron_layout(&state, &access.session, &game).await?,
         sauron_id: access.sauron_id,
         cards: game
             .sauron
@@ -108,6 +110,7 @@ pub async fn keep_screen(
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id, form = ?form), err(level = "debug"))]
 pub async fn keep(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -139,6 +142,7 @@ pub async fn keep(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn play_screen(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -146,6 +150,7 @@ pub async fn play_screen(
     let game = read_game(&state, access.board_id).await?;
     let (mut playable, mut unplayable) = (vec![], vec![]);
     for card in &game.sauron.plot_hand {
+        tracing::trace!(?card, "plot card playable?");
         if game.plot_playable(*card, &state.data)? {
             playable.push(plot_card(*card));
         } else {
@@ -153,7 +158,7 @@ pub async fn play_screen(
         }
     }
     let page = PlayPage {
-        layout: Layout::sauron(&access.session, &game),
+        layout: sauron_layout(&state, &access.session, &game).await?,
         sauron_id: access.sauron_id,
         playable,
         unplayable,
@@ -166,6 +171,7 @@ pub async fn play_screen(
 ///
 /// # Errors
 /// [`AppError::BadRequest`] for malformed fields; rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id, form = ?form), err(level = "debug"))]
 pub async fn play(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -193,10 +199,11 @@ pub async fn play(
     })
 }
 
-/// `GET /sauron/{sauron_id}/plot_cards/play_finished`.
+/// `POST /sauron/{sauron_id}/plot_cards/play_finished`.
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn play_finished(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -212,13 +219,14 @@ pub async fn play_finished(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn look_for_gollum_cards(
     State(state): State<AppState>,
     access: SauronAccess,
 ) -> Result<Response, AppError> {
     let game = read_game(&state, access.board_id).await?;
     let page = GollumPage {
-        layout: Layout::sauron(&access.session, &game),
+        layout: sauron_layout(&state, &access.session, &game).await?,
         sauron_id: access.sauron_id,
         cards: game
             .gollum_cards_available()
@@ -233,6 +241,7 @@ pub async fn look_for_gollum_cards(
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id, form = ?form), err(level = "debug"))]
 pub async fn get_gollum_card(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -250,6 +259,7 @@ pub async fn get_gollum_card(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn discard_screen(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -265,7 +275,7 @@ pub async fn discard_screen(
         })
         .collect();
     let page = DiscardPage {
-        layout: Layout::sauron(&access.session, &game),
+        layout: sauron_layout(&state, &access.session, &game).await?,
         sauron_id: access.sauron_id,
         slots,
     };
@@ -277,6 +287,7 @@ pub async fn discard_screen(
 ///
 /// # Errors
 /// [`AppError::BadRequest`] for a malformed slot; rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id, form = ?form), err(level = "debug"))]
 pub async fn discard(
     State(state): State<AppState>,
     access: SauronAccess,

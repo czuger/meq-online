@@ -44,6 +44,7 @@ impl Hero {
     ///
     /// # Returns
     /// `true` when the attribute increased.
+    #[tracing::instrument(level = "debug", skip_all, fields(?attribute))]
     pub fn gain_level(&mut self, attribute: Attribute) -> bool {
         let (level, value) = match attribute {
             Attribute::Fortitude => (&mut self.levels.fortitude, &mut self.fortitude),
@@ -64,6 +65,7 @@ impl Hero {
     ///
     /// # Returns
     /// The favor actually gained.
+    #[tracing::instrument(level = "debug", skip_all, fields(amount))]
     pub fn gain_favor(&mut self, amount: i32, data: &GameData) -> i32 {
         let mut gained = amount.max(0);
         if self.has_flaw(Flaw::Mistrusted, data) {
@@ -83,6 +85,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?resume), err(level = "debug"))]
     pub fn train(
         &mut self,
         hero_id: i64,
@@ -96,6 +99,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, times, ?resume), err(level = "debug"))]
     pub fn train_times(
         &mut self,
         hero_id: i64,
@@ -104,10 +108,16 @@ impl Game {
         rng: &mut StdRng,
     ) -> Result<(), EngineError> {
         for left in (0..times).rev() {
+            tracing::trace!(
+                left,
+                draw = self.board.decks.skill.draw.len(),
+                "training draw"
+            );
             let pile = &mut self.board.decks.skill;
             if pile.draw.len() < TRAINING_DRAW {
                 pile.draw.append(&mut pile.discard);
                 pile.draw.shuffle(rng);
+                tracing::trace!(pile = "pile.draw", order = ?pile.draw, "shuffled");
             }
             let count = TRAINING_DRAW.min(pile.draw.len());
             let cards: Vec<CardNumber> = pile.draw.drain(..count).collect();
@@ -131,6 +141,7 @@ impl Game {
     }
 
     /// The hero keeps the chosen Skill card; the other is discarded faceup.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?targets), err(level = "debug"))]
     pub(crate) fn apply_training(
         &mut self,
         hero_id: i64,

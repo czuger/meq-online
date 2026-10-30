@@ -1,29 +1,36 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
-  <h3>Monstres et serviteurs</h3>
+<div class="page">
+  <h1>Monstres et serviteurs</h1>
   {% if let Some(left) = commands_left %}
-  <div class="alert alert-secondary">
-    <ul class="mt-3">
-      <li>Ordres restants : {{ left }}.</li>
+  <p class="lead">Ordres restants : <b>{{ left }}</b>.</p>
+  <details class="rules">
+    <summary>Règles</summary>
+    <ul>
       <li>Chaque monstre ou serviteur ne reçoit qu'un ordre par action ; un seul jeton monstre peut être placé par action.</li>
       <li>Un serviteur ne peut pas être soigné s'il se trouve sur le lieu d'un héros.</li>
     </ul>
-  </div>
+  </details>
   {% endif %}
-  <hr>
-  {% for mob in mobs %}
-  <div class="row mt-2">
-    <div class="col-md-3">{{ mob.location }}</div>
-    <div class="col-md-3">{{ mob.name }}</div>
-    <div class="col-md-3">{% if mob.can_move %}<a class="btn btn-secondary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_mobs/{{ mob.id }}/edit">Déplacer</a>{% endif %}</div>
-    <div class="col-md-3">{% if let Some(label) = mob.heal %}<a class="btn btn-secondary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_mobs/{{ mob.id }}/heal">{{ label }}</a>{% endif %}</div>
-  </div>
-  {% endfor %}
-  <div class="row mt-3">
-    {% if can_place %}<div class="col-md-3"><a class="btn btn-secondary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_mobs/new">Placer un monstre</a></div>{% endif %}
-    {% if commands_left.is_some() %}<div class="col-md-3"><a class="btn btn-primary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_actions/finish_action">Terminer l'action</a></div>{% endif %}
-    <div class="col-md-3"><a class="btn btn-outline-secondary btn-block" role="button" href="/sauron/{{ sauron_id }}/sauron_actions/edit">Retour aux actions</a></div>
+  <table class="table">
+    <thead><tr><th>Lieu</th><th>Nom</th><th></th></tr></thead>
+    <tbody>
+      {% for mob in mobs %}
+      <tr>
+        <td>{{ mob.location }}</td>
+        <td>{{ mob.name }}</td>
+        <td>
+          {% if mob.can_move %}<a class="btn" role="button" href="/sauron/{{ sauron_id }}/sauron_mobs/{{ mob.id }}/edit">Déplacer</a>{% endif %}
+          {% if let Some(label) = mob.heal %}<form method="post" action="/sauron/{{ sauron_id }}/sauron_mobs/{{ mob.id }}/heal" style="display: inline"><button type="submit" class="btn">{{ label }}</button></form>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="actions">
+    {% if can_place %}<a class="btn" role="button" href="/sauron/{{ sauron_id }}/sauron_mobs/new">Placer un monstre</a>{% endif %}
+    <a class="btn btn-quiet" role="button" href="/sauron/{{ sauron_id }}/sauron_actions/edit">Retour aux actions</a>
+    {% if commands_left.is_some() %}<form method="post" action="/sauron/{{ sauron_id }}/sauron_actions/finish_action" class="end"><button type="submit" class="btn btn-primary">Terminer l'action</button></form>{% endif %}
   </div>
 </div>
 {% endblock %}

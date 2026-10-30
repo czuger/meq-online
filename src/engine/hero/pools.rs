@@ -14,12 +14,15 @@ const DISTRAUGHT_HAND_LIMIT: usize = 7;
 
 impl Hero {
     /// Rest: the rest pool is shuffled into the life pool (§ 6.1).
+    #[tracing::instrument(level = "debug", skip_all)]
     pub fn rest(&mut self, rng: &mut StdRng) {
         self.life_pool.append(&mut self.rest_pool);
         self.life_pool.shuffle(rng);
+        tracing::trace!(pile = "self.life_pool", order = ?self.life_pool, "shuffled");
     }
 
     /// Heal: the rest and damage pools are shuffled into the life pool (§ 6.1, § 8.9).
+    #[tracing::instrument(level = "debug", skip_all)]
     pub fn heal(&mut self, rng: &mut StdRng) {
         self.life_pool.append(&mut self.damage_pool);
         self.rest(rng);
@@ -29,6 +32,7 @@ impl Hero {
     ///
     /// # Errors
     /// [`EngineError::CardNotAvailable`] when a card isn't in hand; the hand is then unchanged.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn hand_to_rest(&mut self, cards: &[CardNumber]) -> Result<(), EngineError> {
         self.take_from_hand(cards)?;
         self.rest_pool.extend_from_slice(cards);
@@ -39,6 +43,7 @@ impl Hero {
     ///
     /// # Errors
     /// [`EngineError::CardNotAvailable`] when a card isn't in hand; the hand is then unchanged.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn hand_to_damages(&mut self, cards: &[CardNumber]) -> Result<(), EngineError> {
         self.take_from_hand(cards)?;
         self.damage_pool.extend_from_slice(cards);
@@ -49,9 +54,11 @@ impl Hero {
     ///
     /// # Errors
     /// [`EngineError::CardNotAvailable`] when a card isn't in hand; the hand is then unchanged.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn take_from_hand(&mut self, cards: &[CardNumber]) -> Result<(), EngineError> {
         let mut hand = self.hand.clone();
         for card in cards {
+            tracing::trace!(?card, "taking card from hand");
             let position =
                 hand.iter()
                     .position(|c| c == card)
@@ -69,6 +76,7 @@ impl Hero {
     ///
     /// # Returns
     /// Number of cards actually drawn.
+    #[tracing::instrument(level = "debug", skip_all, fields(count))]
     pub fn draw_cards(&mut self, count: usize) -> usize {
         let count = count.min(self.life_pool.len());
         let drawn: Vec<_> = self.life_pool.drain(..count).collect();
@@ -83,6 +91,7 @@ impl Hero {
     /// [`EngineError::Refused`] when more cards are given than the damage or the life
     /// pool can't pay the rest; [`EngineError::CardNotAvailable`] when a card isn't in
     /// hand. Nothing changes on error.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn pay_damage(&mut self, from_hand: &[CardNumber]) -> Result<(), EngineError> {
         let damage = usize::try_from(self.temporary_damages).unwrap_or(0);
         let from_life = damage
@@ -114,6 +123,7 @@ impl Hero {
     ///
     /// # Returns
     /// Number of cards actually drawn.
+    #[tracing::instrument(level = "debug", skip_all, fields(count))]
     pub fn draw_step_cards(&mut self, count: usize, data: &GameData) -> usize {
         let allowed = usize::try_from(self.fortitude - self.cards_drawn_this_round).unwrap_or(0);
         let drawn = self.draw_cards(count.min(allowed).min(self.room_in_hand(data)));
@@ -131,6 +141,7 @@ impl Hero {
     }
 
     /// Loses `amount` favor, never going below 0.
+    #[tracing::instrument(level = "debug", skip_all, fields(amount))]
     pub fn favor_loss(&mut self, amount: i32) {
         self.favor = (self.favor - amount).max(0);
     }

@@ -110,6 +110,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::CardNotAvailable`] when the card isn't in hand,
     /// [`EngineError::Refused`] when the slot is invalid or used.
+    #[tracing::instrument(level = "debug", skip_all, fields(card), err(level = "debug"))]
     pub fn play_plot(
         &mut self,
         card: u32,
@@ -165,6 +166,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::CardNotAvailable`] when the card isn't in hand,
     /// [`EngineError::Refused`] when the slot is invalid or used.
+    #[tracing::instrument(level = "debug", skip_all, fields(card), err(level = "debug"))]
     pub(crate) fn take_plot_from_hand(
         &mut self,
         card: u32,
@@ -176,6 +178,7 @@ impl Game {
     }
 
     /// Puts a plot card on the Active Plot Track.
+    #[tracing::instrument(level = "debug", skip_all, fields(card))]
     pub fn activate_plot(&mut self, card: u32, slot: PlotSlot) {
         self.board.plots.insert(slot, card);
         self.log(
@@ -190,6 +193,7 @@ impl Game {
     ///
     /// # Errors
     /// Fails when the transition isn't allowed or the event deck can't be drawn.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn plot_play_finished(
         &mut self,
         data: &GameData,
@@ -216,6 +220,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::CardNotAvailable`] when `card` isn't a Gollum card.
+    #[tracing::instrument(level = "debug", skip_all, fields(card), err(level = "debug"))]
     pub fn take_gollum_card(
         &mut self,
         card: u32,
@@ -233,10 +238,12 @@ impl Game {
         plot.draw.append(&mut plot.discard);
         plot.draw.retain(|c| *c != card);
         plot.draw.shuffle(rng);
+        tracing::trace!(pile = "plot.draw", order = ?plot.draw, "shuffled");
         self.plot_play_finished(data, rng)
     }
 
     /// Sauron removes the plot of a slot; the card goes to the discard pile (§ 5.4).
+    #[tracing::instrument(level = "debug", skip_all)]
     pub fn discard_plot(&mut self, slot: PlotSlot) {
         if let Some(card) = self.board.plots.remove(&slot) {
             self.forget_plot_location(slot);
@@ -254,6 +261,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::Refused`] when the slot is empty; transition and event errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn plot_step_discard(
         &mut self,
         slot: PlotSlot,
@@ -268,6 +276,7 @@ impl Game {
     }
 
     /// Playing one Gollum plot discards the other one if it is in play.
+    #[tracing::instrument(level = "debug", skip_all, fields(played))]
     fn remove_other_gollum_card(&mut self, played: u32) {
         let Some(other) = GOLLUM_CARDS
             .into_iter()

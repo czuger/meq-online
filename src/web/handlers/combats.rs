@@ -19,6 +19,7 @@ use crate::web::access::BoardAccess;
 use crate::web::app_error::AppError;
 use crate::web::flash::redirect;
 use crate::web::forms::{card_list, number};
+use crate::web::game_layout::{hero_layout, sauron_layout, viewer_layout};
 use crate::web::game_tx::change_game;
 use crate::web::page::render;
 use crate::web::views::hero_info::HeroInfo;
@@ -56,9 +57,6 @@ struct ShowPage {
 struct SetupPage {
     layout: Layout,
     board_id: i64,
-    info: HeroInfo,
-    hand: Vec<CardView>,
-    card_class: &'static str,
     /// Agility the hero may spend in this combat.
     agility: i32,
     /// Shadow card changes to the hero's attributes, explained.
@@ -167,6 +165,7 @@ fn history(cards: &[PlayedCard], folder: &str) -> Vec<String> {
 ///
 /// # Errors
 /// [`AppError::NotFound`] without combat; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id), err(level = "debug"))]
 pub async fn show(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -180,7 +179,7 @@ pub async fn show(
     let hero_active = game.hero(combat.hero_id).is_ok_and(|h| h.active);
     let me = access.session.user.id;
     let page = ShowPage {
-        layout: Layout::board(&access.session, &game),
+        layout: viewer_layout(&state, &access.session, &game).await?,
         board_id: access.board_id,
         hero,
         mob,
@@ -197,6 +196,7 @@ pub async fn show(
 ///
 /// # Errors
 /// [`AppError::NotFound`] without combat; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id), err(level = "debug"))]
 pub async fn combat_setup_screen(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -205,11 +205,8 @@ pub async fn combat_setup_screen(
     let combat = game.combat.as_ref().ok_or(AppError::NotFound)?;
     let hero = game.hero(combat.hero_id)?;
     let page = SetupPage {
-        layout: Layout::hero(&access.session, &game, combat.hero_id, &state.data),
+        layout: hero_layout(&state, &access.session, &game, combat.hero_id).await?,
         board_id: access.board_id,
-        info: HeroInfo::new(hero, &state.data),
-        hand: hero_hand(&state.data, &hero.code, &hero.hand),
-        card_class: "small-card",
         agility: combat.modifiers.agility(hero.agility),
         modifiers: modifiers_note(combat.modifiers),
     };
@@ -221,6 +218,7 @@ pub async fn combat_setup_screen(
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, form = ?form), err(level = "debug"))]
 pub async fn combat_setup(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -244,6 +242,7 @@ pub async fn combat_setup(
 ///
 /// # Errors
 /// [`AppError::NotFound`] for an unknown side or without combat; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id), err(level = "debug"))]
 pub async fn play_combat_card_screen(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -256,7 +255,9 @@ pub async fn play_combat_card_screen(
         "hero" => {
             let hero = game.hero(combat.hero_id)?;
             PlayCardPage {
-                layout: Layout::hero(&access.session, &game, combat.hero_id, &state.data),
+                layout: hero_layout(&state, &access.session, &game, combat.hero_id)
+                    .await?
+                    .without_hand(),
                 board_id: access.board_id,
                 fighter: hero_fighter,
                 hand: hero_hand(&state.data, &hero.code, &hero.hand),
@@ -273,7 +274,7 @@ pub async fn play_combat_card_screen(
                 .get(game.mob_index(combat.mob_id)?)
                 .ok_or(AppError::NotFound)?;
             PlayCardPage {
-                layout: Layout::sauron(&access.session, &game),
+                layout: sauron_layout(&state, &access.session, &game).await?,
                 board_id: access.board_id,
                 fighter: mob_fighter,
                 hand: mob
@@ -297,7 +298,7 @@ pub async fn play_combat_card_screen(
 
 fn after_card(board_id: i64, played: CardPlayed) -> Response {
     match played {
-        CardPlayed::Waiting => redirect("/boards", None),
+        CardPlayed::Waiting => redirect(&format!("/boards/{board_id}/play"), None),
         CardPlayed::Resolved => redirect(&format!("/boards/{board_id}/combats"), None),
         CardPlayed::CardsLoss => redirect(
             &format!("/boards/{board_id}/combats/cards_loss_screen"),
@@ -306,6 +307,7 @@ fn after_card(board_id: i64, played: CardPlayed) -> Response {
     }
 }
 
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id), err(level = "debug"))]
 async fn declare(
     state: AppState,
     access: BoardAccess,
@@ -323,6 +325,7 @@ async fn declare(
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id), err(level = "debug"))]
 pub async fn declare_exhaustion_hero(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -334,6 +337,7 @@ pub async fn declare_exhaustion_hero(
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id), err(level = "debug"))]
 pub async fn declare_exhaustion_mob(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -341,6 +345,7 @@ pub async fn declare_exhaustion_mob(
     declare(state, access, CombatSide::Mob).await
 }
 
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, ?form), err(level = "debug"))]
 async fn play_card(
     state: AppState,
     access: BoardAccess,
@@ -360,6 +365,7 @@ async fn play_card(
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, form = ?form), err(level = "debug"))]
 pub async fn play_combat_card_hero(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -372,6 +378,7 @@ pub async fn play_combat_card_hero(
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, form = ?form), err(level = "debug"))]
 pub async fn play_combat_card_mob(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -384,6 +391,7 @@ pub async fn play_combat_card_mob(
 ///
 /// # Errors
 /// [`AppError::NotFound`] without combat; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id), err(level = "debug"))]
 pub async fn cards_loss_screen(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -392,7 +400,9 @@ pub async fn cards_loss_screen(
     let combat = game.combat.as_ref().ok_or(AppError::NotFound)?;
     let hero = game.hero(combat.hero_id)?;
     let page = CardsLossPage {
-        layout: Layout::hero(&access.session, &game, combat.hero_id, &state.data),
+        layout: hero_layout(&state, &access.session, &game, combat.hero_id)
+            .await?
+            .without_hand(),
         board_id: access.board_id,
         damages: hero.temporary_damages,
         life: hero.life_pool.len(),
@@ -406,6 +416,7 @@ pub async fn cards_loss_screen(
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, form = ?form), err(level = "debug"))]
 pub async fn cards_loss(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -420,10 +431,11 @@ pub async fn cards_loss(
     Ok(redirect(&format!("/boards/{board_id}/combats"), None))
 }
 
-/// `GET /boards/{board_id}/combats/terminate`.
+/// `POST /boards/{board_id}/combats/terminate`.
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id), err(level = "debug"))]
 pub async fn terminate(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -449,10 +461,12 @@ pub async fn terminate(
             &route_for(game.board.state, access.board_id, RouteActor::Hero(hero_id)),
             None,
         ),
-        CombatEnd::ChooseHaven => redirect("/boards", None),
+        CombatEnd::ChooseHaven => redirect(&format!("/boards/{}/play", access.board_id), None),
         CombatEnd::TurnEnded(TurnEnd::HeroDrawCards) => {
             redirect(&format!("/heroes/{hero_id}/draw_cards_screen"), None)
         }
-        CombatEnd::TurnEnded(TurnEnd::Boards) | CombatEnd::GameOver => redirect("/boards", None),
+        CombatEnd::TurnEnded(TurnEnd::Boards) | CombatEnd::GameOver => {
+            redirect(&format!("/boards/{}/play", access.board_id), None)
+        }
     })
 }

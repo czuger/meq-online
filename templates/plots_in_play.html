@@ -1,7 +1,6 @@
 {% if !plots.is_empty() %}
-<hr>
 <h3>Intrigues en jeu</h3>
-<div class="row">
-  {% for card in plots %}<div class="col-md-4"><img src="{{ card.pic }}" class="big-card" alt=""></div>{% endfor %}
+<div class="cards">
+  {% for card in plots %}<img src="{{ card.pic }}" class="big-card" alt="">{% endfor %}
 </div>
 {% endif %}

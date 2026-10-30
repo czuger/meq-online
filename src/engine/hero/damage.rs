@@ -65,6 +65,7 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, amount, ?resume), err(level = "debug"))]
     pub fn deal_damage(
         &mut self,
         hero_id: i64,
@@ -106,6 +107,7 @@ impl Game {
     }
 
     /// The hero pays the damage with the picked hand cards, the rest from the life pool.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?targets), err(level = "debug"))]
     pub(crate) fn apply_damage_choice(
         &mut self,
         hero_id: i64,

@@ -63,6 +63,46 @@ async fn board_creation_and_list() {
 }
 
 #[tokio::test]
+async fn play_page_follows_the_turn() {
+    let app = TestApp::new().await;
+    let owner = app.login("elrond").await;
+    app.post("/boards", &owner, "heroes=argalad&seats=open")
+        .await;
+    let player = app.login("legolas").await;
+    let joined = app.post("/boards/1/join", &player, "hero=argalad").await;
+    assert_eq!(joined.location.as_deref(), Some("/boards/1/play"));
+    let sauron = app.game(1).await.sauron.id.unwrap();
+
+    // Sauron sets up: his play page opens his screen, the hero's waits.
+    let setup = format!("/sauron/{sauron}/setup_screen");
+    assert_eq!(
+        app.get("/boards/1/play", &owner).await.location.as_deref(),
+        Some(setup.as_str())
+    );
+    let status = app.get("/boards/1/status", &owner).await;
+    assert!(
+        status.body.contains(&format!("\"url\":\"{setup}\"")),
+        "{}",
+        status.body
+    );
+    let waiting = app.get("/boards/1/play", &player).await;
+    assert_eq!(waiting.status, StatusCode::OK);
+    assert!(
+        waiting.body.contains("Ce n'est pas votre tour") && waiting.body.contains("Sauron"),
+        "{}",
+        waiting.body
+    );
+    let status = app.get("/boards/1/status", &player).await;
+    assert_eq!(status.body, "{\"url\":null}");
+    // The waiting page is framed by the hero's table.
+    assert!(
+        waiting.body.contains("Derniers événements"),
+        "{}",
+        waiting.body
+    );
+}
+
+#[tokio::test]
 async fn players_join_open_seats() {
     let app = TestApp::new().await;
     let owner = app.login("elrond").await;
@@ -158,7 +198,7 @@ async fn sauron_setup_and_turn() {
 
     // The starting influence must be placed before finishing.
     let refused = app
-        .get(&format!("/sauron/{sauron}/setup_finished"), &me)
+        .post(&format!("/sauron/{sauron}/setup_finished"), &me, "")
         .await;
     assert_eq!(refused.status, StatusCode::UNPROCESSABLE_ENTITY);
     let barad_dur = game.board.influence.get("barad_dur").copied().unwrap_or(0);
@@ -182,7 +222,7 @@ async fn sauron_setup_and_turn() {
     app.save(&mut game).await;
 
     let finished = app
-        .get(&format!("/sauron/{sauron}/setup_finished"), &me)
+        .post(&format!("/sauron/{sauron}/setup_finished"), &me, "")
         .await;
     assert_eq!(
         finished.location.as_deref(),
@@ -234,7 +274,7 @@ async fn sauron_setup_and_turn() {
         .await;
     assert!(pool.body.contains("\"message\":null"), "{}", pool.body);
     let finish = format!("/sauron/{sauron}/sauron_actions/finish_action");
-    app.get(&finish, &me).await;
+    app.post(&finish, &me, "").await;
 
     let command = start("command").await;
     assert_eq!(
@@ -247,7 +287,7 @@ async fn sauron_setup_and_turn() {
             .status,
         StatusCode::OK
     );
-    app.get(&finish, &me).await;
+    app.post(&finish, &me, "").await;
 
     let draw = start("draw_cards").await;
     assert_eq!(
@@ -264,9 +304,16 @@ async fn sauron_setup_and_turn() {
     assert_eq!(app.game(board).await.board.sauron_actions_count, 3);
 
     let end = app
-        .get(&format!("/sauron/{sauron}/sauron_actions/terminate"), &me)
+        .post(
+            &format!("/sauron/{sauron}/sauron_actions/terminate"),
+            &me,
+            "",
+        )
         .await;
-    assert_eq!(end.location.as_deref(), Some("/boards"));
+    assert_eq!(
+        end.location.as_deref(),
+        Some(format!("/boards/{board}/play").as_str())
+    );
     let game = app.game(board).await;
     assert_eq!(game.board.state, BoardState::HeroDrawCardsScreen);
     assert!(game.heroes.iter().all(|h| h.active));
@@ -304,7 +351,7 @@ async fn heroes_draw_then_first_hero_plays() {
             .post(&format!("/heroes/{id}/draw_cards"), &me, "nb_cards=5")
             .await;
         assert_eq!(drawn.status, StatusCode::SEE_OTHER);
-        app.get(&format!("/heroes/{id}/draw_cards_finished"), &me)
+        app.post(&format!("/heroes/{id}/draw_cards_finished"), &me, "")
             .await;
     }
     let game = app.game(board).await;
@@ -368,8 +415,25 @@ async fn sauron_mobs() {
     ] {
         assert_eq!(app.get(&page, &me).await.status, StatusCode::OK, "{page}");
     }
+    // Monster placement and mob moves can be clicked on the table's map.
+    let placing = app.get(&format!("{base}/new"), &me).await;
+    assert!(
+        placing
+            .body
+            .contains(r#"form="place-mob-form" name="location" value="#),
+        "{}",
+        placing.body
+    );
+    let moving = app.get(&format!("{base}/{mouth}/edit"), &me).await;
+    assert!(
+        moving
+            .body
+            .contains(r#"form="move-mob-form" name="button" value="#),
+        "{}",
+        moving.body
+    );
 
-    let healed = app.get(&format!("{base}/{serpent}/heal"), &me).await;
+    let healed = app.post(&format!("{base}/{serpent}/heal"), &me, "").await;
     assert_eq!(healed.location.as_deref(), Some(base.as_str()));
     let refused = app
         .patch(&format!("{base}/{serpent}"), &me, "button=pelargir")
@@ -470,7 +534,10 @@ async fn combat_flow() {
             &format!("selected_card={hero_card}"),
         )
         .await;
-    assert_eq!(first.location.as_deref(), Some("/boards"));
+    assert_eq!(
+        first.location.as_deref(),
+        Some(format!("/boards/{board}/play").as_str())
+    );
     let second = app
         .post(
             &format!("/boards/{board}/combats/play_combat_card_mob"),
@@ -509,7 +576,7 @@ async fn combat_flow() {
         return;
     }
     let end = app
-        .get(&format!("/boards/{board}/combats/terminate"), &me)
+        .post(&format!("/boards/{board}/combats/terminate"), &me, "")
         .await;
     assert_eq!(end.status, StatusCode::SEE_OTHER, "{}", end.body);
     assert!(app.game(board).await.combat.is_none());
@@ -523,7 +590,11 @@ async fn refused_actions_are_reported() {
     let sauron = game.sauron.id.unwrap();
     // Not Sauron's actions step yet: the transition is refused, nothing is saved.
     let answer = app
-        .get(&format!("/sauron/{sauron}/sauron_actions/terminate"), &me)
+        .post(
+            &format!("/sauron/{sauron}/sauron_actions/terminate"),
+            &me,
+            "",
+        )
         .await;
     assert_eq!(answer.status, StatusCode::UNPROCESSABLE_ENTITY);
     assert_eq!(
@@ -637,8 +708,10 @@ async fn event_choice_flow() {
             &format!("option=place&targets=place%7C{character}"),
         )
         .await;
+    let play = format!("/boards/{board}/play");
+    assert_eq!(answer.location.as_deref(), Some(play.as_str()));
     assert_eq!(
-        answer.location.as_deref(),
+        app.get(&play, &me).await.location.as_deref(),
         Some(format!("/sauron/{}/sauron_actions/edit", game.sauron.id.unwrap()).as_str())
     );
     let game = app.game(board).await;
@@ -670,9 +743,12 @@ async fn finale_flow() {
     app.save(&mut game).await;
 
     let end = app
-        .get(&format!("/heroes/{hero}/exploration/next_step"), &me)
+        .post(&format!("/heroes/{hero}/exploration/next_step"), &me, "")
         .await;
-    assert_eq!(end.location.as_deref(), Some("/boards"));
+    assert_eq!(
+        end.location.as_deref(),
+        Some(format!("/boards/{board}/play").as_str())
+    );
     let game = app.game(board).await;
     assert_eq!(game.board.state, BoardState::ChoiceScreenBoardChoices);
     let screen = app
@@ -695,8 +771,10 @@ async fn finale_flow() {
             &format!("option=champion&targets=champion%7Chero%3A{hero}"),
         )
         .await;
+    let play = format!("/boards/{board}/play");
+    assert_eq!(answer.location.as_deref(), Some(play.as_str()));
     assert_eq!(
-        answer.location.as_deref(),
+        app.get(&play, &me).await.location.as_deref(),
         Some(format!("/boards/{board}/combats/combat_setup_screen").as_str())
     );
     let mut game = app.game(board).await;
@@ -711,9 +789,12 @@ async fn finale_flow() {
         .for_each(|m| m.life = 0);
     app.save(&mut game).await;
     let end = app
-        .get(&format!("/boards/{board}/combats/terminate"), &me)
+        .post(&format!("/boards/{board}/combats/terminate"), &me, "")
         .await;
-    assert_eq!(end.location.as_deref(), Some("/boards"));
+    assert_eq!(
+        end.location.as_deref(),
+        Some(format!("/boards/{board}/play").as_str())
+    );
     let story = app.get(&format!("/boards/{board}/story_screen"), &me).await;
     assert!(story.body.contains("Victoire des héros"), "{}", story.body);
     assert!(story.body.contains("heroes_0.png"), "{}", story.body);
@@ -838,7 +919,7 @@ async fn high_stakes_defeat_flow() {
     app.save(&mut game).await;
 
     let end = app
-        .get(&format!("/boards/{board}/combats/terminate"), &me)
+        .post(&format!("/boards/{board}/combats/terminate"), &me, "")
         .await;
     let screen = format!("/boards/{board}/choices/choice_screen");
     assert_eq!(

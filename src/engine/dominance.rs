@@ -51,11 +51,17 @@ fn sauron_story_steps(mut story: StoryMarkers, plots: &[PlotStory]) -> Option<i3
     // Each step with a plot advances a marker at least one space: past this many
     // steps, one marker is on the Finale space.
     for steps in 0..=FINAL_SPACE {
+        tracing::trace!(
+            steps,
+            sauron_to_final = story.data().sauron_to_final,
+            "simulating a story step"
+        );
         let data = story.data();
         if data.sauron_to_final <= 0 || data.sauron_to_shadowfall <= 0 {
             return Some(steps);
         }
         for plot in plots {
+            tracing::trace!(?plot, "plot advances a marker");
             story.advance(plot.story_type, plot.advance);
         }
     }

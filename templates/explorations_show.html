@@ -1,49 +1,35 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="container">
-  <h3>Exploration</h3>
-  <div class="alert alert-secondary"><ul class="mt-3"><li>À cette étape, vous pouvez explorer le lieu où vous vous trouvez.</li></ul></div>
+<div class="page">
+  <h1>Exploration</h1>
+  <p class="lead">Explorez le lieu où vous vous trouvez, puis continuez votre déplacement ou finissez votre tour.</p>
   <form method="post" action="/heroes/{{ hero_id }}/exploration">
-    {% for choice in choices %}
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="{{ choice.field }}" value="{{ choice.value }}" id="token_check_{{ loop.index }}"{% if !choice.enabled %} disabled{% endif %}>
-      <label class="form-check-label" for="token_check_{{ loop.index }}">{{ choice.text }}</label>
+    {% if !choices.is_empty() %}
+    <div class="box option-group">
+      <h4>Explorer</h4>
+      {% for choice in choices %}
+      <label class="option" for="token_check_{{ loop.index }}"><input type="checkbox" name="{{ choice.field }}" value="{{ choice.value }}" id="token_check_{{ loop.index }}"{% if !choice.enabled %} disabled{% endif %}> <span{% if !choice.enabled %} class="muted"{% endif %}>{{ choice.text }}</span></label>
+      {% endfor %}
     </div>
-    {% endfor %}
+    {% endif %}
     {% for consult in consults %}
-    <div class="card my-2">
-      <div class="card-body">
-        <strong>{{ consult.name }}</strong>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="consult[{{ consult.code }}]" value="" id="consult_none_{{ consult.code }}" checked>
-          <label class="form-check-label" for="consult_none_{{ consult.code }}">Ne pas consulter</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="consult[{{ consult.code }}]" value="favor" id="consult_favor_{{ consult.code }}">
-          <label class="form-check-label" for="consult_favor_{{ consult.code }}">Gagner {{ consult.favor }} faveurs</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="consult[{{ consult.code }}]" value="ability" id="consult_ability_{{ consult.code }}">
-          <label class="form-check-label" for="consult_ability_{{ consult.code }}">Utiliser sa capacité : {{ consult.power }}</label>
-        </div>
-      </div>
+    <div class="box option-group">
+      <h4>Consulter {{ consult.name }}</h4>
+      <label class="option" for="consult_none_{{ consult.code }}"><input type="radio" name="consult[{{ consult.code }}]" value="" id="consult_none_{{ consult.code }}" checked> Ne pas consulter</label>
+      <label class="option" for="consult_favor_{{ consult.code }}"><input type="radio" name="consult[{{ consult.code }}]" value="favor" id="consult_favor_{{ consult.code }}"> Gagner {{ consult.favor }} faveurs</label>
+      <label class="option" for="consult_ability_{{ consult.code }}"><input type="radio" name="consult[{{ consult.code }}]" value="ability" id="consult_ability_{{ consult.code }}"> <span>Utiliser sa capacité : {{ consult.power }}</span></label>
     </div>
     {% endfor %}
     {% if dark_path %}
-    <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="dark_path" value="1" id="dark_path">
-      <label class="form-check-label" for="dark_path">Choisir la voie des Ténèbres : gagner 1 faveur et recevoir 1 carte de corruption (une fois par tour)</label>
+    <div class="box option-group">
+      <h4>Voie des Ténèbres</h4>
+      <label class="option" for="dark_path"><input type="checkbox" name="dark_path" value="1" id="dark_path"> <span>Choisir la voie des Ténèbres : gagner 1 faveur et recevoir 1 carte de corruption (une fois par tour)</span></label>
     </div>
     {% endif %}
-    <hr>
-    <div class="form-group">
-      <div class="row">
-        {% if any_enabled %}
-        <div class="col-md-3"><button type="submit" class="btn btn-secondary btn-block">Explorer</button></div>
-        {% endif %}
-        <div class="col-md-3"><a class="btn btn-secondary btn-block" role="button" href="/heroes/{{ hero_id }}/exploration/next_movement">Continuer le déplacement</a></div>
-        <div class="col-md-3"><a class="btn btn-primary btn-block" role="button" href="/heroes/{{ hero_id }}/exploration/next_step">Finir le tour</a></div>
-      </div>
+    <div class="actions">
+      {% if any_enabled %}<button type="submit" class="btn btn-primary">Explorer</button>{% endif %}
+      <button type="submit" class="btn" formaction="/heroes/{{ hero_id }}/exploration/next_movement">Continuer le déplacement</button>
+      <button type="submit" class="btn{% if !any_enabled %} btn-primary{% endif %} end" formaction="/heroes/{{ hero_id }}/exploration/next_step">Finir le tour</button>
     </div>
   </form>
 </div>

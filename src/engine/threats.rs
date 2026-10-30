@@ -70,6 +70,12 @@ impl Game {
     ///
     /// # Errors
     /// Lookup and transition errors.
+    #[tracing::instrument(
+        level = "debug",
+        skip_all,
+        fields(hero_id, ambush),
+        err(level = "debug")
+    )]
     pub fn face_location_threats(
         &mut self,
         hero_id: i64,
@@ -96,6 +102,7 @@ impl Game {
     }
 
     /// Sauron resolves an attack or a Peril; he only decides when there is a choice.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ambush, ?mobs, perilous), err(level = "debug"))]
     fn sauron_threatens(
         &mut self,
         hero_id: i64,
@@ -138,6 +145,12 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::CombatInProgress`]; lookup and transition errors.
+    #[tracing::instrument(
+        level = "debug",
+        skip_all,
+        fields(hero_id, mob_id),
+        err(level = "debug")
+    )]
     pub fn attack_hero(
         &mut self,
         hero_id: i64,
@@ -187,6 +200,7 @@ impl Game {
     }
 
     /// The hero in a Haven allowed combat (Sauron then threatens as usual) or not.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ambush, %option), err(level = "debug"))]
     pub(crate) fn apply_haven_choice(
         &mut self,
         hero_id: i64,
@@ -205,6 +219,7 @@ impl Game {
 
     /// Sauron's pick: the attacking monster or minion, or a Peril.
     #[allow(clippy::too_many_arguments)]
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ambush, %option, ?targets), err(level = "debug"))]
     pub(crate) fn apply_threat_choice(
         &mut self,
         hero_id: i64,

@@ -16,6 +16,7 @@ use crate::model::hero::Item;
 use crate::web::access::{HeroAccess, SauronAccess};
 use crate::web::app_error::AppError;
 use crate::web::flash::redirect;
+use crate::web::game_layout::{hero_layout, sauron_layout};
 use crate::web::game_tx::{change_game, read_game};
 use crate::web::page::render;
 use crate::web::views::hero_info::HeroInfo;
@@ -95,6 +96,7 @@ fn parse_loss(code: &str) -> Result<DefeatLoss, AppError> {
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn defeat_screen(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -104,7 +106,7 @@ pub async fn defeat_screen(
     let markers = game.defeat_marker_choices();
     let losses = defeat_losses(hero);
     let page = DefeatPage {
-        layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
+        layout: hero_layout(&state, &access.session, &game, access.hero_id).await?,
         hero_id: access.hero_id,
         markers: markers.into_iter().map(marker_choice).collect(),
         losses: if losses.len() > 1 {
@@ -120,6 +122,7 @@ pub async fn defeat_screen(
 ///
 /// # Errors
 /// [`AppError::BadRequest`] for unknown choices; rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id, form = ?form), err(level = "debug"))]
 pub async fn defeat(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -139,7 +142,7 @@ pub async fn defeat(
             redirect(&format!("/heroes/{hero_id}/draw_cards_screen"), None)
         }
         DefeatOutcome::TurnEnded(TurnEnd::Boards) | DefeatOutcome::ChooseHaven => {
-            redirect("/boards", None)
+            redirect(&format!("/boards/{}/play", access.board_id), None)
         }
     })
 }
@@ -148,6 +151,7 @@ pub async fn defeat(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id), err(level = "debug"))]
 pub async fn haven_screen(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -159,7 +163,7 @@ pub async fn haven_screen(
         .map(|code| (code.to_owned(), state.data.locations.name(code).to_owned()))
         .collect();
     let page = HavenPage {
-        layout: Layout::sauron(&access.session, &game),
+        layout: sauron_layout(&state, &access.session, &game).await?,
         sauron_id: access.sauron_id,
         hero_name: HeroInfo::new(hero, &state.data).name,
         havens,
@@ -171,6 +175,7 @@ pub async fn haven_screen(
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, sauron_id = access.sauron_id, form = ?form), err(level = "debug"))]
 pub async fn haven(
     State(state): State<AppState>,
     access: SauronAccess,
@@ -180,5 +185,5 @@ pub async fn haven(
         game.choose_defeat_haven(&form.haven, data, rng)
     })
     .await?;
-    Ok(redirect("/boards", None))
+    Ok(redirect(&format!("/boards/{}/play", access.board_id), None))
 }

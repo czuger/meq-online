@@ -10,7 +10,6 @@ use crate::db::{DbError, user_repo};
 use crate::engine::EngineError;
 use crate::engine::events::event_step::event_pic_path;
 use crate::engine::mobs::RINGWRAITHS;
-use crate::engine::route::{RouteActor, route_for};
 use crate::game_data::GameData;
 use crate::game_data::shadow::ShadowTiming;
 use crate::model::board::EventRef;
@@ -19,6 +18,7 @@ use crate::model::game::Game;
 use crate::web::access::BoardAccess;
 use crate::web::app_error::AppError;
 use crate::web::flash::redirect;
+use crate::web::game_layout::viewer_layout;
 use crate::web::game_tx::{change_game, read_game};
 use crate::web::page::render;
 use crate::web::views::choice_label::{option_label, target_label, target_picture};
@@ -61,10 +61,12 @@ struct ChoicePage {
 }
 
 /// Heroes the user plays: their own and the computer seats.
+#[tracing::instrument(level = "debug", skip_all, fields(user_id), err(level = "debug"))]
 async fn played_heroes(state: &AppState, game: &Game, user_id: i64) -> Result<Vec<i64>, AppError> {
     let mut conn = state.db.acquire().await.map_err(DbError::from)?;
     let mut played = Vec::new();
     for hero in &game.heroes {
+        tracing::trace!(hero = %hero.code, "computer seat check");
         let computer = hero.user_id != user_id
             && user_repo::find(&mut conn, hero.user_id)
                 .await?
@@ -95,14 +97,6 @@ fn chooser_name(chooser: Chooser, game: &Game, data: &GameData) -> String {
             .and_then(|h| data.heroes.get(&h.code))
             .map_or_else(|| "Un héros".to_owned(), |d| d.name.clone()),
         Chooser::Heroes => "Les héros".to_owned(),
-    }
-}
-
-fn layout(access: &BoardAccess, chooser: Chooser, game: &Game, data: &GameData) -> Layout {
-    match chooser {
-        Chooser::Sauron => Layout::sauron(&access.session, game),
-        Chooser::Hero(hero_id) => Layout::hero(&access.session, game, hero_id, data),
-        Chooser::Heroes => Layout::board(&access.session, game),
     }
 }
 
@@ -247,6 +241,7 @@ fn option_view(option: &ChoiceOption, game: &Game, data: &GameData, sauron: bool
 ///
 /// # Errors
 /// [`AppError::NotFound`] without pending choice; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id), err(level = "debug"))]
 pub async fn choice_screen(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -261,7 +256,7 @@ pub async fn choice_screen(
     let played = played_heroes(&state, &game, me).await?;
     let sauron = game.sauron.user_id == me;
     let page = ChoicePage {
-        layout: layout(&access, choice.chooser, &game, &state.data),
+        layout: viewer_layout(&state, &access.session, &game).await?,
         board_id: access.board_id,
         chooser: chooser_name(choice.chooser, &game, &state.data),
         card_pic: card_picture(&choice.source),
@@ -294,29 +289,13 @@ fn parse_answer(fields: &[(String, String)]) -> Result<(String, Vec<String>), Ap
     Ok((option, targets))
 }
 
-/// Screen of whoever plays next.
-fn next_screen(game: &Game, board_id: i64) -> String {
-    let actor = if game.sauron.active {
-        game.sauron.id.map(RouteActor::Sauron)
-    } else {
-        game.heroes
-            .iter()
-            .find(|h| h.active)
-            .and_then(|h| h.id)
-            .map(RouteActor::Hero)
-    };
-    actor.map_or_else(
-        || "/boards".to_owned(),
-        |actor| route_for(game.board.state, board_id, actor),
-    )
-}
-
 /// `POST /boards/{board_id}/choices/choose`: the chooser's answer, an `option` field
 /// and `targets` fields valued `<option>|<target>`.
 ///
 /// # Errors
 /// [`AppError::BadRequest`] without option; [`AppError::Engine`] when the user isn't
 /// the chooser or the rules refuse the answer; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, fields = ?fields), err(level = "debug"))]
 pub async fn choose(
     State(state): State<AppState>,
     access: BoardAccess,
@@ -325,7 +304,7 @@ pub async fn choose(
     let (option, targets) = parse_answer(&fields)?;
     let me = access.session.user.id;
     let played = played_heroes(&state, &read_game(&state, access.board_id).await?, me).await?;
-    let (game, ()) = change_game(&state, access.board_id, |game, data, rng| {
+    change_game(&state, access.board_id, |game, data, rng| {
         let allowed = game
             .board
             .pending_choice
@@ -337,7 +316,7 @@ pub async fn choose(
         game.answer_choice(&option, &targets, data, rng)
     })
     .await?;
-    Ok(redirect(&next_screen(&game, access.board_id), None))
+    Ok(redirect(&format!("/boards/{}/play", access.board_id), None))
 }
 
 #[cfg(test)]

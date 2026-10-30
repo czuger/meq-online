@@ -2,7 +2,7 @@
 
 use askama::Template;
 use axum::Form;
-use axum::extract::{Query, State};
+use axum::extract::State;
 use axum::response::Response;
 use serde::Deserialize;
 
@@ -16,11 +16,13 @@ use crate::web::access::HeroAccess;
 use crate::web::app_error::AppError;
 use crate::web::flash::{Flash, redirect};
 use crate::web::forms::{card_list, number};
+use crate::web::game_layout::hero_layout;
 use crate::web::game_tx::{change_game, read_game};
 use crate::web::page::render;
 use crate::web::views::hero_info::HeroInfo;
 use crate::web::views::layout::Layout;
 use crate::web::views::pictures::{CardView, corruption_card, hero_hand, image};
+use crate::web::views::table_view::MapTarget;
 use crate::web::views::terrain_label::terrain_label;
 
 #[derive(Template)]
@@ -82,8 +84,6 @@ struct ArgaladPage {
 struct DrawCardsPage {
     layout: Layout,
     hero_id: i64,
-    hand: Vec<CardView>,
-    card_class: &'static str,
     left_to_draw: i32,
 }
 
@@ -101,16 +101,16 @@ pub struct DrawForm {
     nb_cards: String,
 }
 
-/// Corruption card discarded while resting.
+/// Corruption card discarded while resting (empty: none).
 #[derive(Debug, Deserialize)]
-pub struct RestQuery {
+pub struct RestForm {
     #[serde(default)]
     corruption: Option<String>,
 }
 
 /// Chosen story marker.
 #[derive(Debug, Deserialize)]
-pub struct MarkerQuery {
+pub struct MarkerForm {
     marker: String,
 }
 
@@ -122,6 +122,7 @@ fn hero(game: &Game, hero_id: i64) -> Result<&Hero, AppError> {
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn show(State(state): State<AppState>, access: HeroAccess) -> Result<Response, AppError> {
     let game = read_game(&state, access.board_id).await?;
     let hero = hero(&game, access.hero_id)?;
@@ -132,7 +133,9 @@ pub async fn show(State(state): State<AppState>, access: HeroAccess) -> Result<R
         ));
     }
     let page = ShowPage {
-        layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
+        layout: hero_layout(&state, &access.session, &game, access.hero_id)
+            .await?
+            .without_hand(),
         info: HeroInfo::new(hero, &state.data),
         hand: hero_hand(&state.data, &hero.code, &hero.hand),
         card_class: "small-card",
@@ -150,6 +153,7 @@ pub async fn show(State(state): State<AppState>, access: HeroAccess) -> Result<R
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn rest_screen(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -163,7 +167,7 @@ pub async fn rest_screen(
         .is_ok_and(|l| l.haven);
     let survivalist = game.survivalist_rest(access.hero_id, &state.data)?;
     let page = RestPage {
-        layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
+        layout: hero_layout(&state, &access.session, &game, access.hero_id).await?,
         hero_id: access.hero_id,
         can_heal: haven || survivalist,
         can_train: survivalist,
@@ -184,13 +188,14 @@ enum RestKind {
     Train,
 }
 
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id, ?kind, ?form), err(level = "debug"))]
 async fn rest(
     state: AppState,
     access: HeroAccess,
     kind: RestKind,
-    query: RestQuery,
+    form: RestForm,
 ) -> Result<Response, AppError> {
-    let discard = query
+    let discard = form
         .corruption
         .as_deref()
         .filter(|c| !c.is_empty())
@@ -219,47 +224,51 @@ async fn rest(
     })
 }
 
-/// `GET /heroes/{hero_id}/rest_rest?corruption=14` (the card to discard is optional).
+/// `POST /heroes/{hero_id}/rest_rest` with an optional `corruption` field (the card to discard is optional).
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id, form = ?form), err(level = "debug"))]
 pub async fn rest_rest(
     State(state): State<AppState>,
     access: HeroAccess,
-    Query(query): Query<RestQuery>,
+    Form(form): Form<RestForm>,
 ) -> Result<Response, AppError> {
-    rest(state, access, RestKind::Rest, query).await
+    rest(state, access, RestKind::Rest, form).await
 }
 
-/// `GET /heroes/{hero_id}/rest_heal?corruption=14` (the card to discard is optional).
+/// `POST /heroes/{hero_id}/rest_heal` with an optional `corruption` field (the card to discard is optional).
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id, form = ?form), err(level = "debug"))]
 pub async fn rest_heal(
     State(state): State<AppState>,
     access: HeroAccess,
-    Query(query): Query<RestQuery>,
+    Form(form): Form<RestForm>,
 ) -> Result<Response, AppError> {
-    rest(state, access, RestKind::Heal, query).await
+    rest(state, access, RestKind::Heal, form).await
 }
 
-/// `GET /heroes/{hero_id}/rest_train?corruption=14`: Beravor rests outside a Haven and
+/// `POST /heroes/{hero_id}/rest_train` with an optional `corruption` field: Beravor rests outside a Haven and
 /// receives training.
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id, form = ?form), err(level = "debug"))]
 pub async fn rest_train(
     State(state): State<AppState>,
     access: HeroAccess,
-    Query(query): Query<RestQuery>,
+    Form(form): Form<RestForm>,
 ) -> Result<Response, AppError> {
-    rest(state, access, RestKind::Train, query).await
+    rest(state, access, RestKind::Train, form).await
 }
 
-/// `GET /heroes/{hero_id}/rest_skip`.
+/// `POST /heroes/{hero_id}/rest_skip`.
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn rest_skip(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -275,6 +284,7 @@ pub async fn rest_skip(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn after_rest_advance_story_marker_screen(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -292,23 +302,24 @@ pub async fn after_rest_advance_story_marker_screen(
     .map(|(code, label, _)| (code, label))
     .collect();
     let page = StoryMarkerPage {
-        layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
+        layout: hero_layout(&state, &access.session, &game, access.hero_id).await?,
         hero_id: access.hero_id,
         markers,
     };
     render(&page, &page.layout)
 }
 
-/// `GET /heroes/{hero_id}/after_rest_advance_story_marker?marker=ring`.
+/// `POST /heroes/{hero_id}/after_rest_advance_story_marker` with `marker=ring`.
 ///
 /// # Errors
 /// [`AppError::BadRequest`] for an unknown marker; rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id, form = ?form), err(level = "debug"))]
 pub async fn after_rest_advance_story_marker(
     State(state): State<AppState>,
     access: HeroAccess,
-    Query(query): Query<MarkerQuery>,
+    Form(form): Form<MarkerForm>,
 ) -> Result<Response, AppError> {
-    let marker = match query.marker.to_lowercase().as_str() {
+    let marker = match form.marker.to_lowercase().as_str() {
         "ring" => StoryType::Ring,
         "conquest" => StoryType::Conquest,
         "corruption" => StoryType::Corruption,
@@ -328,13 +339,14 @@ pub async fn after_rest_advance_story_marker(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn movement_screen(
     State(state): State<AppState>,
     access: HeroAccess,
 ) -> Result<Response, AppError> {
     let game = read_game(&state, access.board_id).await?;
     let hero = hero(&game, access.hero_id)?;
-    let destinations = state
+    let destinations: Vec<Destination> = state
         .data
         .paths
         .destinations(&hero.location)
@@ -350,7 +362,17 @@ pub async fn movement_screen(
         })
         .collect();
     let page = MovementPage {
-        layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
+        layout: hero_layout(&state, &access.session, &game, access.hero_id)
+            .await?
+            .without_hand()
+            .with_targets(
+                destinations
+                    .iter()
+                    .filter_map(|d| {
+                        MapTarget::new(&state.data, "move-form", "button", &d.code, d.label.clone())
+                    })
+                    .collect(),
+            ),
         hero_id: access.hero_id,
         hand: hero_hand(&state.data, &hero.code, &hero.hand),
         card_class: "small-card selectable-card-selection-multiple",
@@ -364,6 +386,7 @@ pub async fn movement_screen(
 ///
 /// # Errors
 /// [`AppError::BadRequest`] for malformed cards; rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id, form = ?form), err(level = "debug"))]
 pub async fn move_hero(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -404,10 +427,11 @@ pub async fn move_hero(
     })
 }
 
-/// `GET /heroes/{hero_id}/movement_finished`.
+/// `POST /heroes/{hero_id}/movement_finished`.
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn movement_finished(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -426,6 +450,7 @@ pub async fn movement_finished(
 ///
 /// # Errors
 /// [`AppError::Engine`] when the hero isn't Argalad; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn argalad_power_screen(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -447,7 +472,7 @@ pub async fn argalad_power_screen(
         })
         .collect();
     let page = ArgaladPage {
-        layout: Layout::hero(&access.session, &game, hero_id, &state.data),
+        layout: hero_layout(&state, &access.session, &game, hero_id).await?,
         hero_id,
         monsters,
     };
@@ -458,6 +483,7 @@ pub async fn argalad_power_screen(
 ///
 /// # Errors
 /// Database and rendering errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn draw_cards_screen(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -465,10 +491,8 @@ pub async fn draw_cards_screen(
     let game = read_game(&state, access.board_id).await?;
     let hero = hero(&game, access.hero_id)?;
     let page = DrawCardsPage {
-        layout: Layout::hero(&access.session, &game, access.hero_id, &state.data),
+        layout: hero_layout(&state, &access.session, &game, access.hero_id).await?,
         hero_id: access.hero_id,
-        hand: hero_hand(&state.data, &hero.code, &hero.hand),
-        card_class: "small-card",
         left_to_draw: hero.cards_left_to_draw(&state.data),
     };
     render(&page, &page.layout)
@@ -478,6 +502,7 @@ pub async fn draw_cards_screen(
 ///
 /// # Errors
 /// [`AppError::BadRequest`] for a malformed count; database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id, form = ?form), err(level = "debug"))]
 pub async fn draw_cards(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -496,10 +521,11 @@ pub async fn draw_cards(
     ))
 }
 
-/// `GET /heroes/{hero_id}/draw_cards_finished`.
+/// `POST /heroes/{hero_id}/draw_cards_finished`.
 ///
 /// # Errors
 /// Rule and database errors.
+#[tracing::instrument(level = "debug", skip_all, fields(board_id = access.board_id, user_id = access.session.user.id, hero_id = access.hero_id), err(level = "debug"))]
 pub async fn draw_cards_finished(
     State(state): State<AppState>,
     access: HeroAccess,
@@ -509,5 +535,5 @@ pub async fn draw_cards_finished(
         game.draw_cards_finished(hero_id, data, rng)
     })
     .await?;
-    Ok(redirect("/boards", None))
+    Ok(redirect(&format!("/boards/{}/play", access.board_id), None))
 }

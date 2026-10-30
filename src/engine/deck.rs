@@ -38,11 +38,13 @@ impl Game {
     /// * `deck` - which deck.
     /// * `count` - number of cards.
     /// * `rng` - random source, for refilling the deck.
+    #[tracing::instrument(level = "debug", skip_all, fields(count))]
     pub fn draw_sauron_cards(&mut self, deck: SauronDeck, count: usize, rng: &mut StdRng) {
         let (pile, drawn) = self.sauron_piles(deck);
         if count > pile.draw.len() {
             pile.draw.append(&mut pile.discard);
             pile.draw.shuffle(rng);
+            tracing::trace!(pile = "pile.draw", order = ?pile.draw, "shuffled");
         }
         let count = count.min(pile.draw.len());
         let cards: Vec<CardNumber> = pile.draw.drain(..count).collect();
@@ -52,6 +54,7 @@ impl Game {
     }
 
     /// Sauron draws cards straight into his hand (card effects).
+    #[tracing::instrument(level = "debug", skip_all, fields(count))]
     pub fn draw_to_sauron_hand(&mut self, deck: SauronDeck, count: usize, rng: &mut StdRng) {
         let (_, drawn) = self.sauron_piles(deck);
         let waiting = drawn.len();
@@ -94,6 +97,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] when the number of selected cards isn't the number to
     /// keep, [`EngineError::CardNotAvailable`] when a selected card wasn't drawn.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn keep_sauron_cards(
         &mut self,
         deck: SauronDeck,

@@ -64,6 +64,7 @@ impl Game {
     ///
     /// # Errors
     /// Transition errors.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn ask(&mut self, choice: PendingChoice) -> Result<(), EngineError> {
         if self.board.state != BoardState::ChoiceScreenBoardChoices {
             self.fire(BoardEvent::NextToChoiceScreenBoardChoices)?;
@@ -85,6 +86,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] without a pending choice, for an unknown option or
     /// targets outside it; errors of the effect applied.
+    #[tracing::instrument(level = "debug", skip_all, fields(%option, ?targets), err(level = "debug"))]
     pub fn answer_choice(
         &mut self,
         option: &str,
@@ -118,6 +120,7 @@ impl Game {
     ///
     /// # Returns
     /// Where play goes on, usually `resume`.
+    #[tracing::instrument(level = "debug", skip_all, fields(%option, ?targets, ?resume), err(level = "debug"))]
     fn apply_answer(
         &mut self,
         source: ChoiceSource,
@@ -180,6 +183,7 @@ impl Game {
     }
 
     /// Applies an answer about a Shadow card or the location of a Plot card.
+    #[tracing::instrument(level = "debug", skip_all, fields(%option, ?targets, ?resume), err(level = "debug"))]
     fn apply_shadow_answer(
         &mut self,
         source: ChoiceSource,
@@ -220,6 +224,7 @@ impl Game {
     }
 
     /// Applies an answer about an event card.
+    #[tracing::instrument(level = "debug", skip_all, fields(%option, ?targets, ?resume), err(level = "debug"))]
     fn apply_event_answer(
         &mut self,
         source: ChoiceSource,
@@ -251,6 +256,7 @@ impl Game {
     }
 
     /// Plays on after the last choice.
+    #[tracing::instrument(level = "debug", skip_all, fields(?resume), err(level = "debug"))]
     fn resume(
         &mut self,
         resume: Resume,
@@ -299,6 +305,7 @@ impl Game {
     }
 
     /// Plays on in Sauron's turn: the Event step, the Action step or between actions.
+    #[tracing::instrument(level = "debug", skip_all, fields(?resume), err(level = "debug"))]
     fn resume_sauron(
         &mut self,
         resume: Resume,

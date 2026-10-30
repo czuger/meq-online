@@ -61,6 +61,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::NotFound`] when the hero is unknown.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn exploration_tokens(
         &mut self,
         hero_id: i64,
@@ -79,6 +80,7 @@ impl Game {
                 .collect();
             tokens.retain(|t| t.kind != TokenKind::Character);
             for name in hidden {
+                tracing::trace!(character = ?name, "hidden character");
                 self.log(
                     ActorRef::Hero(hero_id),
                     "corruption.isolated",
@@ -99,6 +101,7 @@ impl Game {
     /// [`EngineError::Refused`] when a chosen token isn't on the location, the plot
     /// costs more favor than the hero has, a Dark Path isn't allowed, or two decisions
     /// would wait at once.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn explore(
         &mut self,
         hero_id: i64,
@@ -148,6 +151,7 @@ impl Game {
     /// Consults a character on the hero's location for its favor or its ability; the
     /// character goes back to the Favor and Character area (§ 6.5). An isolated hero
     /// can't consult characters; Eleanor gains 1 favor once per turn.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, %character, ability), err(level = "debug"))]
     fn consult_character(
         &mut self,
         hero_id: i64,
@@ -197,6 +201,7 @@ impl Game {
 
     /// Eleanor's Noble Bloodline: once per turn, 1 favor when consulting a character
     /// or completing a quest.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     fn noble_bloodline(&mut self, hero_id: i64, data: &GameData) -> Result<(), EngineError> {
         let hero = self.hero_mut(hero_id)?;
         if hero.code != NOBLE_BLOODLINE_HERO || hero.turn_record.noble_bloodline {
@@ -207,6 +212,7 @@ impl Game {
         Ok(())
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?ability), err(level = "debug"))]
     fn use_character_ability(
         &mut self,
         hero_id: i64,
@@ -239,6 +245,7 @@ impl Game {
             CharacterAbility::DiscardShadows { count } => {
                 let hand = &mut self.sauron.shadow_hand;
                 hand.shuffle(rng);
+                tracing::trace!(pile = "hand", order = ?hand, "shuffled");
                 let discarded = hand.split_off(hand.len().saturating_sub(count));
                 self.board.decks.shadow.discard.extend(discarded);
             }
@@ -248,6 +255,7 @@ impl Game {
 
     /// Dark Path (§ 6.5): once per turn, a hero with at most 3 Corruption cards gains
     /// 1 favor and 1 Corruption card.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     fn choose_dark_path(
         &mut self,
         hero_id: i64,
@@ -279,6 +287,12 @@ impl Game {
         Ok(!hero.turn_record.dark_path && hero.corruption_cards.len() <= DARK_PATH_MAX_CORRUPTION)
     }
 
+    #[tracing::instrument(
+        level = "debug",
+        skip_all,
+        fields(hero_id, count),
+        err(level = "debug")
+    )]
     fn pick_favors(
         &mut self,
         hero_id: i64,
@@ -287,6 +301,7 @@ impl Game {
     ) -> Result<ExploreNotice, EngineError> {
         let location = self.hero(hero_id)?.location.clone();
         for _ in 0..count {
+            tracing::trace!(hero_id, %location, "collecting a favor");
             let position = self
                 .board
                 .favors
@@ -304,6 +319,7 @@ impl Game {
         Ok(ExploreNotice::FavorTaken)
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     fn remove_plot_at_hero_location(
         &mut self,
         hero_id: i64,
@@ -330,6 +346,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::InvalidTransition`] outside exploration.
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn exploration_next_movement(&mut self) -> Result<(), EngineError> {
         self.fire(BoardEvent::NextToHeroMovementScreen)
     }

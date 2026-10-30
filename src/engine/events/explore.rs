@@ -37,6 +37,7 @@ impl Game {
     /// # Errors
     /// [`EngineError::Refused`] when no event in play affects the hero's location;
     /// lookup and choice errors.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn activate_current_event(
         &mut self,
         hero_id: i64,
@@ -130,6 +131,7 @@ impl Game {
 
     /// Applies the reward the exploring hero picked; the event card is then discarded.
     #[allow(clippy::too_many_arguments)]
+    #[tracing::instrument(level = "debug", skip_all, fields(?event, hero_id, %option, ?targets, ?resume), err(level = "debug"))]
     pub(crate) fn apply_explore_reward(
         &mut self,
         event: EventRef,
@@ -193,6 +195,7 @@ impl Game {
     }
 
     /// Rewards without targets.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?reward), err(level = "debug"))]
     fn apply_simple_reward(
         &mut self,
         hero_id: i64,
@@ -203,6 +206,7 @@ impl Game {
         match *reward {
             ExploreReward::RemoveAdjacentInfluence => {
                 for adjacent in data.paths.connected(&location) {
+                    tracing::trace!(%adjacent, "removing adjacent influence");
                     self.remove_influence(adjacent, 1);
                 }
                 self.trim_unsupported_influence(data);
@@ -240,11 +244,13 @@ impl Game {
     }
 
     /// Discards every monster token on `locations`.
+    #[tracing::instrument(level = "debug", skip_all, fields(?locations), err(level = "debug"))]
     fn clear_monsters(&mut self, locations: &[String], data: &GameData) -> Result<(), EngineError> {
         let monsters = self.mob_targets(locations, MobKind::Monster);
         self.remove_token_targets(&monsters, data)
     }
 
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id, ?event), err(level = "debug"))]
     fn log_event(
         &mut self,
         hero_id: i64,
@@ -265,6 +271,7 @@ impl Game {
     ///
     /// # Errors
     /// [`EngineError::NotFound`] when the hero is unknown.
+    #[tracing::instrument(level = "debug", skip_all, fields(hero_id), err(level = "debug"))]
     pub fn trigger_held_event(&mut self, hero_id: i64, data: &GameData) -> Result<(), EngineError> {
         let Some(held) = self.board.held_event.filter(|h| h.hero_id == hero_id) else {
             return Ok(());
