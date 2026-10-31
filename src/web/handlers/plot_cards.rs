@@ -77,8 +77,10 @@ pub struct SelectedForm {
     selected_card: String,
 }
 
-fn actions_url(sauron_id: i64) -> String {
-    format!("/sauron/{sauron_id}/sauron_actions/edit")
+/// The play page: ending the Plot step runs the Event step, which may ask a choice
+/// before the Action step.
+fn play_url(board_id: i64) -> String {
+    format!("/boards/{board_id}/play")
 }
 
 /// `GET /sauron/{sauron_id}/plot_cards/keep_screen`.
@@ -184,7 +186,6 @@ pub async fn play(
     })
     .await?;
     Ok(match played {
-        PlotPlayed::Finished => redirect(&actions_url(access.sauron_id), None),
         PlotPlayed::LookForGollum => redirect(
             &format!(
                 "/sauron/{}/plot_cards/look_for_gollum_cards",
@@ -192,10 +193,9 @@ pub async fn play(
             ),
             None,
         ),
-        PlotPlayed::ChooseLocation => redirect(
-            &format!("/boards/{}/choices/choice_screen", access.board_id),
-            None,
-        ),
+        PlotPlayed::Finished | PlotPlayed::ChooseLocation => {
+            redirect(&play_url(access.board_id), None)
+        }
     })
 }
 
@@ -212,7 +212,7 @@ pub async fn play_finished(
         game.plot_play_finished(data, rng)
     })
     .await?;
-    Ok(redirect(&actions_url(access.sauron_id), None))
+    Ok(redirect(&play_url(access.board_id), None))
 }
 
 /// `GET /sauron/{sauron_id}/plot_cards/look_for_gollum_cards`.
@@ -252,7 +252,7 @@ pub async fn get_gollum_card(
         game.take_gollum_card(card, data, rng)
     })
     .await?;
-    Ok(redirect(&actions_url(access.sauron_id), None))
+    Ok(redirect(&play_url(access.board_id), None))
 }
 
 /// `GET /sauron/{sauron_id}/plot_cards/discard_screen`.
@@ -298,5 +298,5 @@ pub async fn discard(
         game.plot_step_discard(slot, data, rng)
     })
     .await?;
-    Ok(redirect(&actions_url(access.sauron_id), None))
+    Ok(redirect(&play_url(access.board_id), None))
 }

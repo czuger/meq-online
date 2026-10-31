@@ -224,8 +224,10 @@ async fn sauron_setup_and_turn() {
     let finished = app
         .post(&format!("/sauron/{sauron}/setup_finished"), &me, "")
         .await;
+    let play = format!("/boards/{board}/play");
+    assert_eq!(finished.location.as_deref(), Some(play.as_str()));
     assert_eq!(
-        finished.location.as_deref(),
+        app.get(&play, &me).await.location.as_deref(),
         Some(format!("/sauron/{sauron}/sauron_actions/edit").as_str())
     );
     let game = app.game(board).await;
@@ -678,27 +680,46 @@ async fn status_reports_the_board_version() {
     assert_ne!(changed["version"], version.as_str());
 }
 
-// § 5.6: an event asking Sauron to choose waits on the choice screen until answered.
+// § 5.6: an event asking Sauron to choose waits on the choice screen until answered;
+// the actions screen sends Sauron there instead of offering tracks the board refuses.
 #[tokio::test]
 async fn event_choice_flow() {
-    use rand::SeedableRng;
-
     let app = TestApp::new().await;
     let me = app.login("frodo").await;
     let mut game = app.create_board(&me).await;
     let board = game.board.id.unwrap();
+    let sauron = game.sauron.id.unwrap();
     // "The Thieves of Tharbad": Sauron places a character at the Mouth of the Greyflood.
     game.board.state = BoardState::PlayScreenSauronPlotCards;
     game.board.decks.event.draw.retain(|c| *c != 2);
     game.board.decks.event.draw.insert(0, 2);
-    let mut rng = rand::rngs::StdRng::seed_from_u64(1);
-    game.event_step(&app.state.data, &mut rng).unwrap();
     app.save(&mut game).await;
-    assert_eq!(game.board.state, BoardState::ChoiceScreenBoardChoices);
 
-    let screen = app
-        .get(&format!("/boards/{board}/choices/choice_screen"), &me)
+    let play = format!("/boards/{board}/play");
+    let finished = app
+        .post(
+            &format!("/sauron/{sauron}/plot_cards/play_finished"),
+            &me,
+            "",
+        )
         .await;
+    assert_eq!(finished.location.as_deref(), Some(play.as_str()));
+    let game = app.game(board).await;
+    assert_eq!(game.board.state, BoardState::ChoiceScreenBoardChoices);
+    let choice_screen = format!("/boards/{board}/choices/choice_screen");
+    assert_eq!(
+        app.get(&play, &me).await.location.as_deref(),
+        Some(choice_screen.as_str())
+    );
+    assert_eq!(
+        app.get(&format!("/sauron/{sauron}/sauron_actions/edit"), &me)
+            .await
+            .location
+            .as_deref(),
+        Some(play.as_str())
+    );
+
+    let screen = app.get(&choice_screen, &me).await;
     assert_eq!(screen.status, StatusCode::OK);
     assert!(
         screen.body.contains("value=\"place\"") && screen.body.contains("Appliquer"),
@@ -718,11 +739,10 @@ async fn event_choice_flow() {
             &format!("option=place&targets=place%7C{character}"),
         )
         .await;
-    let play = format!("/boards/{board}/play");
     assert_eq!(answer.location.as_deref(), Some(play.as_str()));
     assert_eq!(
         app.get(&play, &me).await.location.as_deref(),
-        Some(format!("/sauron/{}/sauron_actions/edit", game.sauron.id.unwrap()).as_str())
+        Some(format!("/sauron/{sauron}/sauron_actions/edit").as_str())
     );
     let game = app.game(board).await;
     let code = character.strip_prefix("character:").unwrap();

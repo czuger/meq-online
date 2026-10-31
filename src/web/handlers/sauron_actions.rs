@@ -7,6 +7,7 @@ use axum::{Form, Json};
 use serde::{Deserialize, Serialize};
 
 use crate::app_state::AppState;
+use crate::engine::board_state::BoardState;
 use crate::engine::influence::InfluenceRefusal;
 use crate::engine::route::{RouteActor, route_for};
 use crate::engine::sauron_actions::space_values;
@@ -139,7 +140,8 @@ fn playable_shadows(game: &Game, data: &GameData) -> Result<Vec<ShadowView>, App
         .collect())
 }
 
-/// `GET /sauron/{sauron_id}/sauron_actions/edit`: the action tracks.
+/// `GET /sauron/{sauron_id}/sauron_actions/edit`: the action tracks, or the play page
+/// when the board isn't on the Action step.
 ///
 /// # Errors
 /// Database and rendering errors.
@@ -149,6 +151,10 @@ pub async fn edit(
     access: SauronAccess,
 ) -> Result<Response, AppError> {
     let game = read_game(&state, access.board_id).await?;
+    if game.board.state != BoardState::EditSauronSauronActions {
+        // A stale link or redirect: the tracks would offer actions the board refuses.
+        return Ok(redirect(&format!("/boards/{}/play", access.board_id), None));
+    }
     let can_start = game.board.current_action.is_none() && game.sauron_actions_left() > 0;
     let tracks = SauronAction::ALL
         .into_iter()

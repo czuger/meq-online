@@ -104,8 +104,6 @@ pub async fn setup_finished(
         game.sauron_setup_finished(data, rng)
     })
     .await?;
-    Ok(redirect(
-        &format!("/sauron/{}/sauron_actions/edit", access.sauron_id),
-        None,
-    ))
+    // The Event step may ask a choice before the Action step.
+    Ok(redirect(&format!("/boards/{}/play", access.board_id), None))
 }
