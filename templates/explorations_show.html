@@ -4,6 +4,9 @@
   <h1>Exploration</h1>
   <p class="lead">Explorez le lieu où vous vous trouvez, puis continuez votre déplacement ou finissez votre tour.</p>
   <form method="post" action="/heroes/{{ hero_id }}/exploration">
+    {% if choices.is_empty() && consults.is_empty() %}
+    <p class="muted">Rien à explorer ici : aucune faveur, aucun personnage, aucune intrigue ni événement à activer sur ce lieu.</p>
+    {% endif %}
     {% if !choices.is_empty() %}
     <div class="box option-group">
       <h4>Explorer</h4>
@@ -26,6 +29,7 @@
       <label class="option" for="dark_path"><input type="checkbox" name="dark_path" value="1" id="dark_path"> <span>Choisir la voie des Ténèbres : gagner 1 faveur et recevoir 1 carte de corruption (une fois par tour)</span></label>
     </div>
     {% endif %}
+    {% if let Some(reason) = dark_path_blocked %}<p class="muted">Voie des Ténèbres impossible : {{ reason }}</p>{% endif %}
     <div class="actions">
       {% if any_enabled %}<button type="submit" class="btn btn-primary">Explorer</button>{% endif %}
       <button type="submit" class="btn" formaction="/heroes/{{ hero_id }}/exploration/next_movement">Continuer le déplacement</button>

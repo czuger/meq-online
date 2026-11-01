@@ -4,8 +4,13 @@ use serde_json::Value;
 
 use crate::game_data::GameData;
 use crate::model::log_entry::LogEntry;
+use crate::model::turn_step::{
+    STEP_BEGIN, STEP_SKIPPED, StepSkip, TURN_DRAW, TURN_HERO, TURN_SAURON, TURN_STOPPED, TurnStep,
+    TurnStop,
+};
 use crate::web::views::mission_label::{heroes_mission_name, sauron_mission_name};
-use crate::web::views::pictures::image;
+use crate::web::views::pictures::{corruption_card, hero_card, image, mob_card};
+use crate::web::views::step_label::{skip_text, step_label, stop_text};
 
 /// Value of a log parameter as text; hero codes are replaced by hero names.
 fn param(entry: &LogEntry, name: &str, data: &GameData) -> String {
@@ -58,15 +63,6 @@ fn sauron_action_name(code: &str) -> &'static str {
     }
 }
 
-/// Name of a Skill card from its number.
-fn skill_name(number: &str, data: &GameData) -> String {
-    number
-        .parse()
-        .ok()
-        .and_then(|n| data.skills.get(&n))
-        .map_or_else(|| number.to_owned(), |s| s.name.clone())
-}
-
 /// Sentence describing a log entry.
 pub fn log_text(entry: &LogEntry, data: &GameData) -> String {
     let p = |name: &str| param(entry, name, data);
@@ -94,6 +90,86 @@ pub fn log_text(entry: &LogEntry, data: &GameData) -> String {
         ),
         "exploration.dark_path" => "Choisit la voie des Ténèbres et gagne une faveur.".to_owned(),
         "exploration.plot.remove" => format!("Retire une intrigue à {}.", p("location_name")),
+        _ => step_log_text(entry, data),
+    }
+}
+
+/// Typed parameter of a log entry.
+fn typed<T: serde::de::DeserializeOwned>(entry: &LogEntry, name: &str) -> Option<T> {
+    serde_json::from_value(entry.params.get(name)?.clone()).ok()
+}
+
+/// Turns and steps, and what the hero's steps did.
+fn step_log_text(entry: &LogEntry, data: &GameData) -> String {
+    let p = |name: &str| param(entry, name, data);
+    let skip = typed::<StepSkip>(entry, "reason").map_or("", skip_text);
+    match entry.action.as_str() {
+        TURN_SAURON => "Tour de Sauron".to_owned(),
+        TURN_DRAW => "Pioche des héros".to_owned(),
+        TURN_HERO => {
+            let name = p("hero");
+            let elided = name.starts_with(['A', 'E', 'I', 'O', 'U', 'É']);
+            format!("Tour {}{name}", if elided { "d'" } else { "de " })
+        }
+        "turn.end" => "Fin du tour.".to_owned(),
+        TURN_STOPPED => typed::<TurnStop>(entry, "reason")
+            .map_or("Tour interrompu.", stop_text)
+            .to_owned(),
+        STEP_BEGIN => format!(
+            "Étape : {}.",
+            typed::<TurnStep>(entry, "step").map_or("?", step_label)
+        ),
+        STEP_SKIPPED => format!(
+            "{} : {skip}",
+            typed::<TurnStep>(entry, "step").map_or("?", step_label)
+        ),
+        "story.stage" => format!("L'histoire passe à l'étape {}.", p("stage")),
+        "story.spawn" => format!("{} entre en jeu à {}.", p("name"), p("location")),
+        "draw_cards.none" => format!("{} ne pioche aucune carte.", p("name")),
+        "draw_cards.blocked" => format!("{} ne peut pas piocher : {skip}", p("name")),
+        "rest.rest" | "rest.heal" => {
+            let verb = if entry.action == "rest.heal" {
+                "Se soigne"
+            } else {
+                "Se repose"
+            };
+            format!(
+                "{verb} : {} retrouvée(s) dans la réserve de vie, qui en compte {}.",
+                plural(count(entry), "carte", "cartes"),
+                p("lp_cards")
+            )
+        }
+        "rest.skip" => "Ne se repose pas.".to_owned(),
+        "movement.travel" => format!("Se déplace : {} → {}.", p("from"), p("to")),
+        "movement.none" => "Ne se déplace pas.".to_owned(),
+        "movement.safe" => format!("Aucun monstre, sbire ni péril à {}.", p("location")),
+        "plot_cards.pass" => "Sauron ne joue pas de carte intrigue.".to_owned(),
+        _ => combat_result_log_text(entry, data),
+    }
+}
+
+/// Rounds and outcome of a combat.
+fn combat_result_log_text(entry: &LogEntry, data: &GameData) -> String {
+    let p = |name: &str| param(entry, name, data);
+    match entry.action.as_str() {
+        "combat.start" => format!("{} affronte {} à {}.", p("hero"), p("mob"), p("location")),
+        "combat.round" => format!(
+            "Manche : {} subit {} dégât(s), {} subit {} dégât(s) et a encore {} point(s) de vie.",
+            p("hero"),
+            p("hero_damage"),
+            p("mob"),
+            p("mob_damage"),
+            p("mob_life")
+        ),
+        "combat.end" => match p("outcome").as_str() {
+            "mob_defeated" => format!("{} a vaincu {}.", p("hero"), p("mob")),
+            "hero_defeated" => format!("{} est vaincu par {}.", p("hero"), p("mob")),
+            _ => format!(
+                "{} et {} sont épuisés : personne n'est vaincu.",
+                p("hero"),
+                p("mob")
+            ),
+        },
         _ => finale_log_text(entry, data),
     }
 }
@@ -166,10 +242,16 @@ fn peril_log_text(entry: &LogEntry, data: &GameData) -> String {
             plural(n, "carte Péril", "cartes Péril"),
             p("location")
         ),
-        "peril.none_matching" => {
-            "Aucune carte Péril n'affecte ce lieu : elles sont défaussées sans effet.".to_owned()
-        }
-        "peril.resolve" => format!("Subit le péril « {} ».", p("peril")),
+        "peril.none_matching" => format!(
+            "Aucune carte Péril n'affecte ce lieu : elles sont défaussées sans effet.{}",
+            discarded_perils(entry)
+        ),
+        "peril.resolve" => format!(
+            "Subit le péril « {} ». {}{}",
+            p("peril"),
+            p("text"),
+            discarded_perils(entry)
+        ),
         "peril.influence" => format!("Sauron place une influence à {}.", p("location")),
         "damage.dealt" => format!("Subit {}.", plural(n, "dégât", "dégâts")),
         "corruption.gain" => format!("Reçoit la carte de corruption {}.", p("corruption")),
@@ -196,6 +278,16 @@ fn peril_log_text(entry: &LogEntry, data: &GameData) -> String {
             "A perdu une carte héros au hasard à cause de la corruption Lâche.".to_owned()
         }
         _ => setup_and_combat_log_text(entry, data),
+    }
+}
+
+/// Names of the Peril cards discarded with no effect, as the end of a sentence.
+fn discarded_perils(entry: &LogEntry) -> String {
+    let names = typed::<Vec<String>>(entry, "others").unwrap_or_default();
+    if names.is_empty() {
+        String::new()
+    } else {
+        format!(" Cartes défaussées : {}.", names.join(", "))
     }
 }
 
@@ -276,19 +368,27 @@ fn sauron_log_text(entry: &LogEntry, data: &GameData) -> String {
         "shadow_cards.draw" => format!("Sauron pioche {shadows}."),
         "shadow_cards.keep" => format!("Sauron garde {shadows}."),
         "shadow_cards.discard" => format!("Sauron défausse {shadows}."),
-        "command.move" => format!("Sauron déplace {} vers {}.", p("name"), p("location")),
+        "command.move" => {
+            let name = Some(p("name"))
+                .filter(|n| !n.is_empty())
+                .unwrap_or_else(|| "un monstre".to_owned());
+            format!("Sauron déplace {name} vers {}.", p("location"))
+        }
         "command.place" => format!("Sauron place un monstre à {}.", p("location")),
         "command.heal" => format!("Sauron soigne {}.", p("name")),
         "character.remove" => format!("Retire {}.", p("name")),
         "character.place" => format!("Place {} à {}.", p("name"), p("location")),
         "favor.place" => format!("Place une faveur à {}.", p("location")),
-        "event.choose_card" => "Tire une carte événement.".to_owned(),
+        "event.drawn" => format!(
+            "Un camp est dominant : {} tirées, une seule est appliquée.",
+            plural(n, "carte événement", "cartes événement")
+        ),
+        "event.choose_card" if p("event").is_empty() => "Tire une carte événement.".to_owned(),
+        "event.choose_card" => format!("Carte événement : « {} ».", p("event")),
         "event.resolved" => format!("L'événement « {} » est appliqué.", p("event")),
         "event.activated" => format!("Active l'événement en jeu « {} ».", p("event")),
-        "training.keep" => format!(
-            "S'entraîne et garde la compétence {}.",
-            skill_name(&p("skill"), data)
-        ),
+        // The Skill card kept goes to the hand: it stays secret.
+        "training.keep" => "S'entraîne et garde une compétence.".to_owned(),
         "corruption.discard" => format!("Défausse la carte de corruption {}.", p("corruption")),
         action => {
             if let Some(code) = action.strip_prefix("sauron_actions.place.") {
@@ -302,19 +402,22 @@ fn sauron_log_text(entry: &LogEntry, data: &GameData) -> String {
     }
 }
 
-/// Picture of the card a log entry refers to, if any.
-pub fn log_card_pic(entry: &LogEntry) -> Option<String> {
-    let text = |name: &str| {
-        entry.params.get(name).map(|v| match v {
-            Value::String(s) => s.clone(),
-            other => other.to_string(),
-        })
-    };
-    if let Some(card) = text("shadow_card") {
-        return Some(image(&format!("sauron/shadows/{card}.png")));
-    }
-    if let Some(card) = text("plot_card") {
-        return Some(image(&format!("sauron/plots/{card}.png")));
-    }
-    text("event_card").map(|card| image(&format!("events/{card}")))
+/// Pictures of the public cards a log entry refers to.
+pub fn log_card_pics(entry: &LogEntry, data: &GameData) -> Vec<String> {
+    let number = |name: &str| typed::<u32>(entry, name);
+    let code = |name: &str| typed::<String>(entry, name).unwrap_or_default();
+    let mut pics = Vec::new();
+    pics.extend(number("shadow_card").map(|card| image(&format!("sauron/shadows/{card}.png"))));
+    pics.extend(number("plot_card").map(|card| image(&format!("sauron/plots/{card}.png"))));
+    pics.extend(number("corruption_card").map(|card| corruption_card(card).pic));
+    pics.extend(typed::<String>(entry, "event_card").map(|c| image(&format!("events/{c}"))));
+    let events = typed::<Vec<String>>(entry, "event_cards").unwrap_or_default();
+    pics.extend(events.iter().map(|c| image(&format!("events/{c}"))));
+    let hero = code("hero");
+    let paid = typed::<Vec<u32>>(entry, "hero_cards").unwrap_or_default();
+    pics.extend(paid.iter().map(|c| hero_card(data, &hero, *c).pic));
+    pics.extend(number("hero_card").map(|c| hero_card(data, &hero, c).pic));
+    pics.extend(number("mob_card").map(|c| mob_card(data, &code("mob_deck"), c).pic));
+    pics.retain(|pic| !pic.is_empty());
+    pics
 }

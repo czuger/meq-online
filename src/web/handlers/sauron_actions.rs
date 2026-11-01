@@ -38,6 +38,8 @@ struct Track {
     label: &'static str,
     spaces: Vec<Space>,
     available: bool,
+    /// Why the track can't be chosen now.
+    blocked: Option<&'static str>,
 }
 
 #[derive(Template)]
@@ -50,8 +52,12 @@ struct EditPage {
     tracks: Vec<Track>,
     action_in_progress: Option<String>,
     can_terminate: bool,
+    /// Actions still to take before ending the turn.
+    actions_left: i32,
     /// Shadow cards Sauron may play now.
     shadow_cards: Vec<ShadowView>,
+    /// Why Sauron's Shadow cards can't be played now.
+    shadow_blocked: Option<&'static str>,
 }
 
 /// A playable Shadow card.
@@ -125,6 +131,32 @@ fn refusal_message(refusal: InfluenceRefusal, name: &str) -> String {
     }
 }
 
+/// Why an action track can't be chosen now, if so.
+fn track_block(game: &Game, action: SauronAction) -> Option<&'static str> {
+    if game.board.current_action.is_some() {
+        Some("Terminez d'abord l'action en cours.")
+    } else if game.sauron_actions_left() <= 0 {
+        Some("Vous avez pris toutes vos actions ce tour-ci.")
+    } else if game.next_action_space(action).is_none() {
+        Some("Cette piste est pleine.")
+    } else {
+        None
+    }
+}
+
+/// Why Sauron holds Shadow cards he can't play now, if so.
+fn shadow_block(game: &Game, playable: &[ShadowView]) -> Option<&'static str> {
+    if game.sauron.shadow_hand.is_empty() || !playable.is_empty() {
+        None
+    } else if game.board.current_action.is_some() {
+        Some("Les cartes des Ténèbres se jouent entre deux actions.")
+    } else if game.board.turn_effects.shadow_played {
+        Some("Une carte des Ténèbres a déjà été jouée pendant ce tour de joueur.")
+    } else {
+        Some("Aucune de vos cartes des Ténèbres ne se joue à cette étape.")
+    }
+}
+
 /// Shadow cards of the Action step Sauron may play now, between two actions.
 fn playable_shadows(game: &Game, data: &GameData) -> Result<Vec<ShadowView>, AppError> {
     if game.board.current_action.is_some() {
@@ -155,7 +187,6 @@ pub async fn edit(
         // A stale link or redirect: the tracks would offer actions the board refuses.
         return Ok(redirect(&format!("/boards/{}/play", access.board_id), None));
     }
-    let can_start = game.board.current_action.is_none() && game.sauron_actions_left() > 0;
     let tracks = SauronAction::ALL
         .into_iter()
         .map(|action| Track {
@@ -173,9 +204,11 @@ pub async fn edit(
                         .any(|t| t.action == action && t.space == space),
                 })
                 .collect(),
-            available: can_start && game.next_action_space(action).is_some(),
+            available: track_block(&game, action).is_none(),
+            blocked: track_block(&game, action),
         })
         .collect();
+    let shadow_cards = playable_shadows(&game, &state.data)?;
     let page = EditPage {
         layout: sauron_layout(&state, &access.session, &game).await?,
         sauron_id: access.sauron_id,
@@ -190,7 +223,9 @@ pub async fn edit(
             )
         }),
         can_terminate: game.sauron_actions_left() == 0,
-        shadow_cards: playable_shadows(&game, &state.data)?,
+        actions_left: game.sauron_actions_left(),
+        shadow_blocked: shadow_block(&game, &shadow_cards),
+        shadow_cards,
     };
     render(&page, &page.layout)
 }

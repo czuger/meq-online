@@ -15,6 +15,7 @@ use crate::model::actor_ref::ActorRef;
 use crate::model::choice::Resume;
 use crate::model::game::Game;
 use crate::model::hero::{Hero, Item};
+use crate::model::turn_step::TurnStop;
 
 /// What a defeated hero gives up.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -86,6 +87,7 @@ impl Game {
         data: &GameData,
         rng: &mut StdRng,
     ) -> Result<Option<DefeatOutcome>, EngineError> {
+        self.log_turn_stopped(hero_id, TurnStop::Defeated);
         self.fire(BoardEvent::NextToHeroDefeatScreen)?;
         self.activate_current_hero()?;
         if self.sauron_picks_defeat_marker(data)? {

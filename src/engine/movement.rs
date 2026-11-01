@@ -1,6 +1,7 @@
 //! Hero movement along the map paths.
 
 use rand::rngs::StdRng;
+use serde_json::json;
 
 use crate::engine::board_state::BoardEvent;
 use crate::engine::engine_error::EngineError;
@@ -11,6 +12,7 @@ use crate::game_data::combat_card_def::CardNumber;
 use crate::game_data::corruption_card::Flaw;
 use crate::game_data::location_paths::Destination;
 use crate::game_data::shadow::ShadowTiming;
+use crate::model::actor_ref::ActorRef;
 use crate::model::choice::Resume;
 use crate::model::game::Game;
 use crate::model::hero::Hero;
@@ -36,6 +38,15 @@ pub enum MoveOutcome {
     Exploration,
 }
 
+/// Why a hero can't travel at all anymore this turn.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TravelBlock {
+    /// A hopeless hero already took his 3 Travel steps.
+    Hopeless,
+    /// "Winter Storm": the hero already moved this turn.
+    SingleMove,
+}
+
 /// Number of cards needed for a path, after the horse bonus.
 pub fn path_difficulty(path: &Destination, hero: &Hero) -> u32 {
     if hero.items.horse {
@@ -43,6 +54,17 @@ pub fn path_difficulty(path: &Destination, hero: &Hero) -> u32 {
     } else {
         path.difficulty
     }
+}
+
+/// Tells whether the hero's hand can pay for a path: a card of its terrain, or as many
+/// cards as its difficulty.
+pub fn path_affordable(path: &Destination, hero: &Hero, data: &GameData) -> bool {
+    let needed = usize::try_from(path_difficulty(path, hero)).unwrap_or(usize::MAX);
+    hero.hand.len() >= needed
+        || hero.hand.iter().any(|card| {
+            data.hero_card(&hero.code, *card)
+                .is_ok_and(|def| def.movement_type == Some(path.path_type))
+        })
 }
 
 /// Tells whether the selected cards pay for the path to `destination`.
@@ -75,6 +97,25 @@ pub fn validate_movement(
 }
 
 impl Game {
+    /// Why the hero can't travel at all anymore this turn, if so.
+    ///
+    /// # Errors
+    /// [`EngineError::NotFound`] when the hero is unknown.
+    pub fn travel_block(
+        &self,
+        hero_id: i64,
+        data: &GameData,
+    ) -> Result<Option<TravelBlock>, EngineError> {
+        let hero = self.hero(hero_id)?;
+        if hero.has_flaw(Flaw::Hopeless, data) && hero.turn_record.travels >= HOPELESS_TRAVELS {
+            return Ok(Some(TravelBlock::Hopeless));
+        }
+        if self.board.turn_effects.single_move && hero.turn_record.travels >= 1 {
+            return Ok(Some(TravelBlock::SingleMove));
+        }
+        Ok(None)
+    }
+
     /// Moves a hero, paying with cards from its hand, then resolves the monster or
     /// minion attack or the Peril of its new location; the hero then explores (§ 6.5).
     ///
@@ -90,20 +131,26 @@ impl Game {
         data: &GameData,
         rng: &mut StdRng,
     ) -> Result<MoveOutcome, EngineError> {
-        let hero = self.hero(hero_id)?;
-        if hero.has_flaw(Flaw::Hopeless, data) && hero.turn_record.travels >= HOPELESS_TRAVELS {
-            return Ok(MoveOutcome::Hopeless);
+        match self.travel_block(hero_id, data)? {
+            Some(TravelBlock::Hopeless) => return Ok(MoveOutcome::Hopeless),
+            Some(TravelBlock::SingleMove) => return Ok(MoveOutcome::SingleMove),
+            None => {}
         }
-        if self.board.turn_effects.single_move && hero.turn_record.travels >= 1 {
-            return Ok(MoveOutcome::SingleMove);
-        }
-        if !validate_movement(hero, destination, cards, data)? {
+        if !validate_movement(self.hero(hero_id)?, destination, cards, data)? {
             return Ok(MoveOutcome::InvalidCards);
         }
         let hero = self.hero_mut(hero_id)?;
         hero.hand_to_rest(cards)?;
-        hero.location = destination.to_owned();
+        let from = std::mem::replace(&mut hero.location, destination.to_owned());
         hero.turn_record.travels += 1;
+        // Cards paid for a path go faceup to the rest pool: they are public.
+        let params = [
+            ("hero", json!(hero.code)),
+            ("hero_cards", json!(cards)),
+            ("from", json!(data.locations.name(&from))),
+            ("to", json!(data.locations.name(destination))),
+        ];
+        self.log(ActorRef::Hero(hero_id), "movement.travel", &params);
 
         let window = ShadowWindow {
             timing: ShadowTiming::EnteredLocation,
@@ -144,6 +191,10 @@ impl Game {
     /// [`EngineError::InvalidTransition`] outside the movement step.
     #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn movement_finished(&mut self) -> Result<(), EngineError> {
+        let hero_id = self.current_hero_id()?;
+        if self.hero(hero_id)?.turn_record.travels == 0 {
+            self.log(ActorRef::Hero(hero_id), "movement.none", &[]);
+        }
         self.fire(BoardEvent::NextToHeroExploration)
     }
 
@@ -200,6 +251,23 @@ mod tests {
         let outcome = g.move_hero(1, "mount_doom", &[4], data(), &mut rng());
         assert_eq!(outcome.unwrap(), MoveOutcome::Hopeless);
         assert_eq!(g.heroes[0].location, "barad_dur");
+    }
+
+    #[test]
+    fn a_path_is_affordable_with_its_terrain_or_enough_cards() {
+        let mut h = hero("argalad");
+        h.location = "barad_dur".to_owned();
+        let path = data().paths.path("barad_dur", "mount_doom").unwrap();
+        h.hand = vec![];
+        assert!(!path_affordable(path, &h, data()));
+        // Card 6 (Parry) is hills: not the path's terrain, and one card isn't enough.
+        h.hand = vec![6];
+        assert!(!path_affordable(path, &h, data()));
+        h.hand = vec![6, 6];
+        assert!(path_affordable(path, &h, data()));
+        // Card 4 (Fall Back) is sun, like the path.
+        h.hand = vec![4];
+        assert!(path_affordable(path, &h, data()));
     }
 
     #[test]

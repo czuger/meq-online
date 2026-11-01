@@ -7,9 +7,10 @@ use axum::response::Response;
 use serde::Deserialize;
 
 use crate::app_state::AppState;
-use crate::engine::movement::{MoveOutcome, path_difficulty};
+use crate::engine::movement::{MoveOutcome, TravelBlock, path_affordable, path_difficulty};
 use crate::engine::rest::{Rest, RestOutcome};
 use crate::game_data::GameData;
+use crate::game_data::location_paths::Destination as PathDestination;
 use crate::game_data::plot::StoryType;
 use crate::model::game::Game;
 use crate::model::hero::Hero;
@@ -45,7 +46,13 @@ struct RestPage {
     can_heal: bool,
     /// Beravor outside a Haven may train instead of healing.
     can_train: bool,
+    /// Why healing isn't possible here.
+    heal_blocked: Option<&'static str>,
+    /// Nothing to bring back: resting would only advance a story marker.
+    rest_pool_empty: bool,
     corruptions: Vec<CardView>,
+    /// Corruption cards too costly to discard, and why.
+    costly_corruptions: Vec<String>,
 }
 
 #[derive(Template)]
@@ -59,6 +66,8 @@ struct StoryMarkerPage {
 struct Destination {
     code: String,
     label: String,
+    /// Why this path can't be taken now.
+    blocked: Option<String>,
 }
 
 #[derive(Template)]
@@ -69,6 +78,8 @@ struct MovementPage {
     hand: Vec<CardView>,
     card_class: &'static str,
     destinations: Vec<Destination>,
+    /// Why the hero can't take any path.
+    blocked: Option<&'static str>,
     argalad_can_use_power: bool,
 }
 
@@ -172,18 +183,37 @@ pub async fn rest_screen(
         .get(&hero.location)
         .is_ok_and(|l| l.haven);
     let survivalist = game.survivalist_rest(access.hero_id, &state.data)?;
+    let can_heal = haven || survivalist;
     let page = RestPage {
         layout: hero_layout(&state, &access.session, &game, access.hero_id).await?,
         hero_id: access.hero_id,
-        can_heal: haven || survivalist,
+        can_heal,
         can_train: survivalist,
+        heal_blocked: (!can_heal).then_some("Vous n'êtes pas dans un refuge."),
+        rest_pool_empty: hero.rest_pool.is_empty(),
         corruptions: hero
             .discardable_corruption_cards(&state.data)
             .into_iter()
             .map(corruption_card)
             .collect(),
+        costly_corruptions: costly_corruptions(hero, &state.data),
     };
     render(&page, &page.layout)
+}
+
+/// French reasons of the corruption cards the hero can't pay to discard.
+fn costly_corruptions(hero: &Hero, data: &GameData) -> Vec<String> {
+    hero.corruption_cards
+        .iter()
+        .filter_map(|code| data.corruption_card(*code).ok())
+        .filter(|card| card.favor_cost > hero.favor)
+        .map(|card| {
+            format!(
+                "{} : il faut {} faveur(s) pour la défausser, vous en avez {}.",
+                card.name, card.favor_cost, hero.favor
+            )
+        })
+        .collect()
 }
 
 /// How the hero rests: plain rest, heal, or train (Beravor).
@@ -352,21 +382,13 @@ pub async fn movement_screen(
 ) -> Result<Response, AppError> {
     let game = read_game(&state, access.board_id).await?;
     let hero = hero(&game, access.hero_id)?;
-    let destinations: Vec<Destination> = state
-        .data
-        .paths
-        .destinations(&hero.location)
-        .iter()
-        .map(|d| Destination {
-            code: d.dest.clone(),
-            label: format!(
-                "{} - {} ({})",
-                state.data.locations.name(&d.dest),
-                terrain_label(d.path_type),
-                path_difficulty(d, hero)
-            ),
-        })
-        .collect();
+    let travel_block = game.travel_block(access.hero_id, &state.data)?;
+    let destinations = destinations(hero, travel_block, &state.data);
+    let blocked = travel_block.map(travel_block_text).or_else(|| {
+        destinations.iter().all(|d| d.blocked.is_some()).then_some(
+            "Aucun chemin n'est praticable avec votre main : vous ne pouvez plus vous déplacer.",
+        )
+    });
     let page = MovementPage {
         layout: hero_layout(&state, &access.session, &game, access.hero_id)
             .await?
@@ -374,6 +396,7 @@ pub async fn movement_screen(
             .with_targets(
                 destinations
                     .iter()
+                    .filter(|d| d.blocked.is_none())
                     .filter_map(|d| {
                         MapTarget::new(&state.data, "move-form", "button", &d.code, d.label.clone())
                     })
@@ -383,9 +406,61 @@ pub async fn movement_screen(
         hand: hero_hand(&state.data, &hero.code, &hero.hand),
         card_class: "small-card selectable-card-selection-multiple",
         destinations,
+        blocked,
         argalad_can_use_power: game.argalad_can_use_power(hero, &state.data),
     };
     render(&page, &page.layout)
+}
+
+/// Paths leaving the hero's location, with the reason of those he can't take.
+fn destinations(
+    hero: &Hero,
+    travel_block: Option<TravelBlock>,
+    data: &GameData,
+) -> Vec<Destination> {
+    data.paths
+        .destinations(&hero.location)
+        .iter()
+        .map(|d| Destination {
+            code: d.dest.clone(),
+            label: format!(
+                "{} - {} ({})",
+                data.locations.name(&d.dest),
+                terrain_label(d.path_type),
+                path_difficulty(d, hero)
+            ),
+            blocked: if travel_block.is_some() {
+                Some("Déplacement interdit.".to_owned())
+            } else {
+                path_block(d, hero, data)
+            },
+        })
+        .collect()
+}
+
+/// French reason of a hero who can't travel at all anymore this turn.
+fn travel_block_text(block: TravelBlock) -> &'static str {
+    match block {
+        TravelBlock::Hopeless => {
+            "La corruption Sans espoir vous interdit plus de 3 déplacements par tour."
+        }
+        TravelBlock::SingleMove => {
+            "Tempête d'hiver : vous ne pouvez vous déplacer qu'une fois pendant ce tour."
+        }
+    }
+}
+
+/// French reason why the hand can't pay for a path, if so.
+fn path_block(path: &PathDestination, hero: &Hero, data: &GameData) -> Option<String> {
+    if path_affordable(path, hero, data) {
+        return None;
+    }
+    Some(format!(
+        "Il faut une carte {} ou {} cartes : vous en avez {}.",
+        terrain_label(path.path_type),
+        path_difficulty(path, hero),
+        hero.hand.len()
+    ))
 }
 
 /// `POST /heroes/{hero_id}/move`.
@@ -414,15 +489,11 @@ pub async fn move_hero(
         ),
         MoveOutcome::Hopeless => redirect(
             &movement,
-            Some(Flash::alert(
-                "La corruption Sans espoir vous interdit plus de 3 déplacements par tour.",
-            )),
+            Some(Flash::alert(travel_block_text(TravelBlock::Hopeless))),
         ),
         MoveOutcome::SingleMove => redirect(
             &movement,
-            Some(Flash::alert(
-                "Tempête d'hiver : vous ne pouvez vous déplacer qu'une fois pendant ce tour.",
-            )),
+            Some(Flash::alert(travel_block_text(TravelBlock::SingleMove))),
         ),
         MoveOutcome::Choice => redirect(&format!("/boards/{board_id}/choices/choice_screen"), None),
         MoveOutcome::Combat => redirect(
@@ -534,8 +605,7 @@ pub async fn draw_cards(
     let count: usize = number(&form.nb_cards, "card count")?;
     let hero_id = access.hero_id;
     change_game(&state, access.board_id, |game, data, _| {
-        game.hero_mut(hero_id)?.draw_step_cards(count, data);
-        Ok(())
+        game.draw_step(hero_id, count, data).map(|_| ())
     })
     .await?;
     Ok(redirect(

@@ -3,6 +3,7 @@
 <div class="page">
   <h1>Jouer une carte intrigue</h1>
   <p class="lead">Jouez une carte intrigue, défaussez une de vos intrigues actives, ou ne faites rien.</p>
+  {% if let Some(reason) = blocked %}<div class="note note-warn">{{ reason }}</div>{% endif %}
   <div class="cards">{% for card in playable %}<img src="{{ card.pic }}" class="medium-card selectable-card-selection-unique" data-card-id="{{ card.id }}" alt="">{% endfor %}</div>
   <form method="post" action="/sauron/{{ sauron_id }}/plot_cards/play">
     <div class="actions">
@@ -18,7 +19,7 @@
   </form>
   {% if !unplayable.is_empty() %}
   <h3>Cartes dont les conditions ne sont pas remplies</h3>
-  <div class="cards">{% for card in unplayable %}<img src="{{ card.pic }}" class="medium-card" data-card-id="{{ card.id }}" alt="">{% endfor %}</div>
+  <div class="cards">{% for (card, reason) in unplayable %}<figure><img src="{{ card.pic }}" class="medium-card" data-card-id="{{ card.id }}" alt=""><figcaption>{{ reason }}</figcaption></figure>{% endfor %}</div>
   {% endif %}
 </div>
 {% endblock %}

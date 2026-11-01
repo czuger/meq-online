@@ -1,0 +1,18 @@
+{% if !table.turn_log.sections.is_empty() %}
+<div class="turn-log">
+  <h4>Déroulement des tours</h4>
+  {% for section in table.turn_log.sections %}
+  <h5>{{ section.title }}</h5>
+  {% for block in section.blocks %}
+  {% if !block.lines.is_empty() %}
+  <div class="turn-log-step">
+    {% if !block.label.is_empty() %}<span class="turn-log-step-label">{{ block.label }}</span>{% endif %}
+    {% let lines = &block.lines %}
+    {% include "partials/log_lines.html" %}
+  </div>
+  {% endif %}
+  {% endfor %}
+  {% endfor %}
+  <a href="/boards/{{ table.board_id }}/logs">Tout le journal</a>
+</div>
+{% endif %}

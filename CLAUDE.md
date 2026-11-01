@@ -48,6 +48,12 @@ functions and loops get the same; never log session tokens or e-mails.
   - `threats.rs`: Ambush step and "Combat or Peril" (Sauron's choice, Haven consent); `perils/`: the Peril deck and
     the 15 card effects.
   - `turn.rs`, `rest.rs`, `movement.rs`, `exploration.rs`, `sauron_turn.rs`, `plots.rs`, `story.rs`… one area each.
+  - `step_log.rs`: what each step did goes in the game log. Turn markers (`turn.sauron`, `turn.draw`, `turn.hero`),
+    `step.begin` (recorded by `Game::fire` for screen states, by hand for automatic steps), `step.skipped` with a
+    `StepSkip` reason, `turn.stopped` (`model/turn_step.rs`). A new step result is a `Game::log` plus its text in
+    `views/log_text.rs`; a card goes in the params only once it is public (`log_card_pics` draws it). Never log
+    hands, facedown monster tokens, drawn Shadow/Plot cards or kept Skill cards. A reason for something unavailable
+    has an engine enum and its French text in a view (`TravelBlock`, `PlotBlock`).
   - `ai/`: the computer heroes. `waiting_hero.rs` finds the computer hero the game waits on, `candidates.rs`
     lists a few `HeroMove`s per screen (random order wherever a strategy would get complex), and
     `Game::play_computer_heroes` (`hero_ai.rs`) applies each candidate to a copy and keeps the first one the rules
@@ -69,8 +75,11 @@ functions and loops get the same; never log session tokens or e-mails.
     block in the table when `layout.table` is set; partials live in `templates/partials/`. A screen makes
     locations clickable on the map with `Layout::with_targets` (`MapTarget`: a submit button of the step's form
     drawn over the location), hides the tray hand with `without_hand` when it shows the hand itself.
-  - `views/turn_steps.rs` (the stepper, an exhaustive `match BoardState`), `views/seat_view.rs` (`controls`: own
-    seat or computer seat).
+  - `views/turn_steps.rs` (the stepper, an exhaustive `match BoardState`; a step that couldn't be played is
+    `skipped`, with its reason as tooltip), `views/seat_view.rs` (`controls`: own seat or computer seat).
+  - `views/turn_log.rs` (`TurnLog`): the log grouped by turn and step, newest turn first. `partials/step_results.html`
+    repeats the latest results above the screen, `partials/turn_log.html` shows the whole round below it. A screen
+    shows what can't be done now disabled, with the reason, instead of hiding it.
   - **Play page**: `GET /boards/{id}/play` (`handlers/play.rs`) redirects to the screen of the user's seat the game
     waits on (`game_layout::my_screen`, using `route::screen_side`) or shows the waiting page; turn-ending actions
     and transient states (`route_for`) go there. `GET /boards/{id}/status?version=…` returns

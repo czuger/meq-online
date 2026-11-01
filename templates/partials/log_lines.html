@@ -1,0 +1,7 @@
+<ul class="log-lines">
+  {% for line in lines %}
+  <li{% if line.blocked %} class="log-blocked"{% endif %}>{{ line.text }}
+    {% if !line.cards.is_empty() %}<div class="log-thumbs">{% for pic in line.cards %}<img src="{{ pic }}" alt="" loading="lazy">{% endfor %}</div>{% endif %}
+  </li>
+  {% endfor %}
+</ul>

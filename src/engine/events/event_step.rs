@@ -11,6 +11,7 @@ use crate::game_data::{GameData, event_set};
 use crate::model::actor_ref::ActorRef;
 use crate::model::board::{EventRef, Pile};
 use crate::model::game::Game;
+use crate::model::turn_step::{StepSkip, TurnStep};
 
 /// Cards drawn when a side is dominant.
 const DRAWN_WITH_DOMINANCE: usize = 3;
@@ -50,6 +51,7 @@ impl Game {
     /// Lookup, choice and transition errors.
     #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn event_step(&mut self, data: &GameData, rng: &mut StdRng) -> Result<(), EngineError> {
+        self.log_step(TurnStep::Event);
         let stage = u8::try_from(self.board.story.stage())
             .unwrap_or(3)
             .clamp(1, 3);
@@ -62,8 +64,18 @@ impl Game {
         let drawn = self.draw_events(stage, count, rng);
         let chosen = choose_event(stage, &drawn, dominance, data)?;
         let Some(card) = chosen else {
+            self.log_step_skipped(TurnStep::Event, StepSkip::EventDeckEmpty);
             return self.start_action_step(data);
         };
+        if drawn.len() > 1 {
+            // Every drawn event ends up faceup: all of them are public.
+            let pics: Vec<String> = drawn
+                .iter()
+                .map(|card| event_pic_path(EventRef { stage, card: *card }))
+                .collect();
+            let params = [("event_cards", json!(pics)), ("count", json!(drawn.len()))];
+            self.log(ActorRef::System, "event.drawn", &params);
+        }
         let others = drawn.into_iter().filter(|c| *c != card);
         self.event_pile(stage).discard.extend(others);
         self.resolve_event(EventRef { stage, card }, data)?;
@@ -96,7 +108,10 @@ impl Game {
         self.log(
             ActorRef::System,
             "event.choose_card",
-            &[("event_card", json!(event_pic_path(event)))],
+            &[
+                ("event_card", json!(event_pic_path(event))),
+                ("event", json!(data.event(event.stage, event.card)?.name)),
+            ],
         );
         self.place_event_tokens(event, data)?;
         let def = data.event(event.stage, event.card)?;

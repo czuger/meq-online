@@ -12,6 +12,7 @@
       <li>En vous reposant, vous pouvez défausser une carte de corruption en dépensant les faveurs indiquées dessus : cliquez sur la carte avant de vous reposer.</li>
     </ul>
   </details>
+  {% if rest_pool_empty %}<p class="muted">Votre réserve de repos est vide : vous reposer ne vous rendra aucune carte.</p>{% endif %}
   <form method="post" action="/heroes/{{ hero_id }}/rest_rest">
     {% if !corruptions.is_empty() %}
     <h3>Corruptions</h3>
@@ -23,9 +24,11 @@
     </div>
     <input type="hidden" id="selected_card" name="corruption" value="">
     {% endif %}
+    {% for reason in costly_corruptions %}<p class="muted">{{ reason }}</p>{% endfor %}
     <div class="actions">
       <button type="submit" class="btn btn-primary">Se reposer</button>
       {% if can_heal %}<button type="submit" class="btn" formaction="/heroes/{{ hero_id }}/rest_heal">Se soigner</button>{% endif %}
+      {% if let Some(reason) = heal_blocked %}<button type="button" class="btn" disabled title="{{ reason }}">Se soigner<span class="blocked-reason">{{ reason }}</span></button>{% endif %}
       {% if can_train %}<button type="submit" class="btn" formaction="/heroes/{{ hero_id }}/rest_train">S'entraîner</button>{% endif %}
       <button type="submit" class="btn btn-quiet end" formaction="/heroes/{{ hero_id }}/rest_skip">Passer</button>
     </div>

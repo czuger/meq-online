@@ -338,7 +338,10 @@ impl Game {
         rng: &mut StdRng,
     ) -> Result<Resume, EngineError> {
         let card = self.gain_random_corruption(hero_id, data, rng)?;
-        let params = [("corruption", json!(data.corruption_card(card)?.name))];
+        let params = [
+            ("corruption", json!(data.corruption_card(card)?.name)),
+            ("corruption_card", json!(card)),
+        ];
         self.log(ActorRef::Hero(hero_id), "corruption.gain", &params);
         if self.end_turn_if_wretched(hero_id, card, data)? {
             return Ok(Resume::EndTurn);

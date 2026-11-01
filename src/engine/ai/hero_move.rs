@@ -73,7 +73,7 @@ impl HeroMove {
     ) -> Result<(), EngineError> {
         match self {
             Self::Draw(count) => {
-                game.hero_mut(hero_id)?.draw_step_cards(*count, data);
+                game.draw_step(hero_id, *count, data)?;
             }
             Self::DrawFinished => game.draw_cards_finished(hero_id, data, rng)?,
             Self::Rest(rest) => {

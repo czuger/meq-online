@@ -1,6 +1,7 @@
 //! Start of a hero's turn: drawing, resting and healing.
 
 use rand::rngs::StdRng;
+use serde_json::json;
 
 use crate::engine::board_state::BoardEvent;
 use crate::engine::engine_error::EngineError;
@@ -10,9 +11,11 @@ use crate::game_data::GameData;
 use crate::game_data::corruption_card::CorruptionCode;
 use crate::game_data::plot::StoryType;
 use crate::game_data::shadow::ShadowTiming;
+use crate::model::actor_ref::ActorRef;
 use crate::model::choice::Resume;
 use crate::model::game::Game;
 use crate::model::hero::TurnRecord;
+use crate::model::turn_step::{StepSkip, TurnStep};
 
 /// Hero whose ability lets him heal or train when resting outside a Haven.
 const BERAVOR: &str = "beravor";
@@ -55,6 +58,7 @@ impl Game {
         data: &GameData,
         rng: &mut StdRng,
     ) -> Result<(), EngineError> {
+        self.log_draw_result(hero_id, data)?;
         self.hero_mut(hero_id)?.active = false;
         if self.heroes_active() {
             return Ok(());
@@ -67,11 +71,66 @@ impl Game {
         self.check_rest(data, rng)
     }
 
+    /// Hero Draw step: the hero draws up to `count` cards. Only how many is public.
+    ///
+    /// # Returns
+    /// Number of cards actually drawn.
+    ///
+    /// # Errors
+    /// [`EngineError::NotFound`] when the hero is unknown.
+    #[tracing::instrument(
+        level = "debug",
+        skip_all,
+        fields(hero_id, count),
+        err(level = "debug")
+    )]
+    pub fn draw_step(
+        &mut self,
+        hero_id: i64,
+        count: usize,
+        data: &GameData,
+    ) -> Result<usize, EngineError> {
+        let hero = self.hero_mut(hero_id)?;
+        let drawn = hero.draw_step_cards(count, data);
+        if drawn > 0 {
+            let params = [
+                ("name", json!(hero.code)),
+                ("cards_drawn", json!(drawn)),
+                ("lp_cards", json!(hero.life_pool.len())),
+            ];
+            self.log(ActorRef::Hero(hero_id), "draw_cards", &params);
+        }
+        Ok(drawn)
+    }
+
+    /// A hero ending his draw without a single card says so, and why when he couldn't.
+    fn log_draw_result(&mut self, hero_id: i64, data: &GameData) -> Result<(), EngineError> {
+        let hero = self.hero(hero_id)?;
+        if hero.cards_drawn_this_round > 0 {
+            return Ok(());
+        }
+        let name = json!(hero.code);
+        let blocked = if hero.cards_left_to_draw(data) > 0 {
+            None
+        } else if hero.life_pool.is_empty() {
+            Some(StepSkip::EmptyLifePool)
+        } else {
+            Some(StepSkip::HandFull)
+        };
+        let action = blocked.map_or("draw_cards.none", |_| "draw_cards.blocked");
+        let reason = blocked.map_or(json!(null), |reason| json!(reason));
+        let params = [("name", name), ("reason", reason)];
+        self.log(ActorRef::Hero(hero_id), action, &params);
+        Ok(())
+    }
+
     /// The current hero's turn starts: Sauron may play a Shadow card (§ 5.9), then
     /// monsters and minions on its location ambush it (§ 6.4), then it may rest.
     #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     fn check_rest(&mut self, data: &GameData, rng: &mut StdRng) -> Result<(), EngineError> {
         let hero_id = self.current_hero_id()?;
+        self.log_hero_turn(hero_id)?;
+        self.log_step(TurnStep::Ambush);
         self.hero_mut(hero_id)?.turn_record = TurnRecord::default();
         self.board.turn_effects.start_turn();
         let window = ShadowWindow {
@@ -92,6 +151,9 @@ impl Game {
     #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn ambush_step(&mut self, data: &GameData, rng: &mut StdRng) -> Result<(), EngineError> {
         let hero_id = self.current_hero_id()?;
+        if !self.has_threatening_mobs(hero_id)? {
+            self.log_step_skipped(TurnStep::Ambush, StepSkip::NoMobHere);
+        }
         if self.face_location_threats(hero_id, true, data, rng)? == Threat::None {
             self.enter_rest_step(data)?;
         }
@@ -110,10 +172,17 @@ impl Game {
         let location = self.hero(hero_id)?.location.clone();
         let mob_here = self.mobs.iter().any(|m| m.location == location);
         if mob_here || self.rest_forbidden_by_plot(&location, data) {
+            let reason = if mob_here {
+                StepSkip::MobHere
+            } else {
+                StepSkip::PlotForbidsRest
+            };
+            self.log_step_skipped(TurnStep::Rest, reason);
             return self.fire(BoardEvent::NextToHeroMovementScreen);
         }
         self.fire(BoardEvent::NextToHeroRestScreen)?;
         if data.locations.get(&location)?.shadow_fortress {
+            self.log_step_skipped(TurnStep::Rest, StepSkip::ShadowStronghold);
             self.fire(BoardEvent::NextToHeroMovementScreen)?;
         }
         Ok(())
@@ -148,11 +217,18 @@ impl Game {
             self.discard_corruption_card(hero_id, card, data)?;
         }
         let hero = self.hero_mut(hero_id)?;
+        let life_before = hero.life_pool.len();
         if rest.heal {
             hero.heal(rng);
         } else {
             hero.rest(rng);
         }
+        let params = [
+            ("count", json!(hero.life_pool.len() - life_before)),
+            ("lp_cards", json!(hero.life_pool.len())),
+        ];
+        let action = if rest.heal { "rest.heal" } else { "rest.rest" };
+        self.log(ActorRef::Hero(hero_id), action, &params);
         if rest.train {
             self.train(hero_id, Resume::AfterRest, rng)?;
             if self.board.pending_choice.is_some() {
@@ -184,7 +260,12 @@ impl Game {
         data: &GameData,
     ) -> Result<RestOutcome, EngineError> {
         let spaces = self.story_penalty(hero_id, data)?;
+        let lowest = self.board.story.lowest_sauron_markers();
         if self.board.story.advance_lowest(spaces) {
+            for marker in lowest {
+                tracing::trace!(?marker, spaces, "marker advanced by a rest");
+                self.log_rest_marker(marker, spaces);
+            }
             self.fire(BoardEvent::NextToHeroMovementScreen)?;
             Ok(RestOutcome::Movement)
         } else {
@@ -199,6 +280,8 @@ impl Game {
     /// Transition errors.
     #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
     pub fn skip_rest(&mut self) -> Result<(), EngineError> {
+        let hero_id = self.current_hero_id()?;
+        self.log(ActorRef::Hero(hero_id), "rest.skip", &[]);
         self.fire(BoardEvent::NextToHeroMovementScreen)
     }
 
@@ -219,7 +302,13 @@ impl Game {
         }
         let spaces = self.story_penalty(self.current_hero_id()?, data)?;
         self.board.story.advance(marker, spaces);
+        self.log_rest_marker(marker, spaces);
         self.fire(BoardEvent::NextToHeroMovementScreen)
+    }
+
+    fn log_rest_marker(&mut self, marker: StoryType, spaces: i32) {
+        let params = [("marker_name", json!(marker)), ("count", json!(spaces))];
+        self.log(ActorRef::System, "story.advance", &params);
     }
 }
 

@@ -20,6 +20,7 @@ use crate::web::game_tx::{change_game, read_game};
 use crate::web::page::render;
 use crate::web::views::layout::Layout;
 use crate::web::views::pictures::{CardView, plot_card};
+use crate::web::views::plot_block_label::plot_block_label;
 
 #[derive(Template)]
 #[template(path = "plot_cards_keep.html")]
@@ -36,8 +37,11 @@ struct PlayPage {
     layout: Layout,
     sauron_id: i64,
     playable: Vec<CardView>,
-    unplayable: Vec<CardView>,
+    /// Cards that can't be played, with the reason.
+    unplayable: Vec<(CardView, String)>,
     free_slots: Vec<u8>,
+    /// Why no card can be played at all, if so.
+    blocked: Option<&'static str>,
 }
 
 #[derive(Template)]
@@ -153,18 +157,30 @@ pub async fn play_screen(
     let (mut playable, mut unplayable) = (vec![], vec![]);
     for card in &game.sauron.plot_hand {
         tracing::trace!(?card, "plot card playable?");
-        if game.plot_playable(*card, &state.data)? {
-            playable.push(plot_card(*card));
-        } else {
-            unplayable.push(plot_card(*card));
+        match game.plot_block(*card, &state.data)? {
+            None => playable.push(plot_card(*card)),
+            Some(block) => unplayable.push((plot_card(*card), plot_block_label(block))),
         }
     }
+    let free_slots = game.free_plot_slots();
+    let blocked = if game.sauron.plot_hand.is_empty() {
+        Some("Vous n'avez aucune carte intrigue en main : vous ne pouvez pas en jouer.")
+    } else if free_slots.is_empty() {
+        Some(
+            "Tous les emplacements d'intrigue sont occupés : défaussez d'abord une intrigue active.",
+        )
+    } else if playable.is_empty() {
+        Some("Aucune de vos cartes intrigue n'est jouable pour le moment.")
+    } else {
+        None
+    };
     let page = PlayPage {
         layout: sauron_layout(&state, &access.session, &game).await?,
         sauron_id: access.sauron_id,
         playable,
         unplayable,
-        free_slots: game.free_plot_slots(),
+        free_slots,
+        blocked,
     };
     render(&page, &page.layout)
 }
@@ -209,7 +225,7 @@ pub async fn play_finished(
     access: SauronAccess,
 ) -> Result<Response, AppError> {
     change_game(&state, access.board_id, |game, data, rng| {
-        game.plot_play_finished(data, rng)
+        game.plot_step_passed(data, rng)
     })
     .await?;
     Ok(redirect(&play_url(access.board_id), None))

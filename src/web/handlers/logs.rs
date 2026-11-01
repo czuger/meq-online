@@ -14,13 +14,13 @@ use crate::web::app_error::AppError;
 use crate::web::game_tx::read_game;
 use crate::web::page::render;
 use crate::web::views::layout::Layout;
-use crate::web::views::log_text::{log_card_pic, log_text};
+use crate::web::views::log_text::{log_card_pics, log_text};
 
 struct LogRow {
     /// `(user name, actor name)`, or `None` for automatic steps.
     actor: Option<(String, String)>,
     text: String,
-    card_pic: Option<String>,
+    card_pics: Vec<String>,
 }
 
 #[derive(Template)]
@@ -69,7 +69,7 @@ pub async fn show(
             LogRow {
                 actor,
                 text: log_text(&log.entry, &state.data),
-                card_pic: log_card_pic(&log.entry),
+                card_pics: log_card_pics(&log.entry, &state.data),
             }
         })
         .collect();

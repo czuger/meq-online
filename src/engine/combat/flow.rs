@@ -20,6 +20,7 @@ use crate::game_data::shadow::ShadowEffect;
 use crate::model::actor_ref::ActorRef;
 use crate::model::combat::{Combat, CombatOrigin};
 use crate::model::game::Game;
+use crate::model::turn_step::{StepSkip, TurnStep, TurnStop};
 
 /// Hero whose turn doesn't end after failing to defeat an opponent (Iron Will).
 const IRON_WILL_HERO: &str = "thalin";
@@ -253,10 +254,27 @@ impl Game {
             return Err(EngineError::NoCombat);
         };
         reveal_secretly_played_cards(combat, hero, mob, data)?;
+        let round = [
+            ("hero", json!(hero.code)),
+            ("mob", json!(mob.name)),
+            ("mob_deck", json!(mob.attack_deck)),
+            (
+                "hero_card",
+                json!(combat.hero_cards.last().and_then(|c| c.card)),
+            ),
+            (
+                "mob_card",
+                json!(combat.mob_cards.last().and_then(|c| c.card)),
+            ),
+            ("hero_damage", json!(hero.damages_taken_this_turn)),
+            ("mob_damage", json!(mob.damages_taken_this_turn)),
+            ("mob_life", json!(mob.life.max(0))),
+        ];
         // The original engine lost this reactivation when Sauron got his own table.
         if !combat.mob_exhausted {
             self.sauron.active = true;
         }
+        self.log(ActorRef::Hero(hero_id), "combat.round", &round);
 
         // § 6.3, § 8.8: the hero pays each damage with a card from its hand or the top
         // of its life pool, in any combination; with no hand there is nothing to choose.
@@ -346,6 +364,7 @@ impl Game {
             return Err(EngineError::Refused("the combat is not over".to_owned()));
         }
         let combat = self.combat.take().ok_or(EngineError::NoCombat)?;
+        self.log_combat_end(&combat, result)?;
         if combat.origin == CombatOrigin::Finale {
             self.finish_finale(result.mob_defeated)?;
             return Ok(CombatEnd::GameOver);
@@ -374,6 +393,29 @@ impl Game {
             data,
             rng,
         )
+    }
+
+    fn log_combat_end(&mut self, combat: &Combat, result: CombatResult) -> Result<(), EngineError> {
+        let mob = self
+            .mobs
+            .get(self.mob_index(combat.mob_id)?)
+            .map(|m| m.name.clone())
+            .unwrap_or_default();
+        let hero = self.hero(combat.hero_id)?.code.clone();
+        let outcome = if result.mob_defeated {
+            "mob_defeated"
+        } else if result.hero_defeated {
+            "hero_defeated"
+        } else {
+            "exhausted"
+        };
+        let params = [
+            ("hero", json!(hero)),
+            ("mob", json!(mob)),
+            ("outcome", json!(outcome)),
+        ];
+        self.log(ActorRef::Hero(combat.hero_id), "combat.end", &params);
+        Ok(())
     }
 
     /// The hero survived: a Peril combat won gives its reward. The turn ends when a mob
@@ -409,6 +451,7 @@ impl Game {
             || self.hero(hero_id)?.code == IRON_WILL_HERO
             || peril.is_some_and(peril_combat_continues);
         if !goes_on {
+            self.log_turn_stopped(hero_id, TurnStop::CombatNotWon);
             return Ok(CombatEnd::TurnEnded(
                 self.finish_heroes_turn(hero_id, data, rng)?,
             ));
@@ -425,6 +468,7 @@ impl Game {
             return Ok(CombatEnd::Rest);
         }
         if origin == CombatOrigin::Ambush {
+            self.log_step_skipped(TurnStep::Rest, StepSkip::AmbushFought);
             self.fire(BoardEvent::NextToHeroMovementScreen)?;
             self.activate_current_hero()?;
             return Ok(CombatEnd::Movement);

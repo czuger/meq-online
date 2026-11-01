@@ -10,12 +10,12 @@ use crate::model::game::Game;
 use crate::web::app_error::AppError;
 use crate::web::session::Session;
 use crate::web::views::layout::Layout;
-use crate::web::views::log_text::log_text;
 use crate::web::views::seat_view::{Players, controls};
 use crate::web::views::table_view::TableView;
+use crate::web::views::turn_log::TurnLog;
 
-/// Log lines shown next to the map.
-const RECENT_LOGS: i64 = 6;
+/// Log entries read to tell the latest turns next to the map.
+const TURN_LOG_ENTRIES: i64 = 300;
 
 /// Users of the board's seats.
 ///
@@ -50,18 +50,16 @@ pub async fn table(
     let players = board_players(state, game).await?;
     let mut conn = state.db.acquire().await.map_err(DbError::from)?;
     let board_id = game.board.id.unwrap_or_default();
-    let recent = log_repo::recent(&mut conn, board_id, RECENT_LOGS)
-        .await?
-        .iter()
-        .map(|log| log_text(&log.entry, &state.data))
-        .collect();
+    let logs = log_repo::recent(&mut conn, board_id, TURN_LOG_ENTRIES).await?;
+    let entries: Vec<_> = logs.iter().rev().map(|log| &log.entry).collect();
+    let turn_log = TurnLog::new(&entries, game, &state.data);
     Ok(TableView::new(
         game,
         &state.data,
         &players,
         &session.user,
         viewer,
-        recent,
+        turn_log,
         state.versions.version(board_id),
     ))
 }

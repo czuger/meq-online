@@ -26,7 +26,7 @@
         <button type="submit" name="action" value="{{ track.code }}" class="btn">Choisir</button>
       </form>
       {% else %}
-      <span></span>
+      <span class="muted">{% if let Some(reason) = track.blocked %}{{ reason }}{% endif %}</span>
       {% endif %}
     </div>
     {% endfor %}
@@ -44,8 +44,11 @@
     {% endfor %}
   </div>
   {% endif %}
+  {% if let Some(reason) = shadow_blocked %}<p class="muted">{{ reason }}</p>{% endif %}
   {% if can_terminate %}
   <form method="post" action="/sauron/{{ sauron_id }}/sauron_actions/terminate" class="actions"><button type="submit" class="btn btn-primary">Terminer le tour</button></form>
+  {% else %}
+  <p class="muted">Vous ne pouvez pas encore terminer le tour : il vous reste {{ actions_left }} action(s) à prendre.</p>
   {% endif %}
 </div>
 {% endblock %}

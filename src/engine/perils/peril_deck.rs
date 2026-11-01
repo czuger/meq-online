@@ -20,6 +20,20 @@ const PERIL_DRAW: usize = 3;
 /// Option code of Sauron's pick among the drawn Peril cards.
 pub const PICK_PERIL: &str = "pick_peril";
 
+/// French names of Peril cards, without `except`.
+fn peril_names(
+    cards: &[PerilCode],
+    except: Option<PerilCode>,
+    data: &GameData,
+) -> Result<Vec<String>, EngineError> {
+    let mut names = Vec::with_capacity(cards.len());
+    for card in cards.iter().filter(|c| Some(**c) != except) {
+        tracing::trace!(?card, "peril card named");
+        names.push(data.peril(*card)?.name_fr.clone());
+    }
+    Ok(names)
+}
+
 impl Game {
     /// Sauron draws three Peril cards (four against a reckless hero) and picks one
     /// affecting the hero's location for him to resolve; when none does, all are
@@ -54,8 +68,10 @@ impl Game {
         ];
         self.log(ActorRef::Sauron, "peril.draw", &params);
         if matching.is_empty() {
+            let names = peril_names(&cards, None, data)?;
             self.board.decks.peril.discard.extend(cards);
-            self.log(ActorRef::Sauron, "peril.none_matching", &[]);
+            let params = [("others", json!(names))];
+            self.log(ActorRef::Sauron, "peril.none_matching", &params);
             return Ok(Threat::None);
         }
         self.ask(PendingChoice {
@@ -108,7 +124,13 @@ impl Game {
             .find(|c| targets.contains(&target("peril", c)))
             .ok_or_else(|| EngineError::Refused("choose a peril card".to_owned()))?;
         self.board.decks.peril.discard.extend_from_slice(cards);
-        let params = [("peril", json!(data.peril(card)?.name_fr))];
+        let peril = data.peril(card)?;
+        // All the drawn cards are discarded: they are public from now on.
+        let params = [
+            ("peril", json!(peril.name_fr)),
+            ("text", json!(peril.text_fr)),
+            ("others", json!(peril_names(cards, Some(card), data)?)),
+        ];
         self.log(ActorRef::Hero(hero_id), "peril.resolve", &params);
         self.start_peril(hero_id, card, data, rng)
     }

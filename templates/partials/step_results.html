@@ -1,0 +1,9 @@
+{% if !table.turn_log.last_results.is_empty() %}
+<div class="note step-results" aria-label="Résultat des dernières étapes">
+  {% for result in table.turn_log.last_results %}
+  <div class="step-result-heading">{{ result.heading }}</div>
+  {% let lines = &result.lines %}
+  {% include "partials/log_lines.html" %}
+  {% endfor %}
+</div>
+{% endif %}

@@ -17,6 +17,7 @@ use crate::model::choice::{ChoiceSource, Chooser, PendingChoice, Resume};
 use crate::model::combat::CombatOrigin;
 use crate::model::game::Game;
 use crate::model::mob::NOTHING_CODE;
+use crate::model::turn_step::{StepSkip, TurnStep};
 
 /// Option code of a monster or minion attack.
 pub const ATTACK: &str = "attack";
@@ -63,6 +64,14 @@ impl Game {
         Ok(mobs)
     }
 
+    /// Tells whether a monster or minion stands on the hero's location.
+    ///
+    /// # Errors
+    /// [`EngineError::NotFound`] when the hero is unknown.
+    pub(crate) fn has_threatening_mobs(&self, hero_id: i64) -> Result<bool, EngineError> {
+        Ok(!self.threatening_mobs(hero_id)?.is_empty())
+    }
+
     /// Checks what threatens the hero on its location. At the Ambush step only
     /// monsters and minions count; while travelling a perilous location may also bring
     /// a Peril, Sauron choosing between them. In a Haven the hero first allows combat
@@ -86,6 +95,11 @@ impl Game {
         let mobs = self.threatening_mobs(hero_id)?;
         let perilous = !ambush && self.is_perilous(hero_id, data)?;
         if mobs.is_empty() && !perilous {
+            if !ambush {
+                let location = self.hero(hero_id)?.location.clone();
+                let params = [("location", json!(data.locations.name(&location)))];
+                self.log(ActorRef::Hero(hero_id), "movement.safe", &params);
+            }
             return Ok(Threat::None);
         }
         let haven = data.locations.get(&self.hero(hero_id)?.location)?.haven;
@@ -186,7 +200,13 @@ impl Game {
         };
         let mut combat = start_combat(hero, mob, data, rng)?;
         combat.origin = origin;
+        let params = [
+            ("hero", json!(hero.code)),
+            ("mob", json!(mob.name)),
+            ("location", json!(data.locations.name(&mob.location))),
+        ];
         self.combat = Some(combat);
+        self.log(ActorRef::Hero(hero_id), "combat.start", &params);
         let window = ShadowWindow {
             timing: ShadowTiming::CombatStart,
             hero_id,
@@ -210,6 +230,9 @@ impl Game {
         rng: &mut StdRng,
     ) -> Result<(), EngineError> {
         if option != ALLOW_COMBAT {
+            if ambush {
+                self.log_step_skipped(TurnStep::Ambush, StepSkip::HavenProtects);
+            }
             return Ok(());
         }
         let mobs = self.threatening_mobs(hero_id)?;

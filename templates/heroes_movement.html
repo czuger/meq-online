@@ -14,13 +14,18 @@
       {% if argalad_can_use_power %}<li>Argalad : une fois par tour, il peut voir les monstres qui l'entourent avant de se déplacer.</li>{% endif %}
     </ul>
   </details>
+  {% if let Some(reason) = blocked %}<div class="note note-warn">{{ reason }} Cliquez sur « Fin du déplacement ».</div>{% endif %}
   {% include "cards_hand.html" %}
   <p class="selection-count" data-selection-count>Aucune carte choisie.</p>
   <form method="post" action="/heroes/{{ hero_id }}/move" id="move-form">
     <h3>Destinations</h3>
     <div class="button-grid">
       {% for destination in destinations %}
+      {% if let Some(reason) = destination.blocked %}
+      <button type="button" class="btn" disabled title="{{ reason }}">{{ destination.label }}<span class="blocked-reason">{{ reason }}</span></button>
+      {% else %}
       <button type="submit" name="button" value="{{ destination.code }}" class="btn">{{ destination.label }}</button>
+      {% endif %}
       {% endfor %}
     </div>
     <input type="hidden" id="selected_cards" name="selected_cards">

@@ -6,6 +6,7 @@ use crate::engine::board_state::BoardEvent;
 use crate::engine::engine_error::EngineError;
 use crate::game_data::GameData;
 use crate::model::game::Game;
+use crate::model::turn_step::{StepSkip, TurnStep};
 
 impl Game {
     /// Sauron accepts the starting setup (§ 3): objectives, first event, then his
@@ -33,6 +34,9 @@ impl Game {
         self.close_influence_budget();
         self.set_objectives(rng);
         self.sauron.active = true;
+        self.log_sauron_turn();
+        self.log_step_skipped(TurnStep::Story, StepSkip::FirstRound);
+        self.log_step_skipped(TurnStep::Plot, StepSkip::FirstRound);
         self.event_step(data, rng)
     }
 
@@ -59,6 +63,7 @@ impl Game {
                 "Sauron still has actions to take".to_owned(),
             ));
         }
+        self.log_draw_turn();
         self.set_heroes_active(true);
         for hero in &mut self.heroes {
             tracing::trace!(hero = %hero.code, "resetting cards drawn this round");

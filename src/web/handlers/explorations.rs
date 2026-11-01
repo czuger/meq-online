@@ -45,6 +45,8 @@ struct ShowPage {
     choices: Vec<Choice>,
     consults: Vec<Consult>,
     dark_path: bool,
+    /// Why the Dark Path isn't possible.
+    dark_path_blocked: Option<&'static str>,
     any_enabled: bool,
 }
 
@@ -77,6 +79,13 @@ pub async fn show(State(state): State<AppState>, access: HeroAccess) -> Result<R
         })
         .collect();
     let dark_path = game.dark_path_allowed(hero_id)?;
+    let dark_path_blocked = if dark_path {
+        None
+    } else if game.hero(hero_id)?.turn_record.dark_path {
+        Some("Vous avez déjà choisi la voie des Ténèbres ce tour-ci.")
+    } else {
+        Some("Vous avez déjà trop de cartes de corruption.")
+    };
     let page = ShowPage {
         layout: hero_layout(&state, &access.session, &game, hero_id).await?,
         hero_id,
@@ -84,6 +93,7 @@ pub async fn show(State(state): State<AppState>, access: HeroAccess) -> Result<R
         choices,
         consults,
         dark_path,
+        dark_path_blocked,
     };
     render(&page, &page.layout)
 }
@@ -136,14 +146,17 @@ fn choice(
             let cost = data.plot(card).ok()?.favor_to_discard;
             let enabled = cost <= hero.favor;
             let text = if enabled {
-                "Dépenser des faveurs pour retirer l'intrigue locale"
+                format!("Dépenser {cost} faveur(s) pour retirer l'intrigue locale")
             } else {
-                "Vous n'avez pas assez de faveurs pour retirer l'intrigue locale"
+                format!(
+                    "Impossible de retirer l'intrigue locale : il faut {cost} faveur(s), vous en avez {}",
+                    hero.favor
+                )
             };
             Some(Choice {
                 field: "tokens[plot][]",
                 value: "plot".to_owned(),
-                text: text.to_owned(),
+                text,
                 enabled,
             })
         }

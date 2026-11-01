@@ -9,6 +9,7 @@ use meq_online::engine::board_state::BoardState;
 use meq_online::engine::choices::PASS;
 use meq_online::engine::deck::SauronDeck;
 use meq_online::engine::defeat::{DefeatLoss, closest_havens, defeat_losses};
+use meq_online::engine::movement::path_affordable;
 use meq_online::engine::route::{RouteActor, route_for};
 use meq_online::game_data::plot::StoryType;
 use meq_online::model::game::Game;
@@ -152,10 +153,16 @@ impl<'a> Driver<'a> {
             .app
             .get(&format!("/heroes/{hero_id}/movement_screen"), &self.cookie)
             .await;
-        // Every destination can also be clicked on the table's map.
+        // A path the hand can pay for can also be clicked on the table's map; any other
+        // is shown disabled, with the reason.
         for destination in &adjacent {
+            let path = data.paths.path(&hero.location, destination).unwrap();
             let target = format!(r#"form="move-form" name="button" value="{destination}""#);
-            assert!(screen.body.contains(&target), "{destination}");
+            assert_eq!(
+                screen.body.contains(&target),
+                path_affordable(path, hero, data),
+                "{destination}"
+            );
         }
         for destination in adjacent {
             for card in &hero.hand {

@@ -9,6 +9,7 @@ use crate::game_data::GameData;
 use crate::model::actor_ref::ActorRef;
 use crate::model::game::Game;
 use crate::model::hero::TurnRecord;
+use crate::model::turn_step::{StepSkip, TurnStep};
 
 /// Where the hero who ended its turn goes next.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -60,6 +61,7 @@ impl Game {
         rng: &mut StdRng,
     ) -> Result<TurnEnd, EngineError> {
         self.hero_end_turn_operations(hero_id)?;
+        self.log(ActorRef::Hero(hero_id), "turn.end", &[]);
         if self.heroes.len() > 1 {
             if !self.switch_to_next_hero()? {
                 self.actions_before_switch_to_sauron(data, rng)?;
@@ -103,6 +105,7 @@ impl Game {
         }
         hero.turn = 2;
         hero.cards_drawn_this_round = 0;
+        self.log_draw_turn();
         self.rally_step(data);
         self.activate_current_hero()?;
         self.fire(BoardEvent::NextToFinishHeroTurn)?;
@@ -129,6 +132,7 @@ impl Game {
 
         self.board.current_hero_id = Some(next);
         self.activate_current_hero()?;
+        self.log_draw_turn();
         self.fire(BoardEvent::NextToFinishHeroTurn)?;
         self.fire(BoardEvent::NextToHeroDrawCardsScreen)?;
         Ok(true)
@@ -142,17 +146,29 @@ impl Game {
         data: &GameData,
         rng: &mut StdRng,
     ) -> Result<(), EngineError> {
+        self.log_sauron_turn();
         self.rally_step(data);
         self.fire(BoardEvent::NextToFinishHeroTurn)?;
 
+        self.log_step(TurnStep::Story);
         let old_stage = self.board.story.stage();
         self.advance_stories_markers(data)?;
         let new_stage = self.board.story.stage();
         if new_stage > old_stage {
+            self.log(
+                ActorRef::System,
+                "story.stage",
+                &[("stage", json!(new_stage))],
+            );
             for (stage, mob, location) in STAGE_SPAWNS {
                 tracing::trace!(stage, mob, location, "stage spawn check");
                 if stage == new_stage {
                     self.create_mob(mob, location, None, data)?;
+                    let params = [
+                        ("name", json!(data.mob(mob)?.name)),
+                        ("location", json!(data.locations.name(location))),
+                    ];
+                    self.log(ActorRef::System, "story.spawn", &params);
                 }
             }
         }
@@ -172,6 +188,8 @@ impl Game {
     /// (§ 5.2, § 5.8).
     #[tracing::instrument(level = "debug", skip_all)]
     fn rally_step(&mut self, data: &GameData) {
+        self.log_step(TurnStep::Rally);
+        let logged_before = self.new_logs.len();
         let on_stronghold = |location: &str| {
             data.locations
                 .get(location)
@@ -204,5 +222,8 @@ impl Game {
             }
         }
         self.trim_unsupported_influence(data);
+        if self.new_logs.len() == logged_before {
+            self.log_step_skipped(TurnStep::Rally, StepSkip::NoInfluenceUnderHeroes);
+        }
     }
 }

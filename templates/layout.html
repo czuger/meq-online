@@ -51,16 +51,11 @@
     <div class="table-main">
       <section class="table-map" aria-label="Carte">{% include "partials/map.html" %}</section>
       <section class="table-panel">
+        {% include "partials/step_results.html" %}
   {% endif %}
   {% block content %}{% endblock %}
   {% if let Some(table) = layout.table %}
-        {% if !table.recent.is_empty() %}
-        <div class="recent">
-          <h4>Derniers événements</h4>
-          <ul>{% for line in table.recent %}<li>{{ line }}</li>{% endfor %}</ul>
-          <a href="/boards/{{ table.board_id }}/logs">Tout le journal</a>
-        </div>
-        {% endif %}
+        {% include "partials/turn_log.html" %}
       </section>
     </div>
     {% include "partials/tray.html" %}

@@ -40,18 +40,50 @@ pub enum PlotPlayed {
     ChooseLocation,
 }
 
+/// Why Sauron can't play a plot card.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PlotBlock {
+    /// The shadow pool holds too little influence.
+    Influence {
+        /// Influence the card needs.
+        required: i32,
+        /// Influence in the shadow pool.
+        pool: i32,
+    },
+    /// The condition printed on the card isn't met.
+    Requirement(PlotRequirement),
+    /// No location can receive the plot.
+    NoLocation,
+}
+
 impl Game {
     /// Tells whether Sauron may play `card` now.
     ///
     /// # Errors
     /// [`EngineError::GameData`] when the plot is unknown.
     pub fn plot_playable(&self, card: u32, data: &GameData) -> Result<bool, EngineError> {
+        Ok(self.plot_block(card, data)?.is_none())
+    }
+
+    /// Why Sauron can't play `card` now, if so.
+    ///
+    /// # Errors
+    /// [`EngineError::GameData`] when the plot is unknown.
+    pub fn plot_block(&self, card: u32, data: &GameData) -> Result<Option<PlotBlock>, EngineError> {
         let plot = data.plot(card)?;
-        let specific = plot.require.is_none_or(|r| self.requirement_met(r));
+        if self.board.shadow_pool < plot.required_influence {
+            return Ok(Some(PlotBlock::Influence {
+                required: plot.required_influence,
+                pool: self.board.shadow_pool,
+            }));
+        }
+        if let Some(requirement) = plot.require.filter(|r| !self.requirement_met(*r)) {
+            return Ok(Some(PlotBlock::Requirement(requirement)));
+        }
         let located = plot
             .choose_location
             .is_none_or(|rule| !self.plot_location_targets(rule, data).is_empty());
-        Ok(self.board.shadow_pool >= plot.required_influence && specific && located)
+        Ok((!located).then_some(PlotBlock::NoLocation))
     }
 
     fn requirement_met(&self, requirement: PlotRequirement) -> bool {
@@ -200,6 +232,20 @@ impl Game {
         rng: &mut StdRng,
     ) -> Result<(), EngineError> {
         self.event_step(data, rng)
+    }
+
+    /// Sauron ends his Plot step without playing a card.
+    ///
+    /// # Errors
+    /// See [`Game::plot_play_finished`].
+    #[tracing::instrument(level = "debug", skip_all, err(level = "debug"))]
+    pub fn plot_step_passed(
+        &mut self,
+        data: &GameData,
+        rng: &mut StdRng,
+    ) -> Result<(), EngineError> {
+        self.log(ActorRef::Sauron, "plot_cards.pass", &[]);
+        self.plot_play_finished(data, rng)
     }
 
     /// Gollum cards still in the plot deck or discard.

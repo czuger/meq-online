@@ -287,6 +287,8 @@ a.seat-viewing:hover { background: var(--primary-hover); color: var(--primary-in
 }
 .stepper li.step-done { color: var(--ink); }
 .stepper li.step-done::before { content: "✓ "; color: var(--hero); }
+.stepper li.step-skipped { color: var(--muted); text-decoration: line-through; }
+.stepper li.step-skipped::before { content: "⊘ "; color: var(--error-line); display: inline-block; text-decoration: none; }
 .stepper li.step-current { background: var(--gold); border-color: var(--gold); color: #fff; font-weight: 700; }
 .stepper-phase { flex-basis: 100%; color: var(--muted); }
 .table-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 420px); gap: 14px; align-items: start; }
@@ -304,8 +306,19 @@ a.seat-viewing:hover { background: var(--primary-hover); color: var(--primary-in
 .table-panel .duel { grid-template-columns: 1fr; }
 .table-panel .track { grid-template-columns: 1fr auto; }
 .table-panel .track .track-spaces { grid-column: 1 / -1; grid-row: 2; }
-.recent { margin-top: 1.5rem; border-top: 1px solid var(--line); padding-top: 0.8rem; font-size: 0.9rem; }
-.recent ul { margin: 0 0 0.4rem; padding-left: 1.1em; color: var(--muted); }
+.turn-log { margin-top: 1.5rem; border-top: 1px solid var(--line); padding-top: 0.8rem; font-size: 0.9rem; }
+.turn-log h5 { margin: 0.8rem 0 0.2rem; font-size: 0.95rem; }
+.turn-log-step { margin: 0.3rem 0 0 0.4rem; }
+.turn-log-step-label { font-weight: 700; color: var(--muted); }
+.log-lines { list-style: none; margin: 0; padding: 0; }
+.log-lines li { margin: 0.15rem 0; }
+.log-lines li.log-blocked { color: var(--muted); font-style: italic; }
+.log-lines li.log-blocked::before { content: "⊘ "; color: var(--error-line); font-style: normal; }
+.log-thumbs { display: flex; flex-wrap: wrap; gap: 4px; margin: 0.25rem 0 0.35rem; }
+.log-thumbs img { width: 64px; border-radius: 4px; display: block; }
+.step-results { margin-bottom: 1rem; font-size: 0.9rem; }
+.step-result-heading { font-weight: 700; }
+.blocked-reason { display: block; font-size: 0.8rem; font-weight: 400; color: var(--muted); }
 .tray { margin-top: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 16px; }
 .tray-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px; }
 .tray-row h3 { margin: 0; }

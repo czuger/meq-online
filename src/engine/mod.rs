@@ -31,6 +31,7 @@ pub mod sauron_actions;
 pub mod sauron_turn;
 pub mod setup;
 pub mod shadows;
+pub mod step_log;
 pub mod story;
 pub mod threats;
 pub mod tokens;

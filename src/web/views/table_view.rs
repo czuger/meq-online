@@ -12,6 +12,7 @@ use crate::web::views::pictures::{
 };
 use crate::web::views::seat_view::{Players, SeatView, seats};
 use crate::web::views::state_label::state_label;
+use crate::web::views::turn_log::TurnLog;
 use crate::web::views::turn_steps::{TurnSteps, turn_steps};
 
 /// A hero's sheet and cards, below the map.
@@ -99,8 +100,8 @@ pub struct TableView {
     pub influence_editor: Option<i64>,
     /// Locations the current step lets the player click.
     pub map_targets: Vec<MapTarget>,
-    /// Latest log lines, newest first.
-    pub recent: Vec<String>,
+    /// What the latest turns did, step by step.
+    pub turn_log: TurnLog,
     /// The viewing hero's sheet and cards.
     pub hero_tray: Option<HeroTray>,
     /// Sauron's cards, when Sauron is viewing.
@@ -118,7 +119,7 @@ impl TableView {
     /// * `players` - users of the board's seats.
     /// * `me` - the user viewing the page.
     /// * `viewer` - the seat whose table is displayed.
-    /// * `recent` - latest log lines, newest first.
+    /// * `turn_log` - what the latest turns did.
     /// * `version` - board version.
     pub fn new(
         game: &Game,
@@ -126,7 +127,7 @@ impl TableView {
         players: &Players,
         me: &User,
         viewer: RouteActor,
-        recent: Vec<String>,
+        turn_log: TurnLog,
         version: String,
     ) -> Self {
         let sauron = matches!(viewer, RouteActor::Sauron(_));
@@ -140,12 +141,12 @@ impl TableView {
             turn: game.board.turn,
             stage: game.board.story.stage(),
             phase: state_label(game.board.state),
-            steps: turn_steps(game),
+            steps: turn_steps(game, &turn_log),
             seats: seats(game, data, players, me, Some(viewer)),
             map: map_view(game, data, sauron),
             influence_editor: None,
             map_targets: Vec::new(),
-            recent,
+            turn_log,
             hero_tray: hero_tray(game, data, viewer),
             sauron_tray: sauron.then(|| sauron_tray(game)),
             show_hand: true,

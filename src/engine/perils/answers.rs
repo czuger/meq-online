@@ -168,7 +168,10 @@ impl Game {
         let others = answer.drawn.iter().copied().filter(|c| *c != given);
         self.board.decks.corruption.discard.extend(others);
         self.give_corruption(answer.hero_id, given, data, rng)?;
-        let params = [("corruption", json!(data.corruption_card(given)?.name))];
+        let params = [
+            ("corruption", json!(data.corruption_card(given)?.name)),
+            ("corruption_card", json!(given)),
+        ];
         self.log(ActorRef::Hero(answer.hero_id), "corruption.gain", &params);
         if self.end_turn_if_wretched(answer.hero_id, given, data)? {
             return Ok(Resume::EndTurn);

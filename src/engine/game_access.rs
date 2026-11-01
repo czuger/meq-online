@@ -21,6 +21,7 @@ impl Game {
             Ok(to) => {
                 tracing::debug!(board_id = ?self.board.id, %from, event = event.as_str(), %to, "board state");
                 self.board.state = to;
+                self.log_state_step(from, to);
                 Ok(())
             }
             Err(error) => {

@@ -13,7 +13,7 @@
         <td colspan="2" class="muted">Système</td>
         {% endif %}
         <td>{{ row.text }}</td>
-        <td>{% if let Some(pic) = row.card_pic %}<img class="log-card" src="{{ pic }}" alt="">{% endif %}</td>
+        <td>{% for pic in row.card_pics %}<img class="log-card" src="{{ pic }}" alt="">{% endfor %}</td>
       </tr>
       {% endfor %}
     </tbody>

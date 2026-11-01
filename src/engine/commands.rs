@@ -128,7 +128,8 @@ impl Game {
         let mob = self.mob_mut(mob_id)?;
         mob.location = location.to_owned();
         mob.commanded = true;
-        let name = mob.name.clone();
+        // A monster token stays facedown: only minions are named.
+        let name = (mob.kind == MobKind::Minion).then(|| mob.name.clone());
         self.command()?.commands_left -= 1;
         let params = [
             ("name", json!(name)),
@@ -245,6 +246,22 @@ mod tests {
         assert!(g.command_move_mob(1, "near_harad", data()).is_err());
         assert!(g.command_heal_minion(1).is_err());
         assert_eq!(g.board.current_action.unwrap().commands_left, 2);
+    }
+
+    // A monster token stays facedown when it moves: the log doesn't name it.
+    #[test]
+    fn moving_a_monster_keeps_its_name_secret() {
+        let mut g = commanding(3);
+        g.mobs[0].kind = MobKind::Monster;
+        g.board.influence.insert("pelargir".to_owned(), 1);
+        g.new_logs.clear();
+        g.command_move_mob(1, "pelargir", data()).unwrap();
+        let moved = g
+            .new_logs
+            .iter()
+            .find(|l| l.action == "command.move")
+            .expect("move logged");
+        assert_eq!(moved.params.get("name"), Some(&serde_json::Value::Null));
     }
 
     #[test]

@@ -17,7 +17,7 @@
   </div>
   {% if let Some(steps) = table.steps %}
   <ol class="stepper" aria-label="Étapes du tour">
-    {% for step in steps.steps %}<li class="step-{{ step.status }}"{% if step.status == "current" %} aria-current="step"{% endif %}>{{ step.label }}</li>{% endfor %}
+    {% for step in steps.steps %}<li class="step-{{ step.status }}"{% if step.status == "current" %} aria-current="step"{% endif %}{% if let Some(reason) = step.reason %} title="{{ reason }}"{% endif %}>{{ step.label }}</li>{% endfor %}
   </ol>
   {% else %}
   <div class="stepper-phase">{{ table.phase }}</div>

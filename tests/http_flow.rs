@@ -96,7 +96,7 @@ async fn play_page_follows_the_turn() {
     assert!(status.body.ends_with("\"url\":null}"), "{}", status.body);
     // The waiting page is framed by the hero's table.
     assert!(
-        waiting.body.contains("Derniers événements"),
+        waiting.body.contains("Déroulement des tours"),
         "{}",
         waiting.body
     );
@@ -882,6 +882,129 @@ async fn computer_round(app: &TestApp, heroes: &[&str]) -> Game {
     assert!(game.board.story.heroes >= 2, "{:?}", game.board.story);
     assert!(driver.hero_turns.is_empty(), "the driver played a hero");
     game
+}
+
+// The table tells what each step of the turn did and which ones couldn't be played.
+#[tokio::test]
+async fn the_table_tells_each_step_of_the_round() {
+    let app = TestApp::new().await;
+    let game = computer_round(&app, &["eleanor", "thalin"]).await;
+    let me = app.login("sauron").await;
+    let sauron = game.sauron.id.unwrap();
+    let page = app
+        .get(&format!("/sauron/{sauron}/sauron_actions/edit"), &me)
+        .await;
+    assert_eq!(page.status, StatusCode::OK);
+    for expected in [
+        "Déroulement des tours",
+        "Résultat des dernières étapes",
+        "Tour de Sauron",
+        "Tour d&#39;Eleanor",
+        "Tour de Thàlin",
+        "Pioche des héros",
+        // Sauron's first turn starts at the Event step.
+        "Pas de cette étape au premier tour",
+        // Every hero's turn tells how it ended.
+        "Fin du tour.",
+        // The event card is shown to everyone.
+        "/static/images/events/",
+    ] {
+        assert!(page.body.contains(expected), "{expected}: {}", page.body);
+    }
+    let log = app.get("/boards/1/logs", &me).await;
+    assert_eq!(log.status, StatusCode::OK);
+    assert!(!log.body.contains("step.begin"), "raw key: {}", log.body);
+    assert!(!log.body.contains("turn.hero"), "raw key: {}", log.body);
+}
+
+// What a player can't do is shown disabled, with the reason.
+#[tokio::test]
+async fn screens_tell_why_an_action_is_not_possible() {
+    let app = TestApp::new().await;
+    let me = app.login("sauron").await;
+    let mut game = app.create_board(&me).await;
+    // Not Beravor, who may heal anywhere.
+    let seat = game
+        .heroes
+        .iter()
+        .position(|h| h.code == "eleanor")
+        .unwrap();
+    let hero = game.heroes[seat].id.unwrap();
+    game.board.current_hero_id = Some(hero);
+    game.heroes[seat].active = true;
+    game.heroes[seat].location = "barad_dur".to_owned();
+    game.heroes[seat].hand.clear();
+    game.board.state = BoardState::HeroMovementScreen;
+    app.save(&mut game).await;
+
+    let movement = app
+        .get(&format!("/heroes/{hero}/movement_screen"), &me)
+        .await;
+    assert!(
+        movement.body.contains("Aucun chemin n&#39;est praticable"),
+        "{}",
+        movement.body
+    );
+    assert!(
+        movement.body.contains("vous en avez 0."),
+        "{}",
+        movement.body
+    );
+    assert!(
+        !movement.body.contains(r#"form="move-form" name="button""#),
+        "a path nobody can pay for stays clickable on the map"
+    );
+
+    game.heroes[seat].location = "the_shire".to_owned();
+    game.board.state = BoardState::HeroRestScreen;
+    game.heroes[seat].corruption_cards = vec![1];
+    game.heroes[seat].favor = 0;
+    app.save(&mut game).await;
+    let rest = app.get(&format!("/heroes/{hero}/rest_screen"), &me).await;
+    assert!(
+        rest.body.contains("Vous n&#39;êtes pas dans un refuge."),
+        "{}",
+        rest.body
+    );
+    assert!(rest.body.contains("pour la défausser"), "{}", rest.body);
+
+    let sauron = game.sauron.id.unwrap();
+    game.sauron.plot_hand.clear();
+    game.board.state = BoardState::PlayScreenSauronPlotCards;
+    app.save(&mut game).await;
+    let plots = app
+        .get(&format!("/sauron/{sauron}/plot_cards/play_screen"), &me)
+        .await;
+    assert!(
+        plots.body.contains("aucune carte intrigue en main"),
+        "{}",
+        plots.body
+    );
+}
+
+// A hero sees the steps of the others, but never Sauron's hidden cards.
+#[tokio::test]
+async fn the_table_keeps_hidden_cards_secret() {
+    let app = TestApp::new().await;
+    let (driver, game) = full_round(&app, &["eleanor", "thalin"], "").await;
+    let hero = game.heroes[0].id.unwrap();
+    let page = app
+        .get(&format!("/heroes/{hero}/draw_cards_screen"), &driver.cookie)
+        .await;
+    let log = page
+        .body
+        .split("Déroulement des tours")
+        .nth(1)
+        .expect("turn log");
+    let log = log.split("<script").next().unwrap_or(log);
+    assert!(!log.contains("/sauron/shadows/"), "{log}");
+    for card in game.sauron.plot_hand.iter().chain(&game.sauron.drawn_plot) {
+        let picture = format!("/sauron/plots/{card}.png");
+        assert!(
+            !log.split("tray").next().unwrap_or(log).contains(&picture),
+            "{log}"
+        );
+    }
 }
 
 // The AI plays one computer hero through its two turns of the round.
