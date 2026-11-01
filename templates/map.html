@@ -8,7 +8,7 @@
     {% if let Some(url) = finish_action %}<form method="post" action="{{ url }}"><button type="submit" class="btn btn-primary">Terminer l'action</button></form>{% endif %}
   </div>
   {% else %}
-  <p class="lead">Survolez un jeton pour voir son nom ; Ctrl + molette ou les boutons + et − pour zoomer, glissez pour déplacer la carte.</p>
+  <p class="lead">Survolez un jeton pour voir son nom ; choisissez le zoom avec les trois boutons ou Ctrl + molette, glissez pour déplacer la carte.</p>
   {% endif %}
   {% if let Some(url) = back_url %}<div class="actions"><a class="btn" role="button" href="{{ url }}">Retour à l'écran en cours</a></div>{% endif %}
 </div>

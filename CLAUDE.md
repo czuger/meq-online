@@ -91,8 +91,9 @@ functions and loops get the same; never log session tokens or e-mails.
   exhausted the browser's 6 HTTP/1.1 connections per host and froze the interface with several tabs open.
 - `templates/` (askama, French text), `static/` (pictures, `css/app.css` (own stylesheet, no Bootstrap), vanilla
   JS: `app.js` card selection and the French text of a hovered card (`static/data/cards_fr.json`, keyed by picture
-  path, combat cards by code), `game.js` map fit/zoom/drag, influence clicks and polling the board; served under
-  `/static`). The map picture is drawn at its natural size (2934 × 2017) and scaled with a CSS transform.
+  path, combat cards by code), `game.js` map zoom levels/drag, influence clicks and polling the board; served under
+  `/static`; scripts, styles and data are sent with `Cache-Control: no-cache`, see `router.rs`). The map picture (`map.jpg`) is drawn at its natural size (4890 × 3362) and scaled with a CSS transform
+  to one of three zoom levels (natural size, half, whole map), remembered per board in the browser.
 
 Notable behavior kept from the original: new games seat computer-controlled heroes and make the creator Sauron;
 the AI plays the computer seats, or the board members do when the game was created that way. Shadow cards are disabled.

@@ -1,11 +1,14 @@
 //! URL routes. Screen routes match the board states they display (see
 //! [`crate::engine::route`]).
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use axum::Router;
+use axum::http::HeaderValue;
+use axum::http::header::CACHE_CONTROL;
 use axum::routing::{get, post};
 use tower_http::services::{ServeDir, ServeFile};
+use tower_http::set_header::SetResponseHeader;
 use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
 use tracing::Level;
 
@@ -34,9 +37,23 @@ pub fn router(state: AppState, static_dir: &Path) -> Router {
             ServeFile::new(static_dir.join("favicon.ico")),
         )
         .route_service("/robots.txt", ServeFile::new(static_dir.join("robots.txt")))
+        .nest_service("/static/js", revalidated(static_dir.join("js")))
+        .nest_service("/static/css", revalidated(static_dir.join("css")))
+        .nest_service("/static/data", revalidated(static_dir.join("data")))
         .nest_service("/static", ServeDir::new(static_dir))
         .layer(request_tracing())
         .with_state(state)
+}
+
+/// Serves `dir` so that browsers check for a new version before reusing a file. Without
+/// it they guess how long a file stays fresh (a tenth of its age, so hours) and run an old
+/// script against new pages after an update. An unchanged file only costs a 304.
+fn revalidated(dir: PathBuf) -> SetResponseHeader<ServeDir, HeaderValue> {
+    SetResponseHeader::overriding(
+        ServeDir::new(dir),
+        CACHE_CONTROL,
+        HeaderValue::from_static("no-cache"),
+    )
 }
 
 /// Logs every request and its response (status, latency) at debug level. Headers stay

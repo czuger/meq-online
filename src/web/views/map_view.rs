@@ -6,9 +6,9 @@ use crate::model::game::Game;
 use crate::model::sauron_action::{ActionToken, SauronAction};
 use crate::web::views::pictures::{image, plot_card};
 
-/// Scale between the coordinates in the data and the displayed map picture.
-const MUL_X: f64 = 1.5442;
-const MUL_Y: f64 = 1.5444;
+/// Scale between the coordinates in the data and the pixels of the map picture.
+const MUL_X: f64 = 2.5737;
+const MUL_Y: f64 = 2.574;
 
 /// Influence counter of a location.
 #[derive(Debug, Clone)]
@@ -82,7 +82,7 @@ pub struct MapView {
 /// Builds the map of a game, as seen by Sauron (`sauron` set) or by heroes.
 pub fn map_view(game: &Game, data: &GameData, sauron: bool) -> MapView {
     MapView {
-        map_pic: image("map_half.jpg"),
+        map_pic: image("map.jpg"),
         influence_pic: image("influence.png"),
         action_pic: image("sauron_action.png"),
         pawns: influence_pawns(game, data),
@@ -107,7 +107,7 @@ pub fn map_view(game: &Game, data: &GameData, sauron: bool) -> MapView {
 }
 
 /// Side of the clickable circle drawn over a location, in map pixels.
-const TARGET_SIZE: f64 = 120.0;
+const TARGET_SIZE: f64 = 200.0;
 
 /// Inline style centring a clickable circle on a location of the map.
 ///
@@ -133,8 +133,8 @@ fn influence_pawns(game: &Game, data: &GameData) -> Vec<InfluencePawn> {
         .map(|(code, l)| InfluencePawn {
             code: code.clone(),
             style: place(
-                f64::from(l.pos_y) * MUL_Y + 15.0,
-                f64::from(l.pos_x) * MUL_X - 55.0,
+                f64::from(l.pos_y) * MUL_Y + 50.33,
+                f64::from(l.pos_x) * MUL_X - 78.33,
             ),
             value: game.board.influence.get(code).copied().unwrap_or(0),
         })
@@ -166,17 +166,17 @@ fn map_token(first: &Token, tokens: &[Token], (x, y): (i32, i32), sauron: bool) 
         }
     };
     let decal = if first.kind == TokenKind::Plot {
-        7.0
+        11.67
     } else {
         0.0
     };
-    let mut left = f64::from(x) * MUL_X - 23.0 - 15.0;
-    let mut top = f64::from(y) * MUL_Y - 25.0 - 16.0 + decal;
+    let mut left = f64::from(x) * MUL_X - 63.33;
+    let mut top = f64::from(y) * MUL_Y - 68.33 + decal;
     let (class, shift_x, shift_y) = match first.kind {
         TokenKind::Minion => ("token-on-map-pic-minion", 0.0, 0.0),
-        TokenKind::Favor => ("token-on-map-pic-favor", 9.0, 9.0),
-        TokenKind::Plot => ("token-on-map-pic", 7.0, 12.0),
-        _ => ("token-on-map-pic", 4.0, 4.0),
+        TokenKind::Favor => ("token-on-map-pic-favor", 15.0, 15.0),
+        TokenKind::Plot => ("token-on-map-pic", 11.67, 20.0),
+        _ => ("token-on-map-pic", 6.67, 6.67),
     };
     left += shift_x;
     top += shift_y;
@@ -189,7 +189,7 @@ fn map_token(first: &Token, tokens: &[Token], (x, y): (i32, i32), sauron: bool) 
         style: place(top, left),
         title: tokens.iter().map(shown_name).collect::<Vec<_>>().join(", "),
         count: tokens.len(),
-        count_style: format!("top:{}px", 17.0 - decal),
+        count_style: format!("top:{}px", 28.33 - decal),
         class,
     }
 }
@@ -213,13 +213,13 @@ fn pool_tokens(shadow_pool: i32) -> Vec<PoolToken> {
 /// Position of a Sauron action token on the action tracks of the map.
 fn action_style(token: ActionToken) -> String {
     let x = match token.action {
-        SauronAction::PlaceInfluence => 2463,
-        SauronAction::DrawCards => 2612,
-        SauronAction::Command => 2761,
+        SauronAction::PlaceInfluence => 4105,
+        SauronAction::DrawCards => 4353,
+        SauronAction::Command => 4602,
     };
     format!(
-        "top:1614px; left:{}px;",
-        x + (i32::from(token.space) - 1) * 46
+        "top:2690px; left:{}px;",
+        x + (i32::from(token.space) - 1) * 77
     )
 }
 
@@ -228,8 +228,8 @@ mod tests {
     use super::*;
     use crate::engine::test_support::data;
 
-    /// Size of `map_half.jpg`.
-    const MAP_SIZE: (f64, f64) = (2934.0, 2017.0);
+    /// Size of `map.jpg`.
+    const MAP_SIZE: (f64, f64) = (4890.0, 3362.0);
 
     fn position(style: &str) -> (f64, f64) {
         let value = |key: &str| {
@@ -249,6 +249,20 @@ mod tests {
                     && (0.0..MAP_SIZE.1 - TARGET_SIZE).contains(&top),
                 "{code}: {left}, {top}"
             );
+        }
+    }
+
+    // The tracks printed on the board: the last space of each must stay on the picture.
+    #[test]
+    fn board_tracks_lie_on_the_map() {
+        let inside = |style: &str| {
+            let (left, top) = position(style);
+            (0.0..MAP_SIZE.0).contains(&left) && (0.0..MAP_SIZE.1).contains(&top)
+        };
+        assert!(pool_tokens(12).iter().all(|slot| inside(&slot.style)));
+        for action in SauronAction::ALL {
+            let last = ActionToken { action, space: 3 };
+            assert!(inside(&action_style(last)), "{action:?}");
         }
     }
 

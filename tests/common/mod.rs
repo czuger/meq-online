@@ -29,6 +29,7 @@ pub struct Answer {
     pub location: Option<String>,
     pub set_cookie: Vec<String>,
     pub content_type: Option<String>,
+    pub cache_control: Option<String>,
     pub body: String,
 }
 
@@ -78,6 +79,7 @@ impl TestApp {
         };
         let location = header(header::LOCATION);
         let content_type = header(header::CONTENT_TYPE);
+        let cache_control = header(header::CACHE_CONTROL);
         let set_cookie = response
             .headers()
             .get_all(header::SET_COOKIE)
@@ -91,6 +93,7 @@ impl TestApp {
             location,
             set_cookie,
             content_type,
+            cache_control,
             body: String::from_utf8_lossy(&bytes).into_owned(),
         }
     }

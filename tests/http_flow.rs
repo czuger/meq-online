@@ -917,6 +917,56 @@ async fn the_table_tells_each_step_of_the_round() {
     assert!(!log.body.contains("turn.hero"), "raw key: {}", log.body);
 }
 
+// The table draws the full size map, with three zoom levels and nothing else.
+#[tokio::test]
+async fn the_map_uses_the_full_picture_and_three_zoom_levels() {
+    let app = TestApp::new().await;
+    let me = app.login("sauron").await;
+    let game = app.create_board(&me).await;
+    let sauron = game.sauron.id.unwrap();
+    let page = app
+        .get(&format!("/sauron/{sauron}/setup_screen"), &me)
+        .await;
+    assert!(
+        page.body.contains("/static/images/map.jpg"),
+        "{}",
+        page.body
+    );
+    assert!(!page.body.contains("map_half"), "{}", page.body);
+    assert_eq!(page.body.matches("data-map-zoom=").count(), 3);
+    for level in ["full", "half", "fit"] {
+        let button = format!(r#"data-map-zoom="{level}""#);
+        assert!(page.body.contains(&button), "{level}");
+    }
+}
+
+// A browser must not run an old script against a new page after an update.
+#[tokio::test]
+async fn browsers_check_scripts_and_styles_before_reusing_them() {
+    let app = TestApp::new().await;
+    for path in [
+        "/static/js/game.js",
+        "/static/js/app.js",
+        "/static/css/app.css",
+        "/static/data/cards_fr.json",
+    ] {
+        let answer = app.request(axum::http::Method::GET, path, None, None).await;
+        assert_eq!(answer.status, StatusCode::OK, "{path}");
+        assert_eq!(answer.cache_control.as_deref(), Some("no-cache"), "{path}");
+    }
+    // Pictures are many and rarely change: every page reload would check them all.
+    let map = app
+        .request(
+            axum::http::Method::GET,
+            "/static/images/map.jpg",
+            None,
+            None,
+        )
+        .await;
+    assert_eq!(map.status, StatusCode::OK);
+    assert_eq!(map.cache_control, None);
+}
+
 // What a player can't do is shown disabled, with the reason.
 #[tokio::test]
 async fn screens_tell_why_an_action_is_not_possible() {

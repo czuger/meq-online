@@ -1,11 +1,15 @@
-// Game table: map fit and zoom, drag to pan, Sauron's influence clicks, and following
+// Game table: map zoom levels, drag to pan, Sauron's influence clicks, and following
 // the game by polling the board version.
 "use strict";
 
-const MAP_WIDTH = 2934;
-const MAP_HEIGHT = 2017;
-const ZOOM_STEP = 1.25;
-const MAX_SCALE = 1;
+const MAP_WIDTH = 4890;
+const MAP_HEIGHT = 3362;
+// The three zoom levels, from the whole map to the map's natural size.
+const ZOOM_LEVELS = ["fit", "half", "full"];
+const HALF_SCALE = 0.5;
+const FULL_SCALE = 1;
+// Ctrl + wheel (or a trackpad pinch) changes one level at most this often.
+const WHEEL_COOLDOWN_MS = 300;
 
 // How often the page asks whether the board changed.
 const POLL_MS = 2000;
@@ -22,47 +26,91 @@ let dirty = false;
 // The page is going away (a form was sent, a link followed): its own navigation wins.
 let leaving = false;
 
+// Remembered zoom and position of a board's map: the page reloads whenever the game
+// changes. Only a convenience, so a browser refusing storage just starts on the whole map.
+function readMapView(key) {
+  try {
+    return JSON.parse(window.localStorage.getItem(key)) || {};
+  } catch (error) {
+    return {};
+  }
+}
+
+function writeMapView(key, view) {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(view));
+  } catch (error) {
+    console.debug("map view not remembered", error);
+  }
+}
+
 // Scales the map picture (drawn at its natural size) inside its scrolling viewport.
 function setupMapView() {
   const scroll = document.querySelector("[data-map-scroll]");
   const sizer = document.querySelector("[data-map-sizer]");
   const map = document.getElementById("map");
   if (!scroll || !sizer || !map) return;
-  const fitScale = () => scroll.clientWidth / MAP_WIDTH;
-  let scale = fitScale();
+  const buttons = document.querySelectorAll("[data-map-zoom]");
+  const storageKey = `meq.map.${map.dataset.boardId}`;
 
-  const apply = (next, focusX, focusY) => {
-    const previous = scale;
-    scale = Math.min(Math.max(next, fitScale()), MAX_SCALE);
-    // Keeps the point under the cursor (or the centre) in place while zooming.
-    const fx = focusX ?? scroll.clientWidth / 2;
-    const fy = focusY ?? scroll.clientHeight / 2;
-    const mapX = (scroll.scrollLeft + fx) / previous;
-    const mapY = (scroll.scrollTop + fy) / previous;
+  // The whole map, in both directions: the viewport only grows up to its max-height.
+  const fitScale = () => {
+    const height = parseFloat(getComputedStyle(scroll).maxHeight) || Infinity;
+    return Math.min(scroll.clientWidth / MAP_WIDTH, height / MAP_HEIGHT, FULL_SCALE);
+  };
+  const levelScale = (name) => {
+    if (name === "full") return FULL_SCALE;
+    return name === "half" ? Math.max(HALF_SCALE, fitScale()) : fitScale();
+  };
+
+  let level = "fit";
+  let scale = 1;
+  // Point of the map under `fx`, `fy` in the viewport.
+  const mapPoint = (fx, fy) => [(scroll.scrollLeft + fx) / scale, (scroll.scrollTop + fy) / scale];
+  const draw = (nextLevel, [mapX, mapY], fx, fy) => {
+    level = nextLevel;
+    scale = levelScale(level);
     map.style.transform = `scale(${scale})`;
+    map.style.setProperty("--map-unscale", String(1 / scale));
     sizer.style.width = `${MAP_WIDTH * scale}px`;
     sizer.style.height = `${MAP_HEIGHT * scale}px`;
     scroll.scrollLeft = mapX * scale - fx;
     scroll.scrollTop = mapY * scale - fy;
+    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mapZoom === level)));
   };
-  apply(scale);
+  // Keeps the point under the cursor (or the centre) in place while zooming.
+  const zoom = (nextLevel, focusX, focusY) => {
+    const fx = focusX ?? scroll.clientWidth / 2;
+    const fy = focusY ?? scroll.clientHeight / 2;
+    draw(nextLevel, mapPoint(fx, fy), fx, fy);
+  };
 
-  document.querySelectorAll("[data-map-zoom]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const kind = button.dataset.mapZoom;
-      if (kind === "in") apply(scale * ZOOM_STEP);
-      else if (kind === "out") apply(scale / ZOOM_STEP);
-      else apply(fitScale());
-    });
+  const saved = readMapView(storageKey);
+  const start = ZOOM_LEVELS.includes(saved.level) ? saved.level : "fit";
+  draw(start, [0, 0], 0, 0);
+  if (Number.isFinite(saved.x) && Number.isFinite(saved.y)) {
+    draw(start, [saved.x, saved.y], scroll.clientWidth / 2, scroll.clientHeight / 2);
+  }
+  window.addEventListener("pagehide", () => {
+    const [x, y] = mapPoint(scroll.clientWidth / 2, scroll.clientHeight / 2);
+    writeMapView(storageKey, { level, x, y });
   });
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => zoom(button.dataset.mapZoom));
+  });
+  let lastWheel = -Infinity;
   scroll.addEventListener("wheel", (event) => {
     if (!event.ctrlKey && !event.metaKey && !event.altKey) return;
     event.preventDefault();
+    if (event.timeStamp - lastWheel < WHEEL_COOLDOWN_MS) return;
+    const next = ZOOM_LEVELS[ZOOM_LEVELS.indexOf(level) + (event.deltaY < 0 ? 1 : -1)];
+    if (!next) return;
+    lastWheel = event.timeStamp;
     const rect = scroll.getBoundingClientRect();
-    const factor = event.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP;
-    apply(scale * factor, event.clientX - rect.left, event.clientY - rect.top);
+    zoom(next, event.clientX - rect.left, event.clientY - rect.top);
   }, { passive: false });
-  window.addEventListener("resize", () => apply(Math.max(scale, fitScale())));
+  window.addEventListener("resize", () => zoom(level));
   setupDrag(scroll);
 }
 
@@ -102,9 +150,24 @@ function showInfluenceAlert(pawn, message) {
   const alert = document.getElementById("influence-alert");
   if (alert.style.display === "block") return;
   alert.textContent = message;
-  alert.style.top = (pawn.offsetTop - 80) + "px";
-  alert.style.left = (pawn.offsetLeft - 180) + "px";
   alert.style.display = "block";
+  // Anchored by its bottom centre, inside the part of the map on screen.
+  const scroll = document.querySelector("[data-map-scroll]");
+  const sizer = document.querySelector("[data-map-sizer]");
+  const scale = sizer.offsetWidth / MAP_WIDTH;
+  const left = scroll.scrollLeft - sizer.offsetLeft;
+  const top = scroll.scrollTop - sizer.offsetTop;
+  const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+  alert.style.left = clamp(
+    pawn.offsetLeft + pawn.offsetWidth / 2,
+    (left + alert.offsetWidth / 2) / scale,
+    (left + scroll.clientWidth - alert.offsetWidth / 2) / scale,
+  ) + "px";
+  alert.style.top = clamp(
+    pawn.offsetTop,
+    (top + alert.offsetHeight) / scale,
+    (top + scroll.clientHeight) / scale,
+  ) + "px";
   setTimeout(() => { alert.style.display = "none"; }, 2000);
 }
 
