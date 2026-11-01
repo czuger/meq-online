@@ -25,6 +25,10 @@
         </div>
         {% endfor %}
 
+        {% for pawn in table.map.story_pawns %}
+        <div class="story-pawn story-pawn-{{ pawn.side }}" style="{{ pawn.style }}" role="img" aria-label="{{ pawn.label }}"><span class="token-label">{{ pawn.label }}</span></div>
+        {% endfor %}
+
         {% for slot in table.map.pool %}
         <div class="influence-pool-value" style="{{ slot.style }}" id="pool_token_id_{{ slot.number }}">{{ slot.value }}</div>
         {% endfor %}

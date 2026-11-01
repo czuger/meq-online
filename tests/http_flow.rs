@@ -934,6 +934,16 @@ async fn the_map_uses_the_full_picture_and_three_zoom_levels() {
     );
     assert!(!page.body.contains("map_half"), "{}", page.body);
     assert_eq!(page.body.matches("data-map-zoom=").count(), 3);
+    // The four story markers are on the track.
+    for side in ["heroes", "ring", "conquest", "corruption"] {
+        let pawn = format!("story-pawn-{side}");
+        assert!(page.body.contains(&pawn), "{side}");
+    }
+    assert!(
+        page.body.contains("Marqueur des héros : départ"),
+        "{}",
+        page.body
+    );
     for level in ["full", "half", "fit"] {
         let button = format!(r#"data-map-zoom="{level}""#);
         assert!(page.body.contains(&button), "{level}");

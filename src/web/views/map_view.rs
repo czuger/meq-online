@@ -2,6 +2,7 @@
 
 use crate::engine::tokens::{Token, TokenKind, tokens_by_location};
 use crate::game_data::GameData;
+use crate::model::board::StoryMarkers;
 use crate::model::game::Game;
 use crate::model::sauron_action::{ActionToken, SauronAction};
 use crate::web::views::pictures::{image, plot_card};
@@ -36,6 +37,17 @@ pub struct MapToken {
     pub count_style: String,
     /// CSS class of the picture.
     pub class: &'static str,
+}
+
+/// One of the four story markers on the story track.
+#[derive(Debug, Clone)]
+pub struct StoryPawn {
+    /// Suffix of the CSS class giving its color.
+    pub side: &'static str,
+    /// Inline style placing the marker.
+    pub style: String,
+    /// French name and position.
+    pub label: String,
 }
 
 /// Slot of the shadow pool track.
@@ -77,6 +89,8 @@ pub struct MapView {
     pub actions: Vec<String>,
     /// Plots in play.
     pub plots: Vec<MapPlot>,
+    /// Story markers.
+    pub story_pawns: Vec<StoryPawn>,
 }
 
 /// Builds the map of a game, as seen by Sauron (`sauron` set) or by heroes.
@@ -103,6 +117,7 @@ pub fn map_view(game: &Game, data: &GameData, sauron: bool) -> MapView {
                 pic: plot_card(*card).pic,
             })
             .collect(),
+        story_pawns: story_pawns(&game.board.story),
     }
 }
 
@@ -194,6 +209,61 @@ fn map_token(first: &Token, tokens: &[Token], (x, y): (i32, i32), sauron: bool) 
     }
 }
 
+/// Horizontal centre on the map picture of each space of the story track: `START`, then
+/// spaces 1 to 18 (`FINALE`). Measured on the picture: stages are separated by a gap.
+const STORY_SPACES: [f64; 19] = [
+    2217.0, 2352.0, 2482.0, 2612.0, 2747.0, 2882.0, 3017.0, 3222.0, 3357.0, 3492.0, 3627.0, 3762.0,
+    3897.0, 4102.0, 4237.0, 4372.0, 4507.0, 4642.0, 4777.0,
+];
+/// Vertical centre of the story track on the map picture.
+const STORY_TRACK_Y: f64 = 132.0;
+/// Side of a story marker, in map pixels.
+const STORY_PAWN_SIZE: f64 = 58.0;
+/// Distance from the centre of a space to the centre of the corner a marker stands in.
+const STORY_PAWN_OFFSET: f64 = 33.0;
+
+/// Every marker keeps its own corner of the space, so that markers sharing a space stay
+/// visible, as all four do at the start of the game.
+fn story_pawns(story: &StoryMarkers) -> Vec<StoryPawn> {
+    [
+        ("heroes", "Marqueur des héros", story.heroes, -1.0, -1.0),
+        ("ring", "Marqueur de l'Anneau", story.ring, 1.0, -1.0),
+        (
+            "conquest",
+            "Marqueur de la conquête",
+            story.conquest,
+            -1.0,
+            1.0,
+        ),
+        (
+            "corruption",
+            "Marqueur de la corruption",
+            story.corruption,
+            1.0,
+            1.0,
+        ),
+    ]
+    .into_iter()
+    .map(|(side, name, position, corner_x, corner_y)| {
+        let last = STORY_SPACES.len() - 1;
+        let space = usize::try_from(position).unwrap_or(0).min(last);
+        let centre = STORY_SPACES.get(space).copied().unwrap_or_default();
+        StoryPawn {
+            side,
+            style: place(
+                STORY_TRACK_Y + corner_y * STORY_PAWN_OFFSET - STORY_PAWN_SIZE / 2.0,
+                centre + corner_x * STORY_PAWN_OFFSET - STORY_PAWN_SIZE / 2.0,
+            ),
+            label: match space {
+                0 => format!("{name} : départ"),
+                s if s == last => format!("{name} : Finale"),
+                s => format!("{name} : case {s}"),
+            },
+        }
+    })
+    .collect()
+}
+
 fn pool_tokens(shadow_pool: i32) -> Vec<PoolToken> {
     (0..12usize)
         .map(|number| {
@@ -264,6 +334,48 @@ mod tests {
             let last = ActionToken { action, space: 3 };
             assert!(inside(&action_style(last)), "{action:?}");
         }
+    }
+
+    fn markers(heroes: i32, ring: i32, conquest: i32, corruption: i32) -> StoryMarkers {
+        StoryMarkers {
+            heroes,
+            ring,
+            conquest,
+            corruption,
+        }
+    }
+
+    // All four start on START, each visible in its own corner of the space.
+    #[test]
+    fn story_markers_sharing_a_space_stay_apart() {
+        let pawns = story_pawns(&markers(0, 0, 0, 0));
+        let spots: Vec<_> = pawns.iter().map(|p| position(&p.style)).collect();
+        for (i, a) in spots.iter().enumerate() {
+            for b in &spots[i + 1..] {
+                let apart = (a.0 - b.0).abs().max((a.1 - b.1).abs());
+                assert!(apart >= STORY_PAWN_SIZE, "{a:?} {b:?}");
+            }
+        }
+        assert!(pawns[0].label.ends_with("départ"));
+    }
+
+    #[test]
+    fn story_markers_follow_their_space_and_stop_at_the_finale() {
+        let pawns = story_pawns(&markers(18, 10, 25, -1));
+        let centre = |pawn: &StoryPawn| position(&pawn.style).0 + STORY_PAWN_SIZE / 2.0;
+        assert_eq!(centre(&pawns[0]), STORY_SPACES[18] - STORY_PAWN_OFFSET);
+        assert_eq!(centre(&pawns[1]), STORY_SPACES[10] + STORY_PAWN_OFFSET);
+        assert_eq!(centre(&pawns[2]), STORY_SPACES[18] - STORY_PAWN_OFFSET);
+        assert_eq!(centre(&pawns[3]), STORY_SPACES[0] + STORY_PAWN_OFFSET);
+        assert!(pawns[0].label.ends_with("Finale"));
+        assert!(pawns[1].label.ends_with("case 10"));
+    }
+
+    #[test]
+    fn the_story_track_lies_on_the_map() {
+        assert!(STORY_SPACES.windows(2).all(|pair| pair[0] < pair[1]));
+        let last = STORY_SPACES[STORY_SPACES.len() - 1];
+        assert!(last + STORY_PAWN_OFFSET + STORY_PAWN_SIZE / 2.0 < MAP_SIZE.0);
     }
 
     #[test]

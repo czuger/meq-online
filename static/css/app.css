@@ -228,6 +228,16 @@ textarea { width: 100%; min-height: 7em; }
 .token-on-map-pic { width: 112px; position: absolute; }
 .token-on-map-pic-minion { width: 128px; position: absolute; }
 .token-on-map-pic-favor { width: 100px; position: absolute; }
+.story-pawn {
+  position: absolute; z-index: 2; width: 58px; height: 58px; border-radius: 50%; cursor: help;
+  border: 5px solid #f4efe2; box-shadow: 0 0 0 3px rgba(43, 33, 24, 0.85), 0 5px 10px rgba(0, 0, 0, 0.6);
+}
+.story-pawn:hover { z-index: 27; }
+.story-pawn:hover .token-label { display: block; top: 66px; left: 24px; }
+.story-pawn-heroes { background: radial-gradient(circle at 35% 30%, #5fce6e, #1d7a2e); }
+.story-pawn-ring { background: radial-gradient(circle at 35% 30%, #ffe56b, #d6a400); }
+.story-pawn-conquest { background: radial-gradient(circle at 35% 30%, #f0604f, #a5140c); }
+.story-pawn-corruption { background: radial-gradient(circle at 35% 30%, #55504c, #0d0b0a); }
 .sauron-actions-token { position: absolute; z-index: 1; }
 .sauron-actions-token img { width: 68px; display: block; }
 .tokens-count {
