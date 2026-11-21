@@ -9,3 +9,6 @@
 
 # Debug log files
 /logs
+
+# macOS
+.DS_Store
